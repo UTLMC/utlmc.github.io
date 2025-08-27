@@ -1,9 +1,7 @@
 table {
-  border: 0px;
-  outline: 0px;
+  border: none;
 }
 
 td {
-  border: 0px;
-  outline: 0px;
+  border: none;
 }
