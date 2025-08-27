@@ -1,3 +1,13 @@
+body {
+  padding: 1% 10%;
+  background-color: #20124dff;
+}
+
+div {
+  padding: 1% 1%;
+  background-color: whitesmoke;
+}
+
 table {
   border: none;
 }
