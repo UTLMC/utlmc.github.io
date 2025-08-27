@@ -1,4 +1,7 @@
-table,
+table {
+  border: 0px;
+}
+
 td {
   border: 0px;
 }
