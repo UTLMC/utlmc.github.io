@@ -1,27 +1,104 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<p>
-  <div>
-    <table>
-      <tr>
-        <td><img src="logo.png" alt="Logo" width="100" height="100"></td>
-        <td> Light Music Club <br>
-        University of Toronto Student Anime & Manga Association </td>
-      </tr>
-    </table>
+<html lang="en">
 
-    <table style="width: 100%">
-      <th>Home</th>
-      <th>About</th>
-      <th>Rehearsals</th>
-      <th>Concerts</th>
-      <th>Projects</th>
-      <th>Resources</th>
-      <th>Get Involved</th>
-    </table>
-  </div>
-</p>
+<head>
+    <meta chartset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="assets/favicon.ico">
+    <link rel="stylesheet" href="index.css">
+    <script src="data.js"></script>
+    <title>Light Music Club</title>
+</head>
+
+<body>
+    <header>
+        <a id="main-logo" href="/"></a>
+        <div id="header-title">
+            <h1>Light Music Club</h1>
+            <p>University of Toronto Student Anime & Manga Association</p>
+        </div>
+        <div id="contact">
+            <span id="contact-row">
+                <a id='contact-gmail' href="mailto:utsama.lightmusicclub@gmail.com"></a>
+                <a id="contact-discord" href="https://discord.gg/bk9FeQB5ww" target="_blank"></a>
+                <a id="contact-instagram" href="https://www.instagram.com/utsama_lmc/" target="_blank"></a>
+                <a id="contact-youtube" href="https://www.youtube.com/@utsamalightmusicclub" target="_blank"></a>
+            </span>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li class="nav-active" onclick="toggleTab(event)">Home</li>
+            <li onclick="toggleTab(event)">About</li>
+            <li onclick="toggleTab(event)">Rehearsals</li>
+            <li onclick="toggleTab(event)">Projects</li>
+            <li onclick="toggleTab(event)">Concerts</li>
+            <li onclick="toggleTab(event)">Resources</li>
+            <li onclick="toggleTab(event)">Get Involved</li>
+        </ul>
+    </nav>
+
+    <main>
+        <article id="tab-home" class="tab-active">
+            <section class="section-banner">
+                INSERT COOL PICTURE BANNER HERE
+            </section>
+            <section class="section-default">
+                <h1>👋 Hello!</h1>
+                <p>We are a branch of the <a href="https://sop.utoronto.ca/group/anime-and-manga-association/" target="_blank">University of Toronto Student Anime & Manga Association (UTSAMA)</a> based in the St. George Campus. Our club focuses on making music from anime, video games, and J-pop through live concerts and online recording projects. The LMC is a student-led club and we welcome players of all skill-levels.</p>
+                <aside>
+                    <div class="notification-icon"></div>
+                    <span>We’re looking for people with experience in drawing, graphic design, audio mixing, or video editing to help us with recording projects! If you have experience, please consider reaching out to XX on XXX!</span>
+                </aside>
+                <aside>
+                    <div class="notification-icon"></div>
+                    <span>The LMC is opening for its 3rd year this 2025-2026 Fall-Winter term! Our first meeting is at XX:XX pm at XXXX on Sept. XX. Come get a better idea of our club. No instruments needed. Click this link to become a member!</span>
+                </aside>
+                <dialog>
+                    <div class="dialog-picture">INSERT COOL CONCERT GRAPHIC HERE</div>
+                    <span>
+                        <h2>2025 End of Fall Concert</h2>
+                        <p>We’re proud to announce some cool concert! We’ll be playing songs by XX and XXX.</p>
+                        <p>It’s at XX:XX pm at 252 Bloor Street West (OISE, room XXX)! Tickets are $XX. Pay online or in-person or something.</p>
+                    </span>
+                </dialog>
+            </section>
+            <section class="section-gallery">
+                <h1>Gallery</h1>
+                <div class="gallery-container">
+                    <div>COOL PICTURE</div>
+                    <div>COOL PICTURE</div>
+                </div>
+            </section>
+        </article>
+        
+        <article id="tab-about">
+            About
+        </article>
+
+        <article id="tab-rehearsals">
+            Rehearsals
+        </article>
+
+        <article id="tab-projects">
+            Projects
+        </article>
+
+        <article id="tab-concerts">
+            Concerts
+        </article>
+
+        <article id="tab-resources">
+            Resources
+        </article>
+
+        <article id="tab-get-involved">
+            Get Involved
+        </article>
+    </main>
+
+    <script src="index.js"></script>
+</body>
+
 </html>
