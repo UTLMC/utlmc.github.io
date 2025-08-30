@@ -309,6 +309,7 @@ Iframes and embeds
     margin-left: calc(calc(var(--section-wide-width) - var(--section-default-width)) / -2);
     border: none;
     border-radius: 10px;
+    background-color: white;
 }
 
 
@@ -323,9 +324,11 @@ details summary {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    gap: 15px;
     cursor: pointer;
     transition: 0.2s;
     filter: drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.2));
+    align-items: center;
 }
 .details-hidden summary {
     filter: none;
@@ -339,10 +342,11 @@ details summary:active {
 }
 
 details .summary-triangle {
-    width: 20px;
-    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
     background-image: url("assets/icons/details triangle.png");
     background-size: contain;
+    background-repeat: no-repeat;
     transition: 0.3s;
 }
 .details-hidden .summary-triangle {
