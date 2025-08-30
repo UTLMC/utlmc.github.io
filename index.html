@@ -7,7 +7,8 @@
     <link rel="icon" href="assets/favicon.ico">
     <link rel="stylesheet" href="index.css">
     <script src="data.js"></script>
-    <title>Light Music Club</title>
+    <script src="index.js" defer></script>
+    <title>UTLMC</title>
 </head>
 
 <body>
@@ -29,13 +30,13 @@
 
     <nav>
         <ul>
-            <li class="nav-active" onclick="toggleTab(event)">Home</li>
-            <li onclick="toggleTab(event)">About</li>
-            <li onclick="toggleTab(event)">Rehearsals</li>
-            <li onclick="toggleTab(event)">Projects</li>
-            <li onclick="toggleTab(event)">Concerts</li>
-            <li onclick="toggleTab(event)">Resources</li>
-            <li onclick="toggleTab(event)">Get Involved</li>
+            <li id='nav-home' class="nav-active" onclick="toggleTab(event)">Home</li>
+            <li id='nav-about' onclick="toggleTab(event)">About</li>
+            <li id='nav-rehearsals' onclick="toggleTab(event)">Rehearsals</li>
+            <li id='nav-projects' onclick="toggleTab(event)">Projects</li>
+            <li id='nav-concerts' onclick="toggleTab(event)">Concerts</li>
+            <li id='nav-resources' onclick="toggleTab(event)">Resources</li>
+            <li id='nav-get-involved' onclick="toggleTab(event)">Get Involved</li>
         </ul>
     </nav>
 
@@ -55,14 +56,15 @@
                     <div class="notification-icon"></div>
                     <span>The LMC is opening for its 3rd year this 2025-2026 Fall-Winter term! Our first meeting is at XX:XX pm at XXXX on Sept. XX. Come get a better idea of our club. No instruments needed. Click this link to become a member!</span>
                 </aside>
-                <dialog>
-                    <div class="dialog-picture">INSERT COOL CONCERT GRAPHIC HERE</div>
+                <div class="card-announcement">
+                    <div class="card-announcement-picture">INSERT COOL CONCERT GRAPHIC HERE</div>
                     <span>
                         <h2>2025 End of Fall Concert</h2>
                         <p>We’re proud to announce some cool concert! We’ll be playing songs by XX and XXX.</p>
                         <p>It’s at XX:XX pm at 252 Bloor Street West (OISE, room XXX)! Tickets are $XX. Pay online or in-person or something.</p>
                     </span>
-                </dialog>
+                </div>
+                <iframe class='calendar' src="https://calendar.google.com/calendar/embed?src=richardthefeeder%40gmail.com&ctz=America%2FToronto" frameborder="0" scrolling="no"></iframe>
             </section>
             <section class="section-gallery">
                 <h1>Gallery</h1>
@@ -74,7 +76,123 @@
         </article>
         
         <article id="tab-about">
-            About
+            <section class="section-default">
+                <h1>History</h1>
+                <p>A long time ago in a galaxy far far away, UTSAMA was called UTAMA, and the UTAMA LMC existed. It was an audition-based rock band? But it kind of died during COVID-19. In 2023, Stone, Sean, and Alexis were cool and decided to revive the LMC into its current form today.</p>
+                <p>Our club now aims to be a big space both in Toronto and online for people to find like-minded musicians, make friends, form rock bands or mini-orchestral ensembles and play music from anime, video games, J-Pop, etc., either through performing at concerts or producing project recordings.</p>
+            </section>
+            <section class="section-default-bg">
+                <h1>Personnel</h1>
+                <div class="key-value-table personnel-table">
+                    <span>Arranger</span>
+                    <span>3</span>
+                    <span>Artist</span>
+                    <span>0</span>
+                    <span>Video Editor</span>
+                    <span>1</span>
+                    <span>Piano</span>
+                    <span>54948193</span>
+                    <span>Violin</span>
+                    <span>4</span>
+                    <span>Voice</span>
+                    <span>6</span>
+                    <span>Clarinet</span>
+                    <span>2</span>
+                    <span>Trumpet</span>
+                    <span>1</span>
+                    <span>Saxophone</span>
+                    <span>1</span>
+                    <span>Acoustic Guitar</span>
+                    <span>200312</span>
+                    <span>Electric Guitar</span>
+                    <span>55</span>
+                </div>
+            </section>
+            <section class="section-default">
+                <h1>Current Subgroups</h1>
+                <div class="card-subgroup-container">
+                    <div class="card-subgroup">
+                        <h2>Dark Music Club</h2>
+                        <p><span>Leader:</span> Nootnoot Dootman</p>
+                        <p><span>Members:</span> 5</p>
+                        <p><span>Created:</span> 2025-05</p>
+                        <p><span>Open to Join:</span> Yes</p>
+                        <p>We are a rock band and we like to perform anime OPS or something.</p>
+                    </div>
+                    <div class="card-subgroup">
+                        <h2>LMC Orchestra</h2>
+                        <p><span>Leader:</span> I dunno</p>
+                        <p><span>Members:</span> 16</p>
+                        <p><span>Created:</span> 2024-01</p>
+                        <p><span>Open to Join:</span> Yes</p>
+                        <p>We play orchestral pieces from video games like XX and YY or from anime like ZZ and WW.</p>
+                    </div>
+                </div>
+            </section>
+            <section class="section-default-bg">
+                <h1>Current Members</h1>
+                <div class="card-member-container">
+                    <div class="card-member">
+                        <div class="card-member-img"></div>
+                        <h3>Mike</h3>
+                        <p>Executive (2025)</p>
+                        <span class="tag-container">
+                            <span class="tag">Piano</span>
+                            <span class="tag">Arranger</span>
+                        </span>
+                        <ul>
+                            <li class="li-discord">@pixellatedmike</li>
+                        </ul>
+                    </div>
+                    <div class="card-member">
+                        <div class="card-member-img"></div>
+                        <h3>Sean</h3>
+                        <p>Executive (2023, 2025)</p>
+                        <span class="tag-container">
+                            <span class="tag">Piano</span>
+                            <span class="tag">Violin</span>
+                            <span class="tag">Arranger</span>
+                        </span>
+                        <ul>
+                            <li class="li-discord">@amoguus</li>
+                        </ul>
+                    </div>
+                    <div class="card-member">
+                        <div class="card-member-img"></div>
+                        <h3>Alexis</h3>
+                        <p>Executive (2023, 2024)</p>
+                        <span class="tag-container">
+                            <span class="tag">Bass Guitar</span>
+                        </span>
+                        <ul>
+                            <li class="li-discord">@alpurposeflour</li>
+                        </ul>
+                    </div>
+                    <div class="card-member">
+                        <div class="card-member-img"></div>
+                        <h3>Aedhan</h3>
+                        <p>Executive (2024)</p>
+                        <span class="tag-container">
+                            <span class="tag">Voice</span>
+                        </span>
+                        <ul>
+                            <li class="li-discord">@Amako</li>
+                        </ul>
+                    </div>
+                    <div class="card-member">
+                        <div class="card-member-img"></div>
+                        <h3>Stone</h3>
+                        <p>Executive (2023)</p>
+                        <span class="tag-container">
+                            <span class="tag">Drums</span>
+                            <span class="tag">Bass Guitar</span>
+                        </span>
+                        <ul>
+                            <li class="li-discord">@imkonfusedauhrg</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
         </article>
 
         <article id="tab-rehearsals">
@@ -91,14 +209,70 @@
 
         <article id="tab-resources">
             Resources
+
+            Icon credits:
+            - Announcement: https://www.flaticon.com/free-icon/announcement_2417835
+            - Alerts: https://www.flaticon.com/free-icon/attention_4440466
+            - Code of conduct: https://www.flaticon.com/free-icon/constitution_5622624
+            - Song suggestion: https://www.flaticon.com/free-icon/music-note_651717
+            - New member form: https://www.flaticon.com/free-icon/live-music_4472616
+            - Vote: https://www.flaticon.com/free-icon/vote_4322041
+            - Feedback: https://www.flaticon.com/free-icon/feedback_813419
+            - Form: https://www.flaticon.com/free-icon/contact-form_3447545
         </article>
 
         <article id="tab-get-involved">
-            Get Involved
+            <section class="section-default">
+                <h1>Get Involved</h1>
+                <p>The best way to stay updated with the Light Music Club is to join the UTSAMA discord server. Make sure to follow the channels:</p>
+                <ul id="discord-channels">
+                    <li>
+                        <p><a href="https://discord.com/channels/385576522997825536/1238314868952535060" target="_blank">#lmc-announcements</a></p>
+                    </li>
+                    <li>
+                        <p><a href="https://discord.com/channels/385576522997825536/1280933040020918313" target="_blank">#lmc-resources</a></p>
+                    </li>
+                    <li>
+                        <p><a href="https://discord.com/channels/385576522997825536/1206777764355510332" target="_blank">#light-music-club-general</a> - where we generally chat</p>
+                    </li>
+                    <li>
+                        <p><a href="https://discord.com/channels/385576522997825536/1164635679112839299" target="_blank">#light-music-club-forum</a> - where we organize discussions for rehearsals and recording projects</p>
+                    </li>
+                </ul>
+                <p>We’re always looking for new members, and we’d be excited to have you!</p>
+                <p>If you’re interested in general inquiries, collaborations, performing with us, or any sort of partnerships with LMC, please contact XX via XX.</p>
+            </section>
+            <section class="section-default">
+                <h1>Frequently Asked Questions</h1>
+
+                <div id="faq-block">
+                    <details open class="details-hidden">
+                        <summary onclick="toggleCollapsible(event)">
+                            <p>Is LMC only for University of Toronto students?</p>
+                            <div class="summary-triangle"></div>
+                        </summary>
+                        <div class="summary-body">
+                            <p>Though we’re mostly comprised of students from UofT, students from any campus and any university (worldwide? just Toronto?) is fine, but you’ll have to be able to reach St. George Campus to participate in weekly rehearsals and other live events. Otherwise, remote recordings.</p>
+                        </div>
+                    </details>
+                </div>
+            </section>
+            <section class="section-default">
+                <h1>Documents and Forms</h1>
+                <p>Please read the code of conduct if you're interested in becoming a new member.</p>
+                <div class="button-block">
+                    <a class="card-button">
+                        <div class="card-button-img"></div>
+                        <span>Code of Conduct</span>
+                    </a>
+                    <a class="card-button" href="https://calendar.google.com/calendar/embed?src=utsama.lightmusicclub%40gmail.com&ctz=America%2FToronto" target="_blank">
+                        <div class="card-button-img"></div>
+                        <span>New Member Form</span>
+                    </a>
+                </div>
+            </section>
         </article>
     </main>
-
-    <script src="index.js"></script>
 </body>
 
 </html>

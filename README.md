@@ -4,11 +4,11 @@ This is the website for Light Music Club (LMC), a branch of the University of To
 
 ## Non-Technical Guide
 
-To get started, install Github Desktop and open it. Log into your Github account, choose to clone an online repository, and pick this repository.
+To get started, install Github Desktop and open it. Log into your Github account, choose to clone an online repository, and pick this repository. This will create a local copy of the Github repository, which you will edit and then save back onto Github repository.
 
 Virtually every change you will ever need to make will be in `data.js`. Images are inside the `assets` folder. Follow the pre-existing formatting when you make your changes. You can verify your changes are rendering properly by opening `index.html` with a web browser.
 
-When you have finished, use Github Desktop to make a "commit" (a bundle of changes with a description), then push that commit onto the master repository in Github. The changes will automatically get deployed into utlmc.github.io after some time.
+When you have finished, use Github Desktop to make a "commit" (a bundle of changes with a description), then push that commit onto the master repository in Github. The changes will automatically become visible on utlmc.github.io after some time.
 
 If something fails horrendously or you want to request a feature, please contact a dev.
 
