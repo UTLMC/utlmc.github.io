@@ -95,3 +95,72 @@ function toggleViewerTab(event) {
 function toggleSongTab(event) {
     return genericToggleTab(event, 'song');
 }
+
+
+/*********************************************************************
+Dynamic Content Injection
+*********************************************************************/
+function construct(json) {
+    const element = document.createElement(json.element);
+    if (json.attributes) {
+        for (const key in json.attributes) {
+            element.setAttribute(key, json.attributes[key]);
+        }
+    }
+    if (json.classes) {
+        for (const name of json.classes) {
+            element.classList.add(name);
+        }
+    }
+    if (json.id) {
+        element.id = id;
+    }
+    if (json.innerText) {
+        element.innerText = json.innerText;
+    }
+    if (json.children) {
+        for (const child of json.children) {
+            element.appendChild(construct(child));
+        }
+    }
+    return element;
+}
+
+function injectFAQ() {
+    const block = cssGetId('faq-block');
+    for (const faq of FAQ) {
+        const json = {
+            element: 'details',
+            attributes: {'open': true},
+            classes: ['details-hidden'],
+            children: [{
+                element: 'summary',
+                attributes: {'onclick': 'toggleDetailsSummary(event)'},
+                children: [{
+                    element: 'h4',
+                    innerText: faq.question
+                }, {
+                    element: 'div',
+                    classes: ['summary-triangle']
+                }]
+            }, {
+                element: 'div',
+                classes: ['summary-body'],
+                children: faq.answer.map(x => ({ element: 'p', innerText: x }))
+            }]
+        };
+        block.appendChild(construct(json));
+    }
+}
+injectFAQ();
+
+
+// Github pages CORS test
+async function corsTest(link) {
+    const response = await fetch(link);
+    console.log(response);
+    const body = await response.text();
+    console.log(body);
+}
+corsTest('index.html');
+window.history.pushState('home', 'Home', '/home');

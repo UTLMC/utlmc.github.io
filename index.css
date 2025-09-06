@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Geologica:wght@100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Reddit+Sans+Condensed:wght@200..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Figtree:ital,wght@0,300..900;1,300..900&family=Geologica:wght@100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Reddit+Sans+Condensed:wght@200..900&display=swap');
 
 :root {
     --section-default-width: min(800px, calc(100vw - 100px));
@@ -44,6 +44,8 @@ header {
     display: block;
     width: 100px;
     height: 100px;
+    min-height: 100px;
+    min-width: 100px;
     transition: 0.2s;
 }
 #main-logo:hover {
@@ -63,11 +65,18 @@ header {
     font-family: "DM Sans";
     font-size: 40px;
     line-height: 50px;
+    text-wrap: nowrap;
+}
+#header-title h1:before {
+    content: 'Light Music Club';
 }
 #header-title p {
     font-family: "Atkinson Hyperlegible";
     font-size: 20px;
     line-height: 20px;
+}
+#header-title p:before {
+    content: 'University of Toronto Student Anime & Manga Association';
 }
 #contact {
     display: flex;
@@ -100,6 +109,42 @@ header {
 #contact-instagram { background-image: url("assets/icons/instagram.png"); }
 #contact-youtube { background-image: url("assets/icons/youtube.png"); }
 
+@media screen and (max-width: 900px) {
+    #header-title {
+        min-width: auto;
+    }
+    #header-title p:before {
+        content: 'UofT Student Anime & Manga Association';
+    }
+}
+@media screen and (max-width: 700px) {
+    #header-title {
+        min-width: auto;
+    }
+    #header-title p:before {
+        content: 'Music Branch of UTSAMA';
+    }
+    #contact {
+        align-items: center;
+        width: 90px;
+        min-width: 90px;
+    }
+    #contact-row {
+        flex-wrap: wrap;
+    }
+}
+@media screen and (max-width: 550px) {
+    #header-title {
+        min-width: auto;
+    }
+    #header-title h1:before {
+        content: 'LMC';
+    }
+    #header-title p:before {
+        content: 'UTSAMA';
+    }
+}
+
 
 /*******************************
 Navigation
@@ -111,6 +156,7 @@ Navigation
     display: flex;
     flex-direction: row;
     justify-content: center;
+    flex-wrap: wrap;
 }
 #nav-page:not(.nav-active) {
     color: #595959;
@@ -161,14 +207,18 @@ Tabs
     font-size: 28px;
     color: rgb(250, 250, 250);
     font-weight: 600;
+    width: 100%;
 }
 .tab h2 {
     font-size: 26px;
-    font-variant: small-caps;
+    font-family: "Figtree";
     color: rgb(255, 255, 55);
 }
 .tab h4 {
     font-weight: normal;
+}
+.tab p {
+    width: 100%;
 }
 
 .tab-viewer:not(.tab-viewer-active) {
@@ -190,7 +240,7 @@ Hyperlinks
 }
 .tab p a:before, .table-hyperlinks a:before {
     content: '';
-    background-color: rgba(34, 87, 201, 0.75);
+    background-color: rgba(46, 104, 230, 0.75);
     width: 100%;
     height: 2px;
     bottom: 1px;
@@ -204,7 +254,7 @@ Hyperlinks
 }
 .tab p a:active:before, .table-hyperlinks a:active:before {
     transition: 0s;
-    background-color: rgba(96, 128, 231, 0.75);
+    background-color: rgba(107, 138, 243, 0.75);
 }
 #discord-channels a {
     font-family: 'Jetbrains Mono';
@@ -221,6 +271,7 @@ Hyperlink Table
     transition: 0.2s;
     outline: 2px solid white;
     outline-offset: -1px;
+    align-items: center;
 }
 .table-hyperlinks-container:hover {
     background-color: rgba(255, 255, 255, 0.1);
@@ -238,6 +289,8 @@ Hyperlink Table
 .table-hyperlinks-icon {
     min-width: 50px;
     width: 50px;
+    min-height: 50px;
+    height: 50px;
     position: relative;
 }
 .table-hyperlinks-icon:before {
@@ -258,16 +311,66 @@ Hyperlink Table
     color: rgb(150, 150, 200);
 }
 
+@media screen and (max-width: 750px) {
+    .table-hyperlinks {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .table-hyperlinks dt:not(:first-child) {
+        margin-top: 5px;
+    }
+}
+@media screen and (max-width: 450px) {
+    .table-hyperlinks-container {
+        flex-direction: column;
+    }
+}
+
 
 
 /*******************************
 Icons
 *******************************/
-#icon-practice:before { background-image: url("assets/icons/practice.png") }
-#icon-arrangement:before { background-image: url("assets/icons/arrangement.png") }
-#icon-music-theory:before { background-image: url("assets/icons/music theory.png") }
-#icon-audio-production:before { background-image: url("assets/icons/audio production.png") }
+#icon-practice:before { background-image: url("assets/icons/practice.png"); }
+#icon-arrangement:before { background-image: url("assets/icons/arrangement.png"); }
+#icon-music-theory:before { background-image: url("assets/icons/music theory.png"); }
+#icon-audio-production:before { background-image: url("assets/icons/audio production.png"); }
+.icon-announcement { background-image: url("assets/icons/announcement.png"); }
+.icon-alert { background-image: url("assets/icons/alert.png"); }
 
+.icon-song-suggestion { background-image: url("assets/icons/song suggestion.png"); }
+.icon-song-voting { background-image: url("assets/icons/vote.png"); }
+.icon-ideas-and-feedback { background-image: url("assets/icons/feedback.png"); }
+
+.icon-small-ensemble-registration { background-image: url("assets/icons/small ensemble form.png"); }
+.icon-equipment-or-room-requests { background-image: url("assets/icons/equipment.png"); }
+.icon-online-project-assistance { background-image: url("assets/icons/video.png"); }
+
+.icon-code-of-conduct { background-image: url("assets/icons/code of conduct.png"); }
+.icon-new-member-registration { background-image: url("assets/icons/new member form.png"); }
+
+.placeholder {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.placeholder:before {
+    content: 'PLACEHOLDER';
+    letter-spacing: 10px;
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: absolute;
+    background-color: rgb(212, 212, 212);
+    font-weight: 700;
+    font-size: 40px;
+    color: rgb(120, 120, 120);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
 
 /*******************************
 Sections
@@ -275,19 +378,31 @@ Sections
 section {
     display: block;
 }
-.section-default {
+article *:not(.section-default):first-child {
+    margin-top: 0px;
+}
+article .section-default:last-child, article .section-wide:last-child {
+    padding-bottom: 50px;
+}
+.section-default, .section-wide {
     width: var(--section-default-width);
-    margin: 50px 0px;
     display: flex;
     flex-direction: column;
     gap: 15px;
+    margin-top: 50px;
+    align-items: center;
+}
+.section-wide {
+    width: var(--section-wide-width);
+}
+.section-wide h1 {
+    text-align: center;
 }
 .section-default-bg:before {
     content: '';
     position: absolute;
     background-color: #351c75ff;
     width: 100vw;
-    margin-left: calc(calc(100vw - 100%) / -2);
     height: 100%;
     z-index: -1;
     margin-top: -50px;
@@ -295,19 +410,20 @@ section {
 .section-default-bg {
     width: var(--section-default-width);
     padding: 50px 0px;
-    margin: 50px 0px;
+    margin-top: 50px;
     position: relative;
     display: flex;
     flex-direction: column;
+    align-items: center; 
     gap: 15px;
 }
-
 .section-banner {
     background-color: #674ea7ff;
     width: 100%;
     min-height: 100px;
     background-size: cover;
     background-position: 50% 50%;
+    background-repeat: no-repeat;
 }
 .section-gallery {
     background-color: #674ea7ff;
@@ -318,6 +434,10 @@ section {
     align-items: center;
     padding: 25px;
     gap: 15px;
+    margin-top: 50px;
+}
+.section-gallery h1 {
+    text-align: center;
 }
 .gallery-container {
 
@@ -340,42 +460,62 @@ Notifications / Announcements
 .notification span {
     color: #666666;
 }
-.notification-icon {
+.notification div {
     min-width: 50px;
     min-height: 50px;
     width: 50px;
     height: 50px;
-    background-image: url("assets/icons/announcement.png");
     background-size: contain;
     background-repeat: no-repeat;
     background-position: 50% 50%;
 }
+@media screen and (max-width: 450px) {
+    .notification {
+        flex-direction: column;
+    }
+}
 
 
 /*******************************
-Big Announcements
+Big Announcements and Cards
 *******************************/
-.card-big {
-    display: flex;
-    flex-direction: row;
-    background-color: #351c75ff;
+.card-wide, .card-normal {
+    background-color: #351c75;
     padding: 50px;
     border-radius: 25px;
-    gap: 20px;
-    margin-top: 15px;
-    width: var(--section-wide-width);
-    margin-left: calc(calc(var(--section-wide-width) - var(--section-default-width)) / -2);
     border: none;
+    width: var(--section-wide-width);
     color: rgb(230, 230, 230);
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
 }
-.card-big span {
+.card-normal {
+    width: calc(var(--section-default-width));
+}
+.img-text {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+.img-text span {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
-.card-big-img {
+.img-text div:first-child {
     background-color: #eeeeeeff;
     color: black;
+}
+
+@media screen and (max-width: 750px) {
+    .img-text {
+        display: grid;
+        grid-template-columns: none;
+        grid-template-rows: 1fr 1fr;
+    }
 }
 
 
@@ -386,7 +526,6 @@ Iframes and embeds
     margin-top: 15px;
     height: 600px;
     width: var(--section-wide-width);
-    margin-left: calc(calc(var(--section-wide-width) - 100%) / -2);
     border: none;
     border-radius: 10px;
     background-color: white;
@@ -410,16 +549,27 @@ Iframes and embeds
 }
 .embed-grid {
     width: var(--section-wide-width);
-    margin-left: calc(calc(var(--section-wide-width) - 100%) / -2);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: row;
     gap: 15px;
+}
+.embed-grid h1 {
+    margin-bottom: 10px;
+}
+.embed-grid div {
+    flex-grow: 1;
 }
 .embed-maps {
     border: none;
     background-color: white;
     width: 100%;
-    aspect-ratio: 1.2;
+    height: 100%;
+}
+
+@media screen and (max-width: 1025px) {
+    .embed-grid {
+        flex-direction: column;
+    }
 }
 
 
@@ -473,11 +623,18 @@ details .summary-body {
     interpolate-size: allow-keywords;
     border-radius: 0px 0px 10px 10px;
     margin-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 .details-hidden .summary-body {
     padding: 0px 15px;
     height: 0px;
     margin-bottom: 0px;
+}
+
+.setlist-block {
+    width: 100%;
 }
 
 
@@ -490,7 +647,6 @@ Subgroup Cards
     grid-template-columns: 1fr 1fr;
     gap: 15px;
     width: calc(100% + calc(2 * var(--card-subgroup-padding)));
-    margin-left: calc(-1 * var(--card-subgroup-padding));
 }
 .card-subgroup {
     display: flex;
@@ -508,15 +664,20 @@ Subgroup Cards
     grid-template-columns: 125px auto;
     margin: 0;
 }
-.table-subgroup * {
-    text-wrap: nowrap;
-}
 .table-subgroup dt {
     color: rgb(100, 100, 200);
     font-style: italic;
+    text-wrap: nowrap;
 }
 .table-subgroup dd {
     margin: 0;
+}
+
+@media screen and (max-width: 750px) {
+    .card-subgroup-container {
+        display: flex;
+        flex-direction: column;
+    }
 }
 
 
@@ -532,6 +693,9 @@ Member Cards Big
     display: flex;
     flex-direction: column;
 }
+.card-member h3, .card-member-small h3 {
+    font-family: "Figtree";
+}
 .card-member-img {
     background-color: red;
     width: 100%;
@@ -543,17 +707,55 @@ Member Cards Big
     padding: 0;
     text-wrap: nowrap;
 }
-.li-discord:before {
+.list-social-media li:before {
     content: '';
     width: 28px;
     height: 28px;
-    margin-bottom: -8px;
-    background-image: url('assets/icons/discord.png');
     background-size: contain;
     background-position: 50% 50%;
     background-repeat: no-repeat;
     display: inline-block;
     margin-right: 5px;
+    margin-bottom: -8px;
+}
+.list-social-media a {
+    text-decoration: none;
+    color: rgb(200, 200, 222);
+    transition: 0.2s;
+}
+.list-social-media a:hover {
+    color: white;
+}
+.list-social-media a:active {
+    color: rgb(235, 255, 119);
+    transition: 0s;
+}
+.li-discord:before { background-image: url('assets/icons/discord.png'); }
+.li-youtube:before { background-image: url('assets/icons/youtube.png'); }
+.li-bandcamp:before { background-image: url('assets/icons/bandcamp.png'); }
+.li-soundcloud:before { background-image: url('assets/icons/soundcloud.png'); }
+.li-musescore:before { background-image: url('assets/icons/musescore.png'); }
+.li-personal-website:before { background-image: url('assets/icons/website.png'); filter: invert(1); }
+
+@media screen and (max-width: 750px) {
+    .card-member-container {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+@media screen and (max-width: 500px) {
+    .card-member-img {
+        width: 100px;
+        height: 100px;
+    }
+    .card-member {
+        flex-direction: row;
+        gap: 15px;
+        align-items: center;
+    }
+    .card-member-container {
+        display: flex;
+        flex-direction: column;
+    }
 }
 
 
@@ -578,7 +780,7 @@ Member Cards Small
     gap: 10px;
     align-items: center;
 }
-.card-member-text-small {
+.card-member-text, .card-member-text-small {
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -603,6 +805,7 @@ Tags
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    align-items: center;
     gap: 6px 5px;
 }
 .tag {
@@ -611,6 +814,8 @@ Tags
     border-radius: 10px;
     padding: 0px 10px;
     text-wrap: nowrap;
+    font-family: "Reddit Sans Condensed";
+    font-size: 17px;
 }
 
 
@@ -622,10 +827,11 @@ Card Buttons
     flex-direction: row;
     gap: 25px;
     justify-content: center;
+    flex-wrap: wrap;
 }
 .card-button {
-    width: 25%;
-    aspect-ratio: 1;
+    width: 180px;
+    height: 180px;
     background-color: rgb(222, 222, 222);
     font-family: "Atkinson Hyperlegible";
     color: black;
@@ -638,6 +844,7 @@ Card Buttons
     justify-content: center;
     gap: 15px;
     transition: 0.2s;
+    padding: 15px;
 }
 .card-button:hover {
     background-color: white;
@@ -646,12 +853,12 @@ Card Buttons
     filter: opacity(0.8);
     transition: 0s;
 }
-.card-button-img {
-    background-color: red;
+.card-button-icon {
     width: 50%;
-    height: 50%;
+    aspect-ratio: 1;
     background-size: contain;
     background-position: 50% 50%;
+    background-repeat: no-repeat;
 }
 
 
@@ -665,8 +872,8 @@ Personnel Table
     border: 1px dashed rgb(200, 200, 255);
     padding: var(--table-personnel-padding);
     width: calc(100% + calc(2 * var(--table-personnel-padding)));
-    margin-left: calc(-1 * var(--table-personnel-padding));
-    margin: 0;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 #table-personnel * {
     text-wrap: nowrap;
@@ -677,6 +884,12 @@ Personnel Table
 #table-personnel dd {
     text-align: center;
     margin: 0;
+}
+
+@media screen and (max-width: 500px) {
+    #table-personnel {
+        grid-template-columns: 2fr 1fr;
+    }
 }
 
 
@@ -748,6 +961,9 @@ Paginated Table
 .table-paginated th, .table-paginated td, .pagination {
     padding: 10px 15px;
 }
+.table-paginated th {
+    padding-top: 12px;
+}
 .table-paginated tbody tr {
     color: rgb(200, 200, 222);
     transition: 0.2s;
@@ -765,9 +981,9 @@ Viewer
 *******************************/
 .viewer-container {
     width: var(--section-vast-width);
-    margin-left: calc(calc(var(--section-vast-width) - 100%) / -2);
     display: flex;
     flex-direction: row;
+    overflow: hidden;
 }
 .viewer-sidebar {
     background-color: #0b5394ff;
@@ -819,6 +1035,7 @@ Viewer
     padding: 25px;
     color: #595959;
     gap: 15px;
+    box-shadow: -5px 0px 5px rgba(0, 0, 0, 0.1);
 }
 .viewer-header, .viewer-header hgroup {
     display: flex;
@@ -860,11 +1077,11 @@ Viewer
     transition: 0.2s;
 }
 .viewer-hamburger:hover rect {
-    fill: #8b8b8b;
+    fill: #8d8d8d;
 }
 .viewer-hamburger:active rect {
     transition: 0s;
-    fill: #5180e6;
+    fill: #97b5f7;
 }
 
 .nav-viewer menu {
@@ -881,10 +1098,10 @@ Viewer
 .nav-viewer menu li:not(.nav-viewer-active), .nav-song menu li:not(.nav-song-active) {
     cursor: pointer;
 }
-.nav-viewer menu li:not(.nav-viewer-active):hover, .nav-song menu li:not(.nav-song-active):hover {
-    color: #9c9c9c;
+.nav-viewer menu li:not(.nav-viewer-active):hover {
+    color: #a3a3a3;
 }
-.nav-viewer menu li:not(.nav-viewer-active):active, .nav-song menu li:not(.nav-song-active):active {
+.nav-viewer menu li:not(.nav-viewer-active):active {
     color: black;
     transition: 0s;
 }
@@ -898,55 +1115,121 @@ Setlist
 *******************************/
 .song-container {
     display: flex;
-    flex-direction: row;
+    flex-direction: row !important;
 }
 .nav-song {
     border-right: 2px solid #9c9c9c;
-    text-align: right;
-    width: 100px;
-    min-width: 100px;
+}
+.nav-song menu {
+    width: 120px;
+    min-width: 120px;
 }
 .nav-song menu li {
     padding: 5px 15px;
+    text-align: right;
+}
+.nav-song menu li:not(.nav-song-active):hover {
+    background-color: rgb(195, 195, 195);
+    color: #535353;
+}
+.nav-song menu li:not(.nav-song-active):active {
+    background-color: rgb(175, 175, 175);
+    color: black;
+    transition: 0s;
 }
 .tab-song {
-    padding: 15px;
-    padding-top: 5px;
+    padding: 5px;
+}
+.nav-song-active {
+    background-color: rgb(185, 185, 185);
 }
 
 .table-song-info {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: auto auto;
+    gap: 0px 15px;
+    margin: 0;
 }
-.table-song-info span {
+.table-song-info dt {
     text-wrap: nowrap;
 }
-.table-song-info span:nth-child(2n) {
+.table-song-info dd {
     color: black;
+    margin: 0;
 }
 
-.tab-song-players {
+.tab-song-performers {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     justify-items: center;
     gap: 15px;
 }
-.player-instrument {
+.performer-instrument {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     margin: 0;
 }
-.player-instrument dt {
+.performer-instrument dt {
     color: black;
     font-size: 20px;
     font-weight: 700;
 }
-.player-instrument dd {
+.performer-instrument dd {
     margin: 0;
 }
 
+@media screen and (max-width: 700px) {
+    .song-container {
+        flex-direction: column !important;
+        gap: 5px !important;
+    }
+    .nav-song {
+        border-right: none;
+        border-bottom: 2px solid #9c9c9c;
+    }
+    .nav-song menu {
+        display: flex;
+        flex-direction: row;
+        width: auto;
+        gap: 15px;
+    }
+    .nav-song menu li {
+        padding: 5px 0px;
+        text-align: center;
+    }
+    .nav-song-active {
+        background-color: transparent;
+    }
+    .nav-song menu li:not(.nav-song-active):hover {
+        background-color: transparent;
+        color: #a3a3a3;
+    }
+    .nav-song menu li:not(.nav-song-active):active {
+        background-color: transparent;
+        color: black;
+    }
+}
+@media screen and (max-width: 600px) {
+    .tab-song-performers {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+@media screen and (max-width: 550px) {
+    .table-song-info {
+        display: flex;
+        flex-direction: column;
+    }
+    .table-song-info dt:not(:first-child) {
+        margin-top: 15px;
+    }
+}
+@media screen and (max-width: 450px) {
+    .tab-song-performers {
+        grid-template-columns: 1fr;
+    }
+}
 
 /*******************************
 Location
@@ -960,4 +1243,11 @@ Location
     display: flex;
     flex-direction: column;
     gap: 15px;
+}
+
+@media screen and (max-width: 625px) {
+    .col-divider {
+        grid-template-columns: none;
+        grid-template-rows: 1fr 1fr;
+    }
 }
