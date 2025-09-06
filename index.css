@@ -768,10 +768,12 @@ Member Cards Small
 .table-past-members tr td:nth-child(3n + 2), .table-past-members tr th:nth-child(2) {
     text-align: center;
     width: 150px;
+    min-width: 150px;
 }
 .table-past-subgroups tr td:nth-child(3n + 2), .table-past-subgroups tr th:nth-child(2) {
     text-align: center;
     width: 150px;
+    min-width: 150px;
 }
 
 .card-member-small {
@@ -897,18 +899,27 @@ Personnel Table
 Paginated Table
 *******************************/
 .table-paginated {
-    position: relative;
     width: 100%;
-    min-width: 600px;
+    overflow-x: auto;
+}
+.table-paginated table {
+    width: 100%;
+    min-width: 700px;
+}
+
+.cell-pagination {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }
 .pagination {
-    position: absolute;
-    z-index: 1;
     right: 0;
     display: flex;
     flex-direction: row;
     gap: 5px;
     align-items: center;
+    font-weight: 400;
 }
 .pagination span {
     margin-right: 5px;
@@ -949,6 +960,9 @@ Paginated Table
     margin-top: 5px;
 }
 
+.table-paginated thead, .table-paginated body {
+    min-width: 700px;
+}
 .table-paginated thead tr {
     font-weight: 700;
     background-color: #333b8f;
@@ -958,7 +972,7 @@ Paginated Table
 .table-paginated thead tr:hover {
     background-color: #4049a8;
 }
-.table-paginated th, .table-paginated td, .pagination {
+.table-paginated th, .table-paginated td {
     padding: 10px 15px;
 }
 .table-paginated th {

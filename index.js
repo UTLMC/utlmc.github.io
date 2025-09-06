@@ -1,6 +1,11 @@
 /*********************************************************************
 Helper Functions
 *********************************************************************/
+function assert(condition, errorMessage) {
+    if (!condition) {
+        throw new Error(errorMessage);
+    }
+}
 function cssGetId(id) {
     const result = document.getElementById(id);
     if (!result)
@@ -40,7 +45,14 @@ function toggleTab(event) {
             tab.classList.remove('tab-active');
         }
     }
+    window.location.hash = id.endsWith('home') ? '#' : `#${id.substring(4)}`;
 }
+window.addEventListener('DOMContentLoaded', () => {
+    const page = window.location.hash.substring(1);
+    if (page.length > 0) {
+        toggleTab(`nav-${page}`);
+    }
+});
 function toggleDetailsSummary(event) {
     event.preventDefault();  // Prevent instant show/hide from <summary>
     let element = event.srcElement;
@@ -129,6 +141,7 @@ function construct(json) {
 function injectFAQ() {
     const block = cssGetId('faq-block');
     for (const faq of FAQ) {
+        const paragraphs = faq.a.map(x => ({ element: 'p', innerText: x }));
         const json = {
             element: 'details',
             attributes: {'open': true},
@@ -138,7 +151,7 @@ function injectFAQ() {
                 attributes: {'onclick': 'toggleDetailsSummary(event)'},
                 children: [{
                     element: 'h4',
-                    innerText: faq.question
+                    innerText: faq.q
                 }, {
                     element: 'div',
                     classes: ['summary-triangle']
@@ -146,7 +159,7 @@ function injectFAQ() {
             }, {
                 element: 'div',
                 classes: ['summary-body'],
-                children: faq.answer.map(x => ({ element: 'p', innerText: x }))
+                children: paragraphs.length > 0 ? paragraphs : { element: 'p', innerText: '[TODO]' }
             }]
         };
         block.appendChild(construct(json));
@@ -162,5 +175,4 @@ async function corsTest(link) {
     const body = await response.text();
     console.log(body);
 }
-corsTest('index.html');
-window.history.pushState('home', 'Home', '/home');
+// corsTest('index.html');

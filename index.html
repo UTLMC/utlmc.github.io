@@ -12,6 +12,7 @@
 </head>
 
 <body>
+    <!-- Logo + Club Title + Social Media Icons -->
     <header>
         <a id="main-logo" href="/"></a>
         <hgroup id="header-title">
@@ -28,6 +29,7 @@
         </div>
     </header>
 
+    <!-- Navigation Bar -->
     <nav id='nav-page'>
         <menu>
             <li id='nav-home' class="nav-active" onclick="toggleTab(event)">Home</li>
@@ -41,6 +43,7 @@
     </nav>
 
     <main>
+        <!-- Home Page -->
         <article id="tab-home" class="tab tab-active">
             <section class="section-banner">
                 INSERT COOL BANNER PIC
@@ -82,6 +85,7 @@
             </section>
         </article>
         
+        <!-- About Page -->
         <article id="tab-about" class="tab">
             <section class="section-default">
                 <h1>History</h1>
@@ -243,17 +247,19 @@
             <section class="section-wide">
                 <h1>Past Members</h1>
                 <div class="table-paginated table-past-members">
-                    <div class="pagination">
-                        <span>1-2 of 2</span>
-                        <div class="paginate-arrow paginate-left"></div>
-                        <div class="paginate-arrow paginate-right"></div>
-                    </div>
-                    <table class="table-paginated">
+                    <table>
                         <thead>
                             <tr>
                                 <th>Name</th>
                                 <th>Active</th>
-                                <th>Sites</th>
+                                <th class="cell-pagination">
+                                    <span>Sites</span>
+                                    <div class="pagination">
+                                        <span>1-2 of 2</span>
+                                        <div class="paginate-arrow paginate-left"></div>
+                                        <div class="paginate-arrow paginate-right"></div>
+                                    </div>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -312,17 +318,19 @@
             <section class="section-wide">
                 <h1>Past Subgroups</h1>
                 <div class="table-paginated table-past-subgroups">
-                    <aside class="pagination">
-                        <span>1-2 of 2</span>
-                        <div class="paginate-arrow paginate-left"></div>
-                        <div class="paginate-arrow paginate-right"></div>
-                    </aside>
                     <table class="table-paginated">
                         <thead>
                             <tr>
                                 <th>Name</th>
                                 <th>Active</th>
-                                <th>Description</th>
+                                <th class="cell-pagination">
+                                    <span>Description</span>
+                                    <aside class="pagination">
+                                        <span>1-2 of 2</span>
+                                        <div class="paginate-arrow paginate-left"></div>
+                                        <div class="paginate-arrow paginate-right"></div>
+                                    </aside>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -342,6 +350,7 @@
             </section>
         </article>
 
+        <!-- Rehearsals Page -->
         <article id="tab-rehearsals" class="tab">
             <section class="section-default-bg">
                 <h1>Concert Rehearsal Sheet Music</h1>
@@ -444,6 +453,7 @@
             </section>
         </article>
 
+        <!-- Projects Page -->
         <article id="tab-projects" class="tab">
             <section class="section-default-bg">
                 <h1>Project Sheet Music</h1>
@@ -474,6 +484,7 @@
             </section>
         </article>
 
+        <!-- Concerts Page -->
         <article id="tab-concerts" class="tab">
             <section class="section-default-bg">
                 <h1>Concerts</h1>
@@ -536,6 +547,7 @@
             </section>
         </article>
 
+        <!-- Resources Page -->
         <article id="tab-resources" class="tab">
             <section class="section-default-bg">
                 <div class="embed-grid">
@@ -638,20 +650,21 @@
                                 <a href="https://www.flaticon.com/free-icon/treble-clef_5376625" target="_blank">Music Theory</a>,
                                 <a href="https://www.flaticon.com/free-icon/music_15711175" target="_blank">Audio Production</a>,
                                 <a href="https://www.flaticon.com/free-icon/rules_2046915" target="_blank">Code of Conduct</a>,
-                                <a href="https://www.flaticon.com/free-icon/globe_558593" target="_blank">Personal Website</a>,
+                                <a href="https://www.flaticon.com/free-icon/globe_558593" target="_blank">Personal Website</a>
                             </p>
                         </dd>
                         <dt>Website</dt>
                         <dd>
                             <p>Initial design by @tirangol</p>
                         </dd>
-                        <dt>Images</dt>
+                        <dt>Logo</dt>
                         <dd>???</dd>
                     </dl>
                 </div>
             </section>
         </article>
 
+        <!-- Get Involved Page -->
         <article id="tab-get-involved" class="tab">
             <section class="section-default">
                 <h1>Get Involved</h1>
