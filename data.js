@@ -140,7 +140,33 @@ const MEMBERS = [
             'Executive (2023, 2024)'
         ],
         socialMedia: {
-            discord: ['alpurposeflour']
+            discord: ['@alpurposeflour']
+        }
+    },
+    {
+        name: 'Aedhan',
+        joined: '2023-01',
+        left: '2025-09',
+        tags: [
+            'Voice',
+            'Executive (2024)'
+        ],
+        socialMedia: {
+            discord: ['@Amako']
+        }
+    },
+    {
+        name: 'Stone',
+        joined: '2023-01',
+        left: '2025-09',
+        tags: [
+            'Drums',
+            'Bass Guitar',
+            'Electric Guitar',
+            'Executive (2023)'
+        ],
+        socialMedia: {
+            discord: ['@imkonfusedauhrg']
         }
     },
 ]
@@ -150,17 +176,28 @@ const SUBGROUPS = [
         name: 'Dark Music Club',
         leader: 'Nootnoot Dootman',
         created: '2025-05',
+        ended: null,
         openToJoin: true,
-        lookingFor: ['Bass Guitar', 'Voice'],
-        description: 'We are a rock band and we like to perform anime OPS or something.'
+        lookingFor: ['Bass Guitar', 'Voice', 'Electric Guitar', 'Drums'],
+        description: 'We are a rock band and we like to perform anime OPs or something.'
     },
     {
         name: 'LMC Orchestra',
         leader: 'I dunno',
         created: '2024-01',
+        ended: null,
         openToJoin: false,
         lookingFor: [],
         description: 'We play orchestral pieces from video games like XX and YY or from anime like ZZ and WW.'
+    },
+    {
+        name: 'Cool Dudes',
+        leader: 'Me',
+        created: '2023-06',
+        ended: null,
+        openToJoin: false,
+        lookingFor: [],
+        description: 'We are cool dudes, man.'
     },
 ]
 

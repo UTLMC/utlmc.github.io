@@ -139,7 +139,7 @@ function construct(json) {
 }
 
 function injectFAQ() {
-    const block = cssGetId('faq-block');
+    const container = cssGetId('faq-container');
     for (const faq of FAQ) {
         const paragraphs = faq.a.map(x => ({ element: 'p', innerText: x }));
         const json = {
@@ -162,10 +162,105 @@ function injectFAQ() {
                 children: paragraphs.length > 0 ? paragraphs : { element: 'p', innerText: '[TODO]' }
             }]
         };
-        block.appendChild(construct(json));
+        container.appendChild(construct(json));
     }
 }
+const INACTIVE_SUBGROUPS = [];
+function injectSubgroups() {
+    const container = cssGetId('card-subgroup-container');
+    for (const subgroup of SUBGROUPS) {
+        const fields = [{ element: 'dt',
+                          innerText: 'Leader' }, 
+                        { element: 'dd',
+                          innerText: subgroup.leader },
+                        { element: 'dt',
+                          innerText: 'Created' },
+                        { element: 'dd',
+                          innerText: subgroup.created },
+                        { element: 'dt',
+                          innerText: 'Open to Join' },
+                        { element: 'dt',
+                          innerText: subgroup.openToJoin ? 'Yes' : 'No' }];
+        if (subgroup.openToJoin) {
+            fields.push({ element: 'dt',
+                          innerText: 'Looking For' },
+                        { element: 'dd',
+                          innerText: subgroup.lookingFor.join(', ') });
+        }
+
+        const json = {
+            element: 'div',
+            classes: ['card-subgroup'],
+            children: [{
+                element: 'h2',
+                innerText: subgroup.name
+            }, {
+                element: 'dl',
+                classes: ['table-subgroup'],
+                children: fields
+            }, {
+                element: 'p',
+                innerText: subgroup.description
+            }]
+        };
+        if (subgroup.ended === null) {
+            container.appendChild(construct(json));
+        } else {
+            INACTIVE_SUBGROUPS.push(construct(json));
+        }
+    }
+}
+const INACTIVE_MEMBERS = [];
+function injectMembers() {
+    const container = cssGetId('card-member-container');
+    for (const member of MEMBERS) {
+        const json = {
+            element: 'div',
+            classes: ['card-member'],
+            children: [{
+                element: 'div',
+                classes: ['card-member-img']
+            }, {
+                element: 'div',
+                classes: ['card-member-text'],
+                children: [{
+                    element: 'h3',
+                    innerText: member.name
+                }, {
+                    element: 'p',
+                    innerText: member.joined
+                }, {
+                    element: 'span',
+                    classes: ['tag-container'],
+                    children: member.tags.map(x => ({
+                        element: 'span',
+                        classes: ['tag'],
+                        innerText: x
+                    }))
+                }, {
+                    element: 'ul',
+                    classes: ['list-social-media'],
+                    children: Object.entries(member.socialMedia).map(([key, value]) => ({
+                        element: 'li',
+                        classes: [`li-${key}`],
+                        innerText: value
+                    }))
+                }]
+            }]
+        };
+        if (member.left === null) {
+            container.appendChild(construct(json));
+        } else {
+            INACTIVE_MEMBERS.push(construct(json));
+        }
+    }
+}
+
+
+
 injectFAQ();
+injectSubgroups();
+injectMembers();
 
 
 // Github pages CORS test

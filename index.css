@@ -4,6 +4,7 @@
     --section-default-width: min(800px, calc(100vw - 100px));
     --section-wide-width: min(1000px, calc(100vw - 100px));
     --section-vast-width: calc(100vw - 200px);
+    --px: 1px;
 }
 body {
   padding: 0;
@@ -22,6 +23,18 @@ menu {
 }
 table {
     border-collapse: collapse;
+}
+@media screen and (max-width: 625px) {
+    :root {
+        --px: 0.8px;
+    }
+}
+@media screen and (max-width: 450px) {
+    :root {
+        --section-default-width: min(800px, calc(100vw - 50px));
+        --section-wide-width: min(1000px, calc(100vw - 50px));
+        --section-vast-width: calc(100vw - 100px);
+    }
 }
 
 
@@ -44,8 +57,6 @@ header {
     display: block;
     width: 100px;
     height: 100px;
-    min-height: 100px;
-    min-width: 100px;
     transition: 0.2s;
 }
 #main-logo:hover {
@@ -124,16 +135,9 @@ header {
     #header-title p:before {
         content: 'Music Branch of UTSAMA';
     }
-    #contact {
-        align-items: center;
-        width: 90px;
-        min-width: 90px;
-    }
-    #contact-row {
-        flex-wrap: wrap;
-    }
+   
 }
-@media screen and (max-width: 550px) {
+@media screen and (max-width: 625px) {
     #header-title {
         min-width: auto;
     }
@@ -142,6 +146,14 @@ header {
     }
     #header-title p:before {
         content: 'UTSAMA';
+    }
+    #contact {
+        align-items: center;
+        width: 80px;
+        min-width: 80px;
+    }
+    #contact-row {
+        flex-wrap: wrap;
     }
 }
 
@@ -186,6 +198,13 @@ Navigation
     font-weight: 700;
 }
 
+@media screen and (max-width: 625px) {
+    #nav-page menu li {
+        font-size: 20px;
+        padding: 6px 16px;
+    }
+}
+
 
 /*******************************
 Tabs
@@ -199,18 +218,18 @@ Tabs
     align-items: center;
     font-family: "Atkinson Hyperlegible";
     color: rgb(230, 230, 230);
-    font-size: 18px;
+    font-size: calc(18 * var(--px));
     overflow-x: hidden;
 }
 .tab h1, .tab h2 {
     font-family: "Geologica";
-    font-size: 28px;
+    font-size: calc(28 * var(--px));
     color: rgb(250, 250, 250);
     font-weight: 600;
     width: 100%;
 }
 .tab h2 {
-    font-size: 26px;
+    font-size: calc(26 * var(--px));
     font-family: "Figtree";
     color: rgb(255, 255, 55);
 }
@@ -469,9 +488,21 @@ Notifications / Announcements
     background-repeat: no-repeat;
     background-position: 50% 50%;
 }
+.notification a {
+    transition: 0.2s;
+    color: #b66952;
+}
+.notification a:hover {
+    color: rgb(255, 144, 110);
+}
+.notification a:active {
+    color: rgb(151, 48, 17);
+}
+
 @media screen and (max-width: 450px) {
     .notification {
         flex-direction: column;
+        gap: 5px;
     }
 }
 
@@ -515,6 +546,11 @@ Big Announcements and Cards
         display: grid;
         grid-template-columns: none;
         grid-template-rows: 1fr 1fr;
+    }
+}
+@media screen and (max-width: 550px) {
+    .card-wide, .card-normal {
+        padding: 25px;
     }
 }
 
@@ -579,12 +615,12 @@ Collapsible Detail Summary
 details summary {
     background-color: rgb(240, 240, 240);
     color: black;
-    padding: 15px;
+    padding: calc(15 * var(--px));
     list-style: none;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    gap: 15px;
+    gap: calc(15 * var(--px));
     cursor: pointer;
     transition: 0.2s;
     filter: drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.1));
@@ -602,8 +638,8 @@ details summary:active {
 }
 
 details .summary-triangle {
-    min-width: 20px;
-    min-height: 20px;
+    min-width: calc(20 * var(--px));
+    min-height: calc(20 * var(--px));
     background-image: url("assets/icons/arrow.png");
     background-size: contain;
     background-repeat: no-repeat;
@@ -641,7 +677,7 @@ details .summary-body {
 /*******************************
 Subgroup Cards
 *******************************/
-.card-subgroup-container {
+#card-subgroup-container {
     --card-subgroup-padding: 25px;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -665,7 +701,7 @@ Subgroup Cards
     margin: 0;
 }
 .table-subgroup dt {
-    color: rgb(100, 100, 200);
+    color: rgb(133, 133, 222);
     font-style: italic;
     text-wrap: nowrap;
 }
@@ -674,9 +710,17 @@ Subgroup Cards
 }
 
 @media screen and (max-width: 750px) {
-    .card-subgroup-container {
+    #card-subgroup-container {
         display: flex;
         flex-direction: column;
+    }
+}
+@media screen and (max-width: 450px) {
+    #card-subgroup-container {
+        --card-subgroup-padding: 0px;
+    }
+    .card-subgroup {
+        padding: 25px;
     }
 }
 
@@ -684,7 +728,7 @@ Subgroup Cards
 /*******************************
 Member Cards Big
 *******************************/
-.card-member-container {
+#card-member-container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 15px;
@@ -701,6 +745,13 @@ Member Cards Big
     width: 100%;
     aspect-ratio: 1;
 }
+.card-member-text, .card-member-text-small {
+    display: flex;
+    flex-direction: column;
+}
+.card-member-text .tag-container, .card-member-text-small .tag-container {
+    margin: 5px 0px;
+}
 
 .list-social-media {
     list-style-type: none;
@@ -709,14 +760,14 @@ Member Cards Big
 }
 .list-social-media li:before {
     content: '';
-    width: 28px;
-    height: 28px;
+    width: calc(28 * var(--px));
+    height: calc(28 * var(--px));
     background-size: contain;
     background-position: 50% 50%;
     background-repeat: no-repeat;
     display: inline-block;
-    margin-right: 5px;
-    margin-bottom: -8px;
+    margin-right: calc(5 * var(--px));
+    margin-bottom: calc(-8 * var(--px));
 }
 .list-social-media a {
     text-decoration: none;
@@ -738,7 +789,7 @@ Member Cards Big
 .li-personal-website:before { background-image: url('assets/icons/website.png'); filter: invert(1); }
 
 @media screen and (max-width: 750px) {
-    .card-member-container {
+    #card-member-container {
         grid-template-columns: 1fr 1fr;
     }
 }
@@ -752,9 +803,15 @@ Member Cards Big
         gap: 15px;
         align-items: center;
     }
-    .card-member-container {
+    #card-member-container {
         display: flex;
         flex-direction: column;
+    }
+}
+@media screen and (max-width: 350px) {
+    .card-member-img {
+        width: 80px;
+        height: 80px;
     }
 }
 
@@ -762,18 +819,18 @@ Member Cards Big
 /*******************************
 Member Cards Small
 *******************************/
-.table-past-members tr td:nth-child(3n + 3), .table-past-members tr th:nth-child(3) {
-    min-width: 215px;
+#table-past-members tr td:nth-child(3n + 3), #table-past-members tr th:nth-child(3) {
+    min-width: calc(215 * var(--px));
 }
-.table-past-members tr td:nth-child(3n + 2), .table-past-members tr th:nth-child(2) {
+#table-past-members tr td:nth-child(3n + 2), #table-past-members tr th:nth-child(2) {
     text-align: center;
-    width: 150px;
-    min-width: 150px;
+    width: calc(150 * var(--px));
+    min-width: calc(150 * var(--px));
 }
-.table-past-subgroups tr td:nth-child(3n + 2), .table-past-subgroups tr th:nth-child(2) {
+#table-past-subgroups tr td:nth-child(3n + 2), #table-past-subgroups tr th:nth-child(2) {
     text-align: center;
-    width: 150px;
-    min-width: 150px;
+    width: calc(150 * var(--px));
+    min-width: calc(150 * var(--px));
 }
 
 .card-member-small {
@@ -781,11 +838,6 @@ Member Cards Small
     flex-direction: row;
     gap: 10px;
     align-items: center;
-}
-.card-member-text, .card-member-text-small {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
 }
 .card-member-img-small {
     background-color: red;
@@ -817,14 +869,14 @@ Tags
     padding: 0px 10px;
     text-wrap: nowrap;
     font-family: "Reddit Sans Condensed";
-    font-size: 17px;
+    font-size: calc(17 * var(--px));
 }
 
 
 /*******************************
 Card Buttons
 *******************************/
-.button-block {
+.card-button-container {
     display: flex;
     flex-direction: row;
     gap: 25px;
@@ -835,7 +887,7 @@ Card Buttons
     width: 180px;
     height: 180px;
     background-color: rgb(222, 222, 222);
-    font-family: "Atkinson Hyperlegible";
+    font-family: "Reddit Sans Condensed";
     color: black;
     font-size: 20px;
     text-align: center;
@@ -861,6 +913,24 @@ Card Buttons
     background-size: contain;
     background-position: 50% 50%;
     background-repeat: no-repeat;
+}
+@media screen and (max-width: 600px) {
+    .card-button-container {
+        gap: 10px;
+    }
+    .card-button {
+        padding: 0px;
+        width: 110px;
+        height: 110px;
+        font-size: 14px;
+        gap: 5px;
+    }
+    .card-button-icon {
+        width: 30%;
+    }
+    .card-button span {
+        width: 85%;
+    }
 }
 
 
@@ -891,6 +961,8 @@ Personnel Table
 @media screen and (max-width: 500px) {
     #table-personnel {
         grid-template-columns: 2fr 1fr;
+        --table-personnel-padding: 0px;
+        padding: 15px;
     }
 }
 
@@ -926,8 +998,8 @@ Paginated Table
 }
 
 .paginate-arrow {
-    width: 25px;
-    height: 25px;
+    width: calc(25 * var(--px));
+    height: calc(25 * var(--px));
     background-color: rgb(152, 134, 241);
     border-radius: 50%;
     position: relative;
@@ -944,20 +1016,20 @@ Paginated Table
 .paginate-left:before {
     position: absolute;
     content: '';
-    border-top: 7.5px solid transparent;
-    border-bottom: 7.5px solid transparent;
-    border-right: 10px solid white;
-    margin-left: 6px;
-    margin-top: 5px;
+    border-top: calc(7.5 * var(--px)) solid transparent;
+    border-bottom: calc(7.5 * var(--px)) solid transparent;
+    border-right: calc(10 * var(--px)) solid white;
+    margin-left: calc(6 * var(--px));
+    margin-top: calc(5 * var(--px));
 }
 .paginate-right:before {
     position: absolute;
     content: '';
-    border-top: 7.5px solid transparent;
-    border-bottom: 7.5px solid transparent;
-    border-left: 10px solid white;
-    margin-left: 9px;
-    margin-top: 5px;
+    border-top: calc(7.5 * var(--px)) solid transparent;
+    border-bottom: calc(7.5 * var(--px)) solid transparent;
+    border-left: calc(10 * var(--px)) solid white;
+    margin-left: calc(9 * var(--px));
+    margin-top: calc(5 * var(--px));
 }
 
 .table-paginated thead, .table-paginated body {
@@ -973,10 +1045,7 @@ Paginated Table
     background-color: #4049a8;
 }
 .table-paginated th, .table-paginated td {
-    padding: 10px 15px;
-}
-.table-paginated th {
-    padding-top: 12px;
+    padding: calc(10 * var(--px)) calc(15 * var(--px));
 }
 .table-paginated tbody tr {
     color: rgb(200, 200, 222);
@@ -1187,7 +1256,7 @@ Setlist
 }
 .performer-instrument dt {
     color: black;
-    font-size: 20px;
+    font-size: calc(20 * var(--px));
     font-weight: 700;
 }
 .performer-instrument dd {
