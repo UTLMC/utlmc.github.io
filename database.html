@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta chartset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="assets/favicon.ico">
+    <link rel="stylesheet" href="database.css">
+    <script src="database.js" defer></script>
+    <title>UTLMC Database</title>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <hgroup id="sidebar-title">
+                <img src="assets/icons/lmc.png">
+                <h1>Light Music Club</h1>
+            </hgroup>
+            <menu>
+                <li id="nav-home" class="nav-active" onclick="toggleTab(event)">Home</li>
+                <li id="nav-announcements" onclick="toggleTab(event)">Announcements</li>
+                <li id="nav-members" onclick="toggleTab(event)">Members</li>
+                <li id="nav-subgroups" onclick="toggleTab(event)">Subgroups</li>
+                <li id="nav-large-ensemble" onclick="toggleTab(event)">Large Ensemble</li>
+                <li id="nav-small-ensemble" onclick="toggleTab(event)">Small Ensemble</li>
+                <li id="nav-concerts" onclick="toggleTab(event)">Concerts</li>
+                <li id="nav-resources" onclick="toggleTab(event)">Resources</li>
+                <li id="nav-embeds" onclick="toggleTab(event)">Embeds</li>
+                <li id="nav-forms" onclick="toggleTab(event)">Forms</li>
+                <li id="nav-faq" onclick="toggleTab(event)">FAQ</li>
+            </menu>
+        </nav>
+        <div class="container-io">
+            <div class="container-io-button">
+                <label class="io-button" id="download-button" for="download-data">Download Data</label>
+                <input type="button" id="download-data" onclick="downloadData()">
+                <label class="io-button" id="upload-button" for="upload-data">Upload Data</label>
+                <input type="file" id="upload-data" onchange="uploadData()" accept=".js">
+            </div>
+            <p>Nothing currently loaded.</p>
+        </div>
+    </header>
+    <main>
+        <article class="tab-active" id="tab-home">
+            <h1>Home</h1>
+            <p>This website is an editor for uploading LMC data, viewing it, making changes, and exporting it for use in <a href="https://github.com/UTLMC/utlmc.github.io" target="_blank">the LMC website</a>. Data files must be put in the same folder as <span class="code">index.html</span> and be named <span class="code">data.js</span> to be recognized. Please remember to export your changes before exiting or refreshing this page, as they are NOT stored.</p>
+            <p>The editor was created to shield you from interacting with the inner HTML/CSS/Javascript code in the website itself.</p>
+        </article>
+        <article id="tab-announcements">
+            <h1>Announcements</h1>
+        </article>
+        <article id="tab-members">
+            <h1>Members</h1>            
+        </article>
+        <article id="tab-subgroups">
+            <h1>Subgroups</h1>
+        </article>
+        <article id="tab-large-ensemble">
+            <h1>Large Ensemble</h1>
+        </article>
+        <article id="tab-small-ensemble">
+            <h1>Small Ensemble</h1>
+        </article>
+        <article id="tab-concerts">
+            <h1>Concerts</h1>
+        </article>
+        <article id="tab-resources">
+            <h1>Resources</h1>
+        </article>
+        <article id="tab-embeds">
+            <h1>Embeds</h1>            
+        </article>
+        <article id="tab-forms">
+            <h1>Forms</h1>
+        </article>
+        <article id="tab-faq">
+            <h1>Frequently Asked Questions</h1>
+            <ul class="actions-bar">
+                <li class="actions-move-up">Move Up</li>
+                <li class="actions-move-down">Move Down</li>
+                <li class="actions-to-top">To Top</li>
+                <li class="actions-to-bottom">To Bottom</li>
+                <li class="actions-add">Add Row</li>
+                <li class="actions-delete">Delete Row</li>
+                <li class="actions-delete-all">Delete All</li>
+            </ul>
+            <div class="faq-table">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <div class="checkbox" onclick="toggleCheckbox(event)"></div>
+                        <div class="editable-text">
+                            <p contenteditable="plaintext-only">Question</p>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="editable-text">
+                            <p contenteditable="plaintext-only">Answer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <div class="checkbox" onclick="toggleCheckbox(event)"></div>
+                        <div class="editable-text">
+                            <p contenteditable="plaintext-only">Question</p>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="editable-text">
+                            <p contenteditable="plaintext-only">Answer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <div class="checkbox" onclick="toggleCheckbox(event)"></div>
+                        <div class="editable-text">
+                            <p contenteditable="plaintext-only">Question</p>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="editable-text">
+                            <p contenteditable="plaintext-only">Answer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <div class="checkbox" onclick="toggleCheckbox(event)"></div>
+                        <div class="editable-text">
+                            <p contenteditable="plaintext-only">Question</p>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="editable-text">
+                            <p contenteditable="plaintext-only">Answer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <div class="checkbox" onclick="toggleCheckbox(event)"></div>
+                        <div class="editable-text">
+                            <p contenteditable="plaintext-only">Question</p>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="editable-text">
+                            <p contenteditable="plaintext-only">Answer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <div class="checkbox" onclick="toggleCheckbox(event)"></div>
+                        <div class="editable-text">
+                            <p contenteditable="plaintext-only">Question</p>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="editable-text">
+                            <p contenteditable="plaintext-only">Answer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <div class="checkbox" onclick="toggleCheckbox(event)"></div>
+                        <div class="editable-text">
+                            <p contenteditable="plaintext-only">Question</p>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="editable-text">
+                            <p contenteditable="plaintext-only">Answer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <div class="checkbox" onclick="toggleCheckbox(event)"></div>
+                        <div class="editable-text">
+                            <p contenteditable="plaintext-only">Question</p>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="editable-text">
+                            <p contenteditable="plaintext-only">Answer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </main>
+</body>

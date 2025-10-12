@@ -111,6 +111,8 @@ function toggleSongTab(event) {
 
 /*********************************************************************
 Dynamic Content Injection
+- This is performed to shield execs as much as possible from having to edit the HTML/CSS/JS
+- Functions are asynchronous to prevent lag on initial visit
 *********************************************************************/
 function construct(json) {
     const element = document.createElement(json.element);
@@ -137,8 +139,7 @@ function construct(json) {
     }
     return element;
 }
-
-function injectFAQ() {
+async function injectFAQ() {
     const container = cssGetId('faq-container');
     for (const faq of FAQ) {
         const paragraphs = faq.a.map(x => ({ element: 'p', innerText: x }));
@@ -166,7 +167,7 @@ function injectFAQ() {
     }
 }
 const INACTIVE_SUBGROUPS = [];
-function injectSubgroups() {
+async function injectSubgroups() {
     const container = cssGetId('card-subgroup-container');
     for (const subgroup of SUBGROUPS) {
         const fields = [{ element: 'dt',
@@ -179,7 +180,7 @@ function injectSubgroups() {
                           innerText: subgroup.created },
                         { element: 'dt',
                           innerText: 'Open to Join' },
-                        { element: 'dt',
+                        { element: 'dd',
                           innerText: subgroup.openToJoin ? 'Yes' : 'No' }];
         if (subgroup.openToJoin) {
             fields.push({ element: 'dt',
@@ -210,10 +211,17 @@ function injectSubgroups() {
         }
     }
 }
+const TAGS = {};
 const INACTIVE_MEMBERS = [];
-function injectMembers() {
+async function injectMembers() {
     const container = cssGetId('card-member-container');
     for (const member of MEMBERS) {
+        for (const tag of member.tags) {
+            if (!TAGS[tag]) {
+                TAGS[tag] = [];
+            }
+            TAGS[tag].push(member.id);
+        }
         const json = {
             element: 'div',
             classes: ['card-member'],
@@ -243,7 +251,11 @@ function injectMembers() {
                     children: Object.entries(member.socialMedia).map(([key, value]) => ({
                         element: 'li',
                         classes: [`li-${key}`],
-                        innerText: value
+                        innerText: value.length == 1 ? value : {
+                            element: 'a',
+                            attributes: { href: value[1] },
+                            innerText: value[0]
+                        }
                     }))
                 }]
             }]
@@ -255,12 +267,19 @@ function injectMembers() {
         }
     }
 }
-
-
+function injectFormLinks() {
+    for (const [name, link] of Object.entries(FORM_LINKS)) {
+        const id = `icon-${name}`;
+        const element = cssGetId(id).parentElement;
+        element.setAttribute('href', link);
+    }
+}
 
 injectFAQ();
 injectSubgroups();
 injectMembers();
+injectFormLinks();
+
 
 
 // Github pages CORS test
@@ -271,3 +290,43 @@ async function corsTest(link) {
     console.log(body);
 }
 // corsTest('index.html');
+
+
+/*********************************************************************
+Export
+*********************************************************************/
+function stringToCSV(str, title) {
+    const encodedUri = encodeURI("data:text/csv;charset=utf-8," + str);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `${title}.csv`);
+    link.click();
+    link.remove();
+}
+function exportMembers() {
+    const headers = ['id', 'name', 'joined', 'left', 'tags', 'socialMedia'];
+    function formatMember(x) {
+        const socialMedia = [];
+        for (const [key, value] of Object.entries(x.socialMedia)) {
+            socialMedia.push(`${key}: ${value[0]}`);
+        }
+        return [`${x.id}`, x.name, x.joined, x.left, `"${x.tags.join(', ')}"`, `${socialMedia.join(', ')}`].join(',');
+    }
+    const header = headers.join(',');
+    const csv = `${header}\n${MEMBERS.map(formatMember).join('\n')}`;
+    stringToCSV(csv, 'members');    
+}
+function exportPersonnel() {
+    const tags = Object.keys(TAGS).filter(x => !x.includes('Executive')).sort();
+    function formatMember(x) {
+        const row = [x.id, x.name];
+        const xTags = new Set(x.tags);
+        row.push(...tags.map(x => xTags.has(x) ? 'X' : null));
+        return row.join(',')
+    }
+    const header = `id,name,${tags.join(',')}`;
+    const csv = `${header}\n${MEMBERS.map(formatMember).join('\n')}`;
+    stringToCSV(csv, 'personnel');
+}
+// exportMembers();
+// exportTags();

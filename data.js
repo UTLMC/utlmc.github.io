@@ -1,3 +1,7 @@
+const NOTIFICATIONS = [
+
+];
+
 const LARGE_ENSEMBLE = {
     '2025-2026': [
 
@@ -103,6 +107,7 @@ const CONCERTS = [
 
 const MEMBERS = [
     {
+        id: 4,
         name: 'Mike',
         joined: '2023-01',
         left: null,
@@ -117,6 +122,20 @@ const MEMBERS = [
         }
     },
     {
+        id: 3,
+        name: 'Aedhan',
+        joined: '2023-01',
+        left: '2025-09',
+        tags: [
+            'Voice',
+            'Executive (2024)'
+        ],
+        socialMedia: {
+            discord: ['@Amako']
+        }
+    },
+    {
+        id: 2,
         name: 'Sean',
         joined: '2023-01',
         left: null,
@@ -132,6 +151,7 @@ const MEMBERS = [
         }
     },
     {
+        id: 1,
         name: 'Alexis',
         joined: '2023-01',
         left: '2025-09',
@@ -144,18 +164,7 @@ const MEMBERS = [
         }
     },
     {
-        name: 'Aedhan',
-        joined: '2023-01',
-        left: '2025-09',
-        tags: [
-            'Voice',
-            'Executive (2024)'
-        ],
-        socialMedia: {
-            discord: ['@Amako']
-        }
-    },
-    {
+        id: 0,
         name: 'Stone',
         joined: '2023-01',
         left: '2025-09',
@@ -259,3 +268,19 @@ const FAQ = [
         ]
     },
 ]
+
+const FORM_LINKS = {
+    'song-suggestion': '',
+    'song-voting': '',
+    'ideas-and-feedback': '',
+    'small-ensemble-registration': '',
+    'equipment-or-room-requests': '',
+    'online-project-assistance': '',
+    'code-of-conduct': '',
+    'new-member-registration': 'https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform'
+}
+
+const EMBED_LINKS = {
+    'calendar': '',
+
+}

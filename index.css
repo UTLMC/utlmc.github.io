@@ -6,10 +6,10 @@
     --section-vast-width: calc(100vw - 200px);
     --px: 1px;
 }
-body {
-  padding: 0;
-  margin: 0;
-  background-color: #20124dff;
+body {  
+    padding: 0;
+    margin: 0;
+    background-color: #20124dff;
 }
 * {
     box-sizing: border-box;
@@ -358,16 +358,23 @@ Icons
 .icon-announcement { background-image: url("assets/icons/announcement.png"); }
 .icon-alert { background-image: url("assets/icons/alert.png"); }
 
-.icon-song-suggestion { background-image: url("assets/icons/song suggestion.png"); }
-.icon-song-voting { background-image: url("assets/icons/vote.png"); }
-.icon-ideas-and-feedback { background-image: url("assets/icons/feedback.png"); }
+#icon-song-suggestion { background-image: url("assets/icons/song suggestion.png"); }
+#icon-song-voting { background-image: url("assets/icons/vote.png"); }
+#icon-ideas-and-feedback { background-image: url("assets/icons/feedback.png"); }
 
-.icon-small-ensemble-registration { background-image: url("assets/icons/small ensemble form.png"); }
-.icon-equipment-or-room-requests { background-image: url("assets/icons/equipment.png"); }
-.icon-online-project-assistance { background-image: url("assets/icons/video.png"); }
+#icon-small-ensemble-registration { background-image: url("assets/icons/small ensemble form.png"); }
+#icon-equipment-or-room-requests { background-image: url("assets/icons/equipment.png"); }
+#icon-online-project-assistance { background-image: url("assets/icons/video.png"); }
 
-.icon-code-of-conduct { background-image: url("assets/icons/code of conduct.png"); }
-.icon-new-member-registration { background-image: url("assets/icons/new member form.png"); }
+#icon-code-of-conduct { background-image: url("assets/icons/code of conduct.png"); }
+#icon-new-member-registration { background-image: url("assets/icons/new member form.png"); }
+
+#icon-members { background-image: url("assets/icons/members.png"); }
+#icon-personnel { background-image: url("assets/icons/personnel.png"); }
+#icon-subgroups { background-image: url("assets/icons/subgroups.png"); }
+#icon-subgroup-membership { background-image: url("assets/icons/subgroup membership.png"); }
+#icon-repertoire { background-image: url("assets/icons/repertoire.png"); }
+#icon-concerts { background-image: url("assets/icons/concerts.png"); }
 
 .placeholder {
     position: relative;
@@ -786,6 +793,9 @@ Member Cards Big
 .li-bandcamp:before { background-image: url('assets/icons/bandcamp.png'); }
 .li-soundcloud:before { background-image: url('assets/icons/soundcloud.png'); }
 .li-musescore:before { background-image: url('assets/icons/musescore.png'); }
+.li-instagram:before { background-image: url('assets/icons/instagram.png'); }
+.li-spotify:before { background-image: url('assets/icons/spotify.png'); }
+.li-linkedin:before { background-image: url('assets/icons/linkedin.png'); }
 .li-personal-website:before { background-image: url('assets/icons/website.png'); filter: invert(1); }
 
 @media screen and (max-width: 750px) {
@@ -899,6 +909,7 @@ Card Buttons
     gap: 15px;
     transition: 0.2s;
     padding: 15px;
+    cursor: pointer;
 }
 .card-button:hover {
     background-color: white;

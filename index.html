@@ -53,7 +53,7 @@
                 <p>We are a branch of the University of Toronto Student Anime & Manga Association <a href="https://sop.utoronto.ca/group/anime-and-manga-association/" target="_blank">(UTSAMA)</a> based in the St. George Campus. Our club focuses on making music from anime, video games, and J-pop through live concerts and online recording projects. The LMC is a student-led club and we welcome musicians of all skill-levels.</p>
                 <aside class="notification">
                     <div class="icon-alert"></div>
-                    <span>This website is under construction! You may notice some bugs.</span>
+                    <span>This website is currently under construction! You may notice some bugs.</span>
                 </aside>
                 <aside class="notification">
                     <div class="icon-announcement"></div>
@@ -63,6 +63,11 @@
                     <div class="icon-alert"></div>
                     <span>The LMC is opening for its 3rd year this 2025-2026 Fall-Winter term! Our first meeting is at XX:XX pm at XXXX on Sept. XX. Come get a better idea of our club. No instruments needed. Click <a href="https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform" target="_blank">this link</a> to become a member!</span>
                 </aside>
+            </section>
+            <section class="section-default-bg">
+                <iframe loading="lazy" class='embed-calendar' src="https://calendar.google.com/calendar/embed?src=utsama.lightmusicclub%40gmail.com&ctz=America%2FToronto&mode=AGENDA" title="Google calendar" frameborder="0" scrolling="no"></iframe>
+            </section>
+            <section class="section-default">
                 <div class="img-text card-wide">
                     <div class="placeholder"></div>
                     <span>
@@ -71,10 +76,6 @@
                         <p>It’s at XX:XX pm at 252 Bloor Street West (OISE, room XXX)! Tickets are $XX. Pay online or in-person or something.</p>
                     </span>
                 </div>
-                <iframe loading="lazy" class='embed-calendar' src="https://calendar.google.com/calendar/embed?src=utsama.lightmusicclub%40gmail.com&ctz=America%2FToronto" title="Google calendar" frameborder="0" scrolling="no"></iframe>
-            </section>
-            <section class="section-card">
-                
             </section>
             <section class="section-gallery">
                 <h1>Gallery</h1>
@@ -117,6 +118,8 @@
                     <dd>200312</dd>
                     <dt>Electric Guitar</dt>
                     <dd>55</dd>
+                    <dt>Total</dt>
+                    <dd>Dunno</dd>
                 </dl>
             </section>
             <section class="section-default">
@@ -202,6 +205,7 @@
                                         <li class="li-youtube"><a href="https://www.youtube.com/@UTSAMALightMusicClub/" target="_blank">@someone</a></li>
                                         <li class="li-bandcamp">@someone</li>
                                         <li class="li-soundcloud">@someone</li>
+                                        <li class="li-linkedin">@someone</li>
                                     </ul>
                                 </td>
                             </tr>
@@ -226,6 +230,8 @@
                                     <ul class="list-social-media">
                                         <li class="li-musescore">@someone</li>
                                         <li class="li-personal-website">@someone</li>
+                                        <li class="li-instagram">@someone</li>
+                                        <li class="li-spotify">@someone</li>
                                     </ul>
                                 </td>
                             </tr>
@@ -343,16 +349,16 @@
                 <div class="card-normal">
                     <h1>Forms</h1>
                     <div class="card-button-container">
-                        <a class="card-button">
-                            <div class="card-button-icon icon-song-suggestion"></div>
+                        <a class="card-button" target="_blank">
+                            <div class="card-button-icon" id="icon-song-suggestion"></div>
                             <span>Song Suggestion</span>
                         </a>
-                        <a class="card-button">
-                            <div class="card-button-icon icon-song-voting"></div>
+                        <a class="card-button" target="_blank">
+                            <div class="card-button-icon" id="icon-song-voting"></div>
                             <span>Song Voting</span>
                         </a>
-                        <a class="card-button">
-                            <div class="card-button-icon icon-ideas-and-feedback"></div>
+                        <a class="card-button" target="_blank">
+                            <div class="card-button-icon" id="icon-ideas-and-feedback"></div>
                             <span>Ideas and Feedback</span>
                         </a>
                     </div>
@@ -385,16 +391,16 @@
                 <div class="card-normal">
                     <h1>Forms</h1>
                     <div class="card-button-container">
-                        <a class="card-button">
-                            <div class="card-button-icon icon-small-ensemble-registration"></div>
+                        <a class="card-button" target="_blank">
+                            <div class="card-button-icon" id="icon-small-ensemble-registration"></div>
                             <span>Small Ensemble Registration</span>
                         </a>
-                        <a class="card-button">
-                            <div class="card-button-icon icon-equipment-or-room-requests"></div>
+                        <a class="card-button" target="_blank">
+                            <div class="card-button-icon" id="icon-equipment-or-room-requests"></div>
                             <span>Equipment or Room Requests</span>
                         </a>
-                        <a class="card-button">
-                            <div class="card-button-icon icon-online-project-assistance"></div>
+                        <a class="card-button" target="_blank">
+                            <div class="card-button-icon" id="icon-online-project-assistance"></div>
                             <span>Online Project Assistance</span>
                         </a>
                     </div>
@@ -545,13 +551,44 @@
                     </div>
                 </div>
             </section>
+            <section class="section-default">
+                <div class="card-normal">
+                    <h1>CSV Sheets</h1>
+                    <div class="card-button-container">
+                        <a class="card-button" onclick="exportMembers()">
+                            <div class="card-button-icon" id="icon-members"></div>
+                            <span>Members</span>
+                        </a>
+                        <a class="card-button" onclick="exportPersonnel()">
+                            <div class="card-button-icon" id="icon-personnel"></div>
+                            <span>Personnel</span>
+                        </a>
+                        <a class="card-button">
+                            <div class="card-button-icon" id="icon-subgroups"></div>
+                            <span>Subgroups</span>
+                        </a>
+                        <a class="card-button">
+                            <div class="card-button-icon" id="icon-subgroup-membership"></div>
+                            <span>Subgroup Membership</span>
+                        </a>
+                        <a class="card-button">
+                            <div class="card-button-icon" id="icon-repertoire"></div>
+                            <span>Repertoire</span>
+                        </a>
+                        <a class="card-button">
+                            <div class="card-button-icon" id="icon-concerts"></div>
+                            <span>Concerts</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
             <section class="section-default-bg">
                 <h1>Credits</h1>
                 <div class="table-hyperlinks-container">
                     <dl class="table-hyperlinks">
                         <dt>Icons</dt>
                         <dd>
-                            <p>Credit to max.icons, Good Ware, Freepik, Iconjam, Those Icons, Indygo, berkahicon, Prosymbols.</p>
+                            <p>Credit to max.icons, Good Ware, Freepik, Iconjam, Those Icons, Indygo, berkahicon, Prosymbols, Icon mania, Tahsin Tahil, LAFS.</p>
                             <p>
                                 <a href="https://www.flaticon.com/free-icon/announcement_2417835" target="_blank">Announcement</a>,
                                 <a href="https://www.flaticon.com/free-icon/attention_4440466" target="_blank">Alerts</a>, 
@@ -568,7 +605,13 @@
                                 <a href="https://www.flaticon.com/free-icon/treble-clef_5376625" target="_blank">Music Theory</a>,
                                 <a href="https://www.flaticon.com/free-icon/music_15711175" target="_blank">Audio Production</a>,
                                 <a href="https://www.flaticon.com/free-icon/rules_2046915" target="_blank">Code of Conduct</a>,
-                                <a href="https://www.flaticon.com/free-icon/globe_558593" target="_blank">Personal Website</a>
+                                <a href="https://www.flaticon.com/free-icon/globe_558593" target="_blank">Personal Website</a>,
+                                <a href="https://www.flaticon.com/free-icon/membership_1585266" target="_blank">Members</a>,
+                                <a href="https://www.flaticon.com/free-icon/tally-marks_7559894" target="_blank">Personnel</a>,
+                                <a href="https://www.flaticon.com/free-icon/three_11379236" target="_blank">Subgroups</a>,
+                                <a href="https://www.flaticon.com/free-icon/group_3085481" target="_blank">Subgroup Membership</a>,
+                                <a href="https://www.flaticon.com/free-icon/music-sheet_2106971" target="_blank">Repertoire</a>,
+                                <a href="https://www.flaticon.com/free-icon/concert_1598814" target="_blank">Concerts</a>,
                             </p>
                         </dd>
                         <dt>Website</dt>
@@ -616,12 +659,12 @@
                     <h1>Documents</h1>
                     <p>Please read the code of conduct if you're interested in becoming a new member.</p>
                     <div class="card-button-container">
-                        <a class="card-button">
-                            <div class="card-button-icon icon-code-of-conduct"></div>
+                        <a class="card-button" target="_blank">
+                            <div class="card-button-icon" id="icon-code-of-conduct"></div>
                             <span>Code of Conduct</span>
                         </a>
-                        <a class="card-button" href="https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform" target="_blank">
-                            <div class="card-button-icon icon-new-member-registration"></div>
+                        <a class="card-button" target="_blank">
+                            <div class="card-button-icon" id="icon-new-member-registration"></div>
                             <span>New Member Registration</span>
                         </a>
                     </div>
