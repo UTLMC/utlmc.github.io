@@ -203,9 +203,9 @@ menu li:before {
 #nav-large-ensemble:before { background-image: url('assets/icons/song suggestion.png'); }
 #nav-small-ensemble:before { background-image: url('assets/database/small ensemble.png'); }  /* https://www.flaticon.com/free-icon/musical-note_727248 */
 #nav-concerts:before { background-image: url('assets/database/concerts.png'); }  /* https://www.flaticon.com/free-icon/microphone_3472711 */
-#nav-resources:before { background-image: url('assets/database/resources.png'); }  /* https://www.flaticon.com/free-icon/category_7512273 */
+#nav-resource-links:before { background-image: url('assets/database/resources.png'); }  /* https://www.flaticon.com/free-icon/link_154843 */
 #nav-embeds:before { background-image: url('assets/database/embeds.png'); }  /* https://www.flaticon.com/free-icon/external-link_7268615 */
-#nav-forms:before { background-image: url('assets/database/forms.png'); }  /* https://www.flaticon.com/free-icon/form_6868789 */
+#nav-documents:before { background-image: url('assets/database/forms.png'); }  /* https://www.flaticon.com/free-icon/form_6868789 */
 #nav-faq:before { background-image: url('assets/database/faq.png'); }  /* https://www.flaticon.com/free-icon/faq_10042848 */
 
 
@@ -320,8 +320,6 @@ FAQ table
     --faq-item-padding: 10px;
 }
 .faq-question {
-    display: flex;
-    flex-direction: row;
     background-color: #f5f5ef;
     transition: 0.2s;
 }
@@ -439,3 +437,16 @@ Action bar
 .actions-add:before { background-image: url('assets/database/add.png'); }  /* https://www.flaticon.com/free-icon/sheet_14096893 */
 .actions-delete:before { background-image: url('assets/database/delete.png'); }  /* https://www.flaticon.com/free-icon/bin_484662 */
 .actions-delete-all:before { background-image: url('assets/database/delete all.png'); }  /* https://www.flaticon.com/free-icon/broom_9742093 */
+
+
+
+.documents-table {
+    display: grid;
+    grid-template-columns: auto 1fr;
+}
+.documents-table dt {
+    /* background-color:  */
+}
+.documents-table dd {
+    margin-inline-start: 0;
+}

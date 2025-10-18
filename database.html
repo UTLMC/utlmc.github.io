@@ -25,9 +25,9 @@
                 <li id="nav-large-ensemble" onclick="toggleTab(event)">Large Ensemble</li>
                 <li id="nav-small-ensemble" onclick="toggleTab(event)">Small Ensemble</li>
                 <li id="nav-concerts" onclick="toggleTab(event)">Concerts</li>
-                <li id="nav-resources" onclick="toggleTab(event)">Resources</li>
+                <li id="nav-resource-links" onclick="toggleTab(event)">Resource Links</li>
                 <li id="nav-embeds" onclick="toggleTab(event)">Embeds</li>
-                <li id="nav-forms" onclick="toggleTab(event)">Forms</li>
+                <li id="nav-documents" onclick="toggleTab(event)">Documents</li>
                 <li id="nav-faq" onclick="toggleTab(event)">FAQ</li>
             </menu>
         </nav>
@@ -65,14 +65,54 @@
         <article id="tab-concerts">
             <h1>Concerts</h1>
         </article>
-        <article id="tab-resources">
-            <h1>Resources</h1>
+        <article id="tab-resource-links">
+            <h1>Resource Links</h1>
+            <h2>Practice</h2>
+            <dl>
+                <dt class="editable-text"><p contenteditable="plaintext-only">Metronome</p></dt>
+                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
+                <dt class="editable-text"><p contenteditable="plaintext-only">Nahre Sol</p></dt>
+                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
+            </dl>
+
         </article>
         <article id="tab-embeds">
-            <h1>Embeds</h1>            
+            <h1>Embeds</h1>
+            <dl>
+                <dt>Rehearsal Calendar <span>Google Calendar</span></dt>
+                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
+                <dt>Large-Ensemble Rehearsal Location <span>Google Maps</span></dt>
+                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
+                <dt>Large-Ensemble Sheet Music <span>Google Drive</span></dt>
+                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
+                <dt>Small-Ensemble Sheet Music <span>Google Drive</span></dt>
+                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
+                <dt>Sheet Music Archive <span>Google Drive</span></dt>
+                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
+                <dt>Materials <span>Google Drive</span></dt>
+                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
+            </dl>
         </article>
-        <article id="tab-forms">
-            <h1>Forms</h1>
+        <article id="tab-documents">
+            <h1>Documents</h1>
+            <dl class="documents-table">
+                <dt>Song Suggestion</dt>
+                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
+                <dt>Song Voting</dt>
+                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
+                <dt>Ideas and Feedback</dt>
+                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
+                <dt>Small Ensemble Registration</dt>
+                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
+                <dt>Equipment or Room Requests</dt>
+                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
+                <dt>Online Project Assistance</dt>
+                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
+                <dt>New Member Registration</dt>
+                <dd class="editable-text"><p contenteditable="plaintext-only">https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q</p></dd>
+                <dt>Code of Conduct</dt>
+                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
+            </dl>
         </article>
         <article id="tab-faq">
             <h1>Frequently Asked Questions</h1>
@@ -81,113 +121,33 @@
                 <li class="actions-move-down">Move Down</li>
                 <li class="actions-to-top">To Top</li>
                 <li class="actions-to-bottom">To Bottom</li>
-                <li class="actions-add">Add Row</li>
-                <li class="actions-delete">Delete Row</li>
+                <li class="actions-add">Add</li>
+                <li class="actions-delete">Delete</li>
                 <li class="actions-delete-all">Delete All</li>
             </ul>
             <div class="faq-table">
                 <div class="faq-item">
-                    <div class="faq-question">
-                        <div class="checkbox" onclick="toggleCheckbox(event)"></div>
-                        <div class="editable-text">
-                            <p contenteditable="plaintext-only">Question</p>
-                        </div>
+                    <div class="faq-question editable-text">
+                        <p contenteditable="plaintext-only">Question</p>
                     </div>
-                    <div class="faq-answer">
-                        <div class="editable-text">
-                            <p contenteditable="plaintext-only">Answer</p>
-                        </div>
+                    <div class="faq-answer editable-text">
+                        <p contenteditable="plaintext-only">Answer</p>
                     </div>
                 </div>
                 <div class="faq-item">
-                    <div class="faq-question">
-                        <div class="checkbox" onclick="toggleCheckbox(event)"></div>
-                        <div class="editable-text">
-                            <p contenteditable="plaintext-only">Question</p>
-                        </div>
+                    <div class="faq-question editable-text">
+                        <p contenteditable="plaintext-only">Question</p>
                     </div>
-                    <div class="faq-answer">
-                        <div class="editable-text">
-                            <p contenteditable="plaintext-only">Answer</p>
-                        </div>
+                    <div class="faq-answer editable-text">
+                        <p contenteditable="plaintext-only">Answer</p>
                     </div>
                 </div>
                 <div class="faq-item">
-                    <div class="faq-question">
-                        <div class="checkbox" onclick="toggleCheckbox(event)"></div>
-                        <div class="editable-text">
-                            <p contenteditable="plaintext-only">Question</p>
-                        </div>
+                    <div class="faq-question editable-text">
+                        <p contenteditable="plaintext-only">Question</p>
                     </div>
-                    <div class="faq-answer">
-                        <div class="editable-text">
-                            <p contenteditable="plaintext-only">Answer</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <div class="checkbox" onclick="toggleCheckbox(event)"></div>
-                        <div class="editable-text">
-                            <p contenteditable="plaintext-only">Question</p>
-                        </div>
-                    </div>
-                    <div class="faq-answer">
-                        <div class="editable-text">
-                            <p contenteditable="plaintext-only">Answer</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <div class="checkbox" onclick="toggleCheckbox(event)"></div>
-                        <div class="editable-text">
-                            <p contenteditable="plaintext-only">Question</p>
-                        </div>
-                    </div>
-                    <div class="faq-answer">
-                        <div class="editable-text">
-                            <p contenteditable="plaintext-only">Answer</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <div class="checkbox" onclick="toggleCheckbox(event)"></div>
-                        <div class="editable-text">
-                            <p contenteditable="plaintext-only">Question</p>
-                        </div>
-                    </div>
-                    <div class="faq-answer">
-                        <div class="editable-text">
-                            <p contenteditable="plaintext-only">Answer</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <div class="checkbox" onclick="toggleCheckbox(event)"></div>
-                        <div class="editable-text">
-                            <p contenteditable="plaintext-only">Question</p>
-                        </div>
-                    </div>
-                    <div class="faq-answer">
-                        <div class="editable-text">
-                            <p contenteditable="plaintext-only">Answer</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <div class="checkbox" onclick="toggleCheckbox(event)"></div>
-                        <div class="editable-text">
-                            <p contenteditable="plaintext-only">Question</p>
-                        </div>
-                    </div>
-                    <div class="faq-answer">
-                        <div class="editable-text">
-                            <p contenteditable="plaintext-only">Answer</p>
-                        </div>
+                    <div class="faq-answer editable-text">
+                        <p contenteditable="plaintext-only">Answer</p>
                     </div>
                 </div>
             </div>
