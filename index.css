@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Figtree:ital,wght@0,300..900;1,300..900&family=Geologica:wght@100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Reddit+Sans+Condensed:wght@200..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Zilla+Slab:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Figtree:ital,wght@0,300..900;1,300..900&family=Geologica:wght@100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Reddit+Sans+Condensed:wght@200..900&display=swap');
 
 :root {
     --section-default-width: min(800px, calc(100vw - 100px));
@@ -28,6 +28,9 @@ table {
     :root {
         --px: 0.8px;
     }
+    main {
+        padding-top: 84px !important;
+    }
 }
 @media screen and (max-width: 450px) {
     :root {
@@ -47,7 +50,7 @@ header {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    gap: 15px;
+    gap: calc(15 * var(--px));
 }
 #main-logo {
     background-image: url("assets/icons/lmc.png");
@@ -55,8 +58,8 @@ header {
     background-repeat: no-repeat;
     background-position: 50% 50%;
     display: block;
-    width: 100px;
-    height: 100px;
+    width: calc(80 * var(--px));
+    height: calc(80 * var(--px));
     transition: 0.2s;
 }
 #main-logo:hover {
@@ -73,21 +76,20 @@ header {
     min-width: 550px;
 }
 #header-title h1 {
-    font-family: "DM Sans";
-    font-size: 40px;
-    line-height: 50px;
+    font-family: "Host Grotesk";
+    font-size: calc(40 * var(--px));
+    line-height: calc(45 * var(--px));
     text-wrap: nowrap;
-}
-#header-title h1:before {
-    content: 'Light Music Club';
+    user-select: none;
 }
 #header-title p {
-    font-family: "Atkinson Hyperlegible";
-    font-size: 20px;
-    line-height: 20px;
+    font-family: "DM Sans";
+    font-size: calc(20 * var(--px));
+    line-height: calc(25 * var(--px));
 }
 #header-title p:before {
     content: 'University of Toronto Student Anime & Manga Association';
+    text-wrap: nowrap;
 }
 #contact {
     display: flex;
@@ -120,40 +122,163 @@ header {
 #contact-instagram { background-image: url("assets/icons/instagram.png"); }
 #contact-youtube { background-image: url("assets/icons/youtube.png"); }
 
-@media screen and (max-width: 900px) {
-    #header-title {
-        min-width: auto;
+#header-hamburger {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    user-select: none;
+    transition: 0.2s;
+    margin-right: 20px;
+    min-width: 30px;
+}
+.header-hamburger-open {
+    transform: rotate(90deg);
+}
+.header-hamburger-closed {
+    transform: rotate(0deg);
+}
+#header-hamburger rect {
+    transition: 0.2s;
+}
+#header-hamburger:hover rect {
+    fill: #676767;
+}
+#header-hamburger:active rect {
+    transition: 0s;
+    fill: #a79da3;
+}
+
+/* Desktop device */
+@media screen and (width > 900px) {
+    #header-hamburger, #nav-background {
+        display: none;
     }
-    #header-title p:before {
-        content: 'UofT Student Anime & Manga Association';
+    #nav-page-mobile {
+        display: none !important;
     }
 }
-@media screen and (max-width: 700px) {
+/* Mobile device */
+@media screen and (max-width: 900px) {
+    #contact {
+        display: none;
+    }
+    #header-title {
+        flex-grow: 1;
+    }
+    #nav-page-desktop {
+        display: none !important;
+    }
+    /* Move nav bar styling to header bar */
+    header {
+        filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.2));
+        display: flex;
+        align-items: center;
+    }
+    header, #nav-page {
+        position: fixed;
+        width: 100%;
+        z-index: 1;
+        opacity: 0.97;
+    }
+    #nav-page { top: calc(100 * var(--px)); }
+    main { padding-top: 100px; }
+}
+@media screen and (max-width: 750px) {
     #header-title {
         min-width: auto;
     }
     #header-title p:before {
-        content: 'Music Branch of UTSAMA';
+        content: 'UT-SAMA // University of Toronto';
     }
-   
+}
+@media screen and (max-width: 750px) {
+    #header-title {
+        min-width: auto;
+    }
+    #header-title p:before {
+        content: 'UT-SAMA // University of Toronto';
+    }
 }
 @media screen and (max-width: 625px) {
-    #header-title {
-        min-width: auto;
-    }
-    #header-title h1:before {
-        content: 'LMC';
-    }
     #header-title p:before {
-        content: 'UTSAMA';
+        content: 'University of Toronto Student Anime & Manga Association';
     }
-    #contact {
-        align-items: center;
-        width: 80px;
-        min-width: 80px;
+}
+@media screen and (max-width: 605px) {
+    #header-title p:before {
+        content: 'UT-SAMA // University of Toronto';
     }
-    #contact-row {
-        flex-wrap: wrap;
+}
+@media screen and (max-width: 430px) {
+    header {
+        gap: calc(15 * var(--px));
+    }
+    #main-logo {
+        width: calc(70 * var(--px));
+        height: calc(70 * var(--px));
+    }
+    #header-title h1 {
+        font-size: calc(37 * var(--px));
+        line-height: calc(41 * var(--px));
+    }
+    #header-title p {
+        font-size: calc(18 * var(--px));
+        line-height: calc(22 * var(--px));
+    }
+    #header-hamburger {
+        margin-right: 10px;
+    }
+    #nav-page { top: 76px; }
+    main { padding-top: 76px !important; }
+
+}
+@media screen and (max-width: 900px) { #nav-page-mobile li { aspect-ratio: 1.9; } }
+@media screen and (max-width: 850px) { #nav-page-mobile li { aspect-ratio: 1.75; } }
+@media screen and (max-width: 770px) { #nav-page-mobile li { aspect-ratio: 1.5; } }
+@media screen and (max-width: 740px) { #nav-page-mobile li { aspect-ratio: 1.2; } }
+@media screen and (max-width: 570px) { #nav-page-mobile li { aspect-ratio: 1; } }
+@media screen and (max-width: 500px) {
+    #nav-page-mobile li {
+        padding: 5px !important;
+    }
+    #nav-page-mobile li h3 {
+        font-size: calc(18 * var(--px)) !important;
+    }
+    #nav-page-mobile li img {
+        width: 40px !important;
+    }
+}
+@media screen and (max-width: 380px) {
+    header {
+        gap: calc(10 * var(--px));
+    }
+    #main-logo {
+        width: calc(60 * var(--px));
+        height: calc(60 * var(--px));
+    }
+    #header-title h1 {
+        font-size: calc(30 * var(--px));
+        line-height: calc(35 * var(--px));
+    }
+    #header-title p {
+        font-size: calc(15 * var(--px));
+        line-height: calc(20 * var(--px));
+    }
+    #nav-page-mobile {
+        grid-template-columns: 1fr 1fr 1fr !important;
+    }
+    #nav-page { top: 68px; }
+    main { padding-top: 68px !important; }
+}
+@media screen and (max-width: 335px) {
+    #header-hamburger {
+        margin-right: 2px;
+    }
+    .header-hamburger-open {
+        transform: scale(0.8) rotate(90deg);
+    }
+    .header-hamburger-closed {
+        transform: scale(0.8);
     }
 }
 
@@ -162,49 +287,137 @@ header {
 Navigation
 *******************************/
 #nav-page {
-    background-color: #ead1dcff;
+    background-color: #edd2e5;
+    filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.2));
 }
-#nav-page menu {
+#nav-page-desktop {
     display: flex;
     flex-direction: row;
     justify-content: center;
     flex-wrap: wrap;
 }
 #nav-page:not(.nav-active) {
-    color: #595959;
+    color: #351c75;
 }
-#nav-page menu li {
-    font-family: "Reddit Sans Condensed";
-    font-size: 22px;
-    font-weight: 500;
+#nav-page-desktop li h3, #nav-page-mobile li h3 {
+    font-family: "Zilla Slab";
+    font-size: calc(22 * var(--px));
     user-select: none;
     transition: 0.2s;
-    padding: 8px 20px;
-    text-wrap: nowrap;
+    font-weight: 400;
 }
-#nav-page menu li:not(.nav-active) {
+#nav-page-desktop li h3 {
+    text-wrap: nowrap;
+    padding: 8px 20px;
+}
+#nav-page-desktop li:not(.nav-active) {
     cursor: pointer;
 }
-#nav-page menu li:not(.nav-active):hover {
-    background-color: rgba(255, 255, 255, 0.3);
-    color: #777777;
+.nav-repertoire h3.nav-active {
+    cursor: auto;
 }
-#nav-page menu li:not(.nav-active):active {
+#nav-page-desktop li:not(.nav-active) h3:not(.nav-active):hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: #333333;
+}
+#nav-page-desktop li:not(.nav-active) h3:not(.nav-active):active {
     transition: 0s;
     filter: brightness(0.7);
 }
-.nav-active {
-    color: black;
-    font-weight: 700;
+.nav-active, .nav-active h3 {
+    color: #241253;
+    font-weight: 600 !important;
 }
 
-@media screen and (max-width: 625px) {
-    #nav-page menu li {
-        font-size: 20px;
-        padding: 6px 16px;
-    }
+
+#nav-page-desktop .nav-repertoire:hover #nav-repertoire-dropdown {
+    pointer-events: auto;
+    max-height: 85px;
+    transform: scale(1);
+    opacity: 1;
+}
+#nav-repertoire-dropdown {
+    border-top: 5px solid transparent;
+    transition: 0.3s ease;
+    position: absolute;
+    display: flex;
+    opacity: 0;
+    pointer-events: none;
+    max-height: 0px;
+    transform: scale(0.8);
+    overflow: hidden;
+    flex-direction: column;
+    filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.2));
+    transform-origin: 0% 0%;
+}
+#nav-repertoire-dropdown span {
+    transition: 0.2s;
+    padding: 6px 14px;
+    font-family: 'DM Sans';
+    font-size: 17px;
+    background-color: #dfb2df;
+    user-select: none;
+}
+#nav-repertoire-dropdown span.nav-active {
+    cursor: auto;
+}
+#nav-repertoire-dropdown span:first-child {
+    border-radius: 10px 10px 0px 0px;
+}
+#nav-repertoire-dropdown span:last-child {
+    border-radius: 0px 0px 10px 10px;
+}
+#nav-repertoire-dropdown span:not(.nav-active):hover {
+    filter: brightness(1.2);
+}
+#nav-repertoire-dropdown span:not(.nav-active):active {
+    transition: 0s;
+    filter: brightness(0.8) saturate(2);
 }
 
+#nav-page-mobile {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 10px;
+    overflow: hidden;
+    transition: 0.2s;
+    padding: 10px;
+    max-height: 450px;
+}
+.nav-page-mobile-closed {
+    padding: 0 !important;
+    max-height: 0px !important;
+}
+#nav-page-mobile li {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: red;
+    padding: 10px;
+}
+#nav-page-mobile li img {
+    width: 50px;
+    aspect-ratio: 1;
+    background-color: blue;
+}
+#nav-page-mobile li h3 {
+    text-align: center;
+    line-height: calc(20 * var(--px));
+}
+#nav-background {
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    position: absolute;
+    opacity: 0.5;
+    transition: 0.3s;
+}
+.nav-background-closed {
+    opacity: 0 !important;
+    pointer-events: none;
+}
 
 /*******************************
 Tabs
@@ -264,7 +477,6 @@ Hyperlinks
     height: 2px;
     bottom: 1px;
     position: absolute;
-    z-index: -1;
     transition: 0.2s;
 }
 .tab p a:hover:before, .table-hyperlinks a:hover:before {
@@ -434,6 +646,7 @@ article .section-default:last-child, article .section-wide:last-child {
     margin-top: -50px;
 }
 .section-default-bg {
+    z-index: -1; /* Must be below the nav-repertoire dropdown menu */
     width: var(--section-default-width);
     padding: 50px 0px;
     margin-top: 50px;
@@ -630,7 +843,7 @@ details summary {
     gap: calc(15 * var(--px));
     cursor: pointer;
     transition: 0.2s;
-    filter: drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.1));
+    filter: drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.2));
     align-items: center;
 }
 .details-hidden summary {

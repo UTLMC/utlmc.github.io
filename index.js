@@ -12,6 +12,9 @@ function cssGetId(id) {
         throw new Error(`Invalid id ${id}`);
     return result;
 }
+function cssGetClass(className) {
+    return document.getElementsByClassName(className);
+}
 function cssGetFirst(query) {
     const result = document.querySelector(query);
     if (!result)
@@ -24,28 +27,52 @@ function cssGetAll(query) {
         throw new Error(`Invalid query ${query}`);
     return result;
 }
+function cssSetId(id, properties) {
+    const element = cssGetId(id);
+    for (const key in properties) {
+        element.style.setProperty(key, properties[key]);
+    }
+}
 
 
 /*********************************************************************
 Toggleables
 *********************************************************************/
-function toggleTab(event) {
-    // If event is a string, treat it like an ID
-    const element = typeof event === "string" ? cssGetId(event): event.srcElement;
-    for (const tabTitle of element.parentElement.children) {
-        tabTitle.classList.remove('nav-active');
-    }
-    element.classList.add('nav-active');
-
-    const id = `tab-${element.id.slice(element.id.indexOf('-') + 1)}`;
-    for (const tab of cssGetAll('main article')) {
-        if (id === tab.id) {
-            tab.classList.add('tab-active');
+function toggleHeaderHamburger() {
+    const ids = ['header-hamburger', 'nav-background', 'nav-page-mobile'];
+    for (const id of ids) {
+        const element = cssGetId(id);
+        const className = `${id}-closed`;
+        if (element.classList.contains(className)) {
+            element.classList.remove(className)
         } else {
-            tab.classList.remove('tab-active');
+            element.classList.add(className);
         }
     }
-    window.location.hash = id.endsWith('home') ? '#' : `#${id.substring(4)}`;
+}
+function toggleTab(element) {
+    // If input is a string, treat it like an ID
+    if (typeof element === 'string') {
+        element = cssGetClass(element)[0];
+    }
+    const navId = Array.from(element.classList)[0];
+    const desktopNav = cssGetFirst(`#nav-page-desktop .${navId}`);
+    if (desktopNav.classList.contains('nav-active')) {
+        return;
+    }
+
+    let parent = element.parentElement;
+    while (parent.nodeName !== 'MENU') {
+        parent = parent.parentElement;
+    }
+
+    cssGetClass('nav-active')[0].classList.remove('nav-active');
+    desktopNav.classList.add('nav-active');
+    
+    cssGetClass('tab-active')[0].classList.remove('tab-active');
+    const tabId = `tab-${navId.slice(4)}`;
+    cssGetId(tabId).classList.add('tab-active');
+    window.location.hash = tabId.endsWith('home') ? '#' : `#${tabId.slice(4)}`;
 }
 window.addEventListener('DOMContentLoaded', () => {
     const page = window.location.hash.substring(1);

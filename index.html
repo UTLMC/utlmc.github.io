@@ -16,7 +16,7 @@
     <header>
         <a id="main-logo" href="/"></a>
         <hgroup id="header-title">
-            <h1></h1>
+            <h1>Light Music Club</h1>
             <p></p>
         </hgroup>
         <div id="contact">
@@ -27,19 +27,67 @@
                 <a id="contact-youtube" href="https://www.youtube.com/@utsamalightmusicclub" target="_blank"></a>
             </span>
         </div>
+
+        <!-- Hamburger button - shows up for mobile devices -->
+        <svg id="header-hamburger" class="header-hamburger-open header-hamburger-closed" onclick="toggleHeaderHamburger()">
+            <rect x="0" y="3" rx="2" ry="2" width="30" height="4"/>
+            <rect x="0" y="13" rx="2" ry="2" width="30" height="4"/>
+            <rect x="0" y="23" rx="2" ry="2" width="30" height="4"/>
+        </svg>
     </header>
 
-    <!-- Navigation Bar -->
+    <!-- Navigation bar -->
     <nav id='nav-page'>
-        <menu>
-            <li id='nav-home' class="nav-active" onclick="toggleTab(event)">Home</li>
-            <li id='nav-about' onclick="toggleTab(event)">About</li>
-            <li id='nav-rehearsals' onclick="toggleTab(event)">Rehearsals</li>
-            <li id='nav-projects' onclick="toggleTab(event)">Projects</li>
-            <li id='nav-concerts' onclick="toggleTab(event)">Concerts</li>
-            <li id='nav-resources' onclick="toggleTab(event)">Resources</li>
-            <li id='nav-get-involved' onclick="toggleTab(event)">Get Involved</li>
+        <menu id='nav-page-desktop'>
+            <li class='nav-home nav-active' onclick="toggleTab(this)"><h3>Home</h3></li>
+            <li class='nav-about' onclick="toggleTab(this)"><h3>About</h3></li>
+            <li class='nav-repertoire'>
+                <h3 class="nav-repertoire-archive" onclick="toggleTab(this)">Repertoire</h3>
+                <div id="nav-repertoire-dropdown">
+                    <span onclick="toggleTab(this)" class="nav-large-ensemble">Large Ensemble</span>
+                    <span onclick="toggleTab(this)" class="nav-small-ensemble">Small Ensemble</span>
+                </div>
+            </li>
+            <!-- <li class='nav-projects' onclick="toggleTab(this)"><h3>Projects</h3></li> -->
+            <li class='nav-concerts' onclick="toggleTab(this)"><h3>Events</h3></li>
+            <li class='nav-resources' onclick="toggleTab(this)"><h3>Resources</h3></li>
+            <li class='nav-get-involved' onclick="toggleTab(this)"><h3>Get Involved</h3></li>
         </menu>
+        <menu id='nav-page-mobile' class="nav-page-mobile-closed">
+            <li class='nav-home' onclick="toggleTab(this)">
+                <img />
+                <h3>Home</h3>
+            </li>
+            <li class='nav-about' onclick="toggleTab(this)">
+                <img />
+                <h3>About</h3>
+            </li>
+            <li class='nav-large-ensemble' onclick="toggleTab(this)">
+                <img />
+                <h3>Large Ensemble</h3>
+            </li>
+            <li class='nav-small-ensemble' onclick="toggleTab(this)">
+                <img />
+                <h3>Small Ensemble</h3>
+            </li>
+            <li class='nav-repertoire-archive' onclick="toggleTab(this)">
+                <img />
+                <h3>Music Archive</h3>
+            </li>
+            <li class='nav-concerts' onclick="toggleTab(this)">
+                <img />
+                <h3>Events</h3>
+            </li>
+            <li class='nav-resources' onclick="toggleTab(this)">
+                <img />
+                <h3>Resources</h3>
+            </li>
+            <li class='nav-get-involved' onclick="toggleTab(this)">
+                <img />
+                <h3>Get Involved</h3>
+            </li>
+        </menu>
+        <div id="nav-background" class="nav-background-closed" onclick="toggleHeaderHamburger()"></div>
     </nav>
 
     <main>
@@ -274,8 +322,14 @@
             </section>
         </article>
 
-        <!-- Rehearsals Page -->
-        <article id="tab-rehearsals" class="tab">
+        <article id="tab-repertoire-archive" class="tab">
+            <section class="section-default">
+                <h1>Repertoire</h1>
+            </section>
+        </article>
+
+        <!-- Large Ensemble Page -->
+        <article id="tab-large-ensemble" class="tab">
             <section class="section-default-bg">
                 <h1>Concert Rehearsal Sheet Music</h1>
                 <iframe loading="lazy" class='embed-drive-list' src="https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo#list" title="Google drive folder" allowfullscreen></iframe>
@@ -377,8 +431,8 @@
             </section>
         </article>
 
-        <!-- Projects Page -->
-        <article id="tab-projects" class="tab">
+        <!-- Small Ensemble Page -->
+        <article id="tab-small-ensemble" class="tab">
             <section class="section-default-bg">
                 <h1>Project Sheet Music</h1>
                 <iframe loading="lazy" class='embed-drive-list' src="https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo#list" title="Google drive folder" allowfullscreen></iframe>
