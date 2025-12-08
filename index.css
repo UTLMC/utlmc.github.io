@@ -156,6 +156,10 @@ header {
     #nav-page-mobile {
         display: none !important;
     }
+    
+    #nav-page, header {
+        position: relative;
+    }
 }
 /* Mobile device */
 @media screen and (max-width: 900px) {
@@ -177,7 +181,6 @@ header {
     header, #nav-page {
         position: fixed;
         width: 100%;
-        z-index: 1;
         opacity: 0.97;
     }
     #nav-page { top: calc(100 * var(--px)); }
@@ -290,10 +293,7 @@ main {
     position: relative;
     z-index: 1;
 }
-#nav-page {
-    position: relative;
-}
-#nav-page, header {    
+header, #nav-page {
     z-index: 2;
 }
 #nav-page {
@@ -1315,7 +1315,6 @@ Viewer
     position: absolute;
     width: max(calc(var(--section-vast-width) * 0.2), 300px);
     z-index: 2;
-
     display: flex;
     flex-direction: column;
 }
