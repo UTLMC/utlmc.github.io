@@ -28,6 +28,9 @@ table {
     :root {
         --px: 0.8px;
     }
+    main {
+        padding-top: 84px !important;
+    }
 }
 @media screen and (max-width: 450px) {
     :root {
@@ -177,6 +180,8 @@ header {
         z-index: 1;
         opacity: 0.97;
     }
+    #nav-page { top: calc(100 * var(--px)); }
+    main { padding-top: 100px; }
 }
 @media screen and (max-width: 750px) {
     #header-title {
@@ -223,6 +228,8 @@ header {
     #header-hamburger {
         margin-right: 10px;
     }
+    #nav-page { top: 76px; }
+    main { padding-top: 76px !important; }
 }
 @media screen and (max-width: 900px) { #nav-page-mobile li { aspect-ratio: 1.9; } }
 @media screen and (max-width: 850px) { #nav-page-mobile li { aspect-ratio: 1.75; } }
@@ -259,6 +266,8 @@ header {
     #nav-page-mobile {
         grid-template-columns: 1fr 1fr 1fr !important;
     }
+    #nav-page { top: 68px; }
+    main { padding-top: 68px !important; }
 }
 @media screen and (max-width: 335px) {
     #header-hamburger {
@@ -281,8 +290,10 @@ main {
     position: relative;
     z-index: 1;
 }
-#nav-page, header {
+#nav-page {
     position: relative;
+}
+#nav-page, header {    
     z-index: 2;
 }
 #nav-page {
