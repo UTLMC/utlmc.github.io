@@ -196,12 +196,12 @@ menu li:before {
     filter: invert(0.5) sepia(100%) saturate(150%) hue-rotate(-20deg);
     transition: 0.2s;
 }
-#nav-home:before { background-image: url('assets/icons/home.png'); }  /* https://www.flaticon.com/free-icon/home_1946436 */
+#nav-home:before { background-image: url('assets/icons/home.png'); }
 #nav-announcements:before { background-image: url('assets/icons/announcements.png'); }  /* https://www.flaticon.com/free-icon/megaphone_7729329 */
 #nav-members:before { background-image: url('assets/icons/person.png'); }  /* https://www.flaticon.com/free-icon/profile_3106921 */
 #nav-subgroups:before { background-image: url('assets/icons/bigsubgroups.png'); }
 #nav-large-ensemble:before { background-image: url('assets/icons/song suggestion.png'); }
-#nav-small-ensemble:before { background-image: url('assets/icons/small ensemble.png'); }  /* https://www.flaticon.com/free-icon/musical-note_727248 */
+#nav-small-ensemble:before { background-image: url('assets/icons/small ensemble.png'); }
 #nav-concerts:before { background-image: url('assets/icons/mic.png'); }  /* https://www.flaticon.com/free-icon/microphone_3472711 */
 #nav-resource-links:before { background-image: url('assets/icons/resources.png'); }  /* https://www.flaticon.com/free-icon/link_154843 */
 #nav-embeds:before { background-image: url('assets/icons/embeds.png'); }  /* https://www.flaticon.com/free-icon/external-link_7268615 */

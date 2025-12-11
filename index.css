@@ -275,8 +275,8 @@ header {
     #nav-page-mobile {
         grid-template-columns: 1fr 1fr 1fr !important;
     }
-    #nav-page-mobile .nav-home { order: 0; }
-    #nav-page-mobile .nav-about { order: 1; }
+    #nav-page-mobile .nav-about { order: 0; }
+    #nav-page-mobile .nav-home { order: 1; }
     #nav-page-mobile .nav-events { order: 2; }
     #nav-page-mobile .nav-large-ensemble { order: 3; }
     #nav-page-mobile .nav-small-ensemble { order: 4; }
@@ -477,10 +477,10 @@ header, #nav-page {
 .nav-about .nav-page-mobile-icon { background-image: url('assets/icons/subgroup membership.png'); }
 .nav-large-ensemble .nav-page-mobile-icon { background-image: url('assets/icons/song suggestion.png'); filter: invert(1); }
 .nav-small-ensemble .nav-page-mobile-icon { background-image: url('assets/icons/small ensemble.png'); }
-.nav-events .nav-page-mobile-icon { background-image: url('assets/icons/events.png'); }  /* https://www.flaticon.com/free-icon/event_839888 */
+.nav-events .nav-page-mobile-icon { background-image: url('assets/icons/events.png'); }
 .nav-repertoire-archive .nav-page-mobile-icon { background-image: url('assets/icons/music theory.png'); filter: invert(1); }
 .nav-resources .nav-page-mobile-icon { background-image: url('assets/icons/resources shape.png'); }
-.nav-get-involved .nav-page-mobile-icon { background-image: url('assets/icons/get involved.png'); filter: invert(1); }  /* https://www.flaticon.com/free-icon/bubble-chat_2076218 */
+.nav-get-involved .nav-page-mobile-icon { background-image: url('assets/icons/get involved.png'); filter: invert(1); }
 
 #nav-page-mobile li h3 {
     text-align: center;
@@ -558,6 +558,7 @@ Hyperlinks
     bottom: 1px;
     position: absolute;
     transition: 0.2s;
+    z-index: -1;
 }
 .tab p a:hover:before, .table-hyperlinks a:hover:before {
     bottom: 0;
