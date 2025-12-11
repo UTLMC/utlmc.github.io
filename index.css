@@ -155,10 +155,13 @@ header {
     }
     #nav-page-mobile {
         display: none !important;
-    }
-    
+    }   
     #nav-page, header {
         position: relative;
+    }
+    #nav-page {
+        background-color: #e2cbdb;
+        filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.2));
     }
 }
 /* Mobile device */
@@ -183,7 +186,10 @@ header {
         width: 100%;
         opacity: 0.97;
     }
-    #nav-page { top: calc(100 * var(--px)); }
+    #nav-page {
+        top: calc(100 * var(--px));
+        background-color: #e3e3e3;
+    }
     main { padding-top: 100px; }
 }
 @media screen and (max-width: 750px) {
@@ -246,11 +252,11 @@ header {
     #nav-page-mobile li h3 {
         font-size: calc(18 * var(--px)) !important;
     }
-    #nav-page-mobile li img {
-        width: 40px !important;
+    .nav-page-mobile-icon {
+        height: 40px !important;
     }
 }
-@media screen and (max-width: 380px) {
+@media screen and (max-width: 400px) {
     header {
         gap: calc(10 * var(--px));
     }
@@ -269,12 +275,26 @@ header {
     #nav-page-mobile {
         grid-template-columns: 1fr 1fr 1fr !important;
     }
+    #nav-page-mobile .nav-home { order: 0; }
+    #nav-page-mobile .nav-about { order: 1; }
+    #nav-page-mobile .nav-events { order: 2; }
+    #nav-page-mobile .nav-large-ensemble { order: 3; }
+    #nav-page-mobile .nav-small-ensemble { order: 4; }
+    #nav-page-mobile .nav-repertoire-archive { order: 5; }
+    #nav-page-mobile .nav-resources { order: 6; }
+    #nav-page-mobile .nav-get-involved { order: 7; }
+    #nav-page-mobile li h3 {
+        font-size: calc(22 * var(--px)) !important;
+    }
     #nav-page { top: 68px; }
     main { padding-top: 68px !important; }
 }
 @media screen and (max-width: 335px) {
     #header-hamburger {
         margin-right: 2px;
+    }
+    #nav-page-mobile li h3 {
+        font-size: calc(18 * var(--px)) !important;
     }
     .header-hamburger-open {
         transform: scale(0.8) rotate(90deg);
@@ -295,10 +315,6 @@ main {
 }
 header, #nav-page {
     z-index: 2;
-}
-#nav-page {
-    background-color: #e2cbdb;
-    filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.2));
 }
 #nav-page-desktop {
     display: flex;
@@ -339,7 +355,7 @@ header, #nav-page {
     font-weight: 600 !important;
 }
 
-
+/* Desktop dropdown menu */
 #nav-page-desktop .nav-repertoire:hover #nav-repertoire-dropdown {
     pointer-events: auto;
     max-height: 85px;
@@ -385,6 +401,7 @@ header, #nav-page {
     filter: brightness(0.8) saturate(2);
 }
 
+/* Mobile menu */
 #nav-page-mobile {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -404,14 +421,67 @@ header, #nav-page {
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    background-color: red;
     padding: 10px;
+    transition: 0.2s;
 }
-#nav-page-mobile li img {
-    width: 50px;
-    aspect-ratio: 1;
-    background-color: blue;
+
+/* Mobile dropdown rectangles */
+#nav-page-mobile li:hover {
+    filter: brightness(1.1);
 }
+#nav-page-mobile li:active {
+    filter: brightness(1.2) invert(0.2);
+    transition: 0s;
+}
+#nav-page-mobile .nav-home {
+    background-color: #fb4240;
+    color: white;
+}
+#nav-page-mobile .nav-about {
+    background-color: #ffb74c;
+    color: black;
+}
+#nav-page-mobile .nav-large-ensemble {
+    background-color: #462b8d;
+    color: white;
+}
+#nav-page-mobile .nav-small-ensemble {
+    background-color: #3ac4ff;
+    color: black;
+}
+#nav-page-mobile .nav-events {
+    background-color: #ff84ae;
+    color: black;
+}
+#nav-page-mobile .nav-repertoire-archive {
+    background-color: #018e70;
+    color: white;
+}
+#nav-page-mobile .nav-resources {
+    background-color: #00eaad;
+    color: black;
+}
+#nav-page-mobile .nav-get-involved {
+    background-color: #c300a8;
+    color: white;
+}
+
+.nav-page-mobile-icon {
+    height: 50px;
+    aspect-ratio: 1.5;
+    background-size: contain;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+}
+.nav-home .nav-page-mobile-icon { background-image: url('assets/icons/home outline.png'); filter: invert(1); }
+.nav-about .nav-page-mobile-icon { background-image: url('assets/icons/subgroup membership.png'); }
+.nav-large-ensemble .nav-page-mobile-icon { background-image: url('assets/icons/song suggestion.png'); filter: invert(1); }
+.nav-small-ensemble .nav-page-mobile-icon { background-image: url('assets/icons/small ensemble.png'); }
+.nav-events .nav-page-mobile-icon { background-image: url('assets/icons/events.png'); }  /* https://www.flaticon.com/free-icon/event_839888 */
+.nav-repertoire-archive .nav-page-mobile-icon { background-image: url('assets/icons/music theory.png'); filter: invert(1); }
+.nav-resources .nav-page-mobile-icon { background-image: url('assets/icons/resources shape.png'); }
+.nav-get-involved .nav-page-mobile-icon { background-image: url('assets/icons/get involved.png'); filter: invert(1); }  /* https://www.flaticon.com/free-icon/bubble-chat_2076218 */
+
 #nav-page-mobile li h3 {
     text-align: center;
     line-height: calc(20 * var(--px));

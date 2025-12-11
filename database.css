@@ -196,17 +196,17 @@ menu li:before {
     filter: invert(0.5) sepia(100%) saturate(150%) hue-rotate(-20deg);
     transition: 0.2s;
 }
-#nav-home:before { background-image: url('assets/database/home.png'); }  /* https://www.flaticon.com/free-icon/home_1946436 */
-#nav-announcements:before { background-image: url('assets/database/announcements.png'); }  /* https://www.flaticon.com/free-icon/megaphone_7729329 */
-#nav-members:before { background-image: url('assets/database/members.png'); }  /* https://www.flaticon.com/free-icon/profile_3106921 */
-#nav-subgroups:before { background-image: url('assets/database/subgroups.png'); }
+#nav-home:before { background-image: url('assets/icons/home.png'); }  /* https://www.flaticon.com/free-icon/home_1946436 */
+#nav-announcements:before { background-image: url('assets/icons/announcements.png'); }  /* https://www.flaticon.com/free-icon/megaphone_7729329 */
+#nav-members:before { background-image: url('assets/icons/person.png'); }  /* https://www.flaticon.com/free-icon/profile_3106921 */
+#nav-subgroups:before { background-image: url('assets/icons/bigsubgroups.png'); }
 #nav-large-ensemble:before { background-image: url('assets/icons/song suggestion.png'); }
-#nav-small-ensemble:before { background-image: url('assets/database/small ensemble.png'); }  /* https://www.flaticon.com/free-icon/musical-note_727248 */
-#nav-concerts:before { background-image: url('assets/database/concerts.png'); }  /* https://www.flaticon.com/free-icon/microphone_3472711 */
-#nav-resource-links:before { background-image: url('assets/database/resources.png'); }  /* https://www.flaticon.com/free-icon/link_154843 */
-#nav-embeds:before { background-image: url('assets/database/embeds.png'); }  /* https://www.flaticon.com/free-icon/external-link_7268615 */
-#nav-documents:before { background-image: url('assets/database/forms.png'); }  /* https://www.flaticon.com/free-icon/form_6868789 */
-#nav-faq:before { background-image: url('assets/database/faq.png'); }  /* https://www.flaticon.com/free-icon/faq_10042848 */
+#nav-small-ensemble:before { background-image: url('assets/icons/small ensemble.png'); }  /* https://www.flaticon.com/free-icon/musical-note_727248 */
+#nav-concerts:before { background-image: url('assets/icons/mic.png'); }  /* https://www.flaticon.com/free-icon/microphone_3472711 */
+#nav-resource-links:before { background-image: url('assets/icons/resources.png'); }  /* https://www.flaticon.com/free-icon/link_154843 */
+#nav-embeds:before { background-image: url('assets/icons/embeds.png'); }  /* https://www.flaticon.com/free-icon/external-link_7268615 */
+#nav-documents:before { background-image: url('assets/icons/forms.png'); }  /* https://www.flaticon.com/free-icon/form_6868789 */
+#nav-faq:before { background-image: url('assets/icons/faq.png'); }  /* https://www.flaticon.com/free-icon/faq_10042848 */
 
 
 /*******************************
@@ -301,8 +301,8 @@ Input/output
     background-repeat: no-repeat;
     background-position: 50% 50%;
 }
-#download-button:before { background-image: url('assets/database/download.png'); }  /* https://www.flaticon.com/free-icon/download_724933 */
-#upload-button:before { background-image: url('assets/database/upload.png'); }
+#download-button:before { background-image: url('assets/icons/download.png'); }  /* https://www.flaticon.com/free-icon/download_724933 */
+#upload-button:before { background-image: url('assets/icons/upload.png'); }
 
 
 /*******************************
@@ -363,7 +363,6 @@ Checkbox
     width: 18px;
     height: 18px;
     min-width: 18px;
-    /* background-color: red; */
     background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"><rect x="1.5" y="1.5" width="27" height="27" stroke="white" fill="none" stroke-width="3" rx="3" ry="3" /></svg>');
     background-size: contain;
     background-repeat: no-repeat;
@@ -432,11 +431,11 @@ Action bar
     background-repeat: no-repeat;
 }
 .actions-move-down:before, .actions-to-bottom:before { transform: scaleY(-1); }
-.actions-move-up:before, .actions-move-down:before { background-image: url('assets/database/up.svg'); }
-.actions-to-top:before, .actions-to-bottom:before { background-image: url('assets/database/up3.svg'); }
-.actions-add:before { background-image: url('assets/database/add.png'); }  /* https://www.flaticon.com/free-icon/sheet_14096893 */
-.actions-delete:before { background-image: url('assets/database/delete.png'); }  /* https://www.flaticon.com/free-icon/bin_484662 */
-.actions-delete-all:before { background-image: url('assets/database/delete all.png'); }  /* https://www.flaticon.com/free-icon/broom_9742093 */
+.actions-move-up:before, .actions-move-down:before { background-image: url('assets/icons/up.svg'); }
+.actions-to-top:before, .actions-to-bottom:before { background-image: url('assets/icons/up3.svg'); }
+.actions-add:before { background-image: url('assets/icons/add.png'); }  /* https://www.flaticon.com/free-icon/sheet_14096893 */
+.actions-delete:before { background-image: url('assets/icons/delete.png'); }  /* https://www.flaticon.com/free-icon/bin_484662 */
+.actions-delete-all:before { background-image: url('assets/icons/delete all.png'); }  /* https://www.flaticon.com/free-icon/broom_9742093 */
 
 
 
