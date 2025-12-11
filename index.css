@@ -155,7 +155,12 @@ header {
     }
     #nav-page-mobile {
         display: none !important;
-    }   
+    }
+    #nav-page-desktop li h3 {
+        padding: 8px 16px !important;
+    }
+}
+@media screen and (width > 900px) and (max-width: 1500px) {    
     #nav-page, header {
         position: relative;
     }
@@ -163,6 +168,46 @@ header {
         background-color: #e2cbdb;
         filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.2));
     }
+}
+/* Widescreen desktop */
+@media screen and (width > 1500px) {
+    #contact {
+        display: none;
+    }
+    #nav-page {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        top: 0;
+        right: calc(max(0px, calc(100vw - 1500px)) * 0.2);
+        height: 100px;
+    }
+    /* Move nav bar styling to header bar */
+    header {
+        filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.2));
+        align-items: center;
+        justify-content: normal;
+        padding-left: calc(max(0px, calc(100vw - 1500px)) * 0.2);
+    }
+    #nav-page-desktop li h3 {
+        font-size: calc(26 * var(--px)) !important;
+    }
+    #nav-repertoire-dropdown span {
+        font-size: calc(20 * var(--px)) !important;
+    }
+    #nav-page-desktop li:not(.nav-active) h3:not(.nav-active):hover {
+        background-color: rgba(204, 175, 194, 0.3) !important;
+    }
+    #nav-page-desktop li:not(.nav-active) h3:not(.nav-active):active {
+        transition: 0s;
+        filter: brightness(0.7);
+    }
+    #nav-page-desktop .nav-active h3, #nav-page-desktop h3.nav-active {
+        text-decoration: underline;
+        text-underline-offset: 8px;
+        text-decoration-style: dashed;
+        text-decoration-color: #a46ae6;
+    } 
 }
 /* Mobile device */
 @media screen and (max-width: 900px) {
@@ -178,7 +223,6 @@ header {
     /* Move nav bar styling to header bar */
     header {
         filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.2));
-        display: flex;
         align-items: center;
     }
     header, #nav-page {
@@ -316,6 +360,7 @@ main {
 header, #nav-page {
     z-index: 2;
 }
+
 #nav-page-desktop {
     display: flex;
     flex-direction: row;
@@ -380,7 +425,7 @@ header, #nav-page {
     transition: 0.2s;
     padding: 6px 14px;
     font-family: 'DM Sans';
-    font-size: 17px;
+    font-size: calc(17 * var(--px));
     background-color: #dfb2df;
     user-select: none;
 }
