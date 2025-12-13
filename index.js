@@ -79,6 +79,10 @@ window.addEventListener('DOMContentLoaded', () => {
     if (page.length > 0) {
         toggleTab(`nav-${page}`);
     }
+    const mode = screen.width > 700 ? 'MONTH' : 'AGENDA';
+    for (const element of cssGetClass('embed-calendar')) {
+        element.src = `${element.src}&mode=${mode}`;
+    }
 });
 function toggleDetailsSummary(event) {
     event.preventDefault();  // Prevent instant show/hide from <summary>
