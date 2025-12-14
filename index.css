@@ -9,7 +9,7 @@
 body {  
     padding: 0;
     margin: 0;
-    background-color: #20124dff;
+    background-color: #20124d;
 }
 * {
     box-sizing: border-box;
@@ -40,6 +40,62 @@ table {
     }
 }
 
+
+/*******************************
+Footer
+*******************************/
+footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(to bottom, #20124d, #045962);
+    font-family: 'Atkinson Hyperlegible';
+    font-size: calc(16 * var(--px));
+    color: rgb(210, 210, 222);
+    text-align: center;
+    text-wrap: balance;
+    padding-bottom: calc(35 * var(--px));
+    padding-left: calc(25 * var(--px));
+    padding-right: calc(25 * var(--px));
+}
+footer h4 {
+    font-family: 'DM Sans';
+    font-size: calc(22 * var(--px));
+    color: rgb(255, 255, 200)
+}
+footer hr {
+    --linewidth: calc(2 * var(--px));
+    border: none;
+    background-color: rgb(95, 95, 116);
+    height: var(--linewidth);
+    width: 85vw;
+    margin: auto;
+    position: relative;
+    overflow: visible;
+}
+footer hr:after, footer hr:before {
+    --radius: calc(5 * var(--px));
+    content: '';
+    background-color: rgb(95, 95, 116);
+    display: block;
+    width: calc(2 * var(--radius));
+    height: calc(2 * var(--radius));
+    border-radius: 100%;
+    position: absolute;
+    top: calc(-1 * var(--radius) + 0.5 * var(--linewidth));
+}
+footer hr:after {
+    right: calc(-1 * var(--radius));
+}
+footer hr:before {
+    left: calc(-1 * var(--radius));
+}
+#footer-contact-row {
+    margin: calc(20 * var(--px)) 0px calc(10 * var(--px)) 0px;
+}
+footer p:nth-child(4) {
+    margin-bottom: calc(15 * var(--px));
+}
 
 /*******************************
 Header
@@ -91,37 +147,73 @@ header {
     content: 'University of Toronto Student Anime & Manga Association';
     text-wrap: nowrap;
 }
-#contact {
+
+/*******************************
+Header/footer social media icons
+*******************************/
+#header-contact {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
 }
-#contact-row {
+#header-contact-row, #footer-contact-row {
     display: flex;
     flex-direction: row;
     align-items: center;
+    gap: calc(7.5 * var(--px));
 }
-#contact-row a {
-    height: 40px;
-    width: 40px;
+#header-contact-row {
+    margin-top: 7px;
+}
+#header-contact-row a {
+    height: calc(30 * var(--px));
+}
+#footer-contact-row a {
+    height: calc(35 * var(--px));
+}
+#header-contact-row a, #footer-contact-row a {
+    aspect-ratio: 1;
     display: inline-block;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: 50% 50%;
     transition: 0.2s;
 }
-#contact-row a:hover {
+#header-contact-row a:hover {
     filter: opacity(0.7);
 }
-#contact-row a:active {
+#header-contact-row a:active {
     filter: opacity(0.2);
     transition: 0s;
 }
-#contact-gmail { background-image: url("assets/icons/gmail.png"); }
-#contact-discord { background-image: url("assets/icons/discord.png"); }
-#contact-instagram { background-image: url("assets/icons/instagram.png"); }
-#contact-youtube { background-image: url("assets/icons/youtube.png"); }
+.contact-gmail { background-image: url("assets/icons/gmail.svg"); }
+.contact-discord { background-image: url("assets/icons/discord.svg"); }
+.contact-instagram { background-image: url("assets/icons/instagram.svg"); }
+.contact-youtube { background-image: url("assets/icons/youtube.svg"); }
+.contact-linktree { background-image: url("assets/icons/linktree.svg"); }
+.contact-github { background-image: url("assets/icons/github.svg"); }
 
+#header-contact-row .contact-instagram {
+    height: calc(25 * var(--px)) !important;
+}
+
+#footer-contact-row a {
+    background-color: white;
+    filter: saturate(0);
+    background-size: calc(25 * var(--px));
+    border-radius: 100%;
+}
+#footer-contact-row a:hover {
+    filter: saturate(1) invert(0.2) brightness(1.2);
+}
+#footer-contact-row a:active {
+    filter: saturate(1) invert(0.2) brightness(1.4);
+    transition: 0s;
+}
+
+/*******************************
+Header hamburger menu
+*******************************/
 #header-hamburger {
     width: 30px;
     height: 30px;
@@ -171,7 +263,7 @@ header {
 }
 /* Widescreen desktop */
 @media screen and (width > 1500px) {
-    #contact {
+    #header-contact {
         display: none;
     }
     #nav-page {
@@ -211,7 +303,7 @@ header {
 }
 /* Mobile device */
 @media screen and (max-width: 900px) {
-    #contact {
+    #header-contact {
         display: none;
     }
     #header-title {
@@ -1377,6 +1469,7 @@ Paginated Table
 }
 .table th {
     vertical-align: bottom;
+    font-family: 'Host Grotesk';
 }
 .table th, .table td {
     padding: calc(10 * var(--px)) calc(15 * var(--px));
@@ -1423,6 +1516,7 @@ Paginated table column width adjustment
     aspect-ratio: 1;
     background-image: url('assets/icons/embeds.png');
     background-size: contain;
+    background-repeat: no-repeat;
     filter: invert(1);
     transition: 0.2s;
 }
