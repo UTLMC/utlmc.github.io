@@ -15,5 +15,3 @@ If something fails horrendously or you want to request a feature, please contact
 ## Technical Details
 
 The website is implemented as a single `index.html`, which contains every tab (with transitions handled in `index.js`). Text from `data.js` is dynamically rendered into the base HTML by `index.js`. This was done in order to shield non-technical people from having to edit the actual HTML/CSS/JS.
-
-[DESCRIBE THE DATA.JS FORMATTING CONVENTIONS]
