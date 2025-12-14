@@ -375,8 +375,8 @@
                         <div class="summary-body song-container">
                             <nav class="nav-song">
                                 <menu>
-                                    <li class="nav-song-info nav-song-active" onclick="toggleSongTab(event)">Info</li>
-                                    <li class="nav-song-performers" onclick="toggleSongTab(event)">Performers</li>
+                                    <li class="nav-song-info nav-song-active" onclick="toggleSongTab(this)">Info</li>
+                                    <li class="nav-song-performers" onclick="toggleSongTab(this)">Performers</li>
                                 </menu>
                             </nav>
                             <article class="tab-song-info tab-song tab-song-active">
@@ -508,7 +508,7 @@
                     </nav>
                     <div class="viewer">
                         <div class="viewer-header">
-                            <svg class="viewer-hamburger" onclick="toggleViewerSidebar(event)">
+                            <svg class="viewer-hamburger" onclick="toggleViewerSidebar(this)">
                                 <rect x="0" y="2" rx="2" ry="2" width="21" height="4"/>
                                 <rect x="0" y="9" rx="2" ry="2" width="21" height="4"/>
                                 <rect x="0" y="16" rx="2" ry="2" width="21" height="4"/>
@@ -520,9 +520,9 @@
                         </div>
                         <nav class="nav-viewer">
                             <menu>
-                                <li class="nav-viewer-setlist nav-viewer-active" onclick="toggleViewerTab(event)">Setlist</li>
-                                <li class="nav-viewer-video" onclick="toggleViewerTab(event)">Video</li>
-                                <li class="nav-viewer-gallery" onclick="toggleViewerTab(event)">Gallery</li>
+                                <li class="nav-viewer-setlist nav-viewer-active" onclick="toggleViewerTab(this)">Setlist</li>
+                                <li class="nav-viewer-video" onclick="toggleViewerTab(this)">Video</li>
+                                <li class="nav-viewer-gallery" onclick="toggleViewerTab(this)">Gallery</li>
                             </menu>
                         </nav>
                         <article class="tab-viewer-setlist tab-viewer tab-viewer-active">
