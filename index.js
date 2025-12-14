@@ -98,11 +98,7 @@ function toggleDetailsSummary(event) {
         element.classList.add(name);
     }
 }
-function toggleViewerSidebar(event) {
-    let element = event.srcElement;
-    while (element.nodeName !== 'svg') {
-        element = element.parentElement;
-    }
+function toggleViewerSidebar(element) {
     const sidebar = element.parentElement.parentElement.parentElement.children[0];
     if (element.classList.contains('viewer-hamburger-closed')) {
         element.classList.remove('viewer-hamburger-closed');
@@ -112,8 +108,7 @@ function toggleViewerSidebar(event) {
         sidebar.classList.add('viewer-sidebar-closed');
     }
 }
-function genericToggleTab(event, object) {
-    const element = event.srcElement;
+function genericToggleTab(element, object) {
     for (const tabTitle of element.parentElement.children) {
         tabTitle.classList.remove(`nav-${object}-active`);
     }
@@ -132,11 +127,11 @@ function genericToggleTab(event, object) {
         }
     }
 } 
-function toggleViewerTab(event) {
-    return genericToggleTab(event, 'viewer');
+function toggleViewerTab(element) {
+    return genericToggleTab(element, 'viewer');
 }
-function toggleSongTab(event) {
-    return genericToggleTab(event, 'song');
+function toggleSongTab(element) {
+    return genericToggleTab(element, 'song');
 }
 
 
