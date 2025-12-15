@@ -57,6 +57,8 @@ footer {
     padding-bottom: calc(35 * var(--px));
     padding-left: calc(25 * var(--px));
     padding-right: calc(25 * var(--px));
+    position: relative;
+    z-index: 1;
 }
 footer h4 {
     font-family: 'DM Sans';
@@ -91,7 +93,7 @@ footer hr:before {
     left: calc(-1 * var(--radius));
 }
 #footer-contact-row {
-    margin: calc(20 * var(--px)) 0px calc(10 * var(--px)) 0px;
+    margin: calc(35 * var(--px)) 0px calc(15 * var(--px)) 0px;
 }
 footer p:nth-child(4) {
     margin-bottom: calc(15 * var(--px));
@@ -207,7 +209,7 @@ Header/footer social media icons
     filter: saturate(1) invert(0.2) brightness(1.2);
 }
 #footer-contact-row a:active {
-    filter: saturate(1) invert(0.2) brightness(1.4);
+    filter: saturate(1) invert(0.2) brightness(1.4) drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.1));
     transition: 0s;
 }
 

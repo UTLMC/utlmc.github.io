@@ -57,6 +57,8 @@ function toggleTab(element) {
     }
     const navId = Array.from(element.classList)[0];
     const desktopNav = cssGetFirst(`#nav-page-desktop .${navId}`);
+
+    // No effect on clicking the same tab on mobile
     if (desktopNav.classList.contains('nav-active')) {
         return;
     }
@@ -71,8 +73,20 @@ function toggleTab(element) {
     
     cssGetClass('tab-active')[0].classList.remove('tab-active');
     const tabId = `tab-${navId.slice(4)}`;
-    cssGetId(tabId).classList.add('tab-active');
+    const tab = cssGetId(tabId);
+    tab.classList.add('tab-active');
     window.location.hash = tabId.endsWith('home') ? '#' : `#${tabId.slice(4)}`;
+
+    // Match gradient starting colour in <footer> to the active tab's last <section>
+    if (tab.children.length == 0) {
+        return;
+    }
+    const footer = cssGetFirst('footer');
+    if (tab.children[tab.children.length - 1].classList.contains('section-default-bg')) {
+        footer.style.setProperty('background', 'linear-gradient(to bottom, #351c75, #045962)');
+    } else {
+        footer.style.setProperty('background', 'linear-gradient(to bottom, #20124d, #045962)');
+    }
 }
 window.addEventListener('DOMContentLoaded', () => {
     const page = window.location.hash.substring(1);
