@@ -10,7 +10,14 @@ body {
     padding: 0;
     margin: 0;
     background-color: #20124d;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
+main {
+    flex-grow: 1;
+}
+
 * {
     box-sizing: border-box;
 }
