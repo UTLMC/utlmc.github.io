@@ -119,7 +119,7 @@ header {
     gap: calc(15 * var(--px));
 }
 #main-logo {
-    background-image: url("assets/icons/lmc.png");
+    background-image: url("assets/icons/lmc.webp");
     background-size: contain;
     background-repeat: no-repeat;
     background-position: 50% 50%;
