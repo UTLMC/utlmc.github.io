@@ -41,16 +41,15 @@
         <menu id='nav-page-desktop'>
             <li class='nav-home nav-active' onclick="toggleTab(this)"><h3>Home</h3></li>
             <li class='nav-about' onclick="toggleTab(this)"><h3>About</h3></li>
-            <li class='nav-repertoire'>
-                <h3 class="nav-repertoire-archive" onclick="toggleTab(this)">Repertoire</h3>
-                <div id="nav-repertoire-dropdown">
-                    <span onclick="toggleTab(this)" class="nav-large-ensemble">Large Ensemble</span>
-                    <span onclick="toggleTab(this)" class="nav-small-ensemble">Small Ensemble</span>
+            <li class='nav-events' onclick="toggleTab(this)"><h3>Events</h3></li>
+            <li class='nav-rehearsals' onclick="toggleTab(this)"><h3>Rehearsals</h3></li>
+            <li class='nav-resources-section'>
+                <h3 class="nav-resources" onclick="toggleTab(this)">Resources</h3>
+                <div id="nav-resources-dropdown">
+                    <span onclick="toggleTab(this)" class="nav-music-archive">Music Archive</span>
+                    <span onclick="toggleTab(this)" class="nav-gallery">Gallery</span>
                 </div>
             </li>
-            <!-- <li class='nav-projects' onclick="toggleTab(this)"><h3>Projects</h3></li> -->
-            <li class='nav-events' onclick="toggleTab(this)"><h3>Events</h3></li>
-            <li class='nav-resources' onclick="toggleTab(this)"><h3>Resources</h3></li>
             <li class='nav-get-involved' onclick="toggleTab(this)"><h3>Get Involved</h3></li>
         </menu>
         <menu id='nav-page-mobile' class="nav-page-mobile-closed">
@@ -62,25 +61,25 @@
                 <div class="nav-page-mobile-icon"></div>
                 <h3>About</h3>
             </li>
-            <li class='nav-large-ensemble' onclick="toggleTab(this)">
-                <div class="nav-page-mobile-icon"></div>
-                <h3>Large Ensemble</h3>
-            </li>
-            <li class='nav-small-ensemble' onclick="toggleTab(this)">
-                <div class="nav-page-mobile-icon"></div>
-                <h3>Small Ensemble</h3>
-            </li>
             <li class='nav-events' onclick="toggleTab(this)">
                 <div class="nav-page-mobile-icon"></div>
                 <h3>Events</h3>
             </li>
-            <li class='nav-repertoire-archive' onclick="toggleTab(this)">
+            <li class='nav-rehearsals' onclick="toggleTab(this)">
                 <div class="nav-page-mobile-icon"></div>
-                <h3>Music Archive</h3>
+                <h3>Rehearsals</h3>
             </li>
             <li class='nav-resources' onclick="toggleTab(this)">
                 <div class="nav-page-mobile-icon"></div>
                 <h3>Resources</h3>
+            </li>
+            <li class='nav-music-archive' onclick="toggleTab(this)">
+                <div class="nav-page-mobile-icon"></div>
+                <h3>Music Archive</h3>
+            </li>
+            <li class='nav-gallery' onclick="toggleTab(this)">
+                <div class="nav-page-mobile-icon"></div>
+                <h3>Gallery</h3>
             </li>
             <li class='nav-get-involved' onclick="toggleTab(this)">
                 <div class="nav-page-mobile-icon"></div>
@@ -315,7 +314,7 @@
             </section>
         </article>
 
-        <article id="tab-repertoire-archive" class="tab">
+        <article id="tab-music-archive" class="tab">
             <section class="section-default">
                 <h1>Repertoire Archive</h1>
                 <p>The LMC repertoire features two types of projects. Large ensemble projects involve many players and varied instrument groups; owing to their scope and complexity, they are decided by popular vote before the term starts and centrally coordinated by the club. Small ensemble projects are self-initiated and lead by motivated LMC members who coordinate song-writing and rehearsals (or recordings) with club support.</p>
@@ -347,7 +346,15 @@
                                 <td>Game 1</td>
                                 <td>Bro 2, Bro 3, Bro 4</td>
                                 <td><span class="tag">Summer 2020</span></td>
-                                <td><a href="#"></a></td>
+                                <td><a href="#"></a><a href="#"></a></td>
+                            </tr>
+                            <tr>
+                                <td>Song With a Very Long Title</td>
+                                <td>Dude with an extremely long name</td>
+                                <td>Series with a very long name</td>
+                                <td>Arranger with a very long name</td>
+                                <td><span class="tag">Summer 2020</span></td>
+                                <td><a href="#"></a><a href="#"></a><a href="#"></a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -355,10 +362,17 @@
             </section>
         </article>
 
-        <!-- Large Ensemble Page -->
-        <article id="tab-large-ensemble" class="tab">
+        <!-- Gallery Page -->
+        <article id="tab-gallery" class="tab">
+            <section class="section-default">
+                <h1>Gallery</h1>
+            </section>
+        </article>
+
+        <!-- Rehearsals Page -->
+        <article id="tab-rehearsals" class="tab">
             <section class="section-default-bg">
-                <h1>Concert Rehearsal Sheet Music</h1>
+                <h1>Sheet Music</h1>
                 <iframe loading="lazy" class='embed-drive-list' src="https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo#list" title="Google drive folder" allowfullscreen></iframe>
             </section>
             <section class="section-default">
@@ -455,37 +469,6 @@
                     </div>
                     <iframe class="embed-maps" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1443.0128620829312!2d-79.39986402188697!3d43.66843482050036!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x882b35e3e82fb861%3A0xef695b0943f77b70!2sOISE%20Library!5e0!3m2!1sen!2sca!4v1756700291348!5m2!1sen!2sca" allowfullscreen="" loading="lazy"></iframe>
                 </div> 
-            </section>
-        </article>
-
-        <!-- Small Ensemble Page -->
-        <article id="tab-small-ensemble" class="tab">
-            <section class="section-default-bg">
-                <h1>Project Sheet Music</h1>
-                <iframe loading="lazy" class='embed-drive-list' src="https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo#list" title="Google drive folder" allowfullscreen></iframe>
-            </section>
-            <section class="section-default">
-                <h1>Projects</h1>
-                <p>Something</p>
-            </section>
-            <section class="section-default">
-                <div class="card-normal">
-                    <h1>Forms</h1>
-                    <div class="card-button-container">
-                        <a class="card-button" target="_blank">
-                            <div class="card-button-icon" id="icon-small-ensemble-registration"></div>
-                            <span>Small Ensemble Registration</span>
-                        </a>
-                        <a class="card-button" target="_blank">
-                            <div class="card-button-icon" id="icon-equipment-or-room-requests"></div>
-                            <span>Equipment or Room Requests</span>
-                        </a>
-                        <a class="card-button" target="_blank">
-                            <div class="card-button-icon" id="icon-online-project-assistance"></div>
-                            <span>Online Project Assistance</span>
-                        </a>
-                    </div>
-                </div>
             </section>
         </article>
 
@@ -669,7 +652,7 @@
                     <dl class="table-hyperlinks">
                         <dt>Icons</dt>
                         <dd>
-                            <p>Credit to max.icons, Good Ware, Freepik, Iconjam, Those Icons, Indygo, berkahicon, Prosymbols, Icon mania, Tahsin Tahil, LAFS, Kiranshastry, Pixel perfect, Viglino</p>
+                            <p>Credit to max.icons, Good Ware, Freepik, Iconjam, Those Icons, Indygo, berkahicon, Prosymbols, Icon mania, Tahsin Tahil, LAFS, Kiranshastry, Pixel perfect, Viglino, Superndre</p>
                             <p>
                                 <a href="https://www.flaticon.com/free-icon/announcement_2417835" target="_blank">Announcement</a>,
                                 <a href="https://www.flaticon.com/free-icon/attention_4440466" target="_blank">Alerts</a>, 
@@ -697,6 +680,7 @@
                                 <a href="https://www.flaticon.com/free-icon/bubble-chat_2076218" target="_blank">Get Involved</a>,
                                 <a href="https://www.flaticon.com/free-icon/home_1946436" target="_blank">Home</a>,
                                 <a href="https://www.flaticon.com/free-icon/musical-note_727248" target="_blank">Small Ensemble</a>,
+                                <a href="https://www.flaticon.com/free-icon/image_6499527" target="_blank">Gallery</a>
                             </p>
                         </dd>
                         <dt>Website</dt>

@@ -294,7 +294,7 @@ Header hamburger menu
     #nav-page-desktop li h3 {
         font-size: calc(26 * var(--px)) !important;
     }
-    #nav-repertoire-dropdown span {
+    #nav-resources-dropdown span {
         font-size: calc(20 * var(--px)) !important;
     }
     #nav-page-desktop li:not(.nav-active) h3:not(.nav-active):hover {
@@ -421,13 +421,19 @@ Header hamburger menu
     #nav-page-mobile {
         grid-template-columns: 1fr 1fr 1fr !important;
     }
-    #nav-page-mobile .nav-about { order: 0; }
-    #nav-page-mobile .nav-home { order: 1; }
+    #nav-page-mobile .nav-about { order: 1; background-color: #fb4240 !important; }
+    #nav-page-mobile .nav-about h3 { filter: invert(1); }
+    #nav-page-mobile .nav-about .nav-page-mobile-icon { filter: invert(1); }
+
+    #nav-page-mobile .nav-home { order: 0; background-color: #ffb74c !important; }
+    #nav-page-mobile .nav-home h3 { filter: invert(1); }
+    #nav-page-mobile .nav-home .nav-page-mobile-icon { filter: invert(0); }
+    
     #nav-page-mobile .nav-events { order: 2; }
-    #nav-page-mobile .nav-large-ensemble { order: 3; }
-    #nav-page-mobile .nav-small-ensemble { order: 4; }
-    #nav-page-mobile .nav-repertoire-archive { order: 5; }
-    #nav-page-mobile .nav-resources { order: 6; }
+    #nav-page-mobile .nav-rehearsals { order: 3; }
+    #nav-page-mobile .nav-resources { order: 4; }
+    #nav-page-mobile .nav-music-archive { order: 5; }
+    #nav-page-mobile .nav-gallery { order: 6; }
     #nav-page-mobile .nav-get-involved { order: 7; }
     #nav-page-mobile li h3 {
         font-size: calc(22 * var(--px)) !important;
@@ -486,7 +492,7 @@ header, #nav-page {
 #nav-page-desktop li:not(.nav-active) {
     cursor: pointer;
 }
-.nav-repertoire h3.nav-active {
+.nav-resources-section h3.nav-active {
     cursor: auto;
 }
 #nav-page-desktop li:not(.nav-active) h3:not(.nav-active):hover {
@@ -503,13 +509,13 @@ header, #nav-page {
 }
 
 /* Desktop dropdown menu */
-#nav-page-desktop .nav-repertoire:hover #nav-repertoire-dropdown {
+#nav-page-desktop .nav-resources-section:hover #nav-resources-dropdown {
     pointer-events: auto;
     max-height: 85px;
     transform: scale(1);
     opacity: 1;
 }
-#nav-repertoire-dropdown {
+#nav-resources-dropdown {
     border-top: 5px solid transparent;
     transition: 0.3s ease;
     position: absolute;
@@ -523,7 +529,7 @@ header, #nav-page {
     filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.2));
     transform-origin: 0% 0%;
 }
-#nav-repertoire-dropdown span {
+#nav-resources-dropdown span {
     transition: 0.2s;
     padding: 6px 14px;
     font-family: 'DM Sans';
@@ -531,19 +537,19 @@ header, #nav-page {
     background-color: #dfb2df;
     user-select: none;
 }
-#nav-repertoire-dropdown span.nav-active {
+#nav-resources-dropdown span.nav-active {
     cursor: auto;
 }
-#nav-repertoire-dropdown span:first-child {
+#nav-resources-dropdown span:first-child {
     border-radius: 10px 10px 0px 0px;
 }
-#nav-repertoire-dropdown span:last-child {
+#nav-resources-dropdown span:last-child {
     border-radius: 0px 0px 10px 10px;
 }
-#nav-repertoire-dropdown span:not(.nav-active):hover {
+#nav-resources-dropdown span:not(.nav-active):hover {
     filter: brightness(1.2);
 }
-#nav-repertoire-dropdown span:not(.nav-active):active {
+#nav-resources-dropdown span:not(.nav-active):active {
     transition: 0s;
     filter: brightness(0.8) saturate(2);
 }
@@ -592,23 +598,23 @@ header, #nav-page {
     background-color: #ffb74c;
     color: black;
 }
-#nav-page-mobile .nav-large-ensemble {
+#nav-page-mobile .nav-events {
     background-color: #462b8d;
     color: white;
 }
-#nav-page-mobile .nav-small-ensemble {
+#nav-page-mobile .nav-rehearsals {
     background-color: #3ac4ff;
     color: black;
 }
-#nav-page-mobile .nav-events {
+#nav-page-mobile .nav-resources {
     background-color: #ff84ae;
     color: black;
 }
-#nav-page-mobile .nav-repertoire-archive {
+#nav-page-mobile .nav-music-archive {
     background-color: #018e70;
     color: white;
 }
-#nav-page-mobile .nav-resources {
+#nav-page-mobile .nav-gallery {
     background-color: #00eaad;
     color: black;
 }
@@ -625,11 +631,11 @@ header, #nav-page {
 }
 .nav-home .nav-page-mobile-icon { background-image: url('assets/icons/home outline.svg'); filter: invert(1); }
 .nav-about .nav-page-mobile-icon { background-image: url('assets/icons/subgroup membership.svg'); }
-.nav-large-ensemble .nav-page-mobile-icon { background-image: url('assets/icons/song suggestion.svg'); filter: invert(1); }
-.nav-small-ensemble .nav-page-mobile-icon { background-image: url('assets/icons/small ensemble.svg'); }
-.nav-events .nav-page-mobile-icon { background-image: url('assets/icons/events.svg'); }
-.nav-repertoire-archive .nav-page-mobile-icon { background-image: url('assets/icons/music theory.svg'); filter: invert(1); }
+.nav-events .nav-page-mobile-icon { background-image: url('assets/icons/events.svg'); filter: invert(1); }
+.nav-rehearsals .nav-page-mobile-icon { background-image: url('assets/icons/song suggestion.svg'); }
 .nav-resources .nav-page-mobile-icon { background-image: url('assets/icons/resources shape.svg'); }
+.nav-music-archive .nav-page-mobile-icon { background-image: url('assets/icons/music theory.svg'); filter: invert(1); }
+.nav-gallery .nav-page-mobile-icon { background-image: url('assets/icons/gallery.svg'); }
 .nav-get-involved .nav-page-mobile-icon { background-image: url('assets/icons/get involved.svg'); filter: invert(1); }
 
 /* Dark overlay when hamburger menu is open */
