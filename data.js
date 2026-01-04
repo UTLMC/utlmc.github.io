@@ -273,9 +273,9 @@ const FORM_LINKS = {
     'song-suggestion': '',
     'song-voting': '',
     'ideas-and-feedback': '',
-    'small-ensemble-registration': '',
-    'equipment-or-room-requests': '',
-    'online-project-assistance': '',
+    // 'small-ensemble-registration': '',
+    // 'equipment-or-room-requests': '',
+    // 'online-project-assistance': '',
     'code-of-conduct': '',
     'new-member-registration': 'https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform'
 }
