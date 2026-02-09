@@ -539,7 +539,7 @@ header, #nav-page {
 }
 #nav-resources-dropdown span.nav-active {
     cursor: auto;
-    background-image: linear-gradient(to right, #dfb2df, #e0b1e0, #f5d5fa);
+    background-image: linear-gradient(to right, #ffa5d6, #e594e5, #f5d5fa);
 }
 #nav-resources-dropdown span:first-child {
     border-radius: 10px 10px 0px 0px;
@@ -889,7 +889,7 @@ article .section-default:last-child, article .section-wide:last-child {
     gap: 15px;
 }
 .section-banner {
-    background-image: linear-gradient(130deg, #674ea7ff, rgb(57, 66, 107));
+    background-image: linear-gradient(130deg, #674ea7ff, #323c67);
     width: 100%;
     height: 50vh;
     background-size: cover;
@@ -1378,6 +1378,83 @@ Card Buttons
 /*******************************
 Personnel Table
 *******************************/
+/* New design */
+#table-personnel {
+    --table-icon--width: calc(100 * var(--px));
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    list-style-type: none;
+    padding: 0;
+}
+#table-personnel li {
+    width: var(--table-icon--width);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    position: relative;
+}
+.personnel-title {
+    font-variant: small-caps;
+    font-size-adjust: 0.45;
+    font-weight: 700;
+    font-size: calc(18 * var(--px));
+    line-height: calc(16 * var(--px));
+    font-family: 'DM Sans';
+    position: absolute;
+    top: 0;
+    padding: calc(7 * var(--px));
+    text-shadow: 0px 0px 5px #351c75;
+}
+.personnel-count {
+    width: var(--table-icon--width);
+    aspect-ratio: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 7px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding-top: 5px;
+    padding-left: 5px;
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: center;
+    font-size: calc(20 * var(--px));
+    transition: 0.2s;
+}
+#table-personnel li:hover .personnel-count {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+.personnel-count span {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 2px 4px;
+    border-radius: 10px;
+}
+.personnel-flute .personnel-count { background-image: url('assets/icons/flute.png'); }
+.personnel-clarinet .personnel-count { background-image: url('assets/icons/clarinet.png'); }
+.personnel-oboe .personnel-count { background-image: url('assets/icons/oboe.png'); }
+.personnel-bassoon .personnel-count { background-image: url('assets/icons/bassoon.png'); }
+.personnel-saxophone .personnel-count { background-image: url('assets/icons/saxophone.png'); }
+.personnel-trumpet .personnel-count { background-image: url('assets/icons/trumpet.png'); }
+.personnel-french-horn .personnel-count { background-image: url('assets/icons/french horn.png'); }
+.personnel-trombone .personnel-count { background-image: url('assets/icons/trombone.png'); }
+.personnel-tuba .personnel-count { background-image: url('assets/icons/tuba.png'); }
+.personnel-violin .personnel-count, .personnel-viola .personnel-count {
+    background-image: url('assets/icons/violin.png');
+    background-size: 70%;
+}
+.personnel-cello .personnel-count, .personnel-double-bass .personnel-count { background-image: url('assets/icons/cello.png'); }
+.personnel-acoustic-guitar .personnel-count { background-image: url('assets/icons/acoustic guitar.png'); }
+.personnel-electric-guitar .personnel-count { background-image: url('assets/icons/electric guitar.png'); }
+.personnel-bass-guitar .personnel-count { background-image: url('assets/icons/bass guitar.png'); }
+.personnel-piano .personnel-count { background-image: url('assets/icons/piano.png'); }
+.personnel-drums .personnel-count { background-image: url('assets/icons/drums.png'); }
+.personnel-voice .personnel-count { background-image: url('assets/icons/voice.png'); }
+
+/* Old design */
+/*
 #table-personnel {
     --table-personnel-padding: 15px;
     display: grid;
@@ -1406,6 +1483,7 @@ Personnel Table
         padding: 15px;
     }
 }
+*/
 
 
 /*******************************
