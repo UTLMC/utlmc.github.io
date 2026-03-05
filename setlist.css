@@ -517,6 +517,7 @@ Setlist item
     display: none;
     cursor: auto;
     pointer-events: none;
+    z-index: 1;
 }
 .setlist-caption-active {
     display: grid !important;
@@ -541,9 +542,9 @@ Setlist item
         gap: 15px;
     }
     .setlist-right {
-        flex-direction: row;
         align-items: center;
         gap: 10px;
+        flex-direction: row;
     }
     .setlist-right p {
         background-color: rgba(0, 0, 0, 0.1);
@@ -558,7 +559,7 @@ Setlist item
         text-align: right;
     }
     .setlist-item:nth-of-type(even) .setlist-right {
-        justify-content: flex-end;
+        flex-direction: row-reverse;
     }
 }
 @media screen and (max-width: 550px) {
