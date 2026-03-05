@@ -359,7 +359,8 @@ async function constructSetlist() {
         }] : [];
 
         const performers = [];
-        for (const [instrument, names] of Object.entries(song.performers)) {
+        const sorted = Object.entries(song.performers).sort((a, b) => a[0].localeCompare(b[0]))
+        for (const [instrument, names] of sorted) {
             for (const name of names) {
                 performers.push({
                     element: 'dt',
