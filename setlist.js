@@ -82,14 +82,22 @@ const SONGS = [
         performers: {
             'Vocals': ['Emma'],
             'Piano': ['Mike'],
-            'Electric Guitar': ['Kae', 'Sophia'],
-            'Bass Guitar': ['Emmett'],
+            'Electric Guitar': ['Kae', 'Emmett'],
+            'Bass Guitar': ['Sophia'],
             'Drums': ['Julian']
         }
     },
     {
-        name: 'Build Me Up Buttercup',
-        by: 'The Foundations',
+        name: 'September',
+        by: 'Earth, Wind & Fire',
+        group: 'New Resonance Choir',
+        performers: {
+            'Vocals': ['Alice', 'Emily', 'Fiona', 'Nicholas', 'Gabriel', 'David', 'Bernice', 'Juliana', 'Emiri']
+        }
+    },
+    {
+        name: 'Somewhere Only We Know',
+        by: 'Keane',
         group: 'New Resonance Choir',
         performers: {
             'Vocals': ['Alice', 'Emily', 'Fiona', 'Nicholas', 'Gabriel', 'David', 'Bernice', 'Juliana', 'Emiri']
@@ -98,6 +106,7 @@ const SONGS = [
     {
         name: 'What It Sounds Like',
         by: 'HUNTR/X',
+        from: 'KPop Demon Hunters',
         group: 'New Resonance Choir',
         performers: {
             'Vocals': ['Alice', 'Emily', 'Fiona']
@@ -207,7 +216,7 @@ const SONGS = [
             'Violin': ['Lui', 'Ze'],
             'Clarinet': ['Rylen']
         },
-        description: "Composed by the creator of Undertale and Deltarune. Homestuck is an old interactive webcomic that you can read for free <a href='https://homestuck.com/' target='_blank'>here</a>."
+        description: "Composed by the creator of Undertale and Deltarune. Homestuck is an interactive webcomic that you can read for free <a href='https://homestuck.com/' target='_blank'>here</a>."
     },
     {
         name: 'Yuri on Ice',
@@ -266,14 +275,17 @@ const SONGS = [
             'Electric Guitar': ['Mike'],
             'Bass Guitar': ['Emmett'],
             'Drums': ['Julian']
-        }
+        },
+        description: "If you're already a ghost, why not haunt the place?"
     }
 ]
 function mergePerformers(arr) {
     const sets = arr.reduce((acc, o) => {
         for (const [k, vals] of Object.entries(o)) {
             const set = acc[k] ??= new Set();
-            for (const v of vals) set.add(v);
+            for (const v of vals) {
+                set.add(v);
+            }
         }
         return acc;
     }, {});
@@ -352,9 +364,9 @@ function construct(json) {
 
 async function constructPerformers() {
     const PERFORMERS = mergePerformers(SONGS.map(x => x.performers));
-    const NEW_RESONANCE_CHOIR = SONGS.find(x => x.name === 'Build Me Up Buttercup').performers.Vocals;
-    removePerformers(PERFORMERS, NEW_RESONANCE_CHOIR);
-    PERFORMERS['New Resonance Choir'] = NEW_RESONANCE_CHOIR;
+    const choir = Array.from(new Set(SONGS.filter(x => x.group === 'New Resonance Choir').map(x => x.performers.Vocals).flat()));
+    removePerformers(PERFORMERS, choir);
+    PERFORMERS['New Resonance Choir'] = choir;
 
     const table = cssGetId('credits-table');
     const sorted = Object.entries(PERFORMERS).sort((a, b) => a[0].localeCompare(b[0]));
