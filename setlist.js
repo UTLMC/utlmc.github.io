@@ -147,8 +147,8 @@ const SONGS = [
         by: 'Mili',
         from: 'Library of Ruina',
         performers: {
-            'Vocals': ['Michelle'],
-            'Piano': ['Kadin']
+            'Vocals': ['Kadin'],
+            'Piano': ['Michelle']
         }
     },
     {
@@ -156,8 +156,8 @@ const SONGS = [
         by: 'Mili',
         from: 'Library of Ruina',
         performers: {
-            'Vocals': ['Michelle'],
-            'Piano': ['Kadin']
+            'Vocals': ['Kadin'],
+            'Piano': ['Michelle']
         },
         description: "Exhausted? Tired. Want rest? Hungry. Want out?"
     },
@@ -200,7 +200,7 @@ const SONGS = [
         group: '39!',
         performers: {
             'Vocals': ['Zachary'],
-            'Piano': ['Adrian'],
+            'Piano': ['Raekye'],
             'Electric Guitar': ['Will'],
             'Bass Guitar': ['Sophia'],
             'Drums': ['Jenna']
@@ -224,13 +224,13 @@ const SONGS = [
         from: 'Yuri!!! on ICE',
         arranger: 'Richard',
         performers: {
-            'Piano': ['Adrian'],
+            'Piano': ['Raekye'],
             'Drums': ['Julian'],
             'Violin': ['Lui'],
             'Flute': ['Richard'],
             'Clarinet': ['Rylen']
         },
-        description: "Featuring our amazing pianist Adrian 👍"
+        description: "Featuring our amazing pianist Raekye 👍"
     },
     {
         name: `Don't Say "Lazy"`,

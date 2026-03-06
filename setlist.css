@@ -596,7 +596,7 @@ Setlist item
     }
     .setlist-right p {
         font-size: 14px;
-        padding: 5px;
+        padding: 5px 10px;
     }
     .setlist-right dl {
         top: 15px;
