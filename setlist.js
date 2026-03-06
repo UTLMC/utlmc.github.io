@@ -204,7 +204,8 @@ const SONGS = [
             'Electric Guitar': ['Will'],
             'Bass Guitar': ['Sophia'],
             'Drums': ['Jenna']
-        }
+        },
+        description: "This song is originally produced by ryo (supercell), about his life and struggles being recognized while composing and producing through Vocaloid."
     },
     {
         name: 'Moonsetter',
@@ -238,7 +239,8 @@ const SONGS = [
         from: 'K-On!',
         performers: {
             'Piano': ['Johnathan']
-        }
+        },
+        description: "A banger 😎"
     },
     {
         name: 'Bartender',
