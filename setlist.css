@@ -503,7 +503,7 @@ Setlist item
 .setlist-right p {
     color: #666666
 }
-.setlist-desc {
+.setlist-desc, .setlist-desc a {
     color: #999999;
 }
 

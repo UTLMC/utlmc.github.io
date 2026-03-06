@@ -40,6 +40,42 @@ Data
 *********************************************************************/
 const SONGS = [
     {
+        name: 'Misty',
+        by: 'Erroll Garner',
+        group: 'LMC Jazz Group',
+        performers: {
+            'Vocals': ['Carmen'],
+            'Alto Saxophone': ['Rylen', 'Simba'],
+            'Piano': ['Mike'],
+            'Bass Guitar': ['Emmett'],
+            'Drums': ['Julian']
+        }
+    },
+    {
+        name: 'Mr. Eclectic',
+        by: 'Laufey',
+        group: 'LMC Jazz Group',
+        performers: {
+            'Vocals': ['Kasey'],
+            'Acoustic Guitar': ['Mike'],
+            'Bass Guitar': ['Emmett'],
+            'Drums': ['Julian']
+        }
+    },
+    {
+        name: "Isn't She Lovely",
+        by: 'Stevie Wonder',
+        group: 'LMC Jazz Group',
+        performers: {
+            'Vocals': ['Carmen'],
+            'Alto Saxophone': ['Rylen', 'Simba'],
+            'Piano': ['Mike'],
+            'Electric Guitar': ['Jimin'],
+            'Bass Guitar': ['Emmett'],
+            'Drums': ['Julian']
+        }
+    },
+    {
         name: 'Hit the Road, Jack',
         by: 'Ray Charles',
         arranger: 'Mike',
@@ -113,7 +149,8 @@ const SONGS = [
         performers: {
             'Vocals': ['Michelle'],
             'Piano': ['Kadin']
-        }
+        },
+        description: "Exhausted? Tired. Want rest? Hungry. Want out?"
     },
     {
         name: 'Concerto 1',
@@ -132,7 +169,8 @@ const SONGS = [
             'Piano': ['Johnathan'],
             'Violin': ['Kai', 'Sean'],
             'Trombone': ['Eloyse']
-        }
+        },
+        description: "A beautiful piece from the Link Click (时光代理人) Season 2 OST."
     },
     {
         name: "Isabella's Lullaby",
@@ -144,17 +182,19 @@ const SONGS = [
             'Piano': ['Andrew'],
             'Clarinet': ['Rylen'],
             'Violin': ['Kai', 'Lui']
-        }
+        },
+        description: "A gentle melody from The Promised Neverland OST."
     },
     {
         name: 'ODDS&ENDS',
         by: 'ryo (supercell) ft. Hatsune Miku',
+        group: '39!',
         performers: {
-            'Vocals': ['Zach'],
+            'Vocals': ['Zachary'],
             'Piano': ['Adrian'],
             'Electric Guitar': ['Will'],
             'Bass Guitar': ['Sophia'],
-            'Drumset': ['Jenna']
+            'Drums': ['Jenna']
         }
     },
     {
@@ -167,6 +207,7 @@ const SONGS = [
             'Violin': ['Lui', 'Ze'],
             'Clarinet': ['Rylen']
         },
+        description: "Composed by the creator of Undertale and Deltarune. Homestuck is an old interactive webcomic that you can read for free <a href='https://homestuck.com/' target='_blank'>here</a>."
     },
     {
         name: 'Yuri on Ice',
@@ -179,7 +220,8 @@ const SONGS = [
             'Violin': ['Lui'],
             'Flute': ['Richard'],
             'Clarinet': ['Rylen']
-        }
+        },
+        description: "Featuring our amazing pianist Adrian 👍"
     },
     {
         name: `Don't Say "Lazy"`,
@@ -194,12 +236,13 @@ const SONGS = [
         by: 'Ngọt',
         group: 'Super Sentai',
         performers: {
-            'Vocals': ['Kae', 'Sophia'],
+            'Vocals': ['Kae'],
             'Piano': ['Mike'],
-            'Electric Guitar': ['Kae', 'Sophia'],
-            'Bass Guitar': ['Emmett'],
+            'Electric Guitar': ['Kae', 'Emmett'],
+            'Bass Guitar': ['Sophia'],
             'Drums': ['Julian']
-        }
+        },
+        description: "A late-night attempt to forget about things for a while"
     },
     {
         name: 'Mất Tích',
@@ -208,10 +251,11 @@ const SONGS = [
         performers: {
             'Vocals': ['Kae', 'Sophia'],
             'Piano': ['Mike'],
-            'Electric Guitar': ['Kae', 'Sophia'],
+            'Electric Guitar': ['Kae'],
             'Bass Guitar': ['Emmett'],
             'Drums': ['Julian']
-        }
+        },
+        description: "When you're surrounded by people, yet feel invisible"
     },
     {
         name: 'Mơ Làm Ma',
@@ -219,8 +263,7 @@ const SONGS = [
         group: 'Super Sentai',
         performers: {
             'Vocals': ['Kae', 'Sophia'],
-            'Piano': ['Mike'],
-            'Electric Guitar': ['Kae', 'Sophia'],
+            'Electric Guitar': ['Mike'],
             'Bass Guitar': ['Emmett'],
             'Drums': ['Julian']
         }
@@ -296,6 +339,9 @@ function construct(json) {
     if (json.innerText) {
         element.innerText = json.innerText;
     }
+    if (json.innerHTML) {
+        element.innerHTML = json.innerHTML;
+    }
     if (json.children) {
         for (const child of json.children) {
             element.appendChild(construct(child));
@@ -350,7 +396,7 @@ async function constructSetlist() {
         const description = song.description ? [{
             element: 'p',
             classes: ['setlist-desc'],
-            innerText: song.description
+            innerHTML: song.description
         }] : [];
 
         const group = song.group ? [{
