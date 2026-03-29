@@ -284,3 +284,36 @@ const EMBED_LINKS = {
     'calendar': '',
 
 }
+
+const CAROUSEL = [
+    {
+        url: 'assets/images/carousel 2026-04.webp',
+        caption: 'Tunes & Treats <br> <b>2026/04</b>',
+        yLims: [250, 1150],
+        captionXPosition: '70%',
+        captionRight: false,
+        captionTopOnMobile: true,
+        width: 2400,
+        height: 1350
+    },
+    {
+        url: 'assets/images/carousel 2025-04.webp',
+        caption: 'End of Winter <br> Concert <b>2025/04</b>',
+        yLims: [300, 1300],
+        captionXPosition: '60%',
+        captionRight: true,
+        captionTopOnMobile: true,
+        width: 3171,
+        height: 1524
+    },
+    {
+        url: 'assets/images/carousel 2025-01.webp',
+        caption: 'End of Fall <br> Concert <b>2025/01</b>',
+        yLims: [400, 1300],
+        captionXPosition: '40%',
+        captionRight: true,
+        captionTopOnMobile: true,
+        width: 2520,
+        height: 1418
+    },
+]

@@ -88,16 +88,6 @@ function toggleTab(element) {
         footer.style.setProperty('background', 'linear-gradient(to bottom, #20124d, #045962)');
     }
 }
-window.addEventListener('DOMContentLoaded', () => {
-    const page = window.location.hash.substring(1);
-    if (page.length > 0) {
-        toggleTab(`nav-${page}`);
-    }
-    const mode = screen.width > 700 ? 'MONTH' : 'AGENDA';
-    for (const element of cssGetClass('embed-calendar')) {
-        element.src = `${element.src}&mode=${mode}`;
-    }
-});
 function toggleDetailsSummary(event) {
     event.preventDefault();  // Prevent instant show/hide from <summary>
     let element = event.srcElement;
@@ -147,6 +137,87 @@ function toggleViewerTab(element) {
 function toggleSongTab(element) {
     return genericToggleTab(element, 'song');
 }
+function toggleCarousel(next) {
+    CURR_CAROUSEL = (CURR_CAROUSEL + (next ? 1 : -1) + CAROUSEL.length) % CAROUSEL.length;
+    cssGetClass('carousel-active')[0].classList.remove('carousel-active');
+    cssGetClass('carousel')[CURR_CAROUSEL].classList.add('carousel-active');
+    
+    cssGetId('carousel-caption').innerHTML = CAROUSEL[CURR_CAROUSEL].caption;
+    updateCarousel();
+}
+
+
+/*********************************************************************
+Event listeners
+*********************************************************************/
+let MOUSE_X = 0;
+let MOUSE_DOWN_X = 0;
+let MOUSE_DOWN = false;
+const HOME_GALLERY = cssGetId('section-home-gallery');
+const HOME_UPCOMING_EVENTS = cssGetId('upcoming-events-container');
+let CURR_ACTIVE = undefined
+let CURR_SCROLL = 0;
+window.addEventListener('mousemove', (event) => {
+    MOUSE_X = event.clientX;
+
+    if (HOME_GALLERY.contains(event.target)) {
+        CURR_ACTIVE = HOME_GALLERY;
+    } else if (HOME_UPCOMING_EVENTS.contains(event.target)) {
+        CURR_ACTIVE = HOME_UPCOMING_EVENTS;
+    } else {
+        return;
+    }
+
+    // Left mouse down
+    if (event.buttons === 1) {
+        // First click
+        if (!MOUSE_DOWN) {
+            MOUSE_DOWN = true;
+            MOUSE_DOWN_X = MOUSE_X;
+            CURR_SCROLL = CURR_ACTIVE.scrollLeft;
+            return;
+        }
+        CURR_ACTIVE.scrollLeft = Math.max(0, Math.min(CURR_SCROLL + MOUSE_DOWN_X - MOUSE_X, CURR_ACTIVE.scrollWidth));
+    } else {
+        MOUSE_DOWN = false;
+    }
+});
+function scrollHorizontally(event) {
+    const { target, deltaY } = event;
+    
+    // Don't scroll horizontally if there's nothing to scroll
+    if (target.scrollWidth <= target.getBoundingClientRect().width + 1) {
+        return;
+    }
+
+    event.preventDefault();
+    target.scrollLeft += deltaY;
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    // Navigate to tab in hash
+    const page = window.location.hash.substring(1);
+    if (page.length > 0) {
+        toggleTab(`nav-${page}`);
+    }
+
+    // Set embed calendar mode
+    const mode = window.innerWidth > 700 ? 'MONTH' : 'AGENDA';
+    for (const element of cssGetClass('embed-calendar')) {
+        element.src = `${element.src}&mode=${mode}`;
+    }
+
+    const h = new Date().getHours();
+    let introBanner;
+    if (h < 6)          introBanner = "👋 Good evening, LMC!";
+    else if (h < 12)    introBanner = "👋 Good morning, LMC!";
+    else if (h < 18)    introBanner = "👋 Good afternoon, LMC!";
+    else                introBanner = "👋 Good evening, LMC!";
+    cssGetId('home-banner').innerText = introBanner;
+});
+window.addEventListener('resize', () => {
+    updateCarousel();
+})
 
 
 /*********************************************************************
@@ -307,7 +378,7 @@ async function injectMembers() {
         }
     }
 }
-function injectFormLinks() {
+async function injectFormLinks() {
     for (const [name, link] of Object.entries(FORM_LINKS)) {
         const id = `icon-${name}`;
         const element = cssGetId(id).parentElement;
@@ -315,11 +386,98 @@ function injectFormLinks() {
     }
 }
 
+let CURR_CAROUSEL = 0;
+async function injectCarousel() {
+    const carouselContainer = cssGetId('section-carousel');
+    for (let i = 0; i < CAROUSEL.length; i++) {
+        const classes = ['carousel'];
+        if (i == 0) {
+            classes.push('carousel-active');
+        }
+        carouselContainer.appendChild(construct({
+            element: 'img',
+            classes,
+            attributes: {
+                decoding: 'async',
+                loading: i === 0 ? 'eager' : 'lazy',
+                src: CAROUSEL[i].url
+            }
+        }));
+    }
+    cssGetId('carousel-caption').innerHTML = CAROUSEL[CURR_CAROUSEL].caption;
+    updateCarousel();
+}
+function updateCarousel() {
+    const carouselContainer = cssGetId('section-carousel');
+    const carousel = cssGetClass('carousel-active')[0];
+    const caption = cssGetId('carousel-caption');
+    const { captionRight, captionTopOnMobile, yLims: [y0, y1], captionXPosition, height, width } = CAROUSEL[CURR_CAROUSEL];
+
+    const scale = window.innerWidth / width;
+    const minHeight = (y1 - y0) * scale;
+    const targetHeight = 0.5 * window.innerHeight;
+    const minWidth = width * targetHeight / height;
+
+    if (captionRight) {
+        caption.style.setProperty('text-align', 'right');
+        caption.style.setProperty('left', 'auto');
+        caption.style.setProperty('right', 'max(35px, 6vw)');
+        caption.style.setProperty('transform', 'rotate(-3deg)');
+    } else {
+        caption.style.setProperty('text-align', 'left');
+        caption.style.setProperty('right', 'auto');
+        caption.style.setProperty('left', 'max(35px, 6vw)');
+        caption.style.setProperty('transform', 'rotate(3deg)');
+    }
+
+    // Wide screen -> force wide image dimensions
+    if (minHeight >= targetHeight) {
+        carouselContainer.style.setProperty('height', `${minHeight}px`);    
+        carousel.style.setProperty('height', `${height * scale}px`);
+        carousel.style.setProperty('margin-top', `-${y0 * scale}px`);
+
+        if (captionTopOnMobile) {
+            caption.style.setProperty('bottom', 'max(20px, 2vw)');
+            caption.style.setProperty('top', 'auto');
+        }
+
+    // As screen width decreases, extra vertical space is added to image
+    } else if (window.innerWidth > minWidth ) {
+        const extraVisible = targetHeight - (y1 - y0) * scale;
+        const topRaw = y0;
+        const bottomRaw = height - y1;
+        const totalRaw = topRaw + bottomRaw;
+        const topShare = topRaw / totalRaw;
+        const extraTop = extraVisible * topShare;
+
+        carouselContainer.style.setProperty('height', `${targetHeight}px`);
+        carousel.style.setProperty('height', `${height * scale}px`);
+        carousel.style.setProperty('margin-top', `-${(y0 * scale) - extraTop}px`);
+
+        if (captionTopOnMobile) {
+            caption.style.setProperty('bottom', 'max(20px, 2vw)');
+            caption.style.setProperty('top', 'auto');
+        }
+    
+    // Mobile screen -> zoom in to cover screen
+    } else {
+        carouselContainer.style.setProperty('height', `${targetHeight}px`);
+        carousel.style.setProperty('height', `${targetHeight}px`);
+        carousel.style.setProperty('object-position', `${captionXPosition} 50%`);
+        carousel.style.setProperty('margin-top', `0px`);
+
+        if (captionTopOnMobile) {
+            caption.style.setProperty('top', 'max(30px, 6.5vw)');
+            caption.style.setProperty('bottom', 'auto');   
+        }
+    }
+}
+
 injectFAQ();
 injectSubgroups();
 injectMembers();
 injectFormLinks();
-
+injectCarousel();
 
 
 // Github pages CORS test

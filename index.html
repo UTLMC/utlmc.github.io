@@ -39,51 +39,51 @@
     <!-- Navigation bar -->
     <nav id='nav-page'>
         <menu id='nav-page-desktop'>
-            <li class='nav-home nav-active' onclick="toggleTab(this)"><h3>Home</h3></li>
-            <li class='nav-about' onclick="toggleTab(this)"><h3>About</h3></li>
-            <li class='nav-events' onclick="toggleTab(this)"><h3>Events</h3></li>
-            <li class='nav-rehearsals' onclick="toggleTab(this)"><h3>Rehearsals</h3></li>
+            <li class='nav-home nav-active' onclick="toggleTab(this)"><h2>Home</h2></li>
+            <li class='nav-about' onclick="toggleTab(this)"><h2>About</h2></li>
+            <li class='nav-events' onclick="toggleTab(this)"><h2>Events</h2></li>
+            <li class='nav-rehearsals' onclick="toggleTab(this)"><h2>Rehearsals</h2></li>
             <li class='nav-resources-section'>
-                <h3 class="nav-resources" onclick="toggleTab(this)">Resources</h3>
+                <h2 class="nav-resources" onclick="toggleTab(this)">Resources</h2>
                 <div id="nav-resources-dropdown">
                     <span onclick="toggleTab(this)" class="nav-music-archive">Music Archive</span>
                     <span onclick="toggleTab(this)" class="nav-gallery">Gallery</span>
                 </div>
             </li>
-            <li class='nav-get-involved' onclick="toggleTab(this)"><h3>Get Involved</h3></li>
+            <li class='nav-get-involved' onclick="toggleTab(this)"><h2>Get Involved</h2></li>
         </menu>
         <menu id='nav-page-mobile' class="nav-page-mobile-closed">
             <li class='nav-home' onclick="toggleTab(this)">
                 <div class="nav-page-mobile-icon"></div>
-                <h3>Home</h3>
+                <h2>Home</h2>
             </li>
             <li class='nav-about' onclick="toggleTab(this)">
                 <div class="nav-page-mobile-icon"></div>
-                <h3>About</h3>
+                <h2>About</h2>
             </li>
             <li class='nav-events' onclick="toggleTab(this)">
                 <div class="nav-page-mobile-icon"></div>
-                <h3>Events</h3>
+                <h2>Events</h2>
             </li>
             <li class='nav-rehearsals' onclick="toggleTab(this)">
                 <div class="nav-page-mobile-icon"></div>
-                <h3>Rehearsals</h3>
+                <h2>Rehearsals</h2>
             </li>
             <li class='nav-resources' onclick="toggleTab(this)">
                 <div class="nav-page-mobile-icon"></div>
-                <h3>Resources</h3>
+                <h2>Resources</h2>
             </li>
             <li class='nav-music-archive' onclick="toggleTab(this)">
                 <div class="nav-page-mobile-icon"></div>
-                <h3>Music Archive</h3>
+                <h2>Music Archive</h2>
             </li>
             <li class='nav-gallery' onclick="toggleTab(this)">
                 <div class="nav-page-mobile-icon"></div>
-                <h3>Gallery</h3>
+                <h2>Gallery</h2>
             </li>
             <li class='nav-get-involved' onclick="toggleTab(this)">
                 <div class="nav-page-mobile-icon"></div>
-                <h3>Get Involved</h3>
+                <h2>Get Involved</h2>
             </li>
         </menu>
         <div id="nav-background" class="nav-background-closed" onclick="toggleHeaderHamburger()"></div>
@@ -92,37 +92,233 @@
     <main>
         <!-- Home Page -->
         <article id="tab-home" class="tab tab-active">
-            <section class="section-banner">
-                INSERT COOL BANNER PIC
-            </section>
-            <section class="section-default">
-                <h1>👋 Hello!</h1>
-                <p>The Light Music Club (LMC) appreciates music from J-pop, anime, and video games through live concerts, jam sessions, and online recording projects. We are a student-led club providing a space for players of all backgrounds to create and play music together. The LMC and <a href="https://www.instagram.com/utama.artstudio/?hl=en" target="_blank">Studio</a> are branches of the University of Toronto Student Anime & Manga Association <a href="https://sop.utoronto.ca/group/anime-and-manga-association/" target="_blank">(UT-SAMA)</a> based in the St. George campus.</p>
-                <aside class="notification">
-                    <div class="icon-alert"></div>
-                    <span>This website is currently under construction! You may notice some bugs.</span>
-                </aside>
-                <aside class="notification">
-                    <div class="icon-announcement"></div>
-                    <span>We’re looking for people with experience in drawing, graphic design, audio mixing, or video editing to help us with recording projects! If you have experience, please consider reaching out to XX on XXX!</span>
-                </aside>
-                <aside class="notification">
-                    <div class="icon-alert"></div>
-                    <span>The LMC is opening for its 3rd year this 2025-2026 Fall-Winter term! Our first meeting is at XX:XX pm at XXXX on Sept. XX. Come get a better idea of our club. No instruments needed. Click <a href="https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform" target="_blank">this link</a> to become a member!</span>
-                </aside>
-            </section>
-            <section class="section-default-bg">
-                <iframe loading="lazy" class='embed-calendar' src="https://calendar.google.com/calendar/embed?src=utsama.lightmusicclub%40gmail.com&ctz=America%2FToronto" title="Google calendar" frameborder="0" scrolling="no"></iframe>
-            </section>
-            <section class="section-default">
-                <div class="img-text card-wide">
-                    <div class="placeholder"></div>
-                    <span>
-                        <h2>2025 End of Fall Concert</h2>
-                        <p>We’re proud to announce some cool concert! We’ll be playing songs by XX and XXX.</p>
-                        <p>It’s at XX:XX pm at 252 Bloor Street West (OISE, room XXX)! Tickets are $XX. Pay online or in-person or something.</p>
-                    </span>
+            <section id="section-carousel">
+                <div id="carousel-left" class="carousel-button" onclick="toggleCarousel(false)">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <polyline 
+                            points="15 6 9 12 15 18" 
+                            stroke="rgba(255, 255, 255, 0.7)" 
+                            stroke-width="3" 
+                            stroke-linecap="round" 
+                            stroke-linejoin="round"
+                        />
+                    </svg>
                 </div>
+                <div id="carousel-right" class="carousel-button" onclick="toggleCarousel(true)">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <polyline 
+                            points="9 6 15 12 9 18" 
+                            stroke="rgba(255, 255, 255, 0.7)" 
+                            stroke-width="3" 
+                            stroke-linecap="round" 
+                            stroke-linejoin="round"
+                        />
+                    </svg>
+                </div>
+                <p id="carousel-caption"></p>
+                <!-- <p id="carousel-caption">End of Fall<br>Concert <b>2025/12</b></p> -->
+                <!-- <img src="..." /> -->
+                <!-- <img src="..." /> -->
+                <!-- <img src="..." /> -->
+            </section>
+
+            <ul class="hr-cloud">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+
+            <section id="section-greeting">
+                <div>
+                    <hr class="hr-greeting-top" />
+                    <h1 id="home-banner">👋 Good morning, LMC!</h1>
+                    <p>Welcome to the Light Music Club, a space for musicians of all backgrounds to create and play music from <em>anime, video games, J-pop, J-rock, vocaloids</em>, and more! We are a branch of the University of Toronto Student Anime & Manga Association <a href="https://sop.utoronto.ca/group/anime-and-manga-association/" target="_blank">(UT-SAMA)</a> based in the St. George campus.</p>
+                    <hr class="hr-greeting-bottom" />
+                    <!-- <p>The Light Music Club (LMC) appreciates music from J-pop, anime, and video games through live concerts, jam sessions, and online recording projects. We are a student-led club providing a space for players of all backgrounds to create and play music together. The LMC and <a href="https://www.instagram.com/utama.artstudio/?hl=en" target="_blank">Studio</a> are branches of the University of Toronto Student Anime & Manga Association <a href="https://sop.utoronto.ca/group/anime-and-manga-association/" target="_blank">(UT-SAMA)</a> based in the St. George campus.</p> -->
+                </div>                
+            </section>
+            
+            <section id="section-home-info">
+                <div id="card-info-left">
+                    <img class="card-info-image" src="assets/images/home-info-1.webp" decoding="async"  />
+                    <hgroup>
+                        <h3>Anisongs, OSTs, and More</h3>
+                        <p><em>Rock bands, jazz groups</em>, and <em>chamber ensembles</em> formed at LMC have performed everything from video game soundtracks and anime openings to indie V-pop and jazz standards.</p>
+                        <hr class="hr-home-info" />
+                    </hgroup>
+                </div>
+                <div id="card-info-right">
+                    <img id="home-info-keychain-1" src="assets/images/keychain-1.webp" decoding="async"  />
+                    <img class="card-info-image" src="assets/images/home-info-2.webp" decoding="async"  />
+                    <hgroup>
+                        <h3>Catch us Live!</h3>
+                        <p>LMC performs at anime conventions like Genshiken Festival and organizes <em>annual concerts</em>. We also hold jam sessions, educational workshops, karaokes, and more!</p>
+                        <hr class="hr-home-info" />
+                    </hgroup>
+                </div>
+            </section>
+
+            <section id="section-home-gallery" onmousewheel="scrollHorizontally(event)">
+                <div class="home-gallery-row">
+                    <img class="home-gallery-image" src="assets/images/home-gallery-1.webp" decoding="async" loading="lazy" />
+                    <!-- <img alt="Hades II" class="home-gallery-song" src="https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8401f9f64bac7491eb55a8460e" decoding="async" loading="lazy" /> -->
+                    <img alt="Hades II" class="home-gallery-song" src="assets/images/home-gallery/hades-ii.webp" decoding="async" loading="lazy" />
+                    <div class="home-gallery-song"></div>
+                    <!-- <img alt="K-On" class="home-gallery-song" src="https://i.scdn.co/image/ab67616d0000b2739eb698848bf7503c96ca97a3" decoding="async" loading="lazy" /> -->
+                    <img alt="K-On" class="home-gallery-song" src="assets/images/home-gallery/k-on.webp" decoding="async" loading="lazy" />
+                    <!-- <img alt="Frieren" class="home-gallery-song" src="https://i.discogs.com/SZrW-ZmRvcMsEH3CvGRiZ0OQYTdB-D4xrTr1Q29f2_w/rs:fit/g:sm/q:90/h:530/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTI5Njg3/NDQ2LTE3MDY5OTI5/MDgtMjA2NS5qcGVn.jpeg" decoding="async" loading="lazy" /> -->
+                    <img alt="Frieren" class="home-gallery-song" src="assets/images/home-gallery/frieren.webp" decoding="async" loading="lazy" />
+                    <!-- <img alt="Yakuza" class="home-gallery-song" src="https://st.cdjapan.co.jp/pictures/l/08/15/TYOLP-1053.jpg?v=2" decoding="async" loading="lazy" /> -->
+                    <img alt="Yakuza" class="home-gallery-song" src="assets/images/home-gallery/yakuza.webp" decoding="async" loading="lazy" />
+                    <!-- <img alt="Persona 3" class="home-gallery-song" src="https://cdn-images.dzcdn.net/images/cover/3c02a96b9fbcead2879a2e902c989e8a/500x500-000000-80-0-0.jpg" decoding="async" loading="lazy" /> -->
+                    <img alt="Persona 3" class="home-gallery-song" src="assets/images/home-gallery/persona-3.webp" decoding="async" loading="lazy" />
+                    <div class="home-gallery-song"></div>
+                    <img alt="Splatoon 3" src="https://img.youtube.com/vi/zVNVMBZ1kPg/mqdefault.jpg" decoding="async" loading="lazy" />
+                    <!-- <img alt="Bocchi the Rock" class="home-gallery-song" src="https://cdn.aniplaylist.com/thumbnails/fe918f7b99001c4dfe774d1d73796005ea23ce46@2xl.jpeg" decoding="async" loading="lazy" /> -->
+                    <img alt="Bocchi the Rock" class="home-gallery-song" src="assets/images/home-gallery/bocchi-the-rock.webp" decoding="async" loading="lazy" />
+                    <img alt="Undertale" src="https://img.youtube.com/vi/oTlV8LhFbxQ/mqdefault.jpg" decoding="async" loading="lazy" />
+                    <!-- <img alt="Aishite" class="home-gallery-song" src="https://static.wikia.nocookie.net/vocaloid/images/f/f2/Aishite_Aishite_Aishite.png" decoding="async" loading="lazy" /> -->
+                    <img alt="Aishite" class="home-gallery-song" src="assets/images/home-gallery/aishite.webp" decoding="async" loading="lazy" />
+                    <!-- <img alt="Plants vs Zombies" class="home-gallery-song" src="https://f4.bcbits.com/img/a4086158012_2.jpg" decoding="async" loading="lazy" /> -->
+                    <img alt="Plants vs Zombies" class="home-gallery-song" src="assets/images/home-gallery/plants-vs-zombies.webp" decoding="async" loading="lazy" />
+                </div>
+                <div class="home-gallery-row">
+                    <div class="home-gallery-spacer-1"></div>
+                    <img alt="Naruto" src="https://img.youtube.com/vi/w5HBakdZ06E/mqdefault.jpg" decoding="async" loading="lazy" />
+                    <!-- <img alt="Fireworks" class="home-gallery-song" src="https://i1.sndcdn.com/artworks-uugxiHgnoUyr9dtA-IAWbHQ-t500x500.jpg" decoding="async" loading="lazy" /> -->
+                    <img alt="Fireworks" class="home-gallery-song" src="assets/images/home-gallery/fireworks.webp" decoding="async" loading="lazy" />
+                    <!-- <img alt="Super Mario Sunshine" class="home-gallery-song" src="https://mario.wiki.gallery/images/thumb/5/5d/SM3DAS_SMS_Soundtrack_CD.png/1200px-SM3DAS_SMS_Soundtrack_CD.png" decoding=async /> -->
+                    <img alt="Super Mario Sunshine" class="home-gallery-song" src="assets/images/home-gallery/super-mario-sunshine.webp" decoding=async />
+                    <div class="home-gallery-song"></div>
+                    <img alt="Preview of Me" src="https://img.youtube.com/vi/BkWCOBDLsZI/mqdefault.jpg" decoding="async" loading="lazy" />
+                    <!-- <img alt="Library of Ruina" class="home-gallery-song" src="https://i1.sndcdn.com/artworks-djLD74sR6Yy8XVc7-JHBSHw-t500x500.jpg" decoding="async" loading="lazy" />  -->
+                    <img alt="Library of Ruina" class="home-gallery-song" src="assets/images/home-gallery/library-of-ruina.webp" decoding="async" loading="lazy" /> 
+                    <!-- <img alt="Jojo" class="home-gallery-song" src="https://upload.wikimedia.org/wikipedia/en/2/27/BLOODY_STREAM.jpg" decoding="async" loading="lazy" />  -->
+                    <img alt="Jojo" class="home-gallery-song" src="assets/images/home-gallery/jojo.webp" decoding="async" loading="lazy" /> 
+                    <div class="home-gallery-song"></div>
+                    <img class="home-gallery-image" src="assets/images/home-gallery-2.webp" decoding="async" loading="lazy" />
+                </div>
+                <div class="home-gallery-row">
+                    <!-- <img alt="Cowboy Bebop" class="home-gallery-song" src="https://static.wikia.nocookie.net/cowboybebop/images/4/47/CD1.jpg" decoding="async" loading="lazy" /> -->
+                    <img alt="Cowboy Bebop" class="home-gallery-song" src="assets/images/home-gallery/cowboy-bebop.webp" decoding="async" loading="lazy" />
+                    <div class="home-gallery-song"></div>
+                    <!-- <img alt="Deemo" class="home-gallery-song" src="https://cdn-images.dzcdn.net/images/cover/b6d6e1d28eb8c389311c7996a7654348/500x500-000000-80-0-0.jpg" /> -->
+                    <img alt="Deemo" class="home-gallery-song" src="assets/images/home-gallery/deemo.webp" />
+                    <!-- <img alt="Aiscream" class="home-gallery-song" src="https://i.scdn.co/image/ab67616d0000b2732590b046b72d6ce5d6703ee7" decoding="async" loading="lazy" /> -->
+                    <img alt="Aiscream" class="home-gallery-song" src="assets/images/home-gallery/aiscream.webp" decoding="async" loading="lazy" />
+                    <img alt="Falling Down" src="https://img.youtube.com/vi/-7cIocnaWuI/mqdefault.jpg" decoding="async" loading="lazy" />
+                    <!-- <img alt="Odds & Ends" class="home-gallery-song" src="https://i.discogs.com/CQi2euAttb4C9eTwdcYioo92wfJZU9OwP2eF6GcUMRE/rs:fit/g:sm/q:90/h:500/w:500/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNTQw/NTM5LTE0OTk1MjQ2/MjMtNjI4My5qcGVn.jpeg" decoding="async" loading="lazy" /> -->
+                    <img alt="Odds & Ends" class="home-gallery-song" src="assets/images/home-gallery/odds&ends.webp" decoding="async" loading="lazy" />
+                    <div class="home-gallery-song"></div>
+                    <!-- <img alt="Suzume" class="home-gallery-song" src="https://cdn-images.dzcdn.net/images/cover/337f3911f3e5a0763240f50402f93943/500x500-000000-80-0-0.jpg" decoding="async" loading="lazy" /> -->
+                    <img alt="Suzume" class="home-gallery-song" src="assets/images/home-gallery/suzume.webp" decoding="async" loading="lazy" />
+                    <!-- <img alt="Link Click" class="home-gallery-song" src="https://static.wikia.nocookie.net/shiguang-dailiren/images/6/67/S1_Album_Cover.png" decoding="async" loading="lazy" /> -->
+                    <img alt="Link Click" class="home-gallery-song" src="assets/images/home-gallery/link-click.webp" decoding="async" loading="lazy" />
+                    <!-- <img alt="Moonlight Stage" class="home-gallery-song" src="https://www.gyari.com/special/moonlight-stage/jaket_moonlight-stage.jpg" decoding="async" loading="lazy" /> -->
+                    <img alt="Moonlight Stage" class="home-gallery-song" src="assets/images/home-gallery/moonlight-stage.webp" decoding="async" loading="lazy" />
+                    <div class="home-gallery-spacer-2"></div>
+                    <!-- <img alt="Kids on the Slope" class="home-gallery-song" src="https://i1.sndcdn.com/artworks-000096390170-xh57ll-t500x500.jpg" decoding="async" loading="lazy" /> -->
+                    <img alt="Kids on the Slope" class="home-gallery-song" src="assets/images/home-gallery/kids-on-the-slope.webp" decoding="async" loading="lazy" />
+                </div>
+            </section>
+            
+            <section id="section-home-event">
+                <img class="home-event-bg" id="home-event-bg-1" src="assets/images/violin.svg" decoding="async" loading="lazy" />
+                <img class="home-event-bg" id="home-event-bg-2" src="assets/images/trombone.svg" decoding="async" loading="lazy" />
+                <div id="home-event-container">
+                    <div class="home-event-poster"><img src="assets/images/posters/poster 2026-04.webp" decoding="async" loading="lazy" /></div>
+                    <div class="home-event-text">
+                        <hgroup>
+                            <h3>2026 End of Winter Concert 🎵</h3>
+                            <ul>
+                                <li class="home-event-date">April 5, 5:00 - 8:00 pm</li>
+                                <li class="home-event-location">252 Bloor Street West (OISE C-162)</li>
+                                <li class="home-event-cost">$5, pay in-person</li>
+                            </ul>
+                        </hgroup>
+                        <p>The LMC returns this April for its regularly-scheduled end of winter concert, featuring 3 hours of music, XX songs played by XX of our talented musicians!</p>
+                        <p>We'll be playing songs from j-pop, anime, video games, and more! Find the link to the setlist for the concert here.</p>
+                        <div id="home-event-buttons">
+                            <a class="home-event-button">See the setlist</a>
+                            <a class="home-event-button">RSVP</a>
+                            <a class="home-event-button">Watch the recording</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-bulletin">
+                <div id="section-announcements">
+                    <hgroup>
+                        <h3>Announcements</h3>
+                        <div id="section-announcements-icon"></div>
+                    </hgroup>
+                    <aside class="notification">
+                        <div class="icon-alert"></div>
+                        <span>This website is currently under construction — some pages are unfinished and there may be bugs.</span>
+                    </aside>
+                    <aside class="notification">
+                        <div class="icon-announcement"></div>
+                        <span>We’re looking for people with experience in drawing, graphic design, audio mixing, or video editing to help us with recording projects! If you have experience, please consider reaching out to XX on XXX!</span>
+                    </aside>
+                    <aside class="notification">
+                        <div class="icon-announcement"></div>
+                        <span>The LMC is opening for its 3rd year this 2025-2026 Fall-Winter term! Our first meeting is at XX:XX pm at XXXX on Sept. XX. Come get a better idea of our club. No instruments needed. Click <a href="https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform" target="_blank">this link</a> to become a member!</span>
+                    </aside>
+                </div>
+                <div id="section-upcoming-events">
+                    <hgroup>
+                        <h3>Upcoming Events</h3>
+                        <div id="section-events-icon"></div>
+                    </hgroup>
+                    <ul id="upcoming-events-container" onmousewheel="scrollHorizontally(event)">
+                        <li class="upcoming-event-oise">
+                            <hgroup>
+                                <h4 class="upcoming-event-date"><span>21</span> Oct</h4>
+                                <p class="upcoming-event-location">OISE C-154</p>
+                                <p class="upcoming-event-time">6:00 - 9:00 pm</p>
+                            </hgroup>
+                            <h4 class="upcoming-event-name">End of Something Concert</h4>
+                        </li>
+                        <li class="upcoming-event-oise">
+                            <hgroup>
+                                <h4 class="upcoming-event-date"><span>02</span> Dec</h4>
+                                <p class="upcoming-event-location">Cat's Eye</p>
+                                <p class="upcoming-event-time">5:00 - 7:00 pm</p>
+                            </hgroup>
+                            <h4 class="upcoming-event-name">Cool Workshp</h4>
+                        </li>
+                        <li class="upcoming-event-oise">
+                            <hgroup>
+                                <h4 class="upcoming-event-date"><span>13</span> May</h4>
+                                <p class="upcoming-event-location">OISE Something</p>
+                                <p class="upcoming-event-time">5:00 - 7:00 pm</p>
+                            </hgroup>
+                            <h4 class="upcoming-event-name">Cool Workshop</h4>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+            <iframe loading="lazy" class='embed-calendar' src="https://calendar.google.com/calendar/embed?src=utsama.lightmusicclub%40gmail.com&ctz=America%2FToronto" title="Google calendar" frameborder="0" scrolling="no"></iframe>
+            <section class="section-default">
+                <h1>Interested in working with us?</h3>
+                <p>For general inquiries, collaborations, performing with us, or any sort of partnership with LMC, please feel free to contact any of the LMC execs below:</p>
+                <div id="home-outreach">
+                    <h4>Mike</h4>
+                    <ul class="list-social-media">
+                        <li class="li-discord">pixellatedmike</li>
+                        <li class="li-instagram">michaelkim_05</li>
+                    </ul>
+                    <h4>Sean</h4>
+                    <ul class="list-social-media">
+                        <li class="li-discord">amoguus</li>
+                    </ul>
+                </div>
+                <p>You may also reach us via our <a href="https://www.instagram.com/utsama_lmc/" target="_blank">Instagram page</a> or <a href="mailto:utsama.lightmusicclub@gmail.com">email</a>. Contacting one of the execs directly may lead to a quicker response.</p>
             </section>
         </article>
         
@@ -133,18 +329,18 @@
                 <p>A long time ago in a galaxy far far away, UTSAMA was called UTAMA, and the UTAMA LMC existed. It was an audition-based rock band? But it kind of died during COVID-19. In 2023, Stone, Sean, and Alexis were cool and decided to revive the LMC into its current form today.</p>
                 <p>Our club now aims to be a big space both in Toronto and online for people to find like-minded musicians, make friends, form rock bands or mini-orchestral ensembles and play music from anime, video games, J-Pop, etc., either through performing at concerts or producing project recordings.</p>
             </section>
-            <section class="section-default-bg">
+            <section class="section-wide-bg">
                 <h1>Personnel</h1>
                 <ul id="table-personnel">
-                    <li class='personnel-arranger personnel-role'>
+                    <li class='personnel-arranger personnel-bw'>
                         <span class="personnel-title">Arranger</span>
                         <div class="personnel-count"><span>×3</span></div>
                     </li>
-                    <li class='personnel-artist personnel-role'>
+                    <li class='personnel-artist personnel-bw'>
                         <span class="personnel-title">Artist</span>
                         <div class="personnel-count"><span>×3</span></div>
                     </li>
-                    <li class='personnel-video-editor personnel-role'>
+                    <li class='personnel-video-editor personnel-bw'>
                         <span class="personnel-title">Video Editor</span>
                         <div class="personnel-count"><span>×3</span></div>
                     </li>
@@ -224,17 +420,11 @@
                         <span class="personnel-title">Bass Guitar</span>
                         <div class="personnel-count"><span>×3</span></div>
                     </li>
-                    <li class='personnel-total'>
+                    <li class='personnel-total personnel-bw'>
                         <span class="personnel-title">Total</span>
                         <div class="personnel-count"><span>×50</span></div>
                     </li>
                 </ul>
-                <!-- <dl id="table-personnel">
-                    <dt>Arranger</dt>
-                    <dd><span>×3</span></dd>
-                    <dt>Artist</dt>
-                    <dd>0</dd>
-                </dl> -->
             </section>
             <section class="section-default">
                 <h1>Current Subgroups</h1>
@@ -689,85 +879,85 @@
                     </div>
                 </div>
             </section>
-            <section class="section-default">
-                <div class="card-normal">
-                    <h1>CSV Sheets</h1>
-                    <div class="card-button-container">
-                        <a class="card-button" onclick="exportMembers()">
-                            <div class="card-button-icon" id="icon-members"></div>
-                            <span>Members</span>
-                        </a>
-                        <a class="card-button" onclick="exportPersonnel()">
-                            <div class="card-button-icon" id="icon-personnel"></div>
-                            <span>Personnel</span>
-                        </a>
-                        <a class="card-button">
-                            <div class="card-button-icon" id="icon-subgroups"></div>
-                            <span>Subgroups</span>
-                        </a>
-                        <a class="card-button">
-                            <div class="card-button-icon" id="icon-subgroup-membership"></div>
-                            <span>Subgroup Membership</span>
-                        </a>
-                        <a class="card-button">
-                            <div class="card-button-icon" id="icon-repertoire"></div>
-                            <span>Repertoire</span>
-                        </a>
-                        <a class="card-button">
-                            <div class="card-button-icon" id="icon-concerts"></div>
-                            <span>Concerts</span>
-                        </a>
-                    </div>
-                </div>
-            </section>
             <section class="section-default-bg">
                 <h1>Credits</h1>
                 <div class="table-hyperlinks-container">
                     <dl class="table-hyperlinks">
                         <dt>Icons</dt>
                         <dd>
-                            <p>Credit to max.icons, Good Ware, Freepik, Iconjam, Those Icons, Indygo, berkahicon, Prosymbols, Icon mania, Tahsin Tahil, LAFS, Kiranshastry, Pixel perfect, Viglino, Superndre</p>
                             <p>
-                                <a href="https://www.flaticon.com/free-icon/announcement_2417835" target="_blank">Announcement</a>,
-                                <a href="https://www.flaticon.com/free-icon/attention_4440466" target="_blank">Alerts</a>, 
+                                <a href="https://www.flaticon.com/free-icon/announcement_2417835" target="_blank">Megaphone</a>,
+                                <a href="https://www.flaticon.com/free-icon/attention_4440466" target="_blank">Alert Triangle</a>, 
                                 <a href="https://www.flaticon.com/free-icon/constitution_5622624" target="_blank">New Member Form</a>,
-                                <a href="https://www.flaticon.com/free-icon/music-note_651717" target="_blank">Song Suggestions</a>,
+                                <a href="https://www.flaticon.com/free-icon/music-note_651717" target="_blank">Music Note</a>,
                                 <a href="https://www.flaticon.com/free-icon/live-music_4472616" target="_blank">Small Ensemble Form</a>,
-                                <a href="https://www.flaticon.com/free-icon/music-stand_7000438" target="_blank">Equipment</a>,
-                                <a href="https://www.flaticon.com/free-icon/video_13777903" target="_blank">Video</a>,
                                 <a href="https://www.flaticon.com/free-icon/vote_4322041" target="_blank">Vote</a>,
                                 <a href="https://www.flaticon.com/free-icon/feedback_813419" target="_blank">Feedback</a>,
-                                <a href="https://www.flaticon.com/free-icon/contact-form_3447545" target="_blank">Form</a>,
-                                <a href="https://www.flaticon.com/free-icon/puzzle_3037619" target="_blank">Practice</a>,
-                                <a href="https://www.flaticon.com/free-icon/music-stand_7470869" target="_blank">Arrangement</a>,
-                                <a href="https://www.flaticon.com/free-icon/treble-clef_5376625" target="_blank">Music Theory</a>,
-                                <a href="https://www.flaticon.com/free-icon/music_15711175" target="_blank">Audio Production</a>,
-                                <a href="https://www.flaticon.com/free-icon/rules_2046915" target="_blank">Code of Conduct</a>,
+                                <a href="https://www.flaticon.com/free-icon/puzzle_3037619" target="_blank">Puzzle</a>,
+                                <a href="https://www.flaticon.com/free-icon/music-stand_7470869" target="_blank">Music Stand</a>,
+                                <a href="https://www.flaticon.com/free-icon/treble-clef_5376625" target="_blank">Music Staff</a>,
+                                <a href="https://www.flaticon.com/free-icon/music_15711175" target="_blank">Waveform</a>,
+                                <a href="https://www.flaticon.com/free-icon/code-of-conduct_1076757" target="_blank">Code of Conduct</a>,
                                 <a href="https://www.svgrepo.com/svg/399420/globe-alt-o" target="_blank">Personal Website</a>,
-                                <a href="https://www.flaticon.com/free-icon/membership_1585266" target="_blank">Members</a>,
                                 <a href="https://www.flaticon.com/free-icon/tally-marks_7559894" target="_blank">Personnel</a>,
                                 <a href="https://www.flaticon.com/free-icon/three_11379236" target="_blank">Subgroups</a>,
-                                <a href="https://www.flaticon.com/free-icon/group_3085481" target="_blank">Subgroup Membership</a>,
-                                <a href="https://www.flaticon.com/free-icon/music-sheet_2106971" target="_blank">Repertoire</a>,
-                                <a href="https://www.flaticon.com/free-icon/concert_1598814" target="_blank">Concerts</a>,
                                 <a href="https://www.flaticon.com/free-icon/event_839888" target="_blank">Events</a>,
+                                <a href="https://www.flaticon.com/free-icon/music-player_500148" target="_blank">Event Music Note</a>,
                                 <a href="https://www.flaticon.com/free-icon/bubble-chat_2076218" target="_blank">Get Involved</a>,
                                 <a href="https://www.flaticon.com/free-icon/home_1946436" target="_blank">Home</a>,
                                 <a href="https://www.flaticon.com/free-icon/musical-note_727248" target="_blank">Small Ensemble</a>,
-                                <a href="https://www.flaticon.com/free-icon/image_6499527" target="_blank">Gallery</a>
-                                <a href="https://www.flaticon.com/free-icon/flute_1913302" target="_blank">Flute</a>
-                                <a href="https://www.flaticon.com/free-icon/clarinet_8332455" target="_blank">Clarinet</a>
-                                <a href="https://www.flaticon.com/free-icon/oboe_8332528" target="_blank">Oboe</a>
-                                <a href="https://www.flaticon.com/free-icon/bassoon_1913373" target="_blank">Bassoon</a>
-                                <a href="https://www.flaticon.com/free-icon/saxophone_4521280" target="_blank">Saxophone</a>
+                                <a href="https://www.flaticon.com/free-icon/image_6499527" target="_blank">Gallery</a>,
+                                <a href="https://www.flaticon.com/free-icon/flute_1913298" target="_blank">Flute</a>,
+                                <a href="https://www.flaticon.com/free-icon/clarinet_8332438" target="_blank">Clarinet</a>,
+                                <a href="https://www.flaticon.com/free-icon/oboe_8332508" target="_blank">Oboe</a>,
+                                <a href="https://www.flaticon.com/free-icon/bassoon_1913373" target="_blank">Bassoon</a>,
+                                <a href="https://www.flaticon.com/free-icon/saxophone_4521280" target="_blank">Saxophone</a>,
+                                <a href="https://www.flaticon.com/free-icon/trumpet_3791304" target="_blank">Trumpet</a>,
+                                <a href="https://www.flaticon.com/free-icon/french-horn_1913321" target="_blank">French Horn</a>,
+                                <a href="https://www.flaticon.com/free-icon/trombone_8332429" target="_blank">Trombone</a>,
+                                <a href="https://www.flaticon.com/free-icon/tuba_3100434" target="_blank">Tuba</a>,
+                                <a href="https://www.flaticon.com/free-icon/violin_836803" target="_blank">Violin</a>,
+                                <a href="https://www.flaticon.com/free-icon/cello_836813" target="_blank">Cello</a>,
+                                <a href="https://www.flaticon.com/free-icon/guitar_836801" target="_blank">Acoustic Guitar</a>,
+                                <a href="https://www.flaticon.com/free-icon/electric-guitar_836809" target="_blank">Electric Guitar</a>,
+                                <a href="https://www.flaticon.com/free-icon/bass_836835" target="_blank">Bass Guitar</a>,
+                                <a href="https://www.flaticon.com/free-icon/piano_836806" target="_blank">Piano</a>,
+                                <a href="https://www.flaticon.com/free-icon/microphone_2168463" target="_blank">Microphone</a>,
+                                <a href="https://www.flaticon.com/free-icon/drums_836750" target="_blank">Drums</a>,
+                                <a href="https://www.flaticon.com/free-icon/sigma_10480273" target="_blank">Total</a>,
+                                <a href="https://www.flaticon.com/free-icon/image_6489396" target="_blank">Artist</a>,
+                                <a href="https://www.flaticon.com/free-icon/video-player_6933179" target="_blank">Video</a>,
+                                <a href="https://www.flaticon.com/free-icon/time_3240587" target="_blank">Time</a>,
+                                <a href="https://www.flaticon.com/free-icon/location_535188" target="_blank">Location</a>,
+                                <a href="https://www.flaticon.com/free-icon/ticket_7411135" target="_blank">Ticket</a>,
+                                <a href="https://www.flaticon.com/free-icon/sparkling_15893294" target="_blank">Sparkle</a>,
+                                <a href="https://www.flaticon.com/free-icon/star_7334113" target="_blank">Sparkles</a>,
+                                <a href="https://www.flaticon.com/free-icon/playlist_11305499" target="_blank">Setlist</a>,
+                                <a href="https://www.flaticon.com/free-icon/group_3394785" target="_blank">Users</a>,
+                                <a href="https://www.flaticon.com/free-icon/thumbtacks_2672101" target="_blank">Pin</a>,
+                                <a href="https://www.greenhoe.com/products/bass-trombones/gc5-series/" target="_blank">Trombone Silhouette</a>,
+                                <a href="https://www.toptal.com/designers/subtlepatterns/japanese-asanoha/" target="_blank">Asanoha Pattern</a>
+                                <a href="https://www.theinstrumentplace.com/parts-of-the-violin" target="_blank">Violin Silhouette</a>
                             </p>
                         </dd>
                         <dt>Website</dt>
                         <dd>
-                            <p>Initial design by @tirangol</p>
+                            <p>trngl</p>
+                        </dd>
+                        <dt>Website Domain</dt>
+                        <dd>
+                            <p>Raekye</p>
+                        </dd>
+                        <dt>Photos</dt>
+                        <dd>
+                            <p>inlovewiththehorrors, ..., ...</p>
+                        </dd>
+                        <dt>Art</dt>
+                        <dd>
+                            <p>???</p>
                         </dd>
                         <dt>Logo</dt>
-                        <dd>???</dd>
+                        <dd>Amako</dd>
                     </dl>
                 </div>
             </section>
@@ -822,7 +1012,7 @@
     </main>
     
     <footer>
-        <hr />
+        <hr class="hr-footer" />
         <span id="footer-contact-row">
             <a class='contact-gmail' href="mailto:utsama.lightmusicclub@gmail.com"></a>
             <a class="contact-discord" href="https://discord.gg/bk9FeQB5ww" target="_blank"></a>
@@ -831,7 +1021,7 @@
             <a class="contact-linktree" href="https://linktr.ee/ut.anime" target="_blank"></a>
             <a class="contact-github" href="https://github.com/utlmc/utlmc.github.io/" target="_blank"></a>
         </span>
-        <h4>© Light Music Club</h4>
+        <h4>Light Music Club</h4>
         <p>University of Toronto Student Anime & Manga Association (UT-SAMA)</p>
         <p>Powered by Github Pages</p>
         <p>Thanks for visiting!</p>
