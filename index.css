@@ -1452,11 +1452,17 @@ Home page info cards
 }
 @media screen and (max-width: 420px) {
     #card-info-left hgroup {
-        width: calc(100vw - 80 * var(--px));
-        margin-left: calc(-80 * var(--px));
+        width: calc(100vw - 140 * var(--px));
+        margin-left: calc(-140 * var(--px));
     }
     #section-home-info {
         padding: calc(30 * var(--px)) 0px;
+    }
+
+    #home-info-keychain-1 {
+        top: calc(-150 * var(--px));
+        right: calc(25 * var(--px));
+        height: calc(200 * var(--px));
     }
 }
 @media screen and (max-width: 350px) {
@@ -1470,13 +1476,19 @@ Home page horizontal scroll gallery
 *******************************/
 #section-home-gallery {
     width: 100vw;
-    display: grid;
-    grid-auto-flow: row;
-    justify-content: center;
+    display: flex;
+    flex-direction: column;
     cursor: grab;
     background-image: url('assets/images/asanoha.jpg');
     overflow-x: auto;
     scrollbar-width: none;
+}
+/* When screen is larger than home gallery content, center it */
+@media screen and (min-width: 1796px) {
+    #section-home-gallery {
+        flex-wrap: wrap;
+        align-content: center;
+    }
 }
 #section-home-gallery:active {
     cursor: grabbing;
@@ -1511,7 +1523,6 @@ Home page horizontal scroll gallery
 }
 
 
-
 /*******************************
 Home page event banner
 *******************************/
@@ -1540,6 +1551,7 @@ Home page event banner
     align-items: flex-start;
 }
 .home-event-poster {
+    margin-top: calc(10 * var(--px)) !important;
     position: relative;
 }
 .home-event-poster:after {
@@ -1561,16 +1573,16 @@ Home page event banner
 .home-event-text {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: calc(15 * var(--px));
 }
 .home-event-text hgroup {
-    margin-top: -10px !important;
+    margin-top: calc(-10 * var(--px)) !important;
     position: relative;
-    padding: 20px 0px;
+    padding: calc(20 * var(--px)) 0px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: calc(10 * var(--px));
+    margin-bottom: calc(20 * var(--px));
 }
 .home-event-text hgroup:before {
     content: '';
@@ -1672,7 +1684,7 @@ Home page event banner
     opacity: 0.4;
 }
 #home-event-bg-2 {
-    opacity: 0.5;
+    opacity: 0.4;
     width: min(100vw, 2000px);
     left: 30vw;
     bottom: 50px;
@@ -1686,6 +1698,7 @@ Home page event banner
     }
     .home-event-text hgroup {
         padding: 20px;
+        margin-bottom: 0;
     }
     .home-event-text hgroup:before {
         left: 0;
@@ -1716,13 +1729,15 @@ Notifications / Announcements
     flex-direction: row;
     width: 100vw;
 }
+#section-announcements, #section-upcoming-events {
+    padding: calc(35 * var(--px)) calc(50 * var(--px));
+}
 #section-announcements {
     background-color: #f0f4f9;
     color: black;
     display: flex;
     flex-direction: column;
     gap: calc(15 * var(--px));
-    padding: calc(35 * var(--px)) calc(50 * var(--px));
     width: 50vw;
 }
 #section-upcoming-events {
@@ -1732,7 +1747,6 @@ Notifications / Announcements
     display: flex;
     flex-direction: column;
     gap: calc(15 * var(--px));
-    padding: calc(35 * var(--px)) calc(50 * var(--px));
 }
 
 #section-bulletin hgroup {
@@ -1800,10 +1814,8 @@ Notifications / Announcements
     #section-bulletin {
         flex-direction: column-reverse;
     }
-    #section-upcoming-events {
-        width: 100vw;
-    }
-    #section-announcements {
+    #section-announcements, #section-upcoming-events {
+        padding: calc(35 * var(--px));
         width: 100vw;
     }
 }
