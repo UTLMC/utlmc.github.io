@@ -56,7 +56,7 @@ const SONGS = [
             'Aux Percussion': ['Sophia']
             'Drums': ['Cailyn']
         }
-    },
+    }
 ]
 function mergePerformers(arr) {
     const sets = arr.reduce((acc, o) => {
