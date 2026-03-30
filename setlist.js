@@ -38,6 +38,13 @@ function cssSetId(id, properties) {
 /*********************************************************************
 Data
 *********************************************************************/
+/*
+TODO
+- decide on optional by or filling in every composer field
+- code intermission line
+- fix title of page
+*/
+
 const SONGS = [
     {
         name: 'Fukashigi no Karte',
@@ -46,18 +53,410 @@ const SONGS = [
         arranger: 'Michael Kim',
         performers: {
             'Vocals': ['Crystal Y.', 'Eric H.',  'miluqi', 'Olivia Yip', 'Zachary Pang'],
-            'Violin': ['J. Mansia', 'Louis Miguel', 'Sean', 'Ze']
-            'Flute': ['Richard']
-            'Clarinet': ['Benjamin L.']
-            'Trombone': ['Efren Wang']
-            'Accordion': ['Phillip Hsu']
-            'Piano': ['Johnathan H.']
-            'Bass': ['Fatima Gonsalves']
-            'Aux Percussion': ['Sophia']
+            'Violin': ['J. Mansia', 'Louis Miguel', 'Sean', 'Ze'],
+            'Flute': ['Richard'],
+            'Clarinet': ['Benjamin L.'],
+            'Trombone': ['Efren Wang'],
+            'Accordion': ['Phillip Hsu'],
+            'Piano': ['Johnathan H.'],
+            'Bass': ['Fatima Gonsalves'],
+            'Aux. Percussion': ['Sophia'],
             'Drums': ['Cailyn']
+        }
+    },
+    {
+        name: 'Sugar Song to Bitter Step',
+        by: 'Unison Square Garden',
+        from: 'Kekkai Sensen',
+        performers: {
+            'Vocals': ['Kai (Kaedan Yu)'],
+            'Guitar': ['Han', 'Kae Nguyen'],
+            'Bass': ['Sophia'],
+            'Drums': ['Julian Gale']
+        }
+    },
+    {
+        name: 'In the Pool',
+        by: 'Kensuke Ushio',
+        from: 'Chainsaw Man Movie: Reze Arc',
+        performers: {
+            'Piano': ['Johnathan H.']
+        }
+    },
+    {
+        name: 'Dawn in the Adan',
+        by: 'Ichiko Aoba',
+        group: 'Bows 4 Belts',
+        performers: {
+            'Vocals': ['Fatima Gonsalves'],
+            'Piano': ['Fatima Gonsalves'],
+            'Guitar': ['Sofia Gondim']
+        }
+    },
+    {
+        name: 'Scarz',
+        by: '?',
+        group: 'Bows 4 Belts',
+        performers: {
+            'Vocals': ['Fatima Gonsalves'],
+            'Guitar': ['Sofia Gondim'],
+            'Bass': ['Fatima Gonsalves'],
+            'Drums': ['Julian Gale']
+        }
+    },
+    {
+        name: 'Shinzo wo Sasageyo!',
+        by: 'Linked Horizon',
+        from: 'Attack on Titan',
+        arranger: 'Rylen Fong - Rayzerfang Music, Hana',
+        performers: {
+            'Vocals': ['Kae Nguyen'],
+            'Backing Vocals': ['A.G. Montejo', 'Hana', 'Kai (Kaedan Yu)', 'Sophia'],
+            'Violin': ['Kai (Kaedan Yu)', 'Sean', 'Ze'],
+            'Alto Sax': ['Rylen Fong'],
+            'Trumpet': ['Hayden Hoffort'],
+            'Trombone': ['Mellow'],
+            'Piano': ['Carmen'],
+            'Guitar': ['William'],
+            'Bass': ['Alexis'],
+            'Drums': ['Julian Gale']
+        }
+    },
+    {
+        name: "That's Why I Quit Music",
+        by: 'Yorushika',
+        performers: {
+            'Vocals': ['Carmen', 'miluqi'],
+            'Piano': ['Johnathan H.'],
+            'Guitar': ['Emily'],
+            'Bass': ['Emmett Hartley'],
+            'Drums': ['Kaveh Barati']
+        }
+    },
+    {
+        name: 'Say It',
+        by: 'Yorushika',
+        from: '夏草が邪魔をする (The Summer Grass Gets In The Way)',
+        performers: {
+            'Vocals': ['Olivia Yip', 'miluqi'],
+            'Piano': ['Raekye'],
+            'Guitar': ['Emily'], 
+            'Bass': ['Emmett Hartley'],
+            'Drums': ['Kaveh Barati']
+        }
+    },
+    {
+        name: 'Delfino Plaza (8-Bit Big Band ver.)',
+        performers: {
+            'Violin': ['Kai (Kaedan Yu)'],
+            'Flute': ['Cathy Z.'],
+            'Alto Sax': ['Rylen Fong', 'Simba'],
+            'Tenor Sax': ['A. G. Montejo'],
+            'Trumpet': ['Charlene Chiang', 'Hayden Hoffort'],
+            'Trombone': ['Efren Wang'],
+            'Accordion': ['Phillip Hsu'],
+            'Piano': ['Paul Y.'],
+            'Guitar': ['Prashanth'],
+            'Bass': ['Emmett Hartley'],
+            'Drums': ['Julian Gale']
+        }
+    },
+    {
+        name: 'Jinsei wa Yume Darake\n(Ma Vie, Mes Rêves)',
+        by: 'Sheena Ringo',
+        arranger: 'Michael Kim',
+        performers: {
+            'Vocals': ['Kai (Kaedan Yu)'],
+            'Violin': ['Michael Kim', 'Simba'],
+            'Flute': ['Cathy Z.'],
+            'Alto Sax': ['Rylen Fong'],
+            'Tenor Sax': ['A. G. Montejo'],
+            'Trumpet': ['Charlene Chiang', 'Hayden Hoffort'],
+            'Trombone': ['Efren Wang'],
+            'Piano': ['Carmen', 'Yvette'],
+            'Bass': ['Emmett Hartley'],
+            'Drums': ['Julian Gale']
+        }
+    },
+    {
+        name: 'Jump Up, Superstar!',
+        from: 'Super Mario Odyssey',
+        by: 'Naoto Kubo',
+        arranger: 'Brandon Douglas',
+        performers: {
+            'Vocals': ['Carmen'],
+            'Flute': ['Cathy Z.'],
+            'Alto Sax': ['Rylen Fong', 'Simba'],
+            'Tenor Sax': ['A. G. Montejo', 'Daniel Kim'],
+            'Trumpet': ['Charlene Chiang', 'Hayden Hoffort'],
+            'Trombone': ['Efren Wang'],
+            'Piano': ['Paul Y.'],
+            'Guitar': ['Prashanth'],
+            'Bass': ['Emmett Hartley'],
+            'Drums': ['Julian Gale']
+        }
+    },
+    {
+        name: 'Last Stardust',
+        performers: {
+            'Vocals': ['Sophia'],
+            'Piano': ['?'],
+            'Guitar': ['Emily'],
+            'Bass': ['James Inneo'],
+            'Drums': ['J. Mansia']
+        }
+    },
+    {
+        name: 'Love Trial',
+        by: '40mP ft. Hatsune Miku',
+        performers: {
+            'Vocals': ['Sophia'],
+            'Piano': ['?'],
+            'Guitar': ['Emily'],
+            'Bass': ['James Inneo'],
+            'Drums': ['J. Mansia']
+        }
+    },
+    {
+        name: 'Fuyu no Hanashi',
+        from: 'Given',
+        performers: {
+            'Vocals': ['Zachary Pang'],
+            'Guitar': ['William'],
+            'Bass': ['Emmett Hartley'],
+            'Drums': ['J. Mansia']
+        }
+    },
+    {
+        name: "Theme of Stone Ocean (Jolyne's Theme)",
+        by: 'Yugo Kanno',
+        from: "Jojo's Bizarre Adventure: Stone Ocean",
+        performers: {
+            'Vocals': ['Eric H.', 'Olivia Yip', 'William'],
+            'Violin': ['Louis Miguel', 'Sean', 'Ze'],
+            'Clarinet': ['A. G. Montejo'],
+            'Alto Sax': ['Simba'],
+            'Tenor Sax': ['Cathy Z.'],
+            'Trumpet': ['Hayden Hoffort'],
+            'Trombone': ['Efren Wang'],
+            'Piano': ['Leo'],
+            'Guitar': ['Alexis'],
+            'Bass': ['Sophia'],
+            'Drums': ['Kaveh Barati']
+        }
+    },
+    {
+        name: 'I Am Gonna Claw\n(Out Your Eyes Then Drown You To Death)',
+        by: 'Darren Korb',
+        from: 'Hades II',
+        performers: {
+            'Vocals': ['A. G. Montejo'],
+            'Trombone': ['Mellow'],
+            'Guitar': ['Inès Alibay', 'Kae Nguyen'],
+            'Bass': ['Emmett Hartley'],
+            'Drums': ['Jimin']
+        }
+    },
+    {
+        name: 'Plastic Love',
+        by: 'Mariya Takeuchi',
+        arranger: 'Richard',
+        performers: {
+            'Vocals': ['Carmen'],
+            'Backing Vocals': ['Crystal Y.', 'Eric H.', 'Fatima Gonsalves'],
+            'Violin': ['Kai (Kaedan Yu)', 'Sean'],
+            'Clarinet': ['A. G. Montejo'],
+            'Alto Sax': ['Simba'],
+            'Tenor Sax': ['Cathy Z.'],
+            'Trumpet': ['Hayden Hoffort'],
+            'Piano': ['Angelina'],
+            'Guitar': ['Andrew Tan', 'Sofia Gondim'],
+            'Bass': ['Inès Alibay'],
+            'Drums': ['Kaden Calvert']
+        }
+    },
+    {
+        name: 'Wii Sports Resort Main Theme',
+        by: '',
+        arranger: 'Kai (Kaedan Yu)',
+        performers: {
+            'Violin': ['Sean', 'Ze'],
+            'Flute': ['Cathy Z.', 'Richard'],
+            'Trumpet': ['Hayden Hoffort'],
+            'Alto Sax': ['Simba'],
+            'Trombone': ['Efren Wang', 'Mellow'],
+            'Piano': ['tommy'],
+            'Guitar': ['Brian Yin', 'William'],
+            'Bass': ['Sophia'],
+            'Aux Percussion': ['Kaden', 'Kai Kang Nie', 'Zachary'],
+            'Drums': ['Julian Gale']
+        }
+    },
+    {
+        name: 'Battle!!',
+        by: '',
+        arranger: 'Richard',
+        from: 'Xenoblade Chronicles 2',
+        performers: {
+            'Violin': ['Louis Miguel', 'Kai (Kaedan Yu)'],
+            'Flute': ['Richard'],
+            'Clarinet': ['Rylen Fong'],
+            'Tenor Sax': ['A. G. Montejo'],
+            'Piano': ['Johnathan H', 'Raekye'],
+            'Bass': ['Emmett Hartley'],
+            'Drums': ['Julian Gale']
+        }
+    },
+    {
+        name: 'Mechonis Field',
+        by: '',
+        arranger: 'Richard',
+        from: 'Xenoblade Chronicles',
+        performers: {
+            'Theremin': ['Colin Boothby'],
+            'Piano': ['Johnathan H.']
+        }
+    },
+    {
+        name: 'Rogueport',
+        by: '',
+        arranger: 'Richard',
+        from: 'Paper Mario',
+        performers: {
+            'Violin': ['Louis Miguel', 'Sean', 'Simba'],
+            'Flute': ['Richard'],
+            'Clarinet': ['Benjamin L.'],
+            'Alto Sax': ['Brandon Law'],
+            'Tenor Sax': ['A.G. Montejo'],
+            'Trumpet': ['Hayden Hoffort'],
+            'Bagpipes': ['Kai Kang Nie'],
+            'Theremin': ['Colin Boothby'],
+            'Piano': ['Jonathan H'],
+            'Aux Percussion': ['Jonathan H', 'Kai Kang Nie'],
+            'Drums': ['Julian Gale']
+        }
+    },
+    {
+        name: 'Remedy (Metal version)',
+        by: 'DYLZAL',
+        arranger: 'Kai (Kaedan Yu)',
+        from: 'UNDERTALE YELLOW',
+        performers: {
+            'Violin': ['Kai (Kaedan Yu)'],
+            'Harpsichord': ['A. G. Montejo'],
+            'Guitar': ['William'],
+            'Bass': ['Emmett Hartley'],
+            'Drums': ['Julian Gale']
+        }
+    },
+    {
+        name: 'Kẻ Thù',
+        by: 'Ngọt',
+        group: 'Masters of Spinjitzu\n(Formerly Super Sentai)',
+        performers: {
+            'Vocals': ['Kae Nguyen'],
+            'Guitar': ['Emmett Hartley', 'Michael Kim'],
+            'Bass': ['Sophia'],
+            'Drums': ['Julian Gale']
+        }
+    },
+    {
+        name: 'Layla',
+        by: 'yotsudome noddy',
+        group: '2roup 2',
+        performers: {
+            'Vocals': ['Alexis'],
+            'Guitar': ['Robin', 'Alexis'],
+            'Bass': ['Tyrone Fang'],
+            'Drums': ['Jimin']
+        }
+    },
+    {
+        name: 'Kokudou slope',
+        by: 'kinokoteikoku',
+        from: 'ユリーカ (Eureka)',
+        group: '2roup 2',
+        performers: {
+            'Vocals': ['Alexis'],
+            'Guitar': ['Robin', 'Alexis'],
+            'Bass': ['Tyrone Fang'],
+            'Drums': ['Jimin']
+        }
+    },
+    {
+        name: "Last Train at 25 O'Clock",
+        by: 'Lamp',
+        from: 'For Lovers',
+        performers: {
+            'Vocals': ['Kai (Kaedan Yu)'],
+            'Violin': ['Sean'],
+            'Flute': ['Cathy Z.'],
+            'Alto Sax': ['A.G. Montejo'],
+            'Trombone': ['Mellow'],
+            'Piano': ['Jonathan H'],
+            'Guitar': ['Inès Alibay'],
+            'Bass': ['James Inneo'],
+            'Drums': ['Jimin']
+        }
+    },
+    {
+        name: 'Moudoku ga Osou',
+        by: 'Hifumi ft. Hatsune Miku',
+        performers: {
+            'Vocals': ['Olivia Yip'],
+            'Guitar': ['Robin, yams'],
+            'Bass': ['Sophia'],
+            'Drums': ['Han']
+        }
+    },
+    {
+        name: 'Aishite',
+        by: 'Kikuo ft. Hatsune Miku',
+        arranger: 'Sean',
+        performers: {
+            'Vocals': ['Carmen', 'Lucia'],
+            'Violin': ['Louis Miguel', 'J. Mansia', 'Ze'],
+            'Flute': ['Cathy Z.'],
+            'Clarinet': ['Benjamin L.', 'Rylen Fong'],
+            'Alto Sax': ['Simba'],
+            'Trumpet': ['Hayden Hoffort'],
+            'Trombone': ['Mellow'],
+            'Piano': ['Raekye'],
+            'Guitar': ['Emily'],
+            'Bass': ['Emmett Hartley'],
+            'Drums': ['Cailyn']
+        }
+    },
+    {
+        name: 'Rumbling',
+        by: 'SiM',
+        from: 'Attack on Titan',
+        performers: {
+            'Vocals': ['Kae Nguyen', 'Kai (Kaedan Yu)'],
+            'Violin': ['Sean', 'Simba'],
+            'Guitar': ['William'],
+            'Bass': ['Emmett Hartley'],
+            'Drums': ['Julian Gale']
+        }
+    },
+    {
+        name: '?????????',
+        by: '????????',
+        arranger: 'Sean',
+        from: '???? ?????',
+        performers: {
+            'Vocals': ['Eric H.', 'Sophia', 'Zachary Pang'],
+            'Alto Sax': ['A. G. Montejo', 'Simba'],
+            'Trumpet': ['Hayden Hoffort'],
+            'Piano': ['Sean'],
+            'Guitar': ['Brian Yin', 'Inès Alibay'],
+            'Bass': ['Tyrone Fang'],
+            'Drums': ['Julian Gale']
         }
     }
 ]
+
+
 function mergePerformers(arr) {
     const sets = arr.reduce((acc, o) => {
         for (const [k, vals] of Object.entries(o)) {
@@ -143,9 +542,9 @@ function construct(json) {
 
 async function constructPerformers() {
     const PERFORMERS = mergePerformers(SONGS.map(x => x.performers));
-    const choir = Array.from(new Set(SONGS.filter(x => x.group === 'New Resonance Choir').map(x => x.performers.Vocals).flat()));
-    removePerformers(PERFORMERS, choir);
-    PERFORMERS['New Resonance Choir'] = choir;
+    //const choir = Array.from(new Set(SONGS.filter(x => x.group === 'New Resonance Choir').map(x => x.performers.Vocals).flat()));
+    //removePerformers(PERFORMERS, choir);
+    //PERFORMERS['New Resonance Choir'] = choir;
 
     const table = cssGetId('credits-table');
     const sorted = Object.entries(PERFORMERS).sort((a, b) => a[0].localeCompare(b[0]));
