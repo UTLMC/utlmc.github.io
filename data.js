@@ -118,7 +118,7 @@ const MEMBERS = [
             'Executive (2025)'
         ],
         socialMedia: {
-            discord: ['@pixellatedmike'],
+            discord: ['@pixelatedmike'],
         }
     },
     {
