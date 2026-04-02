@@ -43,6 +43,7 @@ TODO
 - decide on optional by or filling in every composer field
 - code intermission line
 - fix title of page
+- decide on how to handle instrumentalists that appear twice in the same song (different part)
 */
 
 const SONGS = [
@@ -54,7 +55,6 @@ const SONGS = [
         performers: {
             'Vocals': ['Crystal Y.', 'Eric H.',  'miluqi', 'Olivia Yip', 'Zachary Pang'],
             'Violin': ['J. Mansia', 'Louis Miguel', 'Sean', 'Ze'],
-            'Flute': ['Richard'],
             'Clarinet': ['Benjamin L.'],
             'Trombone': ['Efren Wang'],
             'Accordion': ['Phillip Hsu'],
@@ -95,7 +95,7 @@ const SONGS = [
     },
     {
         name: 'Scarz',
-        by: '?',
+        by: 'Novulent',
         group: 'Bows 4 Belts',
         performers: {
             'Vocals': ['Fatima Gonsalves'],
@@ -111,7 +111,7 @@ const SONGS = [
         arranger: 'Rylen Fong - Rayzerfang Music, Hana',
         performers: {
             'Vocals': ['Kae Nguyen'],
-            'Backing Vocals': ['A.G. Montejo', 'Hana', 'Kai (Kaedan Yu)', 'Sophia'],
+            'Backing Vocals': ['A. G. Montejo', 'Hana', 'Kai (Kaedan Yu)', 'Sophia'],
             'Violin': ['Kai (Kaedan Yu)', 'Sean', 'Ze'],
             'Alto Sax': ['Rylen Fong'],
             'Trumpet': ['Hayden Hoffort'],
@@ -128,25 +128,26 @@ const SONGS = [
         performers: {
             'Vocals': ['Carmen', 'miluqi'],
             'Piano': ['Johnathan H.'],
-            'Guitar': ['Emily'],
+            'Guitar': ['Emily', 'Inès Alibay'],
             'Bass': ['Emmett Hartley'],
-            'Drums': ['Kaveh Barati']
+            'Drums': ['Kahveh']
         }
     },
     {
-        name: 'Say It',
+        name: 'Itte',
         by: 'Yorushika',
         from: '夏草が邪魔をする (The Summer Grass Gets In The Way)',
         performers: {
             'Vocals': ['Olivia Yip', 'miluqi'],
             'Piano': ['Raekye'],
-            'Guitar': ['Emily'], 
+            'Guitar': ['Emily','Inès Alibay'], 
             'Bass': ['Emmett Hartley'],
-            'Drums': ['Kaveh Barati']
+            'Drums': ['Kai Kang Nie']
         }
     },
     {
-        name: 'Delfino Plaza (8-Bit Big Band ver.)',
+        name: 'Delfino Plaza (French Jazz ver.)',
+        by: '8-Bit Big Band',
         performers: {
             'Violin': ['Kai (Kaedan Yu)'],
             'Flute': ['Cathy Z.'],
@@ -156,7 +157,7 @@ const SONGS = [
             'Trombone': ['Efren Wang'],
             'Accordion': ['Phillip Hsu'],
             'Piano': ['Paul Y.'],
-            'Guitar': ['Prashanth'],
+            'Guitar': ['Prashanth Shyamala'],
             'Bass': ['Emmett Hartley'],
             'Drums': ['Julian Gale']
         }
@@ -173,7 +174,7 @@ const SONGS = [
             'Tenor Sax': ['A. G. Montejo'],
             'Trumpet': ['Charlene Chiang', 'Hayden Hoffort'],
             'Trombone': ['Efren Wang'],
-            'Piano': ['Carmen', 'Yvette'],
+            'Piano': ['Carmen', 'Heyao Wang'],
             'Bass': ['Emmett Hartley'],
             'Drums': ['Julian Gale']
         }
@@ -191,16 +192,17 @@ const SONGS = [
             'Trumpet': ['Charlene Chiang', 'Hayden Hoffort'],
             'Trombone': ['Efren Wang'],
             'Piano': ['Paul Y.'],
-            'Guitar': ['Prashanth'],
+            'Guitar': ['Prashanth Shyamala'],
             'Bass': ['Emmett Hartley'],
             'Drums': ['Julian Gale']
         }
     },
     {
         name: 'Last Stardust',
+        by: 'Aimer',
         performers: {
             'Vocals': ['Sophia'],
-            'Piano': ['?'],
+            'Piano': ['FH'],
             'Guitar': ['Emily'],
             'Bass': ['James Inneo'],
             'Drums': ['J. Mansia']
@@ -211,7 +213,7 @@ const SONGS = [
         by: '40mP ft. Hatsune Miku',
         performers: {
             'Vocals': ['Sophia'],
-            'Piano': ['?'],
+            'Piano': ['FH'],
             'Guitar': ['Emily'],
             'Bass': ['James Inneo'],
             'Drums': ['J. Mansia']
@@ -219,6 +221,7 @@ const SONGS = [
     },
     {
         name: 'Fuyu no Hanashi',
+        by: 'Given',
         from: 'Given',
         performers: {
             'Vocals': ['Zachary Pang'],
@@ -242,7 +245,7 @@ const SONGS = [
             'Piano': ['Leo'],
             'Guitar': ['Alexis'],
             'Bass': ['Sophia'],
-            'Drums': ['Kaveh Barati']
+            'Drums': ['Kahveh']
         }
     },
     {
@@ -277,7 +280,7 @@ const SONGS = [
     },
     {
         name: 'Wii Sports Resort Main Theme',
-        by: '',
+        by: 'Ryo Nagamatsu',
         arranger: 'Kai (Kaedan Yu)',
         performers: {
             'Violin': ['Sean', 'Ze'],
@@ -285,16 +288,16 @@ const SONGS = [
             'Trumpet': ['Hayden Hoffort'],
             'Alto Sax': ['Simba'],
             'Trombone': ['Efren Wang', 'Mellow'],
-            'Piano': ['tommy'],
+            'Piano': ['Tommy'],
             'Guitar': ['Brian Yin', 'William'],
             'Bass': ['Sophia'],
-            'Aux Percussion': ['Kaden', 'Kai Kang Nie', 'Zachary'],
+            'Aux. Percussion': ['Kaden', 'Kai Kang Nie', 'Zachary'],
             'Drums': ['Julian Gale']
         }
     },
     {
         name: 'Battle!!',
-        by: '',
+        by: 'Kenji Hiramatsu',
         arranger: 'Richard',
         from: 'Xenoblade Chronicles 2',
         performers: {
@@ -302,14 +305,14 @@ const SONGS = [
             'Flute': ['Richard'],
             'Clarinet': ['Rylen Fong'],
             'Tenor Sax': ['A. G. Montejo'],
-            'Piano': ['Johnathan H', 'Raekye'],
+            'Piano': ['Johnathan H.', 'Raekye'],
             'Bass': ['Emmett Hartley'],
             'Drums': ['Julian Gale']
         }
     },
     {
         name: 'Mechonis Field',
-        by: '',
+        by: 'ACE+',
         arranger: 'Richard',
         from: 'Xenoblade Chronicles',
         performers: {
@@ -319,7 +322,7 @@ const SONGS = [
     },
     {
         name: 'Rogueport',
-        by: '',
+        by: 'Yuka Tsujiyoko / Yoshito Sekigawa',
         arranger: 'Richard',
         from: 'Paper Mario',
         performers: {
@@ -327,12 +330,12 @@ const SONGS = [
             'Flute': ['Richard'],
             'Clarinet': ['Benjamin L.'],
             'Alto Sax': ['Brandon Law'],
-            'Tenor Sax': ['A.G. Montejo'],
+            'Tenor Sax': ['A. G. Montejo'],
             'Trumpet': ['Hayden Hoffort'],
             'Bagpipes': ['Kai Kang Nie'],
             'Theremin': ['Colin Boothby'],
-            'Piano': ['Jonathan H'],
-            'Aux Percussion': ['Jonathan H', 'Kai Kang Nie'],
+            'Piano': ['Johnathan H.'],
+            'Aux. Percussion': ['Jonathan H.', 'Kai Kang Nie'],
             'Drums': ['Julian Gale']
         }
     },
@@ -391,9 +394,9 @@ const SONGS = [
             'Vocals': ['Kai (Kaedan Yu)'],
             'Violin': ['Sean'],
             'Flute': ['Cathy Z.'],
-            'Alto Sax': ['A.G. Montejo'],
+            'Alto Sax': ['A. G. Montejo'],
             'Trombone': ['Mellow'],
-            'Piano': ['Jonathan H'],
+            'Piano': ['Johnathan H.'],
             'Guitar': ['Inès Alibay'],
             'Bass': ['James Inneo'],
             'Drums': ['Jimin']
@@ -404,7 +407,7 @@ const SONGS = [
         by: 'Hifumi ft. Hatsune Miku',
         performers: {
             'Vocals': ['Olivia Yip'],
-            'Guitar': ['Robin, yams'],
+            'Guitar': ['Robin', 'yams'],
             'Bass': ['Sophia'],
             'Drums': ['Han']
         }
