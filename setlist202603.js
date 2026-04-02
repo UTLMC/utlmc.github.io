@@ -373,9 +373,9 @@ function construct(json) {
 
 async function constructPerformers() {
     const PERFORMERS = mergePerformers(SONGS.map(x => x.performers));
-    //const choir = Array.from(new Set(SONGS.filter(x => x.group === 'New Resonance Choir').map(x => x.performers.Vocals).flat()));
-    //removePerformers(PERFORMERS, choir);
-    //PERFORMERS['New Resonance Choir'] = choir;
+    const choir = Array.from(new Set(SONGS.filter(x => x.group === 'New Resonance Choir').map(x => x.performers.Vocals).flat()));
+    removePerformers(PERFORMERS, choir);
+    PERFORMERS['New Resonance Choir'] = choir;
 
     const table = cssGetId('credits-table');
     const sorted = Object.entries(PERFORMERS).sort((a, b) => a[0].localeCompare(b[0]));
