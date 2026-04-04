@@ -126,7 +126,8 @@ const SONGS = [
         name: "That's Why I Quit Music",
         by: 'Yorushika',
         performers: {
-            'Vocals': ['Carmen', 'miluqi'],
+            'Vocals': ['miluqi'],
+            'Backing Vocals': ['Carmen'],
             'Piano': ['Johnathan H.'],
             'Guitar': ['Emily', 'Inès Alibay'],
             'Bass': ['Emmett Hartley'],
@@ -138,7 +139,8 @@ const SONGS = [
         by: 'Yorushika',
         from: '夏草が邪魔をする (The Summer Grass Gets In The Way)',
         performers: {
-            'Vocals': ['Olivia Yip', 'miluqi'],
+            'Vocals': ['miluqi'],
+            'Backing Vocals': ['Olivia Yip'],
             'Piano': ['Raekye'],
             'Guitar': ['Emily','Inès Alibay'], 
             'Bass': ['Emmett Hartley'],
@@ -235,7 +237,7 @@ const SONGS = [
         by: 'Yugo Kanno',
         from: "Jojo's Bizarre Adventure: Stone Ocean",
         performers: {
-            'Vocals': ['Eric H.', 'Olivia Yip', 'William'],
+            'Choir': ['Eric H.', 'Olivia Yip', 'William'],
             'Violin': ['Louis Miguel', 'Sean', 'Ze'],
             'Clarinet': ['A. G. Montejo'],
             'Alto Sax': ['Simba'],
@@ -264,6 +266,7 @@ const SONGS = [
         name: 'Plastic Love',
         by: 'Mariya Takeuchi',
         arranger: 'Richard',
+        description: 'City pop!!',
         performers: {
             'Vocals': ['Carmen'],
             'Backing Vocals': ['Crystal Y.', 'Eric H.', 'Fatima Gonsalves'],
@@ -300,6 +303,7 @@ const SONGS = [
         by: 'Kenji Hiramatsu',
         arranger: 'Richard',
         from: 'Xenoblade Chronicles 2',
+        description: 'groovy',
         performers: {
             'Violin': ['Louis Miguel', 'Kai (Kaedan Yu)'],
             'Flute': ['Richard'],
@@ -315,9 +319,10 @@ const SONGS = [
         by: 'ACE+',
         arranger: 'Richard',
         from: 'Xenoblade Chronicles',
+        description: 'cool song 👍',
         performers: {
             'Theremin': ['Colin Boothby'],
-            'Piano': ['Johnathan H.']
+            'Piano': ['Richard']
         }
     },
     {
@@ -325,6 +330,7 @@ const SONGS = [
         by: 'Yuka Tsujiyoko / Yoshito Sekigawa',
         arranger: 'Richard',
         from: 'Paper Mario',
+        description: 'bagpipes 😮',
         performers: {
             'Violin': ['Louis Miguel', 'Sean', 'Simba'],
             'Flute': ['Richard'],
