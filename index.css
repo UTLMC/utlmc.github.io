@@ -1516,6 +1516,9 @@ Home page horizontal scroll gallery
 .home-gallery-row img {
     border: 2px solid white;
 }
+.home-gallery-youtube {
+    height: var(--image-height);
+}
 .home-gallery-song {
     height: var(--image-height);
     aspect-ratio: 1;
@@ -1995,14 +1998,14 @@ About page text
     color: rgb(117, 118, 224);
 }
 #section-about-intro-img, #section-about-projects-img {
-    min-width: 50vw;
+    min-width: calc(100vw - 700px);
     background-size: cover;
     background-position: 50% 100%;
     background-image: url('assets/images/about-history-1.webp');
 }
 #section-about-projects-img {
-    min-width: 60vw;
-    background-position: 0% 60%;
+    min-width: calc(100vw - 500px);
+    background-position: 0% 50%;
     background-image: url('assets/images/about-history-2.webp');
 }
 #section-about-intro hgroup, #section-about-projects hgroup {
@@ -2010,6 +2013,12 @@ About page text
     display: flex;
     flex-direction: column;
     gap: calc(15 * var(--px));
+}
+@media screen and (width > 1550px) {
+    #section-about-intro-img { background-position: 50% 70%; }
+}
+@media screen and (width > 1850px) {
+    #section-about-intro-img { background-position: 50% 65%; }
 }
 @media screen and (max-width: 1200px) {
     #section-about-intro {
