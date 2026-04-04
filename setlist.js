@@ -106,7 +106,7 @@ const SONGS = [
     },
     {
         name: 'Shinzo wo Sasageyo!',
-        by: 'Linked Horizon',
+        by: 'Linked Horizon\n',
         from: 'Attack on Titan',
         arranger: 'Rylen Fong - Rayzerfang Music, Hana',
         performers: {
