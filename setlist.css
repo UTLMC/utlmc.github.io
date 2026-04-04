@@ -103,14 +103,14 @@ Title banner
 }
 #sparkle-1 {
     top: -60px;
-    margin-left: 250px;
+    margin-left: 400px;
     height: 110px;
     transform: rotate(5deg);
     filter: brightness(1.3) drop-shadow(5px 5px rgba(0, 0, 0, 0.3));
 }
 #sparkle-2 {
     bottom: -60px;
-    margin-left: -250px;
+    margin-left: -400px;
     height: 130px;
     transform: rotate(3deg);
     filter: brightness(2) drop-shadow(5px 5px rgba(0, 0, 0, 0.3));
