@@ -53,7 +53,7 @@ const SONGS = [
         from: 'Rascal Does Not Dream of Bunny Girl Senpai',
         arranger: 'Michael Kim',
         performers: {
-            'Vocals': ['Crystal Y.', 'Eric H.',  'miluqi', 'Olivia Yip', 'Zachary Pang'],
+            'Vocals': ['Crystal Y.', 'Eric H.',  'Celina L.', 'Olivia Yip', 'Zachary Pang'],
             'Violin': ['J. Mansia', 'Louis Miguel', 'Sean', 'Ze'],
             'Clarinet': ['Benjamin L.'],
             'Trombone': ['Efren Wang'],
@@ -126,7 +126,7 @@ const SONGS = [
         name: "That's Why I Quit Music",
         by: 'Yorushika',
         performers: {
-            'Vocals': ['miluqi'],
+            'Vocals': ['Celina L.'],
             'Backing Vocals': ['Carmen'],
             'Piano': ['Johnathan H.'],
             'Guitar': ['Emily', 'Inès Alibay'],
@@ -139,7 +139,7 @@ const SONGS = [
         by: 'Yorushika',
         from: '夏草が邪魔をする\n(The Summer Grass Gets In The Way)',
         performers: {
-            'Vocals': ['miluqi'],
+            'Vocals': ['Celina L.'],
             'Backing Vocals': ['Olivia Yip'],
             'Piano': ['Raekye'],
             'Guitar': ['Emily','Inès Alibay'], 
