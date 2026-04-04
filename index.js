@@ -178,7 +178,7 @@ window.addEventListener('mousemove', (event) => {
     }
 });
 function scrollHorizontally(event) {
-    const { target, deltaY } = event;
+    const { target, deltaX, deltaY } = event;
     
     // Don't scroll horizontally if there's nothing to scroll
     if (target.scrollWidth <= target.getBoundingClientRect().width + 1) {
@@ -186,7 +186,7 @@ function scrollHorizontally(event) {
     }
 
     event.preventDefault();
-    target.scrollLeft += deltaY;
+    target.scrollLeft += deltaX !== 0 ? deltaX : deltaY;
 }
 
 window.addEventListener('DOMContentLoaded', () => {
