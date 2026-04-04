@@ -137,7 +137,7 @@ const SONGS = [
     {
         name: 'Itte',
         by: 'Yorushika',
-        from: '夏草が邪魔をする (The Summer Grass Gets In The Way)',
+        from: '夏草が邪魔をする\n(The Summer Grass Gets In The Way)',
         performers: {
             'Vocals': ['miluqi'],
             'Backing Vocals': ['Olivia Yip'],
