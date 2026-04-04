@@ -233,7 +233,7 @@ const SONGS = [
         }
     },
     {
-        name: "Theme of Stone Ocean (Jolyne's Theme)",
+        name: "Theme of Stone Ocean\n(Jolyne's Theme)",
         by: 'Yugo Kanno',
         from: "Jojo's Bizarre Adventure: Stone Ocean",
         performers: {
@@ -251,7 +251,7 @@ const SONGS = [
         }
     },
     {
-        name: 'I Am Gonna Claw\n(Out Your Eyes Then Drown You To Death)',
+        name: 'I Am Gonna Claw\n(Out Your Eyes Then\nDrown You To Death)',
         by: 'Darren Korb',
         from: 'Hades II',
         performers: {
@@ -285,6 +285,7 @@ const SONGS = [
         name: 'Wii Sports Resort Main Theme',
         by: 'Ryo Nagamatsu',
         arranger: 'Kai (Kaedan Yu)',
+        description:'wii are resorting to violence',
         performers: {
             'Violin': ['Sean', 'Ze'],
             'Flute': ['Cathy Z.', 'Richard'],
