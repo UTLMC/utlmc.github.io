@@ -67,6 +67,7 @@ Title banner
 #intro-title h1 {
     font-size: 70px;
 }
+/*
 #intro-title h2 {
     position: absolute;
     font-size: 40px;
@@ -80,6 +81,7 @@ Title banner
 #intro-title h1:last-child {
     margin-left: 100px;
 }
+*/
 
 /* Icons */
 #intro-title-container img {
