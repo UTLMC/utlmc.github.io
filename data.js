@@ -180,36 +180,6 @@ const MEMBERS = [
     },
 ]
 
-const SUBGROUPS = [
-    {
-        name: 'Dark Music Club',
-        leader: 'Nootnoot Dootman',
-        created: '2025-05',
-        ended: null,
-        openToJoin: true,
-        lookingFor: ['Bass Guitar', 'Voice', 'Electric Guitar', 'Drums'],
-        description: 'We are a rock band and we like to perform anime OPs or something.'
-    },
-    {
-        name: 'LMC Orchestra',
-        leader: 'I dunno',
-        created: '2024-01',
-        ended: null,
-        openToJoin: false,
-        lookingFor: [],
-        description: 'We play orchestral pieces from video games like XX and YY or from anime like ZZ and WW.'
-    },
-    {
-        name: 'Cool Dudes',
-        leader: 'Me',
-        created: '2023-06',
-        ended: null,
-        openToJoin: false,
-        lookingFor: [],
-        description: 'We are cool dudes, man.'
-    },
-]
-
 const FAQ = [
     {
         q: 'Is LMC only for University of Toronto students?',
@@ -287,16 +257,6 @@ const EMBED_LINKS = {
 
 const CAROUSEL = [
     {
-        url: 'assets/images/carousel 2026-04.webp',
-        caption: 'Tunes & Treats <br> <b>2026/04</b>',
-        yLims: [250, 1150],
-        captionXPosition: '70%',
-        captionRight: false,
-        captionTopOnMobile: true,
-        width: 2400,
-        height: 1350
-    },
-    {
         url: 'assets/images/carousel 2025-04.webp',
         caption: 'End of Winter <br> Concert <b>2025/04</b>',
         yLims: [300, 1300],
@@ -305,6 +265,16 @@ const CAROUSEL = [
         captionTopOnMobile: true,
         width: 3171,
         height: 1524
+    },
+    {
+        url: 'assets/images/carousel 2026-04.webp',
+        caption: 'Tunes & Treats <br> <b>2026/04</b>',
+        yLims: [250, 1150],
+        captionXPosition: '70%',
+        captionRight: false,
+        captionTopOnMobile: true,
+        width: 2400,
+        height: 1350
     },
     {
         url: 'assets/images/carousel 2025-01.webp',

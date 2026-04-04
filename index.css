@@ -995,8 +995,15 @@ Sections
     --section-padding: 100px;
     --section-default-width: min(800px, calc(100vw - var(--section-padding)));
     --section-wide-width: min(1000px, calc(100vw - var(--section-padding)));
-    --section-vast-width: calc(100vw - calc(2 * var(--section-padding)));
+    --section-vast-width: min(1500px, calc(100vw - calc(2 * var(--section-padding))));
+    --section-fullscreen-width: calc(100vw - calc(2 * var(--section-padding)));
     --section-spacing: calc(50 * var(--px));
+}
+@media screen and (max-width: 1000px) {
+    :root {
+        --section-fullscreen-width: calc(100vw - var(--section-padding));
+        --section-vast-width: calc(100vw - var(--section-padding));
+    }
 }
 @media screen and (max-width: 450px) {
     :root {
@@ -1012,7 +1019,7 @@ article *:not(.section-default):first-child {
 article .section-default:last-child, article .section-wide:last-child {
     padding-bottom: calc(50 * var(--px));
 }
-.section-default, .section-wide {
+.section-default {
     display: flex;
     flex-direction: column;
     gap: calc(15 * var(--px));
@@ -1022,13 +1029,7 @@ article .section-default:last-child, article .section-wide:last-child {
 .section-default, .section-default-bg {
     width: var(--section-default-width);
 }
-.section-wide, .side-wide-bg {
-    width: var(--section-wide-width);
-}
-.section-wide h1, .section-wide-bg h1 {
-    text-align: center;
-}
-.section-default-bg:before, .section-wide-bg:before {
+.section-default-bg:before {
     content: '';
     position: absolute;
     background-color: #351c75ff;
@@ -1037,7 +1038,7 @@ article .section-default:last-child, article .section-wide:last-child {
     z-index: -1;
     margin-top: calc(-50 * var(--px));
 }
-.section-default-bg, .section-wide-bg {
+.section-default-bg {
     padding: calc(50 * var(--px)) 0px;
     margin-top: calc(50 * var(--px));
     position: relative;
@@ -1174,7 +1175,7 @@ Home page info cards
     display: flex;
     flex-direction: row;
     width: 100vw;
-    padding: calc(50 * var(--px)) 0px;
+    padding: var(--section-spacing) 0px;
     position: relative;
     gap: calc(100 * var(--px));
     position: relative;
@@ -1458,6 +1459,9 @@ Home page info cards
     #section-home-info {
         padding: calc(30 * var(--px)) 0px;
     }
+    #card-info-left h3 {
+        width: max-content;
+    }
 
     #home-info-keychain-1 {
         top: calc(-150 * var(--px));
@@ -1466,8 +1470,15 @@ Home page info cards
     }
 }
 @media screen and (max-width: 350px) {
+    #card-info-left hgroup {
+        width: calc(100vw - 80 * var(--px));
+        margin-left: calc(-80 * var(--px));
+    }
     #home-info-keychain-1 {
         display: none;
+    }
+    #card-info-left h3 {
+        width: fit-content;
     }
 }
 
@@ -1479,7 +1490,7 @@ Home page horizontal scroll gallery
     display: flex;
     flex-direction: column;
     cursor: grab;
-    background-image: url('assets/images/asanoha.jpg');
+    background-image: url('assets/images/asanoha.webp');
     overflow-x: auto;
     scrollbar-width: none;
 }
@@ -1551,7 +1562,6 @@ Home page event banner
     align-items: flex-start;
 }
 .home-event-poster {
-    margin-top: calc(10 * var(--px)) !important;
     position: relative;
 }
 .home-event-poster:after {
@@ -1691,6 +1701,9 @@ Home page event banner
 }
 
 @media screen and (max-width: 950px) {
+    #section-home-event {
+        padding: var(--section-spacing) 0;
+    }
     #home-event-container {
         flex-direction: column;
         gap: calc(50 * var(--px));
@@ -1756,9 +1769,11 @@ Notifications / Announcements
     align-items: center;
     gap: 10px;
 }
-#section-bulletin hgroup h3 {
+#section-bulletin hgroup h1 {
+    color: black;
     font-size: calc(28 * var(--px));
     line-height: 1;
+    width: fit-content;
     font-family: 'Geologica';
 }
 #section-announcements-icon, #section-events-icon {
@@ -1817,6 +1832,9 @@ Notifications / Announcements
     #section-announcements, #section-upcoming-events {
         padding: calc(35 * var(--px));
         width: 100vw;
+    }
+    #section-announcements {
+        padding-top: 0;
     }
 }
 @media screen and (max-width: 450px) {
@@ -1956,6 +1974,374 @@ Home page outreach
         margin-bottom: calc(15 * var(--px));
     }
 }
+
+
+/*******************************
+About page text
+*******************************/
+#section-about-intro, #section-about-projects {
+    display: flex;
+    flex-direction: row;
+    background-color: #252421;
+}
+#section-about-projects {
+    background-color: #efefef;
+    color: black;
+}
+#section-about-projects h1 {
+    color: black;
+}
+#section-about-projects em {
+    color: rgb(117, 118, 224);
+}
+#section-about-intro-img, #section-about-projects-img {
+    min-width: 50vw;
+    background-size: cover;
+    background-position: 50% 100%;
+    background-image: url('assets/images/about-history-1.webp');
+}
+#section-about-projects-img {
+    min-width: 60vw;
+    background-position: 0% 60%;
+    background-image: url('assets/images/about-history-2.webp');
+}
+#section-about-intro hgroup, #section-about-projects hgroup {
+    padding: calc(50 * var(--px));
+    display: flex;
+    flex-direction: column;
+    gap: calc(15 * var(--px));
+}
+@media screen and (max-width: 1200px) {
+    #section-about-intro {
+        flex-direction: column-reverse;
+    }
+    #section-about-intro-img {
+        width: 100vw;
+        height: clamp(300px, 50vw, 70vh);
+        background-position: 50% 70%;
+    }
+}
+@media screen and (max-width: 1000px) {
+    #section-about-intro-img {
+        background-position: 50% 90%;
+    }
+}
+@media screen and (max-width: 950px) {
+    #section-about-projects {
+        flex-direction: column;
+    }
+    #section-about-projects-img {
+        width: 100vw;
+        height: max(300px, 40vw);
+    }
+    #section-about-intro hgroup, #section-about-projects hgroup {
+        padding: calc(35 * var(--px));
+    }
+}
+
+
+/*******************************
+Personnel
+*******************************/
+#section-personnel {
+    display: flex;
+    flex-direction: column;
+    padding: var(--section-spacing) 0;
+    gap: calc(15 * var(--px));
+    width: var(--section-vast-width);
+    position: relative;
+    align-items: center;
+}
+#section-personnel h1 {
+    width: fit-content;
+}
+#section-personnel:before {
+    content: '';
+    position: absolute;
+    background-color: #351c75ff;
+    left: calc(-0.5 * (100vw - var(--section-vast-width)));
+    top: 0;
+    width: 100vw;
+    height: 100%;
+    z-index: -1;
+}
+#table-personnel {
+    --table-icon-width: calc(105 * var(--px));
+    --table-icon-gap: calc(10 * var(--px));
+    display: flex;
+    flex-direction: column;
+    height: calc(4 * var(--table-icon-width) + 3 * var(--table-icon-gap));
+    flex-wrap: wrap;
+    gap: var(--table-icon-gap);
+    list-style-type: none;
+    padding: 0;
+    width: auto;
+    align-content: flex-start;
+    justify-content: flex-start;
+}
+@media screen and (max-width: 1200px) {
+    #table-personnel {
+        flex-direction: row;
+        height: auto;
+        width: auto;
+        justify-content: center;
+    }
+}
+@media screen and (width > 1200px) {
+    #table-personnel li:nth-child(-n+2) { --table-icon-width: calc(220 * var(--px)); }
+    #table-personnel li:nth-child(n+3):nth-child(-n+5) { --table-icon-width: calc(143 * var(--px)); }
+}
+@media screen and (width > 1110px) and (max-width: 1200px) {
+    #table-personnel li:nth-child(-n+4) { --table-icon-width: calc(220 * var(--px)); }
+    #table-personnel li:nth-child(n+5):nth-child(-n+10) { --table-icon-width: calc(143 * var(--px)); }
+}
+@media screen and (width > 855px) and (max-width: 1110px) {
+    #table-personnel { width: 710px; }
+    #table-personnel li:nth-child(-n+3) { --table-icon-width: calc(220 * var(--px)); }
+    #table-personnel li:nth-child(n+4):nth-child(-n+7) { --table-icon-width: calc(162 * var(--px)); }
+}
+@media screen and (width > 525px) and (max-width: 855px) {
+    #table-personnel {
+        width: calc(550 * var(--px));
+        --table-icon-width: calc(100 * var(--px));
+    }
+    #table-personnel li:nth-child(-n+3) { --table-icon-width: calc(175 * var(--px)); }
+    #table-personnel li:nth-child(n+4):nth-child(-n+7) { --table-icon-width: calc(128 * var(--px)); }
+}
+@media screen and (width > 460px) and (max-width: 525px) {
+    #table-personnel li:nth-child(-n+2) { --table-icon-width: calc(220 * var(--px)); }
+    #table-personnel li:nth-child(n+3):nth-child(-n+5) { --table-icon-width: calc(143 * var(--px)); }
+}
+@media screen and (width > 10px) and (max-width: 460px) {
+    #table-personnel { width: 350px; }
+    #table-personnel li:nth-child(-n+2) { --table-icon-width: calc(162 * var(--px)); }
+}
+
+
+
+
+#table-personnel li {
+    width: var(--table-icon-width);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    position: relative;
+}
+.personnel-title {
+    font-variant: small-caps;
+    font-size-adjust: 0.45;
+    font-weight: 700;
+    font-size: calc(0.15 * var(--table-icon-width));
+    line-height: 0.9;
+    font-family: 'DM Sans';
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: calc(0.08 * var(--table-icon-width));
+    text-shadow: 0px 0px 5px #351c75;
+}
+.personnel-card {
+    width: var(--table-icon-width);
+    aspect-ratio: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: calc(0.08 * var(--table-icon-width));
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding-top: calc(0.08 * var(--table-icon-width));
+    padding-left: calc(0.08 * var(--table-icon-width));
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: center;
+    font-size: calc(0.15 * var(--table-icon-width));
+    transition: 0.2s;
+    position: relative;
+}
+#table-personnel li:hover .personnel-card {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+.personnel-count {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: calc(0.02 * var(--table-icon-width)) calc(0.04 * var(--table-icon-width));
+    border-radius: calc(0.08 * var(--table-icon-width));
+}
+.personnel-flute { background-image: url('assets/icons/instruments/flute.png'); }
+.personnel-clarinet { background-image: url('assets/icons/instruments/clarinet.png'); }
+.personnel-oboe { background-image: url('assets/icons/instruments/oboe.png'); }
+.personnel-bassoon { background-image: url('assets/icons/instruments/bassoon.png'); }
+.personnel-saxophone { background-image: url('assets/icons/instruments/saxophone.png'); background-position: 60% 60%; }
+.personnel-trumpet { background-image: url('assets/icons/instruments/trumpet.png'); background-position: 60% 60%; }
+.personnel-french-horn { background-image: url('assets/icons/instruments/french horn.png'); background-position: 50% 60%; }
+.personnel-trombone { background-image: url('assets/icons/instruments/trombone.png'); background-position: 50% 70%; }
+.personnel-tuba { background-image: url('assets/icons/instruments/tuba.png'); }
+.personnel-violin, .personnel-viola { background-image: url('assets/icons/instruments/violin.png'); }
+.personnel-cello, .personnel-double-bass { background-image: url('assets/icons/instruments/cello.png'); }
+.personnel-acoustic-guitar { background-image: url('assets/icons/instruments/acoustic guitar.png'); background-position: 60% 60%; }
+.personnel-electric-guitar { background-image: url('assets/icons/instruments/electric guitar.png'); background-position: 60% 60%; }
+.personnel-bass-guitar { background-image: url('assets/icons/instruments/bass guitar.png'); background-position: 60% 60%; }
+.personnel-piano { background-image: url('assets/icons/instruments/piano.png'); }
+.personnel-drums { background-image: url('assets/icons/instruments/drums.png'); }
+.personnel-voice { background-image: url('assets/icons/instruments/voice.png'); }
+.personnel-arranger { background-image: url('assets/icons/music-notes.svg'); }
+.personnel-total { background-image: url('assets/icons/sum.svg'); }
+.personnel-artist { background-image: url('assets/icons/image-filled.svg'); }
+.personnel-video-editor { background-image: url('assets/icons/video.svg'); }
+
+.personnel-notinstrument {
+    background-color: rgba(0, 0, 0, 0.1);
+    filter: invert(1);
+    background-size: 45%;
+    background-position: 50%;
+}
+.personnel-notinstrument:hover {
+    background-color: rgba(0, 0, 0, 0.15) !important;
+}
+.personnel-notinstrument * {
+    filter: invert(1);
+}
+
+
+/*******************************
+Exec team
+*******************************/
+#section-exec-team {
+    display: flex;
+    flex-direction: column;
+    padding: var(--section-spacing) 0;
+    gap: calc(15 * var(--px));
+    width: var(--section-fullscreen-width);
+}
+#exec-team-year {
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.5);
+}
+#exec-team-profile {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(calc(350 * var(--px)), 1fr));
+    list-style: none;
+    padding-left: 0;
+    gap: calc(20 * var(--px));
+    max-width: 100%;
+}
+.exec-team-card {
+    display: flex;
+    flex-direction: row;
+    gap: calc(10 * var(--px));
+}
+.exec-team-card div {
+    display: flex;
+    flex-direction: column;
+    gap: calc(10 * var(--px));
+}
+.exec-team-card hgroup {
+    position: relative;
+    padding: calc(10 * var(--px)) 0;
+}
+.exec-team-card hgroup:before {
+    content: '';
+    top: 0;
+    width: calc(100% + 20 * var(--px));
+    height: 100%;
+    z-index: -1;
+    left: calc(-20 * var(--px));
+    background-image: linear-gradient(to right, rgba(11, 83, 148, 0.5), #0b539400);
+    position: absolute;
+}
+.exec-team-card img {
+    width: calc(200 * var(--px));
+    height: calc(200 * var(--px));
+}
+.exec-team-card h4 {
+    font-family: 'Geologica';
+    font-weight: 400;
+    font-size: calc(22 * var(--px));
+    color: rgb(235, 241, 142);
+    line-height: 1;
+}
+.exec-team-card .tag-container {
+    margin-top: calc(5 * var(--px));
+    /* max-width: calc(50vw - 200 * var(--px)); */
+}
+.exec-team-socials {
+    list-style: none;
+    padding-left: 0;
+}
+
+
+/*******************************
+Musicians table
+*******************************/
+#section-musicians {
+    width: var(--section-fullscreen-width);
+    padding: var(--section-spacing) 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: calc(15 * var(--px));
+}
+#section-musicians:before, #section-musicians:after, #section-personnel:before, #section-personnel:after {
+    content: '';
+    position: absolute;
+    left: calc(-0.5 * (100vw - var(--section-vast-width)));
+    top: 0;
+    width: 100vw;
+    height: 100%;
+}
+#section-musicians:before, #section-musicians:after {
+    left: calc(-0.5 * (100vw - var(--section-fullscreen-width)));
+}
+#section-musicians:before, #section-personnel:before {
+    background-image: url('assets/images/wave.svg');
+    background-size: 200px;
+    z-index: -2;
+}
+#section-musicians:after, #section-personnel:after {
+    background-image: linear-gradient(to right, rgba(66, 37, 137, 0.85), #351c75 calc(200 * var(--px)), #351c75 calc(100vw - 200 * var(--px)), rgba(66, 37, 137, 0.85));
+    z-index: -1;
+}
+#table-musicians {
+    margin-top: calc(-5 * var(--px));
+}
+.toolbar {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    list-style: none;
+    padding-left: 0;
+    gap: calc(8 * var(--px));
+}
+.toolbar li {
+    color: black;
+    font-family: 'DM Sans';
+    font-size: calc(16 * var(--px));
+    line-height: 1;
+    height: calc(28 * var(--px));
+    background-color: rgba(255, 255, 255, 0.9);
+    user-select: none;
+    cursor: pointer;
+    transition: 0.2s;
+    border-radius: calc(8 * var(--px));
+}
+.toolbar li:hover {
+    background-color: rgba(200, 200, 200, 0.9);
+}
+.toolbar li:active {
+    background-color: rgba(150, 150, 150, 0.9);
+    transition: 0s;
+}
+.toolbar-options {
+    width: calc(28 * var(--px));
+    background-size: 60%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url('assets/icons/options.svg');
+}
+.toolbar-button {
+    display: flex;
+    align-items: center;
+    padding: 0 calc(8 * var(--px));
+}
+
 
 
 /*******************************
@@ -2127,57 +2513,6 @@ details .summary-body {
 
 
 /*******************************
-Subgroup Cards
-*******************************/
-#card-subgroup-container {
-    --card-subgroup-padding: 25px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    width: calc(100% + calc(2 * var(--card-subgroup-padding)));
-}
-.card-subgroup {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    background-color: rgba(155, 155, 255, 0.1);
-    padding: var(--card-subgroup-padding);
-    transition: 0.3s;
-}
-.card-subgroup:hover {
-    background-color: rgba(155, 155, 255, 0.2);
-}
-.table-subgroup {
-    display: grid;
-    grid-template-columns: 125px auto;
-    margin: 0;
-}
-.table-subgroup dt {
-    color: rgb(133, 133, 222);
-    font-style: italic;
-    text-wrap: nowrap;
-}
-.table-subgroup dd {
-    margin: 0;
-}
-
-@media screen and (max-width: 750px) {
-    #card-subgroup-container {
-        display: flex;
-        flex-direction: column;
-    }
-}
-@media screen and (max-width: 450px) {
-    #card-subgroup-container {
-        --card-subgroup-padding: 0px;
-    }
-    .card-subgroup {
-        padding: 25px;
-    }
-}
-
-
-/*******************************
 Member Cards Big
 *******************************/
 #card-member-container {
@@ -2208,12 +2543,22 @@ Member Cards Big
     font-weight: normal
 }
 
-.list-social-media {
+.list-social-media, .row-social-media {
     list-style-type: none;
     padding: 0;
     text-wrap: nowrap;
 }
-.list-social-media li:before {
+.row-social-media {
+    display: flex;
+    flex-direction: row;
+}
+.row-social-media li, .row-social-media a {
+    width: calc(28 * var(--px));
+    height: calc(28 * var(--px));
+    display: inline-block;
+    position: relative;
+}
+.list-social-media li:before, .row-social-media li:before {
     content: '';
     width: calc(28 * var(--px));
     height: calc(28 * var(--px));
@@ -2221,8 +2566,13 @@ Member Cards Big
     background-position: 50% 50%;
     background-repeat: no-repeat;
     display: inline-block;
-    margin-right: calc(5 * var(--px));
     margin-bottom: calc(-8 * var(--px));
+}
+.row-social-media li:before {
+    position: absolute;
+}
+.list-social-media li:before {
+    margin-right: calc(5 * var(--px));
 }
 .list-social-media a {
     text-decoration: none;
@@ -2306,7 +2656,7 @@ Tags
     align-items: center;
     gap: 6px 5px;
 }
-.tag {
+.tag-container span {
     background-color: rgb(100, 100, 100);
     color: white;
     border-radius: 10px;
@@ -2378,97 +2728,6 @@ Card Buttons
     }
 }
 
-
-/*******************************
-Personnel Table
-*******************************/
-/* New design */
-#table-personnel {
-    --table-icon-width: calc(105 * var(--px));
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    list-style-type: none;
-    padding: 0;
-}
-#table-personnel li {
-    width: var(--table-icon-width);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    position: relative;
-}
-.personnel-title {
-    font-variant: small-caps;
-    font-size-adjust: 0.45;
-    font-weight: 700;
-    font-size: calc(18 * var(--px));
-    line-height: calc(16 * var(--px));
-    font-family: 'DM Sans';
-    position: absolute;
-    top: 0;
-    padding: calc(7 * var(--px));
-    text-shadow: 0px 0px 5px #351c75;
-}
-.personnel-count {
-    width: var(--table-icon-width);
-    aspect-ratio: 1;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 7px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
-    padding-top: 5px;
-    padding-left: 5px;
-    background-size: 70%;
-    background-repeat: no-repeat;
-    background-position: center;
-    font-size: calc(20 * var(--px));
-    transition: 0.2s;
-}
-#table-personnel li:hover .personnel-count {
-    background-color: rgba(255, 255, 255, 0.15);
-}
-.personnel-count span {
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 2px 4px;
-    border-radius: 7px;
-}
-.personnel-flute .personnel-count { background-image: url('assets/icons/instruments/flute.png'); }
-.personnel-clarinet .personnel-count { background-image: url('assets/icons/instruments/clarinet.png'); }
-.personnel-oboe .personnel-count { background-image: url('assets/icons/instruments/oboe.png'); }
-.personnel-bassoon .personnel-count { background-image: url('assets/icons/instruments/bassoon.png'); }
-.personnel-saxophone .personnel-count { background-image: url('assets/icons/instruments/saxophone.png'); background-position: 60% 60%; }
-.personnel-trumpet .personnel-count { background-image: url('assets/icons/instruments/trumpet.png'); background-position: 60% 60%; }
-.personnel-french-horn .personnel-count { background-image: url('assets/icons/instruments/french horn.png'); background-position: 50% 60%; }
-.personnel-trombone .personnel-count { background-image: url('assets/icons/instruments/trombone.png'); background-position: 50% 70%; }
-.personnel-tuba .personnel-count { background-image: url('assets/icons/instruments/tuba.png'); }
-.personnel-violin .personnel-count, .personnel-viola .personnel-count { background-image: url('assets/icons/instruments/violin.png'); }
-.personnel-cello .personnel-count, .personnel-double-bass .personnel-count { background-image: url('assets/icons/instruments/cello.png'); }
-.personnel-acoustic-guitar .personnel-count { background-image: url('assets/icons/instruments/acoustic guitar.png'); background-position: 60% 60%; }
-.personnel-electric-guitar .personnel-count { background-image: url('assets/icons/instruments/electric guitar.png'); background-position: 60% 60%; }
-.personnel-bass-guitar .personnel-count { background-image: url('assets/icons/instruments/bass guitar.png'); background-position: 60% 60%; }
-.personnel-piano .personnel-count { background-image: url('assets/icons/instruments/piano.png'); }
-.personnel-drums .personnel-count { background-image: url('assets/icons/instruments/drums.png'); }
-.personnel-voice .personnel-count { background-image: url('assets/icons/instruments/voice.png'); }
-.personnel-arranger .personnel-count { background-image: url('assets/icons/music-notes.svg'); }
-.personnel-total .personnel-count { background-image: url('assets/icons/sum.svg'); }
-.personnel-artist .personnel-count { background-image: url('assets/icons/image-filled.svg'); }
-.personnel-video-editor .personnel-count { background-image: url('assets/icons/video.svg'); }
-.personnel-bw .personnel-count {
-    background-color: rgba(0, 0, 0, 0.1);
-    filter: invert(1);
-    background-size: 50%;
-    z-index: -1;
-}
-.personnel-bw:hover .personnel-count {
-    background-color: rgba(0, 0, 0, 0.15) !important;
-}
-.personnel-bw .personnel-count * {
-    filter: invert(1);
-}
 
 /*******************************
 Paginated Table
@@ -2568,18 +2827,12 @@ Paginated Table
 /*******************************
 Paginated table column width adjustment
 *******************************/
-#table-past-members tr td:nth-child(3n + 3), #table-past-members tr th:nth-child(3) {
-    min-width: calc(215 * var(--px));
-}
-#table-past-members tr td:nth-child(3n + 2), #table-past-members tr th:nth-child(2) {
+#table-musicians tr td:nth-child(4n + 3), #table-musicians tr th:nth-child(3) {
     text-align: center;
-    width: calc(150 * var(--px));
-    min-width: calc(150 * var(--px));
+    min-width: calc(100 * var(--px));
 }
-#table-past-subgroups tr td:nth-child(3n + 2), #table-past-subgroups tr th:nth-child(2) {
-    text-align: center;
-    width: calc(150 * var(--px));
-    min-width: calc(150 * var(--px));
+#table-musicians tr td:nth-child(4n + 4), #table-musicians tr th:nth-child(4) {
+    min-width: calc(230 * var(--px));
 }
 
 #table-repertoire-archive th {
@@ -2611,7 +2864,7 @@ Paginated table column width adjustment
 Viewer
 *******************************/
 .viewer-container {
-    width: var(--section-vast-width);
+    width: var(--section-wide-width);
     display: flex;
     flex-direction: row;
     overflow: hidden;
@@ -2619,7 +2872,7 @@ Viewer
 .viewer-sidebar {
     background-color: #0b5394ff;
     position: relative;
-    width: max(calc(var(--section-vast-width) * 0.2), 300px);
+    width: max(calc(var(--section-wide-width) * 0.2), 300px);
     transition: 0.2s;
     z-index: 1;
 }

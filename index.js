@@ -73,16 +73,11 @@ function toggleTab(element) {
     
     cssGetClass('tab-active')[0].classList.remove('tab-active');
     const tabId = `tab-${navId.slice(4)}`;
-    const tab = cssGetId(tabId);
-    tab.classList.add('tab-active');
+    cssGetId(tabId).classList.add('tab-active');
     window.location.hash = tabId.endsWith('home') ? '#' : `#${tabId.slice(4)}`;
 
-    // Match gradient starting colour in <footer> to the active tab's last <section>
-    if (tab.children.length == 0) {
-        return;
-    }
     const footer = cssGetFirst('footer');
-    if (tab.children[tab.children.length - 1].classList.contains('section-default-bg')) {
+    if (['nav-about'].includes(navId)) {
         footer.style.setProperty('background', 'linear-gradient(to bottom, #351c75, #045962)');
     } else {
         footer.style.setProperty('background', 'linear-gradient(to bottom, #20124d, #045962)');
@@ -168,7 +163,7 @@ window.addEventListener('mousemove', (event) => {
         return;
     }
 
-    // Left mouse down
+    // Left mouse down - dragging behaviour
     if (event.buttons === 1) {
         // First click
         if (!MOUSE_DOWN) {
@@ -277,107 +272,8 @@ async function injectFAQ() {
         container.appendChild(construct(json));
     }
 }
-const INACTIVE_SUBGROUPS = [];
-async function injectSubgroups() {
-    const container = cssGetId('card-subgroup-container');
-    for (const subgroup of SUBGROUPS) {
-        const fields = [{ element: 'dt',
-                          innerText: 'Leader' }, 
-                        { element: 'dd',
-                          innerText: subgroup.leader },
-                        { element: 'dt',
-                          innerText: 'Created' },
-                        { element: 'dd',
-                          innerText: subgroup.created },
-                        { element: 'dt',
-                          innerText: 'Open to Join' },
-                        { element: 'dd',
-                          innerText: subgroup.openToJoin ? 'Yes' : 'No' }];
-        if (subgroup.openToJoin) {
-            fields.push({ element: 'dt',
-                          innerText: 'Looking For' },
-                        { element: 'dd',
-                          innerText: subgroup.lookingFor.join(', ') });
-        }
 
-        const json = {
-            element: 'div',
-            classes: ['card-subgroup'],
-            children: [{
-                element: 'h2',
-                innerText: subgroup.name
-            }, {
-                element: 'dl',
-                classes: ['table-subgroup'],
-                children: fields
-            }, {
-                element: 'p',
-                innerText: subgroup.description
-            }]
-        };
-        if (subgroup.ended === null) {
-            container.appendChild(construct(json));
-        } else {
-            INACTIVE_SUBGROUPS.push(construct(json));
-        }
-    }
-}
 const TAGS = {};
-const INACTIVE_MEMBERS = [];
-async function injectMembers() {
-    const container = cssGetId('card-member-container');
-    for (const member of MEMBERS) {
-        for (const tag of member.tags) {
-            if (!TAGS[tag]) {
-                TAGS[tag] = [];
-            }
-            TAGS[tag].push(member.id);
-        }
-        const json = {
-            element: 'div',
-            classes: ['card-member'],
-            children: [{
-                element: 'div',
-                classes: ['card-member-img']
-            }, {
-                element: 'div',
-                classes: ['card-member-text'],
-                children: [{
-                    element: 'h3',
-                    innerText: member.name
-                }, {
-                    element: 'p',
-                    innerText: member.joined
-                }, {
-                    element: 'span',
-                    classes: ['tag-container'],
-                    children: member.tags.map(x => ({
-                        element: 'span',
-                        classes: ['tag'],
-                        innerText: x
-                    }))
-                }, {
-                    element: 'ul',
-                    classes: ['list-social-media'],
-                    children: Object.entries(member.socialMedia).map(([key, value]) => ({
-                        element: 'li',
-                        classes: [`li-${key}`],
-                        innerText: value.length == 1 ? value : {
-                            element: 'a',
-                            attributes: { href: value[1] },
-                            innerText: value[0]
-                        }
-                    }))
-                }]
-            }]
-        };
-        if (member.left === null) {
-            container.appendChild(construct(json));
-        } else {
-            INACTIVE_MEMBERS.push(construct(json));
-        }
-    }
-}
 async function injectFormLinks() {
     for (const [name, link] of Object.entries(FORM_LINKS)) {
         const id = `icon-${name}`;
@@ -474,11 +370,8 @@ function updateCarousel() {
 }
 
 injectFAQ();
-injectSubgroups();
-injectMembers();
 injectFormLinks();
 injectCarousel();
-
 
 // Github pages CORS test
 async function corsTest(link) {
