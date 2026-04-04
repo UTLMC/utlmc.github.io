@@ -106,9 +106,9 @@ const SONGS = [
     },
     {
         name: 'Shinzo wo Sasageyo!',
-        by: 'Linked Horizon\n',
+        by: 'Linked Horizon',
         from: 'Attack on Titan',
-        arranger: 'Rylen Fong - Rayzerfang Music, Hana',
+        arranger: '\nRylen Fong - Rayzerfang Music, Hana',
         performers: {
             'Vocals': ['Kae Nguyen'],
             'Backing Vocals': ['A. G. Montejo', 'Hana', 'Kai (Kaedan Yu)', 'Sophia'],
