@@ -203,6 +203,7 @@ const SONGS = [
         name: 'Last Stardust',
         by: 'Aimer',
         from: 'Fate/Stay Night: Unlimited Blade Works',
+        description: 'If to feel pain is my fate, then I just have one thing to say',
         performers: {
             'Vocals': ['Sophia'],
             'Piano': ['FH'],
@@ -214,6 +215,7 @@ const SONGS = [
     {
         name: 'Love Trial',
         by: '40mP ft. Hatsune Miku',
+        description: "Oh! Jesus! Don't look at me like that!",
         performers: {
             'Vocals': ['Sophia'],
             'Piano': ['FH'],
