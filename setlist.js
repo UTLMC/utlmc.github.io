@@ -226,6 +226,7 @@ const SONGS = [
         name: 'Fuyu no Hanashi',
         by: 'centimillimental',
         from: 'Given',
+        description: 'i like my yaoi DOOMED',
         performers: {
             'Vocals': ['Zachary Pang'],
             'Guitar': ['William'],
@@ -365,7 +366,7 @@ const SONGS = [
     {
         name: 'Kẻ Thù',
         by: 'Ngọt',
-        group: 'Masters of Spinjitzu',
+        group: 'Masters of Spinjitzu (Formerly Super Sentai)',
         performers: {
             'Vocals': ['Kae Nguyen'],
             'Guitar': ['Emmett Hartley', 'Michael Kim'],
@@ -444,6 +445,7 @@ const SONGS = [
         name: 'The Rumbling',
         by: 'SiM',
         from: 'Attack on Titan',
+        description: 'rumbling im coming',
         performers: {
             'Vocals': ['Kae Nguyen', 'Kai (Kaedan Yu)'],
             'Backing Vocals': ['Emmett Hartley', 'Julian Gale', 'William'],
@@ -458,6 +460,7 @@ const SONGS = [
         by: '?',
         arranger: 'Sean',
         from: '?',
+        description: '何が好き？LMCよりもあなた！',
         performers: {
             'Vocals': ['Eric H.', 'Sophia', 'Zachary Pang'],
             'Alto Sax': ['A. G. Montejo', 'Simba'],
