@@ -40,10 +40,7 @@ Data
 *********************************************************************/
 /*
 TODO
-- decide on optional by or filling in every composer field
 - code intermission line
-- fix title of page
-- decide on how to handle instrumentalists that appear twice in the same song (different part)
 */
 
 const SONGS = [
@@ -108,7 +105,7 @@ const SONGS = [
         name: 'Shinzo wo Sasageyo!',
         by: 'Linked Horizon',
         from: 'Attack on Titan',
-        arranger: '\nRylen Fong - Rayzerfang Music, Hana',
+        arranger: 'Rylen Fong & Hana',
         performers: {
             'Vocals': ['Kae Nguyen'],
             'Backing Vocals': ['A. G. Montejo', 'Hana', 'Kai (Kaedan Yu)', 'Sophia'],
@@ -137,7 +134,7 @@ const SONGS = [
     {
         name: 'Itte',
         by: 'Yorushika',
-        from: '夏草が邪魔をする\n(The Summer Grass Gets In The Way)',
+        from: '夏草が邪魔をする (The Summer Grass Gets In The Way)',
         performers: {
             'Vocals': ['Celina L.'],
             'Backing Vocals': ['Olivia Yip'],
@@ -149,7 +146,9 @@ const SONGS = [
     },
     {
         name: 'Delfino Plaza (French Jazz ver.)',
-        by: '8-Bit Big Band',
+        by: 'Koji Kondo',
+        from: 'Super Mario Shine',
+        arranger: '8-Bit Big Band',
         performers: {
             'Violin': ['Kai (Kaedan Yu)'],
             'Flute': ['Cathy Z.'],
@@ -165,7 +164,7 @@ const SONGS = [
         }
     },
     {
-        name: 'Jinsei wa Yume Darake\n(Ma Vie, Mes Rêves)',
+        name: 'Jinsei wa Yume Darake (Ma Vie, Mes Rêves)',
         by: 'Sheena Ringo',
         arranger: 'Michael Kim',
         performers: {
@@ -202,11 +201,11 @@ const SONGS = [
     {
         name: 'Last Stardust',
         by: 'Aimer',
-        from: 'Fate/stay night: Unlimited Blade Works',
+        from: 'Fate/Stay Night: Unlimited Blade Works',
         performers: {
             'Vocals': ['Sophia'],
             'Piano': ['FH'],
-            'Guitar': ['Emily'],
+            'Guitar': ['Emily', 'Brian Yin'],
             'Bass': ['James Inneo'],
             'Drums': ['J. Mansia']
         }
@@ -217,14 +216,14 @@ const SONGS = [
         performers: {
             'Vocals': ['Sophia'],
             'Piano': ['FH'],
-            'Guitar': ['Emily'],
+            'Guitar': ['Emily', 'Brian Yin'],
             'Bass': ['James Inneo'],
             'Drums': ['J. Mansia']
         }
     },
     {
         name: 'Fuyu no Hanashi',
-        by: 'Given',
+        by: 'centimillimental',
         from: 'Given',
         performers: {
             'Vocals': ['Zachary Pang'],
@@ -234,8 +233,9 @@ const SONGS = [
         }
     },
     {
-        name: "Theme of Stone Ocean\n(Jolyne's Theme)",
+        name: "Theme of Stone Ocean (Jolyne's Theme)",
         by: 'Yugo Kanno',
+        arranger: 'Rylen Fong',
         from: "Jojo's Bizarre Adventure: Stone Ocean",
         performers: {
             'Choir': ['Eric H.', 'Olivia Yip', 'William'],
@@ -252,7 +252,7 @@ const SONGS = [
         }
     },
     {
-        name: 'I Am Gonna Claw\n(Out Your Eyes Then\nDrown You To Death)',
+        name: 'I Am Gonna Claw (Out Your Eyes Then Drown You To Death)',
         by: 'Darren Korb',
         from: 'Hades II',
         performers: {
@@ -304,7 +304,7 @@ const SONGS = [
         name: 'Battle!!',
         by: 'Kenji Hiramatsu',
         arranger: 'Richard',
-        from: 'Xenoblade Chronicles 2',
+        from: 'Xenoblade Chronicles 2: Torna ~ The Golden Country',
         description: 'groovy',
         performers: {
             'Violin': ['Louis Miguel', 'Kai (Kaedan Yu)'],
@@ -329,10 +329,10 @@ const SONGS = [
     },
     {
         name: 'Rogueport',
-        by: 'Yuka Tsujiyoko / Yoshito Sekigawa',
+        by: 'Yuka Tsujiyoko & Yoshito Sekigawa',
         arranger: 'Richard',
-        from: 'Paper Mario',
-        description: 'bagpipes 😮',
+        from: 'Paper Mario: The Thousand-Year Door',
+        description: 'cool song 👍',
         performers: {
             'Violin': ['Louis Miguel', 'Sean', 'Simba'],
             'Flute': ['Richard'],
@@ -348,7 +348,7 @@ const SONGS = [
         }
     },
     {
-        name: 'Remedy (Metal version)',
+        name: 'Remedy (Metal ver.)',
         by: 'DYLZAL',
         arranger: 'Kai (Kaedan Yu)',
         from: 'UNDERTALE YELLOW',
@@ -363,7 +363,7 @@ const SONGS = [
     {
         name: 'Kẻ Thù',
         by: 'Ngọt',
-        group: 'Masters of Spinjitzu\n(Formerly Super Sentai)',
+        group: 'Masters of Spinjitzu',
         performers: {
             'Vocals': ['Kae Nguyen'],
             'Guitar': ['Emmett Hartley', 'Michael Kim'],
@@ -383,7 +383,7 @@ const SONGS = [
         }
     },
     {
-        name: 'Kokudou slope',
+        name: 'Kokudou Slope',
         by: 'kinokoteikoku',
         from: 'ユリーカ (Eureka)',
         group: '2roup 2',
@@ -439,7 +439,7 @@ const SONGS = [
         }
     },
     {
-        name: 'Rumbling',
+        name: 'The Rumbling',
         by: 'SiM',
         from: 'Attack on Titan',
         performers: {
@@ -451,10 +451,10 @@ const SONGS = [
         }
     },
     {
-        name: '?????????',
-        by: '????????',
+        name: '?',
+        by: '?',
         arranger: 'Sean',
-        from: '???? ?????',
+        from: '?',
         performers: {
             'Vocals': ['Eric H.', 'Sophia', 'Zachary Pang'],
             'Alto Sax': ['A. G. Montejo', 'Simba'],
@@ -545,7 +545,9 @@ function construct(json) {
     }
     if (json.children) {
         for (const child of json.children) {
-            element.appendChild(construct(child));
+            if (child) {
+                element.appendChild(construct(child));
+            }
         }
     }
     return element;
@@ -553,10 +555,6 @@ function construct(json) {
 
 async function constructPerformers() {
     const PERFORMERS = mergePerformers(SONGS.map(x => x.performers));
-    //const choir = Array.from(new Set(SONGS.filter(x => x.group === 'New Resonance Choir').map(x => x.performers.Vocals).flat()));
-    //removePerformers(PERFORMERS, choir);
-    //PERFORMERS['New Resonance Choir'] = choir;
-
     const table = cssGetId('credits-table');
     const sorted = Object.entries(PERFORMERS).sort((a, b) => a[0].localeCompare(b[0]));
 
@@ -619,6 +617,15 @@ async function constructSetlist() {
             }
         }
 
+        const findBracket = /\(([^()]*)\)/;
+        const match = song.name.match(findBracket);
+        const name = match ? song.name.replace(findBracket, '') : song.name;
+        const brackets = match ? {
+            element: 'h2',
+            classes: ['song-name-bracket'],
+            innerText: `(${match[1]})`
+        } : undefined;
+
         const html = {
             element: 'article',
             classes: ['setlist-item'],
@@ -633,19 +640,25 @@ async function constructSetlist() {
                             children: [
                                 {
                                     element: 'h2',
-                                    innerText: song.name
+                                    classes: ['song-name'],
+                                    innerHTML: name
                                 },
+                                brackets,
                                 {
                                     element: 'h3',
                                     innerText: `// ${songNum < 10 ? `0${songNum}` : songNum}`
                                 },
                                 {
                                     element: 'p',
-                                    innerText: song.arranger ? `By ${song.by} (arr. ${song.arranger})` : `By ${song.by}`
+                                    innerHTML: `<span>by</span> ${song.by}`
                                 },
+                                song.arranger ? {
+                                    element: 'p',
+                                    innerHTML: `<span>arranged by</span> ${song.arranger}`
+                                } : undefined,
                                 {
                                     element: 'p',
-                                    innerText: song.from ? `From ${song.from}` : undefined
+                                    innerHTML: song.from ? `<span>from</span> ${song.from}` : undefined
                                 }
                             ]
                         },
@@ -667,7 +680,7 @@ async function constructSetlist() {
                                         },
                                         {
                                             element: 'span',
-                                            innerText: 'Show Performers'
+                                            innerText: 'Performers'
                                         },
                                         {
                                             element: 'dl',
