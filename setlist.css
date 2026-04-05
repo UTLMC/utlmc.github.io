@@ -448,6 +448,14 @@ Setlist item
     flex-direction: column;
     gap: 20px;
 }
+.setlist-intermission p {
+    text-align: center;
+    font-family: 'Be Vietnam Pro';
+    font-size: 30px;
+    letter-spacing: 2px;
+    font-weight: 300;
+    color: rgba(122, 122, 122, 1);
+}
 .setlist-title {
     display: flex;
     flex-direction: row;

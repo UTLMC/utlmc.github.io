@@ -38,11 +38,6 @@ function cssSetId(id, properties) {
 /*********************************************************************
 Data
 *********************************************************************/
-/*
-TODO
-- code intermission line
-*/
-
 const SONGS = [
     {
         name: 'Fukashigi no Karte',
@@ -149,6 +144,8 @@ const SONGS = [
         by: 'Koji Kondo',
         from: 'Super Mario Shine',
         arranger: '8-Bit Big Band',
+        group: 'LMC Jazz Group',
+        description: 'Featuring Kai as violin soloist',
         performers: {
             'Violin': ['Kai (Kaedan Yu)'],
             'Flute': ['Cathy Z.'],
@@ -167,6 +164,7 @@ const SONGS = [
         name: 'Jinsei wa Yume Darake (Ma Vie, Mes Rêves)',
         by: 'Sheena Ringo',
         arranger: 'Michael Kim',
+        group: 'LMC Jazz Group',
         performers: {
             'Vocals': ['Kai (Kaedan Yu)'],
             'Violin': ['Michael Kim', 'Simba'],
@@ -185,6 +183,8 @@ const SONGS = [
         from: 'Super Mario Odyssey',
         by: 'Naoto Kubo',
         arranger: 'Brandon Douglas',
+        group: 'LMC Jazz Group',
+        description: 'Featuring Carmen as vocal soloist',
         performers: {
             'Vocals': ['Carmen'],
             'Flute': ['Cathy Z.'],
@@ -238,7 +238,7 @@ const SONGS = [
         arranger: 'Rylen Fong',
         from: "Jojo's Bizarre Adventure: Stone Ocean",
         performers: {
-            'Choir': ['Eric H.', 'Olivia Yip', 'William'],
+            'Vocals': ['Eric H.', 'Olivia Yip', 'William'],
             'Violin': ['Louis Miguel', 'Sean', 'Ze'],
             'Clarinet': ['A. G. Montejo'],
             'Alto Sax': ['Simba'],
@@ -282,6 +282,7 @@ const SONGS = [
             'Drums': ['Kaden Calvert']
         }
     },
+    { intermission: true },
     {
         name: 'Wii Sports Resort Main Theme',
         by: 'Ryo Nagamatsu',
@@ -351,7 +352,7 @@ const SONGS = [
         name: 'Remedy (Metal ver.)',
         by: 'DYLZAL',
         arranger: 'Kai (Kaedan Yu)',
-        from: 'UNDERTALE YELLOW',
+        from: 'Undertale Yellow',
         performers: {
             'Violin': ['Kai (Kaedan Yu)'],
             'Harpsichord': ['A. G. Montejo'],
@@ -444,6 +445,7 @@ const SONGS = [
         from: 'Attack on Titan',
         performers: {
             'Vocals': ['Kae Nguyen', 'Kai (Kaedan Yu)'],
+            'Backing Vocals': ['Emmett Hartley', 'Julian Gale', 'William'],
             'Violin': ['Sean', 'Simba'],
             'Guitar': ['William'],
             'Bass': ['Emmett Hartley'],
@@ -469,6 +471,7 @@ const SONGS = [
 
 
 function mergePerformers(arr) {
+    arr = arr.filter(x => !!x);
     const sets = arr.reduce((acc, o) => {
         for (const [k, vals] of Object.entries(o)) {
             const set = acc[k] ??= new Set();
@@ -588,9 +591,25 @@ async function constructSetlist() {
         classes: ['setlist-hr']
     };
 
+    let numIntermissions = 0;
     for (let i = 0; i < SONGS.length; i++) {
         const song = SONGS[i];
-        const songNum = i + 1;
+        const songNum = i + 1 - numIntermissions;
+
+        if (song.intermission) {
+            numIntermissions += 1;
+            const html = {
+                element: 'article',
+                classes: ['setlist-item', 'setlist-intermission'],
+                children: [{
+                    element: 'p',
+                    innerText: 'INTERMISSION'
+                }]
+            }
+            setlist.appendChild(construct(html));
+            setlist.appendChild(construct(hr));
+            continue;
+        }
 
         const description = song.description ? [{
             element: 'p',
