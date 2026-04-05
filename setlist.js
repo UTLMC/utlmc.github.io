@@ -142,7 +142,7 @@ const SONGS = [
     {
         name: 'Delfino Plaza (French Jazz ver.)',
         by: 'Koji Kondo',
-        from: 'Super Mario Shine',
+        from: 'Super Mario Sunshine',
         arranger: '8-Bit Big Band',
         group: 'LMC Jazz Group',
         description: 'Featuring Kai as violin soloist',
