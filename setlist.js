@@ -165,6 +165,7 @@ const SONGS = [
         by: 'Sheena Ringo',
         arranger: 'Michael Kim',
         group: 'LMC Jazz Group',
+        description: 'Featuring Kai as vocal soloist',
         performers: {
             'Vocals': ['Kai (Kaedan Yu)'],
             'Violin': ['Michael Kim', 'Simba'],
@@ -239,7 +240,7 @@ const SONGS = [
         from: "Jojo's Bizarre Adventure: Stone Ocean",
         performers: {
             'Vocals': ['Eric H.', 'Olivia Yip', 'William'],
-            'Violin': ['Louis Miguel', 'Sean', 'Ze'],
+            'Violin': ['Sean', 'Ze'],
             'Clarinet': ['A. G. Montejo'],
             'Alto Sax': ['Simba'],
             'Tenor Sax': ['Cathy Z.'],
@@ -722,3 +723,28 @@ async function constructSetlist() {
 
 constructPerformers();
 constructSetlist();
+
+let REVEALED = false;
+function encoreReveal() {
+  const now = new Date();
+
+  // April 5, 2026 at 19:50 (7:50 PM)
+  const target = new Date(2026, 3, 5, 19, 50, 0);
+  if (now >= target && !REVEALED) {
+    const setlist = cssGetClass('setlist-item');
+    const encore = setlist[setlist.length - 1];
+
+    const title = encore.children[0].children[0].children[0];
+    title.innerText = `Ai Scream!`;
+
+    const by = encore.children[0].children[0].children[2];
+    by.innerHTML = `<span>by</span> Ai Furihata, Aguri Ōnishi, & Wakana Okuma`;
+
+    const from = encore.children[0].children[0].children[4];
+    from.innerHTML = '<span>from</span> Love Live!';
+
+    REVEALED = true;
+  }
+}
+
+setInterval(encoreReveal, 1000);  // check every minute
