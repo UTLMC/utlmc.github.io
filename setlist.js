@@ -51,7 +51,7 @@ const SONGS = [
             'Trombone': ['Efren Wang'],
             'Accordion': ['Phillip Hsu'],
             'Piano': ['Johnathan H.'],
-            'Bass': ['Fatima Gonsalves'],
+            'Bass': ['Leo'],
             'Aux. Percussion': ['Sophia'],
             'Drums': ['Cailyn']
         }
@@ -458,10 +458,10 @@ const SONGS = [
         }
     },
     {
-        name: '?',
-        by: '?',
+        name: 'Ai Scream!',
+        by: 'Ai Furihata, Aguri Ōnishi, & Wakana Okuma',
         arranger: 'Sean',
-        from: '?',
+        from: 'Love Live!',
         description: '何が好き？LMCよりもあなた！',
         performers: {
             'Vocals': ['Eric H.', 'Sophia', 'Zachary Pang'],
@@ -728,28 +728,3 @@ async function constructSetlist() {
 
 constructPerformers();
 constructSetlist();
-
-let REVEALED = false;
-function encoreReveal() {
-  const now = new Date();
-
-  // April 5, 2026 at 19:50 (7:50 PM)
-  const target = new Date(2026, 3, 5, 19, 50, 0);
-  if (now >= target && !REVEALED) {
-    const setlist = cssGetClass('setlist-item');
-    const encore = setlist[setlist.length - 1];
-
-    const title = encore.children[0].children[0].children[0];
-    title.innerText = `Ai Scream!`;
-
-    const by = encore.children[0].children[0].children[2];
-    by.innerHTML = `<span>by</span> Ai Furihata, Aguri Ōnishi, & Wakana Okuma`;
-
-    const from = encore.children[0].children[0].children[4];
-    from.innerHTML = '<span>from</span> Love Live!';
-
-    REVEALED = true;
-  }
-}
-
-setInterval(encoreReveal, 1000);  // check every minute
