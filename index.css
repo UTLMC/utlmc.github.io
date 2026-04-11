@@ -3181,19 +3181,20 @@ Get involved text blocks
     flex-direction: row;
 }
 #section-stay-updated {
-    width: 50vw;
+    width: 50%;
     color: black;
     background-color: rgb(226, 235, 255);
     display: flex;
     flex-direction: row;
     align-items: flex-start;
+    position: relative;
 }
 #section-stay-updated h1 {
     color: black;
 }
 #section-play-with-lmc {
     background-color: #0c343d;
-    width: 50vw;
+    width: 50%;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
@@ -3203,6 +3204,17 @@ Get involved text blocks
     height: calc(420 * var(--px));
 }
 
+#stay-updated-image-credit {
+    position: absolute;
+    bottom: calc(2.5 * var(--px));
+    left: calc(5 * var(--px));
+    color: white;
+    opacity: 0.9;
+    font-size: calc(15 * var(--px));
+    mix-blend-mode: difference;
+    width: fit-content;
+    user-select: none;
+}
 #section-play-with-lmc .section-get-involved-image {
     min-width: 310px;
     height: 100%;
@@ -3247,11 +3259,11 @@ Get involved text blocks
 @media screen and (max-width: 1500px) {
     #section-stay-updated {
         justify-content: flex-end;
-        width: 55vw;
+        width: 55%;
     }
     #section-play-with-lmc {
         justify-content: flex-start;
-        width: 45vw;
+        width: 45%;
     }
 
     #stay-updated-text { min-width: 380px; }
@@ -3268,10 +3280,10 @@ Get involved text blocks
         padding: calc(30 * var(--px));
     }
     #section-stay-updated {
-        width: 63vw;
+        width: 63%;
     }
     #section-play-with-lmc {
-        width: 37vw;
+        width: 37%;
     }
 }
 @media screen and (max-width: 1000px) {
