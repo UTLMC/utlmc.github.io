@@ -38,6 +38,16 @@ function cssSetId(id, properties) {
 /*********************************************************************
 Toggleables
 *********************************************************************/
+function closeHeaderHamburger() {
+    const ids = ['header-hamburger', 'nav-background', 'nav-page-mobile'];
+    for (const id of ids) {
+        const element = cssGetId(id);
+        const className = `${id}-closed`;
+        if (!element.classList.contains(className)) {
+            element.classList.add(className);
+        }
+    }
+}
 function toggleHeaderHamburger() {
     const ids = ['header-hamburger', 'nav-background', 'nav-page-mobile'];
     for (const id of ids) {
@@ -60,6 +70,7 @@ function toggleTab(element) {
 
     // No effect on clicking the same tab on mobile
     if (desktopNav.classList.contains('nav-active')) {
+        closeHeaderHamburger();
         return;
     }
 
@@ -78,11 +89,15 @@ function toggleTab(element) {
 
     const footer = cssGetFirst('footer');
     if (['nav-about'].includes(navId)) {
-        footer.style.setProperty('background', 'linear-gradient(to bottom, #351c75, #045962)');
+        footer.style.setProperty('background', 'linear-gradient(to bottom in oklab, #351c75, #045962)');
     } else if (['nav-get-involved'].includes(navId)) {
-        footer.style.setProperty('background', 'linear-gradient(to bottom, #000, #045962)');
+        footer.style.setProperty('background', 'linear-gradient(to bottom in oklab, #000, #045962)');
     } else {
-        footer.style.setProperty('background', 'linear-gradient(to bottom, #20124d, #045962)');
+        footer.style.setProperty('background', 'linear-gradient(to bottom in oklab, #20124d, #045962)');
+    }
+
+    if (window.getComputedStyle(cssGetId('nav-page-mobile')).display !== 'none') {
+        closeHeaderHamburger();
     }
 }
 function toggleDetailsSummary(event) {

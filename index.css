@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Zilla+Slab:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Geologica:wght@100..900&family=Nanum+Brush+Script:wght@400&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:ital,wght@0,400;0,700;1,400;1,700&family=Zilla+Slab:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Geologica:wght@100..900&family=Nanum+Brush+Script:wght@400&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
 /*
 PNG to SVG conversion:
 https://www.vectorization.org/
@@ -187,8 +187,8 @@ footer {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: linear-gradient(to bottom, #20124d, #045962);
-    font-family: 'Atkinson Hyperlegible';
+    background: linear-gradient(to bottom in oklab, #20124d, #045962);
+    font-family: 'Fredoka';
     font-size: calc(16 * var(--px));
     color: rgb(210, 210, 222);
     text-align: center;
@@ -220,7 +220,7 @@ footer {
     flex-direction: column;
     align-items: center;
     background: linear-gradient(to bottom, #20124d, #045962);
-    font-family: 'Atkinson Hyperlegible';
+    font-family: 'Fredoka';
     font-size: calc(16 * var(--px));
     color: rgb(210, 210, 222);
     text-align: center;
@@ -822,7 +822,7 @@ Tabs
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: "Atkinson Hyperlegible";
+    font-family: "Fredoka";
     color: rgb(230, 230, 230);
     font-size: calc(18 * var(--px));
     overflow-x: hidden;
@@ -1062,7 +1062,7 @@ Home greeting text section
     flex-direction: column;
     align-items: center;
     position: relative;
-    background-color: rgba(21, 12, 51, 0.95);
+    background-color: rgba(21, 12, 51, 0.9);
 }
 #section-greeting:before, #section-greeting:after {
     content: '';
@@ -1078,9 +1078,6 @@ Home greeting text section
     background-size: cover;
     background-position: center;
     z-index: -1;
-}
-#section-greeting:after {
-    background-image: linear-gradient(to bottom, rgba(32, 18, 77, 0) 80%, rgba(32, 18, 77, 0.5));
 }
 #section-greeting div {
     display: flex;
@@ -1460,9 +1457,6 @@ Home page info cards
         width: calc(100vw - 140 * var(--px));
         margin-left: calc(-140 * var(--px));
     }
-    #section-home-info {
-        padding: calc(30 * var(--px)) 0px;
-    }
     #card-info-left h3 {
         width: max-content;
     }
@@ -1695,10 +1689,10 @@ Home page event banner
 #home-event-bg-1 {
     height: 32vw;
     clip-path: polygon(0 0, 46.6% 0, 46.6% 100%, 0 100%);
-    transform: rotate(-75deg);
-    right: 40vw;
+    transform: rotate(-80deg);
+    right: 41vw;
     top: -22vw;
-    opacity: 0.4;
+    opacity: 0.2;
 }
 #home-event-bg-2 {
     opacity: 0.4;
@@ -1708,9 +1702,6 @@ Home page event banner
 }
 
 @media screen and (max-width: 950px) {
-    #section-home-event {
-        padding: var(--section-spacing) 0;
-    }
     #home-event-container {
         flex-direction: column;
         gap: calc(50 * var(--px));
@@ -1732,11 +1723,6 @@ Home page event banner
     }
     .home-event-text p {
         width: 100%;
-    }
-}
-@media screen and (max-width: 420px) {
-    #section-home-event {
-        padding: var(--section-spacing) 0;
     }
 }
 
@@ -2030,8 +2016,7 @@ About page text
     background-position: calc(100% + 15px) -30px;
 }
 @media screen and (width > 1500px) {
-    #section-about-intro-img { min-height: 450px; }
-    #section-about-history-img { min-height: 450px; background-position: 50% 90%; }
+    #section-about-history-img { background-position: 50% 90%; }
     #section-about-history hgroup {
         background-size: 500px;
         background-position: calc(100% + 15px) calc(100% + 10px);
@@ -2044,8 +2029,7 @@ About page text
     #section-about-history-img { background-position: 50% 70%; }
 }
 @media screen and (width > 1850px) {
-    #section-about-intro-img { min-height: 500px; }
-    #section-about-history-img { min-height: 500px; background-position: 50% 60%; }
+    #section-about-history-img { background-position: 50% 60%; }
 }
 @media screen and (max-width: 1150px) {
     #section-about-history {
@@ -2972,7 +2956,7 @@ Viewer
 .viewer-header h2 {
     color: black;
     font-variant: normal;
-    font-family: 'Atkinson Hyperlegible';
+    font-family: 'Fredoka';
     text-wrap: nowrap;
     font-size: 28px;
 }
@@ -3345,14 +3329,14 @@ Get involved text blocks
 }
 @media screen and (max-width: 400px) {
     #play-with-lmc-text {
-        min-width: auto;
+        min-width: 100%;
     }
     #section-play-with-lmc .section-get-involved-image {
-        margin-left: 180px;
-        position: absolute;
+        margin-left: -50%;
+        height: unset;
     }
     #section-play-with-lmc {
-        height: auto;
+        height: unset;
     }
 }
 
@@ -3399,7 +3383,6 @@ Get involved text blocks
     width: 100%;
     background-color: black;
     align-items: center;
-    z-index: 1;
 }
 #faq-image {
     width: 100%;
