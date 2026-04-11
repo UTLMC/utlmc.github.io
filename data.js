@@ -184,70 +184,82 @@ const FAQ = [
     {
         q: 'Is LMC only for University of Toronto students?',
         a: [
-            'Though we’re mostly comprised of students from UofT, students from any campus and any university (worldwide? just Toronto?) is fine, but you’ll have to be able to reach St. George Campus to participate in weekly rehearsals and other live events. Otherwise, remote recordings.'
+            'No. While most LMC members are UofT St. George students, individuals of any background are free to join as long as they can physically play with us. Members unable to commute to campus are encouraged to participate online through online events and recording projects, which we upload to our YouTube channel.'
+        ]
+    },
+    {
+        q: 'Is LMC free to join? Do I need to join UT-SAMA to join LMC?',
+        a: [
+            'It is free to join and attend LMC rehearsals and smaller events like workshops; however, performing at an LMC-organized concert requires purchasing a UT-SAMA membership. This fee helps us cover venue costs and rent equipment like microphones, cables, and mixers.',
+            'You can find more information on UT-SAMA membership costs and perks [here](https://docs.google.com/document/d/1iVwZj_iTLKUyEsz1Sg3CfRNYWkqG4CtydlkU-SGI_Zs/edit?tab=t.0). LMC operates independently from UT-SAMA so you do not have to interact with the main club even as a UT-SAMA member.'
         ]
     },
     {
         q: 'When is LMC active? When can I join?',
         a: [
-            "LMC activities are built around the University of Toronto's Fall-Winter semesters. We boot up in September (with club fairs and other announcements in late August), hold weekly rehearsals, and usually perform at the end of each semester (December and April).",
-            "[WHEN ARE PEOPLE ALLOWED TO JOIN LMC?]"
+            `LMC operates during UofT's fall and winter semesters (September to April). The best way to get a feel for the club and sign up is at the University [club fair](https://www.utsu.ca/orientation/) every August or during our first meeting of the term (typically in early September/January).`,
+            `Joining at other times is allowed but it comes with less time and opportunities to form/join ensembles and rehearse for concerts. Signups for some songs may also close.`,
         ]
     },
     {
         q: 'Are there auditions? Do I need to be skilled with an instrument?',
         a: [
-            'There are no auditions. People of any skill level, from beginner to professional musician, are welcome to join LMC. We however have no formal system for teaching how to play instruments, so technical improvement on your instrument can only be self-guided.'
+            'No. People of any skill level are welcome in LMC as long as they are motivated to play music with others. However, LMC will not teach you to how to play your instrument, so you are expected to learn your own parts.',
+            'LMC-coordinated music ("large ensembles") is open to everyone but signups close quickly to allow rehearsals to begin promptly. Skill requirements vary per song: it is highly encouraged to talk to large ensemble leads about part difficulty if you’re interested. Smaller ensembles headed by individual members may accept new members at their own discretion.'
         ]
     },
     {
         q: 'Does LMC provide instruments or musical equipment?',
         a: [
-            'LMC has a single electric drum kit (borrowed from XXX) for use in rehearals as well as a small locker (??), but we unfortunately do not have any budget, so there are no storage spaces or equipment like music stands.'
+            'By default, LMC rehearses in practice spaces with at least one piano. The only equipment that the club actually owns is one microphone; most equipment is generously lent to us by several members for the academic year. We try to have at least one drum kit, amps, and cables available, but please ask the current LMC execs about club inventory.',
+            'LMC does not own music stands or spare instruments.',
+            'If you would like to keep some equipment in a secure space on campus, please also reach out to one of the LMC Execs.'
         ]
     },
     {
         q: 'How much time would I be expected to commit to LMC?',
         a: [
-            "Your expected time commitment depends on your skill level as well as the number of songs you choose to participate in. If you participate in large ensemble rehearsals, you'll be expected to attend all rehearsals (typically 1 hour / week for each song, although we may hold more rehearsals before the concert) or at least be able to perfectly play your part of the piece. Different subgroups will form their own rehearsal schedules and expectations. Online recording projects are generally easiest on time commitment, as they are remote and recordings can be done any time over a few months.",
+            "Your expected time commitment depends on your skill level as well as the number of songs you choose to participate in. Different groups will form their own rehearsal schedules and expectations.",
+            "If you participate in large ensemble rehearsals, you'll be expected to attend all rehearsals (~1 hour every 2 weeks per song, plus potential dress rehearsals) or at least be able to perfectly play your part. On the other hand, online recording projects are easiest on time commitment since there are no deadlines."
         ]
     },
     {
         q: 'What are the logistics of live rehearsals and recording projects?',
         a: [
-            'Large ensemble songs are suggested and voted on typically during the end of winter term or summer, then announced at the beginning of the fall semester. People are assigned into different songs based on a form of their preferences, and attend weekly rehearsals. More rehearsals may be held before the concert.',
-            'Interest for small ensemble pieces, either live projects or online recording projects, is decided in the Discord server at #<channel-name or by people reaching out to each other by DMs or in-person. After speaking with the execs, a group is created and a song head, who will organize rehearsals, arrangements, video editing, etc. in coordination with the execs. Groups can choose to perform or screen their videos at concerts.',
+            'Large ensemble songs are suggested and voted by LMC members, then decided and arranged at the beginning of the fall/winter semester. People are assigned to songs based on preference and attend weekly rehearsals. Concerts for large ensembles are held at the end of the academic term before exams start.',
+            'Interest for small ensemble songs, either for live performances or for recording, is found in the Discord server at #light-music-club-forum. Members may also reach out to each other via DMs or in-person. An ensemble head is assigned to coordinates with the execs to schedule rehearsals, plan concert appearances, create arrangements, find video editors, etc.',
         ]
     },
     {
         q: 'What sorts of club activities does LMC organize?',
         a: [
-            'LMC has historically organized workshops for teaching music theory and music production as well as karaokes during reading week and dinners after concerts. We hope to organize more activities in the future based on what our members are interested in.',
+            'LMC has historically organized workshops, such as for teaching music theory and music production, as well as karaokes, sight-reading challenges, and dinners. We are always open to suggestions for future event ideas!',
         ]
     },
     {
         q: 'I compose/arrange music. Can LMC play my piece?',
         a: [
-            "Arrangers are of great importance for giving LMC a repertoire to perform! [I'm not actually sure - would they have to suggest their piece in votes?] Keep in mind we typically focus on music from video games, anime or J-pop, so that type of music will be prioritized.",
+            "LMC is always looking for people who can arrange music! We are happy to help arrangers find willing performers for their music, but in return we also ask that they help with arranging large ensemble pieces if needed.",
+            "Composed music has been played at LMC before and is welcome. However, you should consider how thematically similar your music is to typical LMC genres, as it would be performed in a LMC concert.",
         ]
     },
     {
         q: "I don't play an instrument (or don't want to), but I can do XXX. Can I still join?",
         a: [
-            "Apart from musicians, LMC also has an acute supply of (and is very interested in) arrangers, illustrators (for thumbnails and branding), audio mixers, audio engineers, and video editors, so we'd be very interested if you have these skillsets. If you don't but you think you could contribute to LMC, contact XXX and we'll let you know.",
+            "LMC has an acute supply of arrangers, illustrators, audio mixers/engineers, video editors, web developers, and photographers. If you have any of these skillsets, we’d be very happy to work with you! If you think you could contribute to LMC in any other way, please let the LMC execs know.",
+            "On the music side, LMC has historically suffered from lack of tenor/bass instruments like violas, cellos, bassoons, and trombones. Any players are highly-encouraged to join us."
         ]
     },
 ]
 
 const FORM_LINKS = {
-    'song-suggestion': '',
-    'song-voting': '',
-    'ideas-and-feedback': '',
+    // 'song-suggestion': '',
+    // 'song-voting': '',
+    // 'ideas-and-feedback': '',
     // 'small-ensemble-registration': '',
     // 'equipment-or-room-requests': '',
     // 'online-project-assistance': '',
-    'code-of-conduct': '',
-    'new-member-registration': 'https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform'
+    // 'new-member-registration': 'https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform'
 }
 
 const EMBED_LINKS = {

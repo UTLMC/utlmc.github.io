@@ -79,6 +79,8 @@ function toggleTab(element) {
     const footer = cssGetFirst('footer');
     if (['nav-about'].includes(navId)) {
         footer.style.setProperty('background', 'linear-gradient(to bottom, #351c75, #045962)');
+    } else if (['nav-get-involved'].includes(navId)) {
+        footer.style.setProperty('background', 'linear-gradient(to bottom, #000, #045962)');
     } else {
         footer.style.setProperty('background', 'linear-gradient(to bottom, #20124d, #045962)');
     }
@@ -238,6 +240,9 @@ function construct(json) {
     if (json.innerText) {
         element.innerText = json.innerText;
     }
+    if (json.innerHTML) {
+        element.innerHTML = json.innerHTML;
+    }
     if (json.children) {
         for (const child of json.children) {
             element.appendChild(construct(child));
@@ -245,10 +250,19 @@ function construct(json) {
     }
     return element;
 }
+
+function parseMarkdown(text) {
+    // Links
+    text = text.replace(
+        /\[([^\]]+)\]\(([^)]+)\)/g,
+        '<a href="$2" target="_blank">$1</a>'
+    )
+    return text;
+}
 async function injectFAQ() {
     const container = cssGetId('faq-container');
     for (const faq of FAQ) {
-        const paragraphs = faq.a.map(x => ({ element: 'p', innerText: x }));
+        const paragraphs = faq.a.map(x => ({ element: 'p', innerHTML: parseMarkdown(x) }));
         const json = {
             element: 'details',
             attributes: {'open': true},
@@ -275,10 +289,8 @@ async function injectFAQ() {
 
 const TAGS = {};
 async function injectFormLinks() {
-    for (const [name, link] of Object.entries(FORM_LINKS)) {
-        const id = `icon-${name}`;
-        const element = cssGetId(id).parentElement;
-        element.setAttribute('href', link);
+    for (const [id, link] of Object.entries(FORM_LINKS)) {
+        cssGetId(id).setAttribute('href', link);
     }
 }
 
