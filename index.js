@@ -1,6 +1,18 @@
 /*********************************************************************
 Helper Functions
 *********************************************************************/
+function runOnce(func) {
+    let hasRun = false;
+    let output;
+    return (args) => {
+        if (hasRun) {
+            return output;
+        }
+        output = func(args);
+        hasRun = true;
+        return output;
+    };
+}
 function assert(condition, errorMessage) {
     if (!condition) {
         throw new Error(errorMessage);
@@ -61,9 +73,11 @@ function toggleHeaderHamburger() {
     }
 }
 function toggleTab(element) {
-    // If input is a string, treat it like an ID
+    // If input is a string (i.e. from loading the URL with a hash), treat it like a class
     if (typeof element === 'string') {
         element = cssGetClass(element)[0];
+    } else {
+        window.scrollTo(0, 0);
     }
     const navId = Array.from(element.classList)[0];
     const desktopNav = cssGetFirst(`#nav-page-desktop .${navId}`);
@@ -85,20 +99,26 @@ function toggleTab(element) {
     cssGetClass('tab-active')[0].classList.remove('tab-active');
     const tabId = `tab-${navId.slice(4)}`;
     cssGetId(tabId).classList.add('tab-active');
+    
+    // Set URL hash
     window.location.hash = tabId.endsWith('home') ? '#' : `#${tabId.slice(4)}`;
 
-    const footer = cssGetFirst('footer');
-    if (['nav-about'].includes(navId)) {
-        footer.style.setProperty('background', 'linear-gradient(to bottom in oklab, #351c75, #045962)');
-    } else if (['nav-get-involved'].includes(navId)) {
-        footer.style.setProperty('background', 'linear-gradient(to bottom in oklab, #000, #045962)');
-    } else {
-        footer.style.setProperty('background', 'linear-gradient(to bottom in oklab, #20124d, #045962)');
-    }
-
+    // Close mobile menu
     if (window.getComputedStyle(cssGetId('nav-page-mobile')).display !== 'none') {
         closeHeaderHamburger();
     }
+
+    // Set footer gradient colour
+    const footer = cssGetFirst('footer');
+    let startColor;
+    if (['nav-about'].includes(navId)) {
+        startColor = '#351c75';
+    } else if (['nav-get-involved'].includes(navId)) {
+        startColor = '#000';
+    } else {
+        startColor = '#20124d';
+    }
+    footer.style.setProperty('background', `linear-gradient(to bottom in oklab, ${startColor}, #045962)`);
 }
 function toggleDetailsSummary(event) {
     event.preventDefault();  // Prevent instant show/hide from <summary>
@@ -114,41 +134,46 @@ function toggleDetailsSummary(event) {
         element.classList.add(name);
     }
 }
-function toggleViewerSidebar(element) {
-    const sidebar = element.parentElement.parentElement.parentElement.children[0];
-    if (element.classList.contains('viewer-hamburger-closed')) {
-        element.classList.remove('viewer-hamburger-closed');
-        sidebar.classList.remove('viewer-sidebar-closed');
-    } else {
-        element.classList.add('viewer-hamburger-closed');
-        sidebar.classList.add('viewer-sidebar-closed');
-    }
+function toggleEventsSidebar(element) {
+    const className ='event-hamburger-closed';
+    element.classList.toggle(className);
+
+    const section = cssGetId('section-events');
+    section.classList.toggle('section-events-no-sidebar')
 }
 function genericToggleTab(element, object) {
-    for (const tabTitle of element.parentElement.children) {
-        tabTitle.classList.remove(`nav-${object}-active`);
-    }
-    const navClass = element.classList[0];
-    element.classList.add(`nav-${object}-active`);
+    const navActiveClass = `nav-${object}-active`;
+    cssGetClass(navActiveClass)[0]?.classList.remove(navActiveClass);
+    element.classList.add(navActiveClass);
 
-    const tabClass = `tab-${navClass.substring(4)}`;
-    for (const tab of element.parentElement.parentElement.parentElement.children) {
-        if (!tab.classList.contains(`tab-${object}`)) {
-            continue;
-        }        
-        if (tab.classList.contains(tabClass)) {
-            tab.classList.add(`tab-${object}-active`);
+    const tabActiveClass = `tab-${object}-active`;
+    const tabActive = `tab-${element.id.substring(4)}`
+    for (const tab of cssGetClass(`tab-${object}`)) {
+        if (tab.id === tabActive) {
+            tab.classList.add(tabActiveClass);
         } else {
-            tab.classList.remove(`tab-${object}-active`);
+            tab.classList.remove(tabActiveClass);
         }
     }
 } 
-function toggleViewerTab(element) {
-    return genericToggleTab(element, 'viewer');
+function toggleEventTab(element) {
+    const navActiveClass = `nav-events-active`;
+    cssGetClass(navActiveClass)[0]?.classList.remove(navActiveClass);
+    element.classList.add(navActiveClass);
 }
-function toggleSongTab(element) {
-    return genericToggleTab(element, 'song');
+function toggleConcertTab(element) {
+    genericToggleTab(element, 'concert');
+    
+    if (element.id === 'nav-concert-media') {
+        // Initialize Youtube iframe API lazily
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.head.appendChild(tag);
+    }
 }
+// function toggleSongTab(element) {
+//     return genericToggleTab(element, 'song');
+// }
 function toggleCarousel(next) {
     CURR_CAROUSEL = (CURR_CAROUSEL + (next ? 1 : -1) + CAROUSEL.length) % CAROUSEL.length;
     cssGetClass('carousel-active')[0].classList.remove('carousel-active');
@@ -160,17 +185,80 @@ function toggleCarousel(next) {
 
 
 /*********************************************************************
+Youtube video embed
+*********************************************************************/
+let VIDEO_POLL;
+function videoStateChangeHandler(state) {
+    const { target, data } = state;
+    
+    // Started to play => 1
+    if (data === 1) {
+        VIDEO_POLL = setInterval(() => {
+            const time = target.getCurrentTime();  // in seconds
+            // TODO: Highlight the right song in DOM
+        }, 1000);
+    } else if (VIDEO_POLL) {
+        clearInterval(VIDEO_POLL);
+        VIDEO_POLL = undefined;
+    }
+}
+
+// https://developers.google.com/youtube/iframe_api_reference
+let VIDEO;
+function onYouTubeIframeAPIReady() {
+    console.log("HI")
+    VIDEO = new YT.Player('concert-media-embed', {
+        videoId: 'TiStCNPn10s',
+        width: "300",
+        height: "200",
+        playerVars: {
+            origin: window.location.origin
+        },
+        events: {
+            onStateChange: videoStateChangeHandler
+        }
+    });
+}
+
+function goToVideoChapter(element) {
+    const className = 'concert-media-chapter-active';
+    cssGetClass(className)[0]?.classList.remove(className);
+    element.classList.add(className);
+    
+    // TODO: Go to correct timestamp based on active element
+    VIDEO.seekTo(100, true);
+}
+
+
+/*********************************************************************
+Scrolling
+*********************************************************************/
+function scrollHorizontally(event) {
+    const { target, deltaX, deltaY } = event;
+    
+    // Don't scroll horizontally if there's nothing to scroll
+    if (target.scrollWidth <= target.getBoundingClientRect().width + 1) {
+        return;
+    }
+
+    event.preventDefault();
+    target.scrollLeft += deltaX !== 0 ? deltaX : deltaY;
+}
+
+
+/*********************************************************************
 Event listeners
 *********************************************************************/
 let MOUSE_X = 0;
 let MOUSE_DOWN_X = 0;
 let MOUSE_DOWN = false;
-const HOME_GALLERY = cssGetId('section-home-gallery');
-const HOME_UPCOMING_EVENTS = cssGetId('upcoming-events-container');
-let CURR_ACTIVE = undefined
+let CURR_ACTIVE = undefined;
 let CURR_SCROLL = 0;
 window.addEventListener('mousemove', (event) => {
     MOUSE_X = event.clientX;
+
+    const HOME_GALLERY = cssGetId('section-home-gallery');
+    const HOME_UPCOMING_EVENTS = cssGetId('upcoming-events-container');
 
     if (HOME_GALLERY.contains(event.target)) {
         CURR_ACTIVE = HOME_GALLERY;
@@ -194,19 +282,11 @@ window.addEventListener('mousemove', (event) => {
         MOUSE_DOWN = false;
     }
 });
-function scrollHorizontally(event) {
-    const { target, deltaX, deltaY } = event;
-    
-    // Don't scroll horizontally if there's nothing to scroll
-    if (target.scrollWidth <= target.getBoundingClientRect().width + 1) {
-        return;
-    }
+window.addEventListener('DOMContentLoaded', () => {    
+    injectFAQ();
+    injectFormLinks();
+    injectCarousel();
 
-    event.preventDefault();
-    target.scrollLeft += deltaX !== 0 ? deltaX : deltaY;
-}
-
-window.addEventListener('DOMContentLoaded', () => {
     // Navigate to tab in hash
     const page = window.location.hash.substring(1);
     if (page.length > 0) {
@@ -219,6 +299,7 @@ window.addEventListener('DOMContentLoaded', () => {
         element.src = `${element.src}&mode=${mode}`;
     }
 
+    // Set home greeting header text based on time of day
     const h = new Date().getHours();
     let introBanner;
     if (h < 6)          introBanner = "👋 Good evening, LMC!";
@@ -395,10 +476,19 @@ function updateCarousel() {
         }
     }
 }
-
-injectFAQ();
-injectFormLinks();
-injectCarousel();
+// const updateConcertPerformers = new ResizeObserver(entries => {
+//     for (const entry of entries) {
+//         const { target: element } = entry;
+//         if (element.offsetWidth === 0) {
+//             return;
+//         }
+//         const minWidth = 180;
+//         const columns = Math.ceil(element.offsetWidth / minWidth);
+//         element.style.setProperty('column-count', Math.min(6, columns));
+//         return;
+//     }
+// })
+// updateConcertPerformers.observe(cssGetId('concert-performers'));
 
 // Github pages CORS test
 async function corsTest(link) {

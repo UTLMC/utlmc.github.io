@@ -188,16 +188,16 @@ const FAQ = [
         ]
     },
     {
-        q: 'Is LMC free to join? Do I need to join UT-SAMA to join LMC?',
+        q: 'Does it cost money to join LMC? Do I need to join UT-SAMA to join LMC?',
         a: [
             'It is free to join and attend LMC rehearsals and smaller events like workshops; however, performing at an LMC-organized concert requires purchasing a UT-SAMA membership. This fee helps us cover venue costs and rent equipment like microphones, cables, and mixers.',
             'You can find more information on UT-SAMA membership costs and perks [here](https://docs.google.com/document/d/1iVwZj_iTLKUyEsz1Sg3CfRNYWkqG4CtydlkU-SGI_Zs/edit?tab=t.0). LMC operates independently from UT-SAMA so you do not have to interact with the main club even as a UT-SAMA member.'
         ]
     },
     {
-        q: 'When is LMC active? When can I join?',
+        q: 'When and where is LMC active? When can I join?',
         a: [
-            `LMC operates during UofT's fall and winter semesters (September to April). The best way to get a feel for the club and sign up is at the University [club fair](https://www.utsu.ca/orientation/) every August or during our first meeting of the term (typically in early September/January).`,
+            `LMC operates during UofT's fall and winter semesters (September to April) at the St. George campus. The best way to get a feel for the club is at the University [club fair](https://www.utsu.ca/orientation/) every August or during our first meeting of the term (typically in early September/January), where instructions for signup will be shown.`,
             `Joining at other times is allowed but it comes with less time and opportunities to form/join ensembles and rehearse for concerts. Signups for some songs may also close.`,
         ]
     },
@@ -239,7 +239,7 @@ const FAQ = [
     {
         q: 'I compose/arrange music. Can LMC play my piece?',
         a: [
-            "LMC is always looking for people who can arrange music! We are happy to help arrangers find willing performers for their music, but in return we also ask that they help with arranging large ensemble pieces if needed.",
+            "LMC is always looking for people who can arrange music! We are happy to help arrangers find willing performers for their music, but in return we ask that they help with arranging large ensemble pieces if needed.",
             "Composed music has been played at LMC before and is welcome. However, you should consider how thematically similar your music is to typical LMC genres, as it would be performed in a LMC concert.",
         ]
     },

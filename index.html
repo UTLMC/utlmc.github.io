@@ -273,7 +273,7 @@
                 <div id="section-upcoming-events">
                     <hgroup>
                         <h1>Upcoming Events</h1>
-                        <div id="section-events-icon"></div>
+                        <div id="section-upcoming-events-icon"></div>
                     </hgroup>
                     <ul id="upcoming-events-container" onmousewheel="scrollHorizontally(event)">
                         <li class="upcoming-event-oise">
@@ -814,64 +814,274 @@
 
         <!-- Events Page -->
         <article id="tab-events" class="tab">
-            <section class="section-default-bg">
-                <h1>Concerts</h1>
-                <p>The LMC typically holds live concerts twice a year near the end of the University of Toronto’s fall and winter semesters, where we showcase music from large ensembles, small ensembles, and recording projects. Live attendance costs money, but recordings of our previous concerts are freely available on our Youtube channel.</p>
-                <p>Below is an archive of past concert setlists, posters, videos, and pictures.</p>
-            </section>
-            <section class="section-default">
-                <div class="viewer-container">
-                    <nav class="viewer-sidebar">
-                        <menu>
-                            <li>End of Winter Concert</li>
-                            <li>End of Fall Concert</li>
-                            <li class="sidebar-active">October Concert</li>
-                            <li>UTSAMA Xth Anniversary Concert</li>
+            <section id="section-events">
+                <nav id="nav-events-sidebar">
+                    <ul class="toolbar">
+                        <li class="toolbar-options"></li>
+                        <li class="toolbar-button"><p>Concerts</p></li>
+                        <li class="toolbar-button"><p>All Tag Types</p></li>
+                    </ul>
+                    <menu id="nav-events">
+                        <li onclick="toggleEventTab(this)" class="nav-events-upcoming">
+                            <span>End of Winter Concert</span>
+                            <span>2026/01</span>
+                        </li>
+                        <li onclick="toggleEventTab(this)">
+                            <span>End of Fall Concert</span>
+                            <span>2025/08</span>
+                        </li>
+                        <li class="nav-events-active" onclick="toggleEventTab(this)">
+                            <span>October Concert</span>
+                            <span>2024/12</span>
+                        </li>
+                        <li onclick="toggleEventTab(this)">
+                            <span>UTSAMA Xth Anniversary Concert</span>
+                            <span>2023/11</span>
+                        </li>
+                    </menu>
+                </nav>
+                <article id="event-body">
+                    <div id="event-header">
+                        <svg id="event-hamburger" onclick="toggleEventsSidebar(this)">
+                            <rect x="0" y="2" rx="1.5" ry="1.5" width="21" height="3"/>
+                            <rect x="0" y="9" rx="1.5" ry="1.5" width="21" height="3"/>
+                            <rect x="0" y="16" rx="1.5" ry="1.5" width="21" height="3"/>
+                        </svg>
+                        <hgroup id="event-title">
+                            <h3>UTSAMA 20th Anniversary Concert <span>// 2024-10-30</span></h3>
+                            <p>5:00 − 9:00 pm @ OISE Auditorium</p>
+                        </hgroup>
+                    </div>
+
+                    <p id="event-description">This is a description. For non-concerts we might have something like this here.</p>
+                    
+                    <nav>
+                        <menu id="nav-concert">
+                            <li id="nav-concert-setlist" class="nav-concert-active" onclick="toggleConcertTab(this)">Setlist</li>
+                            <li id="nav-concert-media" onclick="toggleConcertTab(this)">Media</li>
+                            <li id="nav-concert-performers" onclick="toggleConcertTab(this)">Performers</li>
                         </menu>
                     </nav>
-                    <div class="viewer">
-                        <div class="viewer-header">
-                            <svg class="viewer-hamburger" onclick="toggleViewerSidebar(this)">
-                                <rect x="0" y="2" rx="2" ry="2" width="21" height="4"/>
-                                <rect x="0" y="9" rx="2" ry="2" width="21" height="4"/>
-                                <rect x="0" y="16" rx="2" ry="2" width="21" height="4"/>
-                            </svg>
-                            <hgroup>
-                                <h2>October Concert</h2>
-                                <span>// 2024-10-30</span>
-                            </hgroup>
-                        </div>
-                        <nav class="nav-viewer">
-                            <menu>
-                                <li class="nav-viewer-setlist nav-viewer-active" onclick="toggleViewerTab(this)">Setlist</li>
-                                <li class="nav-viewer-video" onclick="toggleViewerTab(this)">Video</li>
-                                <li class="nav-viewer-gallery" onclick="toggleViewerTab(this)">Gallery</li>
-                            </menu>
-                        </nav>
-                        <article class="tab-viewer-setlist tab-viewer tab-viewer-active">
-                            <div class="setlist-block">
-                                <details open class="details-hidden">
-                                    <summary onclick="toggleDetailsSummary(event)">
-                                        <hgroup class="tag-container">
-                                            <h4>Setlist Song 1</h4>
-                                            <span class="tag">Large Ensemble</span>
-                                        </hgroup>
-                                        <div class="summary-triangle"></div>
-                                    </summary>
-                                    <div class="summary-body">
-                                        <p>Something.</p>
-                                    </div>
-                                </details>
-                            </div>
-                        </article>
-                        <article class="tab-viewer-video tab-viewer">
-                            <iframe class="embed-youtube" loading="lazy" src="https://www.youtube.com/embed/k1CZLnxSWDc?si=YTR2aZ5pTpb4E0Ft" title="YouTube video player" frameborder="0" allow="picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                        </article>
-                        <article class="tab-viewer-gallery tab-viewer">
-                            Gallery
-                        </article>
-                    </div>
-                </div>   
+
+                    <article id="tab-concert-setlist" class="tab-concert tab-concert-active">
+                        <ul id="concert-items">
+                            <li class="concert-item">
+                                <hgroup>
+                                    <h4>Theme of Stone Ocean
+                                        <span class="concert-item-title-bracket">(Jolyne's Theme)</span>
+                                        <span class="concert-item-title-number">// 01</span>
+                                    </h4>
+                                    <p><span>by</span> Yugo Kanno</p>
+                                    <p><span>arranged by</span> Rylen Fong</p>
+                                    <p><span>from</span> Jojo's Bizarre Adventure: Stone Ocean</p>
+                                </hgroup>
+                                <div>
+                                    <span class="concert-item-group-name">Masters of Spinjitzu (formerly Super Sentai)</span>
+                                    <span class="concert-item-button">
+                                        <img src="assets/icons/users.svg" />
+                                    </span>
+                                    <a class="concert-item-button" href="#" target="_blank">
+                                        <img src="assets/icons/logos/drive.svg" />
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="concert-item">
+                                <hgroup>
+                                    <h4>Delfino Plaza
+                                        <span class="concert-item-title-bracket">(French Jazz ver.)</span>
+                                        <span class="concert-item-title-number">// 02</span>
+                                    </h4>
+                                    <p><span>by</span> Koji Kondo</p>
+                                    <p><span>arranged by</span> 8-Bit Big Band</p>
+                                    <p><span>from</span> Super Mario Sunshine</p>
+                                </hgroup>
+                                <div>
+                                    <span class="concert-item-group-name">Group Name</span>
+                                    <span class="concert-item-button">
+                                        <img src="assets/icons/users.svg" />
+                                    </span>
+                                    <a class="concert-item-button" href="#" target="_blank">
+                                        <img src="assets/icons/logos/drive.svg" />
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="concert-item">
+                                <hgroup>
+                                    <h4>Title
+                                        <span class="concert-item-title-number">// 03</span>
+                                    </h4>
+                                    <p><span>by</span> Someone</p>
+                                    <p><span>from</span> Dunno</p>
+                                </hgroup>
+                                <div>
+                                    <span class="concert-item-group-name">Name</span>
+                                    <span class="concert-item-button">
+                                        <img src="assets/icons/users.svg" />
+                                    </span>
+                                    <a class="concert-item-button" href="#" target="_blank">
+                                        <img src="assets/icons/logos/drive.svg" />
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="concert-item">
+                                <hgroup>
+                                    <h4>Title Again
+                                        <span class="concert-item-title-number">// 04</span>
+                                    </h4>
+                                    <p><span>by</span> Song</p>
+                                    <p><span>from</span> Dunno</p>
+                                </hgroup>
+                                <div>
+                                    <span class="concert-item-group-name">Name</span>
+                                    <span class="concert-item-button">
+                                        <img src="assets/icons/users.svg" />
+                                    </span>
+                                    <a class="concert-item-button" href="#" target="_blank">
+                                        <img src="assets/icons/logos/drive.svg" />
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="concert-item">
+                                <hgroup>
+                                    <h4>Song with an extremely long title
+                                        <span class="concert-item-title-bracket">(Alexa play despacito)</span>
+                                        <span class="concert-item-title-number">// 05</span>
+                                    </h4>
+                                    <p><span>by</span> Composer with a long name</p>
+                                    <p><span>arranged by</span> Arranger with an even long name</p>
+                                    <p><span>from</span> Some cool anime man</p>
+                                </hgroup>
+                                <div>
+                                    <span class="concert-item-group-name">Name</span>
+                                    <span class="concert-item-button">
+                                        <img src="assets/icons/users.svg" />
+                                    </span>
+                                    <a class="concert-item-button" href="#" target="_blank">
+                                        <img src="assets/icons/logos/drive.svg" />
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </article>
+                    <article id="tab-concert-media" class="tab-concert">
+                        <!-- <ul id="concert-media-links">
+                            <li>
+                                <a id="concert-media-link-image" href="#" target="_blank">
+                                    <img src="assets/icons/image-filled.svg" />
+                                    <span>Photos</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a id="concert-media-link-video" href="#" target="_blank">
+                                    <img src="assets/icons/video.svg" />
+                                    <span>Video</span>
+                                </a>
+                            </li>
+                        </ul> -->
+                        <div id="concert-media-embed"></div>
+                        <ul id="concert-media-chapters">
+                            <li onclick="goToVideoChapter(this)" class="concert-media-chapter-active"><span>01 //</span> Something sdsad</li>
+                            <li onclick="goToVideoChapter(this)"><span>02 //</span> Something sdjfsdlkf;sd asdasdsadasdassfs</li>
+                            <li onclick="goToVideoChapter(this)"><span>03 //</span> Another song</li>
+                            <li onclick="goToVideoChapter(this)"><span>04 //</span> Cool</li>
+                            <li onclick="goToVideoChapter(this)"><span>05 //</span> Cool beans</li>
+                            <li onclick="goToVideoChapter(this)"><span>06 //</span> Cool</li>
+                            <li onclick="goToVideoChapter(this)"><span>07 //</span> Cool</li>
+                            <li onclick="goToVideoChapter(this)"><span>08 //</span> Cool</li>
+                            <li onclick="goToVideoChapter(this)"><span>09 //</span> Cool</li>
+                            <li onclick="goToVideoChapter(this)"><span>10 //</span> The song has a really long name</li>
+                            <li onclick="goToVideoChapter(this)"><span>11 //</span> The song has a really long name</li>
+                            <li onclick="goToVideoChapter(this)"><span>12 //</span> The song has a really long name</li>
+                            <li onclick="goToVideoChapter(this)"><span>13 //</span> The song has a really long name</li>
+                        </ul>
+                        <!-- <iframe class="embed-youtube" loading="lazy" src="https://www.youtube.com/embed/k1CZLnxSWDc?si=YTR2aZ5pTpb4E0Ft" title="YouTube video player" frameborder="0" allow="picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
+                    </article>
+
+                    <article id="tab-concert-performers" class="tab-concert">
+                        <ul id="concert-performers">
+                            <li>
+                                <h4>Accordion</h4>
+                                <p>Phillip Hsu</p>
+                            </li>
+                            <li>
+                                <h4>Alto Sax</h4>
+                                <p>A. G. Montejo</p>
+                                <p>Brandon Law</p>
+                                <p>Rylen Fong</p>
+                                <p>Simba</p>
+                            </li>
+                            <li>
+                                <h4>Bagpipes</h4>
+                                <p>Kai Kang Nie</p>
+                            </li>
+                            <li>
+                                <h4>Bass Guitar</h4>
+                                <p>Alexis</p>
+                                <p>Emmett Hartley</p>
+                                <p>Fatima Gonsalves</p>
+                                <p>Inès Alibay</p>
+                                <p>James Inneo</p>
+                                <p>Leo</p>
+                                <p>Sophia</p>
+                                <p>Tyrone Fang</p>
+                            </li>
+                            <li>
+                                <h4>Clarinet</h4>
+                                <p>A. G. Montejo</p>
+                                <p>Benjamin L.</p>
+                                <p>Rylen Fong</p>
+                            </li>
+                            <li>
+                                <h4>Drums</h4>
+                                <p>Cailyn</p>
+                                <p>Han</p>
+                                <p>J. Mansia</p>
+                                <p>Jimin</p>
+                                <p>Julian Gale</p>
+                                <p>Kaden Calvert</p>
+                                <p>Kahveh</p>
+                                <p>Kai Kang Nie</p>
+                            </li>
+                            <li>
+                                <h4>Flute</h4>
+                                <p>Cathy Z.</p>
+                                <p>Richard</p>
+                            </li>
+                            <li>
+                                <h4>Guitar</h4>
+                                <p>Alexis</p>
+                                <p>Andrew Tan</p>
+                                <p>Brian Yin</p>
+                                <p>Emily</p>
+                                <p>Emmett Hartley</p>
+                                <p>Han</p>
+                                <p>Inès Alibay</p>
+                                <p>Kae Nguyen</p>
+                                <p>Michael Kim</p>
+                                <p>Prashanth Shyamala</p>
+                                <p>Robin</p>
+                                <p>Sofia Gondim</p>
+                                <p>William</p>
+                                <p>yams</p>
+                            </li>
+                            <li>
+                                <h4>Piano</h4>
+                                <p>Angelina</p>
+                                <p>Carmen</p>
+                                <p>FH</p>
+                                <p>Fatima Gonsalves</p>
+                                <p>Heyao Wang</p>
+                                <p>Johnathan H.</p>
+                                <p>Leo</p>
+                                <p>Paul Y.</p>
+                                <p>Raekye</p>
+                                <p>Richard</p>
+                                <p>Sean</p>
+                                <p>Tommy</p>
+                            </li>
+                        </ul>
+                    </article>
+                </article>
             </section>
         </article>
 
@@ -1046,7 +1256,7 @@
             <section id="section-get-involved-intro">
                 <div id="section-stay-updated">
                     <img class="section-get-involved-image" src="assets/images/image-1.webp" />
-                    <p id="stay-updated-image-credit">by @seoby</p>
+                    <aside id="stay-updated-image-credit">by @seoby</aside>
                     <div id="stay-updated-text">
                         <h1>Stay Updated</h1>
                         <p>All LMC announcements and discussions take place in the UT-SAMA Discord server. Our main channels are:</p>
