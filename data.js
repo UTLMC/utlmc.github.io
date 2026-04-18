@@ -1,5 +1,1070 @@
-const NOTIFICATIONS = [
+const CURRENT_EVENT = {
+    type: 'concert',
+    links: {
+        poster: 'assets/images/posters/poster 2026-04.webp',
+        rvsp: '#',
+        setlist: 'https://lmc.moe/setlist',
+        recording: '#'
+    },
+    title: '2026 End of Winter Concert',
+    dateStart: new Date(2026, 3, 5, 17, 0, 0),
+    dateEnd: new Date(2026, 3, 5, 20, 0, 0),
+    hideAfter: new Date(2026, 4, 1, 0, 0, 0),
+    location: '252 Bloor Street West (OISE C-162)',
+    tickets: '$5, pay in-person',
+    preConcertDescription: [
+        'The LMC returns this April for its regularly-scheduled end of winter concert, featuring 3 hours of music, XX songs played by XX of our talented musicians!',
+        "We'll be playing songs from j-pop, anime, video games, and more! Find the link to the setlist for the concert here."
+    ],
+    postConcertDescription: [`Thank you to all performers and audience for a successful April concert! The next season of LMC operations will begin in September 2026.`],
+}
 
+const ANNOUNCEMENTS = [
+    {
+        type: 'alert',
+        text: 'This website is currently under construction — some pages are unfinished and there may be bugs.'
+    },
+    {
+        type: 'announcement',
+        text: 'We’re looking for people with experience in drawing, graphic design, audio mixing, or video editing to help us with recording projects! If you have experience, please consider reaching out to XX on XXX!'
+    },
+    {
+        type: 'announcement',
+        text: 'The LMC is opening for its 3rd year this 2025-2026 Fall-Winter term! Our first meeting is at XX:XX pm at XXXX on Sept. XX. Come get a better idea of our club. No instruments needed. Click [this link](https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform) to become a member!'
+    }
+];
+
+const UPCOMING_EVENTS = [
+    {   
+        dateStart: new Date(2026, 9, 20, 20, 0, 0),
+        dateEnd: new Date(2026, 9, 21, 1, 0, 0),
+        location: 'OISE C-154',
+        title: '2026 End of Winter Concert',
+        image: 'assets/images/locations/oise.webp'
+    },
+    {
+        dateStart: new Date(2026, 11, 2, 8, 0, 0),
+        dateEnd: new Date(2026, 11, 2, 10, 0, 0),
+        location: "Cat's Eye",
+        title: 'Cool Workshop',
+        image: 'assets/images/locations/oise.webp'
+    },
+    {
+        dateStart: new Date(2026, 4, 13, 17, 0, 0),
+        dateEnd: new Date(2026, 4, 13, 20, 0, 0),
+        location: "OISE Something",
+        title: 'Some event IDK',
+        image: 'assets/images/locations/oise.webp'
+    },
+]
+
+const MEMBERS = [
+  {
+    "id": 0,
+    "name": "Stone",
+    "joined": "Fall 2023",
+    "left": "Fall 2024",
+    "instruments": [
+      "Bass Guitar",
+      "Drums"
+    ],
+    "roles": [
+      "Executive (23)",
+      "OG"
+    ],
+    "links": {}
+  },
+  {
+    "id": 1,
+    "name": "alpurposeflour",
+    "joined": "Fall 2023",
+    "left": "",
+    "instruments": [
+      "Bass Guitar",
+      "Voice"
+    ],
+    "roles": [
+      "Executive (23/24)",
+      "Logistics",
+      "OG"
+    ],
+    "links": {}
+  },
+  {
+    "id": 2,
+    "name": "Sean",
+    "joined": "Fall 2023",
+    "left": "",
+    "instruments": [
+      "Piano",
+      "Violin"
+    ],
+    "roles": [
+      "Arranger",
+      "Executive (23/25)",
+      "OG"
+    ],
+    "links": {
+      "discord": "amoguus",
+      "youtube": [
+        "Deez",
+        "https://www.youtube.com/@deez9741"
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "name": "Mike",
+    "joined": "Winter 2024",
+    "left": "",
+    "instruments": [
+      "Acoustic Guitar",
+      "Piano",
+      "Violin",
+      "Voice"
+    ],
+    "roles": [
+      "Arranger",
+      "Executive (25)",
+      "OG"
+    ],
+    "links": {
+      "discord": "pixelatedmike",
+      "instagram": "michaelkim_05"
+    }
+  },
+  {
+    "id": 4,
+    "name": "Michelle",
+    "joined": "Winter 2024",
+    "left": "Fall 2024",
+    "instruments": [
+      "Voice"
+    ],
+    "roles": [
+      "OG"
+    ],
+    "links": {}
+  },
+  {
+    "id": 5,
+    "name": "Aedhan",
+    "joined": "Winter 2024",
+    "left": "Winter 2025",
+    "instruments": [
+      "Voice"
+    ],
+    "roles": [
+      "Executive (24)",
+      "OG"
+    ],
+    "links": {
+      "youtube": [
+        "Amako ni Naru",
+        "https://www.youtube.com/@amakoninaru8389"
+      ]
+    }
+  },
+  {
+    "id": 6,
+    "name": "Bryan",
+    "joined": "Winter 2024",
+    "left": "Winter 2025",
+    "instruments": [
+      "Drums",
+      "Voice"
+    ],
+    "roles": [
+      "OG"
+    ],
+    "links": {
+      "youtube": [
+        "Cerocune",
+        "https://www.youtube.com/@Cerocune"
+      ]
+    }
+  },
+  {
+    "id": 7,
+    "name": "Dimmy ",
+    "joined": "Winter 2024",
+    "left": "Winter 2025",
+    "instruments": [
+      "Bass Guitar"
+    ],
+    "roles": [
+      "OG"
+    ],
+    "links": {}
+  },
+  {
+    "id": 8,
+    "name": "Inès Alibay",
+    "joined": "Winter 2024",
+    "left": "",
+    "instruments": [
+      "Bass Guitar",
+      "Electric Guitar"
+    ],
+    "roles": [
+      "OG"
+    ],
+    "links": {}
+  },
+  {
+    "id": 9,
+    "name": "Richard",
+    "joined": "Winter 2024",
+    "left": "",
+    "instruments": [
+      "Flute",
+      "Piano"
+    ],
+    "roles": [
+      "Arranger",
+      "OG"
+    ],
+    "links": {}
+  },
+  {
+    "id": 10,
+    "name": "Mellow",
+    "joined": "Winter 2024",
+    "left": "",
+    "instruments": [
+      "Trombone",
+      "Trumpet"
+    ],
+    "roles": [
+      "OG"
+    ],
+    "links": {}
+  },
+  {
+    "id": 11,
+    "name": "A. G. Montejo",
+    "joined": "Winter 2024",
+    "left": "",
+    "instruments": [
+      "Alto Saxophone",
+      "Clarinet",
+      "Piano",
+      "Tenor Saxophone",
+      "Voice"
+    ],
+    "roles": [
+      "OG"
+    ],
+    "links": {}
+  },
+  {
+    "id": 12,
+    "name": "Louis Miguel",
+    "joined": "Winter 2024",
+    "left": "",
+    "instruments": [
+      "Violin"
+    ],
+    "roles": [
+      "OG"
+    ],
+    "links": {}
+  },
+  {
+    "id": 13,
+    "name": "Kai",
+    "joined": "Winter 2024",
+    "left": "",
+    "instruments": [
+      "Piano",
+      "Violin",
+      "Voice"
+    ],
+    "roles": [
+      "Arranger",
+      "OG"
+    ],
+    "links": {
+      "spotify": [
+        "Kaizyu",
+        "https://open.spotify.com/artist/30UzBgSpF2zQq3cc2uWQiv?si=P1obSR1RRL2tt8kRDC56ng"
+      ],
+      "youtube": [
+        "WhyKai",
+        "https://www.youtube.com/@WhyKaii"
+      ]
+    }
+  },
+  {
+    "id": 14,
+    "name": "Michelle",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Piano"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 15,
+    "name": "Yuki",
+    "joined": "Fall 2024",
+    "left": "Fall 2024",
+    "instruments": [
+      "Clarinet"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 16,
+    "name": "Katie",
+    "joined": "Fall 2024",
+    "left": "Winter 2025",
+    "instruments": [
+      "Violin"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 17,
+    "name": "Daniel",
+    "joined": "Fall 2024",
+    "left": "Winter 2025",
+    "instruments": [
+      "Alto Saxophone"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 18,
+    "name": "Amber",
+    "joined": "Fall 2024",
+    "left": "Winter 2025",
+    "instruments": [
+      "Piano",
+      "Violin"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 19,
+    "name": "Peter",
+    "joined": "Fall 2024",
+    "left": "Winter 2025",
+    "instruments": [
+      "Drums"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 20,
+    "name": "Edison",
+    "joined": "Fall 2024",
+    "left": "Winter 2025",
+    "instruments": [
+      "Oboe"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 21,
+    "name": "Jimin",
+    "joined": "Fall 2024",
+    "left": "",
+    "instruments": [
+      "Drums"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 22,
+    "name": "James Inneo",
+    "joined": "Fall 2024",
+    "left": "",
+    "instruments": [
+      "Bass Guitar"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 23,
+    "name": "Emily",
+    "joined": "Fall 2024",
+    "left": "",
+    "instruments": [
+      "Electric Guitar"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 24,
+    "name": "Robin",
+    "joined": "Fall 2024",
+    "left": "",
+    "instruments": [
+      "Electric Guitar"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 25,
+    "name": "Kasey",
+    "joined": "Fall 2024",
+    "left": "",
+    "instruments": [
+      "Trumpet",
+      "Voice"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 26,
+    "name": "Anon",
+    "joined": "Fall 2024",
+    "left": "",
+    "instruments": [
+      "Bass Guitar"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 27,
+    "name": "Han",
+    "joined": "Fall 2024",
+    "left": "",
+    "instruments": [
+      "Drums",
+      "Electric Guitar"
+    ],
+    "roles": [
+      "Assistant Executive (25)",
+      "Logistics"
+    ],
+    "links": {
+      "discord": "saltedh"
+    }
+  },
+  {
+    "id": 28,
+    "name": "Rylen Fong",
+    "joined": "Fall 2024",
+    "left": "",
+    "instruments": [
+      "Alto Saxophone",
+      "Clarinet"
+    ],
+    "roles": [
+      "Arranger"
+    ],
+    "links": {
+      "youtube": [
+        "Rayzerfang Music",
+        "https://www.youtube.com/channel/UClEvA2YVTvVi-8RUTY5CFFg"
+      ]
+    }
+  },
+  {
+    "id": 29,
+    "name": "Raekye",
+    "joined": "Fall 2024",
+    "left": "",
+    "instruments": [
+      "Piano"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 30,
+    "name": "Angelina Zheng",
+    "joined": "Fall 2024",
+    "left": "",
+    "instruments": [
+      "Piano"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 31,
+    "name": "Tommy",
+    "joined": "Fall 2024",
+    "left": "",
+    "instruments": [
+      "Piano"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 32,
+    "name": "Crystal Y.",
+    "joined": "Winter 2025",
+    "left": "",
+    "instruments": [
+      "Ukulele",
+      "Voice"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 33,
+    "name": "Hayden Hoffort",
+    "joined": "Winter 2025",
+    "left": "",
+    "instruments": [
+      "Trumpet"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 34,
+    "name": "Johnathan H.",
+    "joined": "Winter 2025",
+    "left": "",
+    "instruments": [
+      "Piano"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 35,
+    "name": "Kae",
+    "joined": "Winter 2025",
+    "left": "",
+    "instruments": [
+      "Electric Guitar"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 36,
+    "name": "Tyrone Fang",
+    "joined": "Fall 2024",
+    "left": "",
+    "instruments": [
+      "Bass Guitar"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 37,
+    "name": "Sophia",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Bass Guitar",
+      "Voice"
+    ],
+    "roles": [
+      "Assistant Executive (25)"
+    ],
+    "links": {
+      "discord": "sophia__a"
+    }
+  },
+  {
+    "id": 38,
+    "name": "Eric",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Voice"
+    ],
+    "roles": [
+      "Assistant Executive (25)"
+    ],
+    "links": {
+      "discord": "eeeric_nothing"
+    }
+  },
+  {
+    "id": 39,
+    "name": "Zachary Pang",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Voice"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 40,
+    "name": "Olivia Yip",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Voice"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 41,
+    "name": "Emma Ethina Islam",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Voice"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 42,
+    "name": "Brian Lin",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Electric Guitar",
+      "Voice"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 43,
+    "name": "Fatima Gonsalves",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Bass Guitar",
+      "Piano",
+      "Voice"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 44,
+    "name": "Carmen",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Electric Guitar",
+      "Piano",
+      "Voice"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 45,
+    "name": "J. Mansia",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Drums",
+      "Violin",
+      "Voice"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 46,
+    "name": "Simba",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Alto Saxophone",
+      "Violin",
+      "Voice"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 47,
+    "name": "Skylar",
+    "joined": "Fall 2025",
+    "left": "Fall 2025",
+    "instruments": [
+      "Violin"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 48,
+    "name": "Nicole Liu",
+    "joined": "Fall 2025",
+    "left": "Fall 2025",
+    "instruments": [
+      "Violin"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 49,
+    "name": "Benjamin L.",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Clarinet"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 50,
+    "name": "Brandon Law",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Alto Saxophone",
+      "Bass Guitar"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 51,
+    "name": "Efren Wang",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Trombone"
+    ],
+    "roles": [
+      "Logistics"
+    ],
+    "links": {}
+  },
+  {
+    "id": 52,
+    "name": "William",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Electric Guitar"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 53,
+    "name": "Ericka",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Acoustic Guitar"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 54,
+    "name": "Alexander Davydenko",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Electric Guitar"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 55,
+    "name": "Emre",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Acoustic Guitar"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 56,
+    "name": "Sofia Gondim",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Bass Guitar",
+      "Electric Guitar"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 57,
+    "name": "Andrew Tan",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Electric Guitar",
+      "Piano"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 58,
+    "name": "Emmett Hartley",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Bass Guitar"
+    ],
+    "roles": [
+      "Logistics"
+    ],
+    "links": {}
+  },
+  {
+    "id": 59,
+    "name": "Jonathan",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Bass Guitar"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 60,
+    "name": "FH",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Piano"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 61,
+    "name": "Xianghai (Steven)",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Piano"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 62,
+    "name": "Julian",
+    "joined": "Fall 2025",
+    "left": "",
+    "instruments": [
+      "Drums"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 63,
+    "name": "Joe",
+    "joined": "Winter 2026",
+    "left": "",
+    "instruments": [
+      "Piano"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 64,
+    "name": "Paul Y.",
+    "joined": "Winter 2026",
+    "left": "",
+    "instruments": [
+      "Piano"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 65,
+    "name": "Ze",
+    "joined": "Winter 2026",
+    "left": "",
+    "instruments": [
+      "Violin"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 66,
+    "name": "Kaveh",
+    "joined": "Winter 2026",
+    "left": "",
+    "instruments": [
+      "Drums"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 67,
+    "name": "Cathy Z.",
+    "joined": "Winter 2026",
+    "left": "",
+    "instruments": [
+      "Flute",
+      "Tenor Saxophone"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 68,
+    "name": "Cailyn",
+    "joined": "Winter 2026",
+    "left": "",
+    "instruments": [
+      "Drums"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 69,
+    "name": "Kaden Calvert",
+    "joined": "Winter 2026",
+    "left": "",
+    "instruments": [
+      "Drums"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 70,
+    "name": "Kai Kang Nie",
+    "joined": "Winter 2026",
+    "left": "",
+    "instruments": [
+      "Bagpipes"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 71,
+    "name": "Celina L.",
+    "joined": "Winter 2026",
+    "left": "",
+    "instruments": [
+      "Voice"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 72,
+    "name": "Lucia",
+    "joined": "Winter 2026",
+    "left": "",
+    "instruments": [
+      "Voice"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 73,
+    "name": "Leo",
+    "joined": "Winter 2026",
+    "left": "",
+    "instruments": [
+      "Bass Guitar",
+      "Piano"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 74,
+    "name": "Phillip Hsu",
+    "joined": "Winter 2026",
+    "left": "",
+    "instruments": [
+      "Accordion"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 75,
+    "name": "Hana",
+    "joined": "Winter 2026",
+    "left": "",
+    "instruments": [
+      "Voice"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 76,
+    "name": "Prashanth Shyamala",
+    "joined": "Winter 2026",
+    "left": "",
+    "instruments": [
+      "Electric Guitar"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 77,
+    "name": "Charlene Chiang",
+    "joined": "Winter 2026",
+    "left": "",
+    "instruments": [
+      "Trumpet"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 78,
+    "name": "Colin Boothby",
+    "joined": "Winter 2026",
+    "left": "",
+    "instruments": [
+      "Theremin"
+    ],
+    "roles": [],
+    "links": {}
+  },
+  {
+    "id": 79,
+    "name": "yams",
+    "joined": "Winter 2026",
+    "left": "",
+    "instruments": [
+      "Electric Guitar"
+    ],
+    "roles": [],
+    "links": {}
+  }
 ];
 
 const LARGE_ENSEMBLE = {
@@ -105,81 +1170,6 @@ const CONCERTS = [
 
 ]
 
-const MEMBERS = [
-    {
-        id: 4,
-        name: 'Mike',
-        joined: '2023-01',
-        left: null,
-        picture: null,
-        tags: [
-            'Piano',
-            'Arranger',
-            'Executive (2025)'
-        ],
-        socialMedia: {
-            discord: ['@pixelatedmike'],
-        }
-    },
-    {
-        id: 3,
-        name: 'Aedhan',
-        joined: '2023-01',
-        left: '2025-09',
-        tags: [
-            'Voice',
-            'Executive (2024)'
-        ],
-        socialMedia: {
-            discord: ['@Amako']
-        }
-    },
-    {
-        id: 2,
-        name: 'Sean',
-        joined: '2023-01',
-        left: null,
-        picture: null,
-        tags: [
-            'Piano',
-            'Violin',
-            'Arranger',
-            'Executive (2023, 2025)'
-        ],
-        socialMedia: {
-            discord: ['@amoguus']
-        }
-    },
-    {
-        id: 1,
-        name: 'Alexis',
-        joined: '2023-01',
-        left: '2025-09',
-        tags: [
-            'Bass Guitar',
-            'Executive (2023, 2024)'
-        ],
-        socialMedia: {
-            discord: ['@alpurposeflour']
-        }
-    },
-    {
-        id: 0,
-        name: 'Stone',
-        joined: '2023-01',
-        left: '2025-09',
-        tags: [
-            'Drums',
-            'Bass Guitar',
-            'Electric Guitar',
-            'Executive (2023)'
-        ],
-        socialMedia: {
-            discord: ['@imkonfusedauhrg']
-        }
-    },
-]
-
 const FAQ = [
     {
         q: 'Is LMC only for University of Toronto students?',
@@ -263,7 +1253,7 @@ const FORM_LINKS = {
 }
 
 const EMBED_LINKS = {
-    'calendar': '',
+    'embed-calendar': 'https://calendar.google.com/calendar/embed?src=utsama.lightmusicclub%40gmail.com&ctz=America%2FToronto',
 
 }
 

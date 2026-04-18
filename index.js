@@ -46,6 +46,60 @@ function cssSetId(id, properties) {
     }
 }
 
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+function formatTime(date, includePeriod = true) {
+  let hours = date.getHours();
+  const minutes = date.getMinutes();
+  const period = hours >= 12 ? "pm" : "am";
+
+  hours = hours % 12 || 12;
+  const minuteStr = minutes.toString().padStart(2, "0");
+
+  return includePeriod
+    ? `${hours}:${minuteStr} ${period}`
+    : `${hours}:${minuteStr}`;
+}
+
+function parseTimeRange(start, end) {
+  const startPeriod = start.getHours() >= 12 ? "pm" : "am";
+  const endPeriod = end.getHours() >= 12 ? "pm" : "am";
+
+  // Same AM/PM → only show once at end
+  if (startPeriod === endPeriod) {
+    return `${formatTime(start, false)} - ${formatTime(end, true)}`;
+  }
+
+  // Different AM/PM → show both
+  return `${formatTime(start, true)} - ${formatTime(end, true)}`;
+}
+
+function parseFromTo(start, end) {
+  const sameMonth = start.getMonth() === end.getMonth();
+  const sameDay = start.getDate() === end.getDate();
+
+  const formatMonthDay = (date) =>
+    date.toLocaleString("en-US", {
+      month: "long",
+      day: "numeric",
+    });
+
+  if (sameMonth && sameDay) {
+    return `${formatMonthDay(start)}, ${parseTimeRange(start, end)}`;
+  }
+
+  return `${formatMonthDay(start)}, ${formatTime(start, true)} - ${formatMonthDay(end)}, ${formatTime(end, true)}`;
+}
+
+function parseMarkdown(text) {
+    // Links
+    text = text.replace(
+        /\[([^\]]+)\]\(([^)]+)\)/g,
+        '<a href="$2" target="_blank">$1</a>'
+    );
+    return text;
+}
+
 
 /*********************************************************************
 Toggleables
@@ -71,6 +125,10 @@ function toggleHeaderHamburger() {
             element.classList.add(className);
         }
     }
+}
+function navigateToTab(name) {
+    toggleTab(`nav-${name}`);
+    window.location.hash = name.endsWith('home') ? '#' : `#${name}`;
 }
 function toggleTab(element) {
     // If input is a string (i.e. from loading the URL with a hash), treat it like a class
@@ -164,7 +222,7 @@ function toggleEventTab(element) {
 function toggleConcertTab(element) {
     genericToggleTab(element, 'concert');
     
-    if (element.id === 'nav-concert-media') {
+    if (element.id === 'nav-concert-video') {
         // Initialize Youtube iframe API lazily
         const tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
@@ -206,8 +264,7 @@ function videoStateChangeHandler(state) {
 // https://developers.google.com/youtube/iframe_api_reference
 let VIDEO;
 function onYouTubeIframeAPIReady() {
-    console.log("HI")
-    VIDEO = new YT.Player('concert-media-embed', {
+    VIDEO = new YT.Player('concert-video-embed', {
         videoId: 'TiStCNPn10s',
         width: "300",
         height: "200",
@@ -221,7 +278,7 @@ function onYouTubeIframeAPIReady() {
 }
 
 function goToVideoChapter(element) {
-    const className = 'concert-media-chapter-active';
+    const className = 'concert-video-chapter-active';
     cssGetClass(className)[0]?.classList.remove(className);
     element.classList.add(className);
     
@@ -282,7 +339,10 @@ window.addEventListener('mousemove', (event) => {
         MOUSE_DOWN = false;
     }
 });
-window.addEventListener('DOMContentLoaded', () => {    
+window.addEventListener('DOMContentLoaded', () => {  
+    injectHomeEvent();
+    injectHomeBulletin();
+    injectMembers();
     injectFAQ();
     injectFormLinks();
     injectCarousel();
@@ -325,13 +385,18 @@ function construct(json) {
             element.setAttribute(key, json.attributes[key]);
         }
     }
+    if (json.style) {
+        for (const key in json.style) {
+            element.style.setProperty(key, json.style[key]);
+        }
+    }
     if (json.classes) {
         for (const name of json.classes) {
             element.classList.add(name);
         }
     }
     if (json.id) {
-        element.id = id;
+        element.id = json.id;
     }
     if (json.innerText) {
         element.innerText = json.innerText;
@@ -341,31 +406,426 @@ function construct(json) {
     }
     if (json.children) {
         for (const child of json.children) {
+            if (!child) continue;
             element.appendChild(construct(child));
         }
     }
     return element;
 }
 
-function parseMarkdown(text) {
-    // Links
-    text = text.replace(
-        /\[([^\]]+)\]\(([^)]+)\)/g,
-        '<a href="$2" target="_blank">$1</a>'
-    )
-    return text;
+async function injectHomeEvent() {
+    const now = new Date();
+
+    if (!CURRENT_EVENT || !CURRENT_EVENT.type || now > CURRENT_EVENT.hideAfter) {
+        cssGetId('section-home-event').style.setProperty('display', 'none');
+    } else if (CURRENT_EVENT.type === 'concert') {
+        const {
+            links: { poster, rvsp, setlist, recording },
+            title,
+            dateStart,
+            dateEnd,
+            location,
+            tickets,
+            preConcertDescription,
+            postConcertDescription
+        } = CURRENT_EVENT;
+        cssGetFirst('#home-event-poster img').src = poster;
+        cssGetFirst('#home-event-text hgroup h3').innerText = title;
+        cssGetId('home-event-date').innerText = parseFromTo(dateStart, dateEnd);
+        cssGetId('home-event-location').innerText = location;
+        cssGetId('home-event-tickets').innerText = tickets;
+
+        const text = now > dateEnd ? postConcertDescription : preConcertDescription;
+        const paragraphs = text.map(x => construct({ element: 'p', innerText: x }));
+
+        const buttons = construct({ element: 'div', id: 'home-event-buttons' });
+        if (rvsp && now < dateStart) {
+            buttons.appendChild(construct({
+                element: 'a',
+                classes: ['home-event-button'],
+                innerText: 'RVSP',
+                attributes: { href: rvsp, target: '_blank' }
+            }));
+        }
+        if (setlist) {
+            buttons.appendChild(construct({
+                element: 'a',
+                classes: ['home-event-button'],
+                innerText: 'See the setlist',
+                attributes: { href: setlist, target: '_blank' }
+            }));
+        }
+        if (recording) {
+            buttons.appendChild(construct({
+                element: 'a',
+                classes: ['home-event-button'],
+                innerText: 'Watch the recording',
+                attributes: { href: recording, target: '_blank' }
+            }));
+        }
+
+        const container = cssGetId('home-event-text');
+        paragraphs.forEach(x => container.appendChild(x));
+        container.appendChild(buttons);
+    } else {
+        throw new Error(CURRENT_EVENT.type);
+    }
 }
+async function injectHomeBulletin() {
+    const sectionAnnouncements = cssGetId('section-announcements');
+    const sectionUpcoming = cssGetId('section-upcoming-events');
+    const containerAnnouncements = cssGetId('announcement-container');
+    const containerUpcoming = cssGetId('upcoming-events-container');
+
+    if (ANNOUNCEMENTS.length > 0) {
+        ANNOUNCEMENTS.forEach(({ type, text }) => {
+            containerAnnouncements.appendChild(construct({
+                element: 'aside',
+                classes: ['announcement'],
+                children: [{
+                    element: 'div',
+                    classes: [type === 'alert' ? 'icon-alert' : 'icon-announcement']
+                }, {
+                    element: 'p',
+                    innerHTML: parseMarkdown(text)
+                }]
+            }));
+        });
+    }
+    if (UPCOMING_EVENTS.length > 0) {
+        UPCOMING_EVENTS.forEach(({ dateStart, dateEnd, location, title, image }) => {
+            containerUpcoming.appendChild(construct({
+                element: 'li',
+                style: {
+                    'background-image': `url('${image}')`
+                },
+                children: [{
+                    element: 'hgroup',
+                    children: [{
+                        element: 'h4',
+                        classes: ['upcoming-event-date'],
+                        innerHTML: `<span>${dateStart.getDate()}</span> ${MONTHS[dateStart.getMonth()].slice(0, 3)}`
+                    }, {
+                        element: 'p',
+                        classes: ['upcoming-event-location'],
+                        innerText: location
+                    }, {
+                        element: 'p',
+                        classes: ['upcoming-event-time'],
+                        innerText: parseTimeRange(dateStart, dateEnd)
+                    }]
+                }, {
+                    element: 'h4',
+                    classes: ['upcoming-event-name'],
+                    innerText: title
+                }]
+            }))
+        })
+    }
+    
+    if (ANNOUNCEMENTS.length === 0 && UPCOMING_EVENTS.length === 0) {
+        sectionAnnouncements.style.setProperty('display', 'none');
+        sectionUpcoming.style.setProperty('display', 'none');
+    } else if (ANNOUNCEMENTS.length === 0) {
+        sectionAnnouncements.style.setProperty('display', 'none');
+        sectionUpcoming.style.setProperty('width', '100%');
+    } else if (UPCOMING_EVENTS.length === 0) {
+        sectionAnnouncements.style.setProperty('width', '100%');
+        sectionAnnouncements.classList.add('section-announcements-full');
+        sectionUpcoming.style.setProperty('display', 'none');
+    }
+}
+
+let MUSICIANS_FILTERS = {
+    memberType: 'current',
+}
+const updateMusiciansTable = (() => {
+    const idToRow = {};
+    const table = cssGetFirst('#table-musicians tbody');
+
+    // filters: name, tag, tag type, current/past members, was exec 
+    // parameters: page number, page size
+    return async () => {
+        const members = MEMBERS.filter(x => {
+            if (MUSICIANS_FILTERS.memberType === 'current' && x.left) return false;
+            if (MUSICIANS_FILTERS.memberType === 'past' && !x.left) return false;
+
+
+            return true;
+        });
+
+        const fragment = document.createDocumentFragment();
+        const nextIdToRow = {};
+        
+        for (const member of members) {
+            let row = idToRow[member.id];
+            if (!row) {
+                row = construct({
+                    element: 'tr',
+                    id: `section-musician-${member.id}`,
+                    children: [{
+                        element: 'td',
+                        innerText: member.name
+                    }, {
+                        element: 'td',
+                        children: [{
+                            element: 'p',
+                            classes: ['tag-container'],
+                            children: [...member.instruments, ...member.roles].map(x => ({
+                                element: 'span',
+                                innerText: x
+                            }))
+                        }]
+                    }, {
+                        element: 'td',
+                        innerText: member.joined
+                    }, {
+                        element: 'td',
+                        children: [{
+                            element: 'ul',
+                            classes: ['list-social-media'],
+                            children: Object.entries(member.links).map(([site, info]) => ({
+                                element: 'li',
+                                classes: [`li-${site}`],
+                                innerText: Array.isArray(info) ? '' : info,
+                                children: Array.isArray(info) ? [{
+                                    element: 'a',
+                                    innerText: info[0],
+                                    attributes: {
+                                        href: info[1],
+                                        target: '_blank'
+                                    }
+                                }] : []
+                            }))
+                        }]
+                    }]
+                });
+            }
+            fragment.appendChild(row);
+            nextIdToRow[member.id] = row;
+        }
+        for (const id in idToRow) {
+            if (!nextIdToRow[id]) {
+                idToRow[id].remove();
+            }
+            delete idToRow[id];
+        }
+
+        Object.assign(idToRow, nextIdToRow);
+        table.appendChild(fragment);
+    } 
+})();
+
+function toggleMemberTypeButton(element) {
+    if (MUSICIANS_FILTERS.memberType === 'current') {
+        MUSICIANS_FILTERS.memberType = 'past';
+        element.innerText = 'Past Members';
+    } else if (MUSICIANS_FILTERS.memberType === 'past') {
+        MUSICIANS_FILTERS.memberType = 'all';
+        element.innerText = 'All Members';
+    } else {
+        MUSICIANS_FILTERS.memberType = 'current';
+        element.innerText = 'Current Members';
+    }
+    updateMusiciansTable();
+}
+
+function toggleTagTypeButton(element) {
+
+}
+
+async function injectMembers() {
+    const instruments = MEMBERS.filter(x => !x.left).map(x => x.instruments).flat();
+    let total = 0;
+    const personnel = {};
+    for (const instrument of instruments) {
+        if (!personnel[instrument]) {
+            personnel[instrument] = 0;
+        }
+        personnel[instrument] += 1;
+    }
+    const personnelRoles = new Set(['Arranger', 'Artist', 'Video Editor']);
+    for (const role of personnelRoles) {
+        for (const member of MEMBERS) {
+            if (member.roles.includes(role)) {
+                if (!personnel[role]) {
+                    personnel[role] = 0;
+                }
+                personnel[role] += 1;
+            }
+        }
+    }
+    personnel.Total = MEMBERS.filter(x => !x.left).length;
+    personnelRoles.add('Total');
+
+    const nameSubstitutions = {
+        'Alto Saxophone': 'Alto Sax',
+        'Tenor Saxophone': 'Tenor Sax'
+    }
+    const tablePersonnel = cssGetId('table-personnel');
+    Object.entries(personnel).sort((a, b) => {
+        const [nameA, countA] = a;
+        const [nameB, countB] = b;
+
+        // Put total at end
+        if (nameA === 'Total') { return 1; }
+        else if (nameB === 'Total') { return -1; }
+        
+        if (countA === countB) {
+            return nameA.localeCompare(nameB);
+        }
+        return countB - countA;
+    }).forEach(([name, count]) => {
+        const cardClasses = [
+            'personnel-card',
+            `personnel-${name.toLowerCase().replace(' ', '-')}`,
+        ];
+        if (personnelRoles.has(name)) {
+            cardClasses.push('personnel-notinstrument');
+        }
+        const displayName = nameSubstitutions[name] ? nameSubstitutions[name] : name;
+
+        tablePersonnel.appendChild(construct({
+            element: 'li',
+            children: [{
+                element: 'div',
+                classes: cardClasses,
+                children: [{
+                    element: 'span',
+                    classes: ['personnel-title'],
+                    innerText: displayName
+                }, {
+                    element: 'span',
+                    classes: ['personnel-count'],
+                    innerText: `×${count}`
+                }]
+            }]
+        }));
+    });
+    
+    // Update executive team to the latest year at August (if it doesn't exist, stick to last year)
+    const now = new Date();
+    let year = now.getMonth() >= 7 ? now.getFullYear() : now.getFullYear() - 1;
+    let execTeam = MEMBERS.filter(x => x.roles.some(role => role.includes(String(year).slice(2))));
+    while (execTeam.length === 0) {
+        year -= 1;
+        execTeam = MEMBERS.filter(x => x.roles.some(role => role.includes(String(year).slice(2))));
+        if (year === 2022) {
+            throw new Error("WTF");
+        }
+    }
+    cssGetId('exec-team-year').innerText = `${year}-${year + 1}`;
+
+    // Inject executive team
+    const digit = String(year).slice(2);
+    const execTeamProfile = cssGetId('exec-team-profile');
+    execTeam.sort((a, b) => {
+        // Order of display: executives, then alphabetically by role, then by real name
+        let roleA = a.roles.find(role => role.includes(digit));
+        let roleB = b.roles.find(role => role.includes(digit));
+        roleA = roleA.slice(0, roleA.indexOf(' ('));
+        roleB = roleB.slice(0, roleB.indexOf(' ('));
+
+        const execA = roleA === 'Executive';
+        const execB = roleB === 'Executive';
+        if (execA && !execB) {
+            return -1;
+        } else if (!execA && execB) {
+            return 1;
+        }
+        if (roleA === roleB) {
+            return a.name.localeCompare(b.name);
+        }        
+        return roleA.localeCompare(roleB);
+    }).forEach(x => {
+        const execRole = x.roles.find(role => role.includes(digit));
+        const nonExecRoles = [...x.instruments, ...x.roles.filter(role => !role.includes(" ("))];
+
+        execTeamProfile.appendChild(construct({
+            element: 'li',
+            classes: ['exec-team-card'],
+            children: [{
+                element: 'img',
+                attributes: { src: 'assets/images/asanoha.webp' }
+            }, {
+                element: 'div',
+                children: [{
+                    element: 'hgroup',
+                    children: [{
+                        element: 'h4',
+                        innerText: x.name
+                    }, {
+                        element: 'p',
+                        innerText: execRole.slice(0, execRole.indexOf(" ("))
+                    }]
+                }, {
+                    element: 'p',
+                    classes: ['tag-container'],
+                    children: nonExecRoles.map(x => ({
+                        element: 'span',
+                        innerText: x
+                    }))
+                }, {
+                    element: 'ul',
+                    classes: ['list-social-media'],
+                    children: Object.entries(x.links).map(([site, info]) => {
+                        let url, username;
+                        if (Array.isArray(info)) {
+                            [username, url] = info;
+                        } else {
+                            username = info;
+                        }
+                        return {
+                            element: 'li',
+                            classes: [`li-${site}`],
+                            innerText: url ? '' : username,
+                            children: url ? [{
+                                element: 'a',
+                                attributes: { target: '_blank', href: url },
+                                innerText: username
+                            }] : []
+                        };
+                    })
+                }]
+            }]
+        }));
+    });
+
+    const outreachOptions = new Set(['discord', 'instagram']);
+    const homeOutreach = cssGetId('home-outreach');
+    execTeam
+        .filter(x => x.roles.some(role => role.startsWith('Executive')))
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .forEach(x => {
+            homeOutreach.appendChild(construct({
+                element: 'h4',
+                innerText: x.name
+            }))
+            homeOutreach.appendChild(construct({
+                element: 'ul',
+                classes: ['list-social-media'],
+                children: Object.entries(x.links).filter(([site]) => outreachOptions.has(site)).map(([site, info]) => ({
+                    element: 'li',
+                    classes: [`li-${site}`],
+                    innerHTML: info
+                }))
+            }))
+        });
+
+    updateMusiciansTable();
+}
+
 async function injectFAQ() {
     const container = cssGetId('faq-container');
     for (const faq of FAQ) {
         const paragraphs = faq.a.map(x => ({ element: 'p', innerHTML: parseMarkdown(x) }));
         const json = {
             element: 'details',
-            attributes: {'open': true},
+            attributes: { 'open': true },
             classes: ['details-hidden'],
             children: [{
                 element: 'summary',
-                attributes: {'onclick': 'toggleDetailsSummary(event)'},
+                attributes: { 'onclick': 'toggleDetailsSummary(event)' },
                 children: [{
                     element: 'h4',
                     innerText: faq.q
@@ -476,19 +936,6 @@ function updateCarousel() {
         }
     }
 }
-// const updateConcertPerformers = new ResizeObserver(entries => {
-//     for (const entry of entries) {
-//         const { target: element } = entry;
-//         if (element.offsetWidth === 0) {
-//             return;
-//         }
-//         const minWidth = 180;
-//         const columns = Math.ceil(element.offsetWidth / minWidth);
-//         element.style.setProperty('column-count', Math.min(6, columns));
-//         return;
-//     }
-// })
-// updateConcertPerformers.observe(cssGetId('concert-performers'));
 
 // Github pages CORS test
 async function corsTest(link) {

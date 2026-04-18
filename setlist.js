@@ -207,7 +207,7 @@ const SONGS = [
         performers: {
             'Vocals': ['Sophia'],
             'Piano': ['FH'],
-            'Guitar': ['Emily', 'Brian Yin'],
+            'Guitar': ['Emily', 'Brian Lin'],
             'Bass': ['James Inneo'],
             'Drums': ['J. Mansia']
         }
@@ -219,7 +219,7 @@ const SONGS = [
         performers: {
             'Vocals': ['Sophia'],
             'Piano': ['FH'],
-            'Guitar': ['Emily', 'Brian Yin'],
+            'Guitar': ['Emily', 'Brian Lin'],
             'Bass': ['James Inneo'],
             'Drums': ['J. Mansia']
         }
@@ -299,7 +299,7 @@ const SONGS = [
             'Alto Sax': ['Simba'],
             'Trombone': ['Efren Wang', 'Mellow'],
             'Piano': ['Tommy'],
-            'Guitar': ['Brian Yin', 'William'],
+            'Guitar': ['Brian Lin', 'William'],
             'Bass': ['Sophia'],
             'Aux. Percussion': ['Kaden', 'Kai Kang Nie', 'Zachary'],
             'Drums': ['Julian Gale']
@@ -468,7 +468,7 @@ const SONGS = [
             'Alto Sax': ['A. G. Montejo', 'Simba'],
             'Trumpet': ['Hayden Hoffort'],
             'Piano': ['Sean'],
-            'Guitar': ['Brian Yin', 'Inès Alibay'],
+            'Guitar': ['Brian Lin', 'Inès Alibay'],
             'Bass': ['Tyrone Fang'],
             'Drums': ['Julian Gale']
         }

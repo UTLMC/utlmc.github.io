@@ -230,16 +230,17 @@
                 <img class="home-event-bg" id="home-event-bg-1" src="assets/images/violin.svg" decoding="async" loading="lazy" />
                 <img class="home-event-bg" id="home-event-bg-2" src="assets/images/trombone.svg" decoding="async" loading="lazy" />
                 <div id="home-event-container">
-                    <div class="home-event-poster"><img src="assets/images/posters/poster 2026-04.webp" decoding="async" loading="lazy" /></div>
-                    <div class="home-event-text">
+                    <div id="home-event-poster"><img decoding="async" loading="lazy" /></div>
+                    <div id="home-event-text">
                         <hgroup>
-                            <h3>2026 End of Winter Concert</h3>
+                            <h3></h3>
                             <ul>
-                                <li class="home-event-date">April 5, 5:00 - 8:00 pm</li>
-                                <li class="home-event-location">252 Bloor Street West (OISE C-162)</li>
-                                <li class="home-event-cost">$5, pay in-person</li>
+                                <li id="home-event-date"></li>
+                                <li id="home-event-location"></li>
+                                <li id="home-event-tickets"></li>
                             </ul>
                         </hgroup>
+                        <!--
                         <p>The LMC returns this April for its regularly-scheduled end of winter concert, featuring 3 hours of music, XX songs played by XX of our talented musicians!</p>
                         <p>We'll be playing songs from j-pop, anime, video games, and more! Find the link to the setlist for the concert here.</p>
                         <div id="home-event-buttons">
@@ -247,6 +248,7 @@
                             <a class="home-event-button">RSVP</a>
                             <a class="home-event-button">Watch the recording</a>
                         </div>
+                        -->
                     </div>
                 </div>
             </section>
@@ -257,18 +259,23 @@
                         <h1>Announcements</h1>
                         <div id="section-announcements-icon"></div>
                     </hgroup>
-                    <aside class="notification">
+                    <div id="announcement-container">
+
+                    </div>
+                    <!--
+                    <aside class="announcement">
                         <div class="icon-alert"></div>
-                        <span>This website is currently under construction — some pages are unfinished and there may be bugs.</span>
+                        <p>This website is currently under construction — some pages are unfinished and there may be bugs.</p>
                     </aside>
-                    <aside class="notification">
+                    <aside class="announcement">
                         <div class="icon-announcement"></div>
-                        <span>We’re looking for people with experience in drawing, graphic design, audio mixing, or video editing to help us with recording projects! If you have experience, please consider reaching out to XX on XXX!</span>
+                        <p>We’re looking for people with experience in drawing, graphic design, audio mixing, or video editing to help us with recording projects! If you have experience, please consider reaching out to XX on XXX!</p>
                     </aside>
-                    <aside class="notification">
+                    <aside class="announcement">
                         <div class="icon-announcement"></div>
-                        <span>The LMC is opening for its 3rd year this 2025-2026 Fall-Winter term! Our first meeting is at XX:XX pm at XXXX on Sept. XX. Come get a better idea of our club. No instruments needed. Click <a href="https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform" target="_blank">this link</a> to become a member!</span>
+                        <p>The LMC is opening for its 3rd year this 2025-2026 Fall-Winter term! Our first meeting is at XX:XX pm at XXXX on Sept. XX. Come get a better idea of our club. No instruments needed. Click <a href="https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform" target="_blank">this link</a> to become a member!</p>
                     </aside>
+                    -->
                 </div>
                 <div id="section-upcoming-events">
                     <hgroup>
@@ -276,7 +283,7 @@
                         <div id="section-upcoming-events-icon"></div>
                     </hgroup>
                     <ul id="upcoming-events-container" onmousewheel="scrollHorizontally(event)">
-                        <li class="upcoming-event-oise">
+                        <!-- <li class="upcoming-event-at-oise">
                             <hgroup>
                                 <h4 class="upcoming-event-date"><span>21</span> Oct</h4>
                                 <p class="upcoming-event-location">OISE C-154</p>
@@ -284,7 +291,7 @@
                             </hgroup>
                             <h4 class="upcoming-event-name">End of Something Concert</h4>
                         </li>
-                        <li class="upcoming-event-oise">
+                        <li class="upcoming-event-at-oise">
                             <hgroup>
                                 <h4 class="upcoming-event-date"><span>02</span> Dec</h4>
                                 <p class="upcoming-event-location">Cat's Eye</p>
@@ -292,23 +299,23 @@
                             </hgroup>
                             <h4 class="upcoming-event-name">Cool Workshp</h4>
                         </li>
-                        <li class="upcoming-event-oise">
+                        <li class="upcoming-event-at-oise">
                             <hgroup>
                                 <h4 class="upcoming-event-date"><span>13</span> May</h4>
                                 <p class="upcoming-event-location">OISE Something</p>
                                 <p class="upcoming-event-time">5:00 - 7:00 pm</p>
                             </hgroup>
                             <h4 class="upcoming-event-name">Cool Workshop</h4>
-                        </li>
+                        </li> -->
                     </ul>
                 </div>
             </section>
             <iframe loading="lazy" class='embed-calendar' src="https://calendar.google.com/calendar/embed?src=utsama.lightmusicclub%40gmail.com&ctz=America%2FToronto" title="Google calendar" frameborder="0" scrolling="no"></iframe>
-            <section class="section-default">
+            <section id="section-outreach">
                 <h1>Work with Us</h3>
-                <p>Want to join LMC? See here for more info. For general inquiries, collaborations, performing with us, or any sort of partnership with LMC, please feel free to contact any of the LMC execs below:</p>
+                <p>Want to join LMC? See <a onclick="navigateToTab('get-involved')">here</a> for more info. For general inquiries, collaborations, performing with us, or any sort of partnership with LMC, please feel free to contact any of the LMC execs below:</p>
                 <div id="home-outreach">
-                    <h4>Mike</h4>
+                    <!-- <h4>Mike</h4>
                     <ul class="list-social-media">
                         <li class="li-discord">pixellatedmike</li>
                         <li class="li-instagram">michaelkim_05</li>
@@ -316,7 +323,7 @@
                     <h4>Sean</h4>
                     <ul class="list-social-media">
                         <li class="li-discord">amoguus</li>
-                    </ul>
+                    </ul> -->
                 </div>
                 <p>You may also reach us via our <a href="https://www.instagram.com/utsama_lmc/" target="_blank">Instagram page</a> or <a href="mailto:utsama.lightmusicclub@gmail.com">email</a>. Contacting one of the execs directly may lead to a quicker response.</p>
             </section>
@@ -350,7 +357,7 @@
             <section id="section-personnel">
                 <h1>Personnel</h1>
                 <ul id="table-personnel">
-                    <li>
+                    <!-- <li>
                         <div class="personnel-card personnel-arranger personnel-notinstrument">
                             <span class="personnel-title">Arranger</span>
                             <span class="personnel-count">×3</span>
@@ -369,37 +376,37 @@
                         </div>
                     </li>
                     <li>
-                        <div class="personnel-card personnel-percussion personnel-piano">
+                        <div class="personnel-card personnel-piano">
                             <span class="personnel-title">Piano</span>
                             <span class="personnel-count">×3</span>
                         </div>
                     </li>
                     <li>
-                        <div class="personnel-card personnel-drums personnel-percussion ">
+                        <div class="personnel-card personnel-drums">
                             <span class="personnel-title">Drums</span>
                             <span class="personnel-count">×3</span>
                         </div>
                     </li>
                     <li>
-                        <div class="personnel-card personnel-violin personnel-bowed-string">
+                        <div class="personnel-card personnel-violin">
                             <span class="personnel-title">Violin</span>
-                            <span>×3</span>
+                            <span class="personnel-count">×3</span>
                         </div>
                     </li>
                     <li>
-                        <div class="personnel-card personnel-viola personnel-bowed-string">
+                        <div class="personnel-card personnel-viola">
                             <span class="personnel-title">Viola</span>
                             <span class="personnel-count">×3</span>
                         </div>
                     </li>
                     <li>
-                        <div class="personnel-card personnel-cello personnel-bowed-string">
+                        <div class="personnel-card personnel-cello">
                             <span class="personnel-title">Cello</span>
                             <span class="personnel-count">×3</span>
                         </div>
                     </li>
                     <li>
-                        <div class="personnel-card personnel-double-bass personnel-bowed-string">
+                        <div class="personnel-card personnel-double-bass">
                             <span class="personnel-title">Double Bass</span>
                             <span class="personnel-count">×3</span>
                         </div>
@@ -411,73 +418,73 @@
                         </div>
                     </li>
                     <li>
-                        <div class="personnel-card personnel-flute personnel-woodwind">
+                        <div class="personnel-card personnel-flute">
                             <span class="personnel-title">Flute</span>
                             <span class="personnel-count">×3</span>
                         </div>
                     </li>
                     <li>
-                        <div class="personnel-card personnel-clarinet personnel-woodwind">
+                        <div class="personnel-card personnel-clarinet">
                             <span class="personnel-title">Clarinet</span>
                             <span class="personnel-count">×3</span>
                         </div>
                     </li>
                     <li>
-                        <div class="personnel-card personnel-oboe personnel-woodwind">
+                        <div class="personnel-card personnel-oboe">
                             <span class="personnel-title">Oboe</span>
                             <span class="personnel-count">×3</span>
                         </div>
                     </li>
                     <li>
-                        <div class="personnel-card personnel-bassoon personnel-woodwind">
+                        <div class="personnel-card personnel-bassoon">
                             <span class="personnel-title">Bassoon</span>
                             <span class="personnel-count">×3</span>
                         </div>
                     </li>
                     <li>
-                        <div class="personnel-card personnel-saxophone personnel-woodwind">
+                        <div class="personnel-card personnel-saxophone">
                             <span class="personnel-title">Alto Saxophone</span>
                             <span class="personnel-count">×3</span>
                         </div>
                     </li>
                     <li>
-                        <div class="personnel-card personnel-trumpet personnel-brass">
+                        <div class="personnel-card personnel-trumpet">
                             <span class="personnel-title">Trumpet</span>
                             <span class="personnel-count">×3</span>
                         </div>
                     </li>
                     <li>
-                        <div class="personnel-card personnel-french-horn personnel-brass">
+                        <div class="personnel-card personnel-french-horn">
                             <span class="personnel-title">French Horn</span>
                             <span class="personnel-count">×3</span>
                         </div>
                     </li>
                     <li>
-                        <div class="personnel-card personnel-trombone personnel-brass">
+                        <div class="personnel-card personnel-trombone">
                             <span class="personnel-title">Trombone</span>
                             <span class="personnel-count">×3</span>
                         </div>
                     </li>
                     <li>
-                        <div class="personnel-card personnel-tuba personnel-brass">
+                        <div class="personnel-card personnel-tuba">
                             <span class="personnel-title">Tuba</span>
                             <span class="personnel-count">×3</span>
                         </div>
                     </li>
                     <li>
-                        <div class="personnel-card personnel-acoustic-guitar personnel-plucked-string">
+                        <div class="personnel-card personnel-acoustic-guitar">
                             <span class="personnel-title">Acoustic Guitar</span>
                             <span class="personnel-count">×3</span>
                         </div>
                     </li>
                     <li>
-                        <div class="personnel-card personnel-electric-guitar personnel-plucked-string">
+                        <div class="personnel-card personnel-electric-guitar">
                             <span class="personnel-title">Electric Guitar</span>
                             <span class="personnel-count">×3</span>
                         </div>
                     </li>
                     <li>
-                        <div class="personnel-card personnel-bass-guitar personnel-plucked-string">
+                        <div class="personnel-card personnel-bass-guitar">
                             <span class="personnel-title">Bass Guitar</span>
                             <span class="personnel-count">×3</span>
                         </div>
@@ -487,19 +494,19 @@
                             <span class="personnel-title">Total</span>
                             <span class="personnel-count">×50</span>
                         </div>
-                    </li>
+                    </li> -->
                 </ul>
             </section>
 
             <section id="section-exec-team">
-                <h1>Executive Team <span id="exec-team-year">2026-2027</span></h1>
+                <h1>Executive Team <span id="exec-team-year"></span></h1>
                 <ul id="exec-team-profile">
-                    <li class="exec-team-card">
+                    <!-- <li class="exec-team-card">
                         <img src="assets/images/asanoha.webp" />
                         <div>    
                             <hgroup>
                                 <h4>Sean</h4>
-                                <p class="exec-team-role">Executive</p>
+                                <p>Executive</p>
                             </hgroup>
                             <p class="tag-container">
                                 <span>Arranger</span>
@@ -516,7 +523,7 @@
                         <div>    
                             <hgroup>
                                 <h4>Mike</h4>
-                                <p class="exec-team-role">Executive</p>
+                                <p>Executive</p>
                             </hgroup>
                             <p class="tag-container">
                                 <span>Arranger</span>
@@ -532,7 +539,7 @@
                         <div>    
                             <hgroup>
                                 <h4>Someone</h4>
-                                <p class="exec-team-role">Role Name</p>
+                                <p>Role Name</p>
                             </hgroup>
                             <p class="tag-container">
                                 <span>Logistics</span>
@@ -552,7 +559,7 @@
                         <div>    
                             <hgroup>
                                 <h4>Mike</h4>
-                                <p class="exec-team-role">Executive</p>
+                                <p>Executive</p>
                             </hgroup>
                             <p class="tag-container">
                                 <span>Arranger</span>
@@ -565,10 +572,10 @@
                     </li>
                     <li class="exec-team-card">
                         <img src="assets/images/asanoha.webp" />
-                        <div>    
+                        <div>
                             <hgroup>
                                 <h4>Mike</h4>
-                                <p class="exec-team-role">Executive</p>
+                                <p>Executive</p>
                             </hgroup>
                             <p class="tag-container">
                                 <span>Arranger</span>
@@ -578,7 +585,7 @@
                                 <li class="li-discord">amoguus</li>
                             </ul>
                         </div>
-                    </li>
+                    </li> -->
                 </ul>
             </section>
             
@@ -586,8 +593,8 @@
                 <h1>Musicians 🎵</h1>
                 <ul class="toolbar">
                     <li class="toolbar-options"></li>
-                    <li class="toolbar-button"><p>Current Members</p></li>
-                    <li class="toolbar-button"><p>All Tag Types</p></li>
+                    <li class="toolbar-button" onclick="toggleMemberTypeButton(this)">Current Members</li>
+                    <li class="toolbar-button" onclick="toggleTagTypeButton(this)">All Tags</li>
                 </ul>
                 <div id="table-musicians" class="table">
                     <table>
@@ -607,14 +614,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <!-- <tr>
                                 <td>Someone</td>
                                 <td>
                                     <p class="tag-container">
-                                        <span class="tag">Trumpet</span>
-                                        <span class="tag">Alto Saxophone</span>
-                                        <span class="tag">Piano</span>
-                                        <span class="tag">Past Exec</span>
+                                        <span>Trumpet</span>
+                                        <span>Alto Saxophone</span>
+                                        <span>Piano</span>
+                                        <span>Past Exec</span>
                                     </p>
                                 </td>
                                 <td>2025-01</td>
@@ -631,11 +638,11 @@
                                 <td>Someone</td>
                                 <td>
                                     <p class="tag-container">
-                                        <span class="tag">Trombone</span>
-                                        <span class="tag">Voice</span>
-                                        <span class="tag">Drums</span>
-                                        <span class="tag">Artist</span>
-                                        <span class="tag">Arranger</span>
+                                        <span>Trombone</span>
+                                        <span>Voice</span>
+                                        <span>Drums</span>
+                                        <span>Artist</span>
+                                        <span>Arranger</span>
                                     </p>
                                 </td>
                                 <td>2025-01</td>
@@ -647,7 +654,7 @@
                                         <li class="li-spotify"><a href="https://www.youtube.com/@UTSAMALightMusicClub/" target="_blank"></a></li>
                                     </ul>
                                 </td>
-                            </tr>
+                            </tr> -->
                         </tbody>
                     </table>
                 </div>
@@ -655,46 +662,84 @@
         </article>
 
         <article id="tab-music-archive" class="tab">
-            <section class="section-default">
-                <h1>Repertoire Archive</h1>
-                <p>The LMC repertoire features two types of projects. Large ensemble projects involve many players and varied instrument groups; owing to their scope and complexity, they are decided by popular vote before the term starts and centrally coordinated by the club. Small ensemble projects are self-initiated and lead by motivated LMC members who coordinate song-writing and rehearsals (or recordings) with club support.</p>
-                <p>You can find an archive of past sheet music below.</p>
-                <div id='table-repertoire-archive' class="table">
+            <section id="section-music-archive">
+                <h1>Music Archive</h1>
+                <ul class="toolbar">
+                    <li class="toolbar-options"></li>
+                    <li class="toolbar-button">Current Members</li>
+                    <li class="toolbar-button">All Tag Types</li>
+                </ul>
+                <div id='table-music-archive' class="table">
                     <table>
                         <thead>
                             <tr>
                                 <th>Title</th>
                                 <th>Composer(s)</th>
-                                <th>From</th>
                                 <th>Arranger(s)</th>
+                                <th>From</th>
                                 <th>Performed</th>
-                                <th>Link</th>
+                                <th>Instrumentation</th>
+                                <th>Sheet Music</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>Song 1</td>
                                 <td>Dude 1</td>
+                                <td></td>
                                 <td>Anime 1</td>
-                                <td>Bro 1</td>
-                                <td><span class="tag">Fall 2025</span></td>
+                                <td>
+                                    <p class="tag-container">
+                                        <span>Fall 2025</span>
+                                    </p>
+                                </td>
+                                <td>
+                                    <p class="tag-container">
+                                        <span>Piano</span>
+                                        <span>Violin</span>
+                                        <span>Drums</span>
+                                    </p>
+                                </td>
                                 <td><a href="#"></a></td>
                             </tr>
                             <tr>
                                 <td>Song 2</td>
                                 <td>Dude 2, Dude 3</td>
+                                <td></td>
                                 <td>Game 1</td>
-                                <td>Bro 2, Bro 3, Bro 4</td>
-                                <td><span class="tag">Summer 2020</span></td>
-                                <td><a href="#"></a><a href="#"></a></td>
+                                <td>
+                                    <p class="tag-container">
+                                        <span>Summer 2020</span>
+                                    </p>
+                                </td>
+                                <td>
+                                    <p class="tag-container">
+                                        <span>Electric Guitar <em>×2</em></span>
+                                    </p>
+                                </td>                                
+                                <td><a href="#"></a></td>
                             </tr>
                             <tr>
                                 <td>Song With a Very Long Title</td>
                                 <td>Dude with an extremely long name</td>
+                                <td>Dude with an extremely long name</td>
                                 <td>Series with a very long name</td>
-                                <td>Arranger with a very long name</td>
-                                <td><span class="tag">Summer 2020</span></td>
-                                <td><a href="#"></a><a href="#"></a><a href="#"></a></td>
+                                <td>
+                                    <p class="tag-container">
+                                        <span>Summer 2020</span>
+                                    </p>
+                                </td>
+                                <td>
+                                    <p class="tag-container">
+                                        <span>Clarinet</span>
+                                        <span>Alto Saxophone</span>
+                                        <span>Tenor Saxophone</span>
+                                        <span>Trumpet</span>
+                                        <span>Bass Guitar</span>
+                                        <span>Piano</span>
+                                    </p>
+                                </td>
+                                <td><a href="#"></a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -705,12 +750,15 @@
         <!-- Gallery Page -->
         <article id="tab-gallery" class="tab">
             <section class="section-default">
-                <h1>Gallery</h1>
+                <h1>Under Construction</h1>
             </section>
         </article>
 
         <!-- Rehearsals Page -->
         <article id="tab-rehearsals" class="tab">
+            <section class="section-default">
+                <h1>Under Construction</h1>
+            </section>
             <section class="section-default-bg">
                 <h1>Sheet Music</h1>
                 <iframe loading="lazy" class='embed-drive-list' src="https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo#list" title="Google drive folder" allowfullscreen></iframe>
@@ -722,7 +770,7 @@
                         <summary onclick="toggleDetailsSummary(event)">
                             <hgroup class="tag-container">
                                 <h4>Piece 1</h4>
-                                <span class="tag">Fall</span>
+                                <span>Fall</span>
                             </hgroup>
                             <div class="summary-triangle"></div>
                         </summary>
@@ -818,8 +866,8 @@
                 <nav id="nav-events-sidebar">
                     <ul class="toolbar">
                         <li class="toolbar-options"></li>
-                        <li class="toolbar-button"><p>Concerts</p></li>
-                        <li class="toolbar-button"><p>All Tag Types</p></li>
+                        <li class="toolbar-button">All Event Types</li>
+                        <li class="toolbar-button">All Tag Types</li>
                     </ul>
                     <menu id="nav-events">
                         <li onclick="toggleEventTab(this)" class="nav-events-upcoming">
@@ -858,8 +906,9 @@
                     <nav>
                         <menu id="nav-concert">
                             <li id="nav-concert-setlist" class="nav-concert-active" onclick="toggleConcertTab(this)">Setlist</li>
-                            <li id="nav-concert-media" onclick="toggleConcertTab(this)">Media</li>
                             <li id="nav-concert-performers" onclick="toggleConcertTab(this)">Performers</li>
+                            <li id="nav-concert-video" onclick="toggleConcertTab(this)">Video</li>
+                            <li id="nav-concert-gallery"><a href="#" target="_blank">Gallery</a></li>
                         </menu>
                     </nav>
 
@@ -963,24 +1012,10 @@
                             </li>
                         </ul>
                     </article>
-                    <article id="tab-concert-media" class="tab-concert">
-                        <!-- <ul id="concert-media-links">
-                            <li>
-                                <a id="concert-media-link-image" href="#" target="_blank">
-                                    <img src="assets/icons/image-filled.svg" />
-                                    <span>Photos</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a id="concert-media-link-video" href="#" target="_blank">
-                                    <img src="assets/icons/video.svg" />
-                                    <span>Video</span>
-                                </a>
-                            </li>
-                        </ul> -->
-                        <div id="concert-media-embed"></div>
-                        <ul id="concert-media-chapters">
-                            <li onclick="goToVideoChapter(this)" class="concert-media-chapter-active"><span>01 //</span> Something sdsad</li>
+                    <article id="tab-concert-video" class="tab-concert">
+                        <div id="concert-video-embed"></div>
+                        <ul id="concert-video-chapters">
+                            <li onclick="goToVideoChapter(this)" class="concert-video-chapter-active"><span>01 //</span> Something sdsad</li>
                             <li onclick="goToVideoChapter(this)"><span>02 //</span> Something sdjfsdlkf;sd asdasdsadasdassfs</li>
                             <li onclick="goToVideoChapter(this)"><span>03 //</span> Another song</li>
                             <li onclick="goToVideoChapter(this)"><span>04 //</span> Cool</li>
@@ -1087,6 +1122,9 @@
 
         <!-- Resources Page -->
         <article id="tab-resources" class="tab">
+            <section class="section-default">
+                <h1>Under Construction</h1>
+            </section>
             <section class="section-default-bg">
                 <div class="embed-grid">
                     <div>
@@ -1204,11 +1242,15 @@
                                 <a href="https://www.flaticon.com/free-icon/violin_836803" target="_blank">Violin</a>,
                                 <a href="https://www.flaticon.com/free-icon/cello_836813" target="_blank">Cello</a>,
                                 <a href="https://www.flaticon.com/free-icon/guitar_836801" target="_blank">Acoustic Guitar</a>,
+                                <a href="https://www.flaticon.com/free-icon/ukelele_2990504" target="_blank">Ukulele</a>,
                                 <a href="https://www.flaticon.com/free-icon/electric-guitar_836809" target="_blank">Electric Guitar</a>,
                                 <a href="https://www.flaticon.com/free-icon/bass_836835" target="_blank">Bass Guitar</a>,
                                 <a href="https://www.flaticon.com/free-icon/piano_836806" target="_blank">Piano</a>,
                                 <a href="https://www.flaticon.com/free-icon/microphone_2168463" target="_blank">Microphone</a>,
                                 <a href="https://www.flaticon.com/free-icon/drums_836750" target="_blank">Drums</a>,
+                                <a href="https://www.flaticon.com/free-icon/bagpipes_7468049" target="_blank">Bagpipes</a>,
+                                <a href="https://www.flaticon.com/free-icon/accordion_2542871" target="_blank">Accordion</a>,
+                                <a href="https://www.flaticon.com/free-icon/theremin_3100503" target="_blank">Theremin</a>,
                                 <a href="https://www.flaticon.com/free-icon/sigma_10480273" target="_blank">Total</a>,
                                 <a href="https://www.flaticon.com/free-icon/image_6489396" target="_blank">Artist</a>,
                                 <a href="https://www.flaticon.com/free-icon/video-player_6933179" target="_blank">Video</a>,
