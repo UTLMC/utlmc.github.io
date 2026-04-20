@@ -184,6 +184,7 @@ function toggleTab(element) {
     let startColor;
     if (['nav-about'].includes(navId)) {
         startColor = '#351c75';
+        fixTablePersonnelWidth();
     } else if (['nav-get-involved'].includes(navId)) {
         startColor = '#000';
     } else {
@@ -400,8 +401,6 @@ window.addEventListener('DOMContentLoaded', () => {
     else if (h < 18)    introBanner = "👋 Good afternoon, LMC!";
     else                introBanner = "👋 Good evening, LMC!";
     cssGetId('home-banner').innerText = introBanner;
-
-    fixTablePersonnelWidth();
 });
 window.addEventListener('resize', () => {
     updateCarousel();
