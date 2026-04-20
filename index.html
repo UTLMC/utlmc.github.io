@@ -592,9 +592,21 @@
             <section id="section-musicians">
                 <h1>Musicians 🎵</h1>
                 <ul class="toolbar">
-                    <li class="toolbar-options"></li>
-                    <li class="toolbar-button" onclick="toggleMemberTypeButton(this)">Current Members</li>
-                    <li class="toolbar-button" onclick="toggleTagTypeButton(this)">All Tags</li>
+                    <li class="toolbar-filter" onclick="toggleMenuFilterMusician(true)"></li>
+                    <li class="toolbar-button" onclick="toggleButtonMemberType(this)">Current Members</li>
+                    <li class="toolbar-button" onclick="toggleButtonTagType(this)">All Tags</li>
+                    <li class="toolbar-filter-menu toolbar-filter-menu-hidden" id="musicians-filter-menu">
+                        <label for="musician-filter-name">Name</label>
+                        <input id="musician-filter-name" type="text" placeholder="Enter text" oninput="changeFilterMusicians()" />
+                        <label for="musician-filter-joined-before">Joined Before</label>
+                        <input id="musician-filter-joined-before" type="text" placeholder="e.g. Winter 2024" oninput="changeFilterMusicians()" />
+                        <label for="musician-filter-joined-after">Joined After</label>
+                        <input id="musician-filter-joined-after" type="text" placeholder="e.g. Fall 2025" oninput="changeFilterMusicians()" />
+                        <label for="musician-filter-include-tags">Include Tags</label>
+                        <input id="musician-filter-include-tags" type="text" placeholder="e.g. Tag 1, Tag 2, ..." oninput="changeFilterMusicians()" />
+                        <label for="musician-filter-exclude-tags">Exclude Tags</label>
+                        <input id="musician-filter-exclude-tags" type="text" placeholder="e.g. Tag 1, Tag 2, ..." oninput="changeFilterMusicians()" />
+                    </li>
                 </ul>
                 <div id="table-musicians" class="table">
                     <table>
@@ -606,9 +618,9 @@
                                 <th class="cell-pagination">
                                     <span>Links</span>
                                     <div class="pagination">
-                                        <span>1-2 of 2</span>
-                                        <div class="paginate-arrow paginate-left"></div>
-                                        <div class="paginate-arrow paginate-right"></div>
+                                        <span id="table-page-count">1-2 of 2</span>
+                                        <div onclick="musiciansPageChange(-1)" class="paginate-arrow paginate-left"></div>
+                                        <div onclick="musiciansPageChange(1)" class="paginate-arrow paginate-right"></div>
                                     </div>
                                 </th>
                             </tr>
@@ -665,7 +677,7 @@
             <section id="section-music-archive">
                 <h1>Music Archive</h1>
                 <ul class="toolbar">
-                    <li class="toolbar-options"></li>
+                    <li class="toolbar-filter"></li>
                     <li class="toolbar-button">Current Members</li>
                     <li class="toolbar-button">All Tag Types</li>
                 </ul>
@@ -865,7 +877,7 @@
             <section id="section-events">
                 <nav id="nav-events-sidebar">
                     <ul class="toolbar">
-                        <li class="toolbar-options"></li>
+                        <li class="toolbar-filter"></li>
                         <li class="toolbar-button">All Event Types</li>
                         <li class="toolbar-button">All Tag Types</li>
                     </ul>
@@ -1230,6 +1242,7 @@
                                 <a href="https://www.flaticon.com/free-icon/home_1946436" target="_blank">Home</a>,
                                 <a href="https://www.flaticon.com/free-icon/musical-note_727248" target="_blank">Small Ensemble</a>,
                                 <a href="https://www.flaticon.com/free-icon/image_6499527" target="_blank">Gallery</a>,
+                                <a href="https://www.flaticon.com/free-icon/piccolo_11622264" target="_blank">Piccolo</a>,
                                 <a href="https://www.flaticon.com/free-icon/flute_1913298" target="_blank">Flute</a>,
                                 <a href="https://www.flaticon.com/free-icon/clarinet_8332438" target="_blank">Clarinet</a>,
                                 <a href="https://www.flaticon.com/free-icon/oboe_8332508" target="_blank">Oboe</a>,
@@ -1251,6 +1264,8 @@
                                 <a href="https://www.flaticon.com/free-icon/bagpipes_7468049" target="_blank">Bagpipes</a>,
                                 <a href="https://www.flaticon.com/free-icon/accordion_2542871" target="_blank">Accordion</a>,
                                 <a href="https://www.flaticon.com/free-icon/theremin_3100503" target="_blank">Theremin</a>,
+                                <a href="https://www.flaticon.com/free-icon/recorder_4311261" target="_blank">Recorder</a>,
+                                <a href="https://www.flaticon.com/free-icon/harmonica_5030739" target="_blank">Harmonica</a>,
                                 <a href="https://www.flaticon.com/free-icon/sigma_10480273" target="_blank">Total</a>,
                                 <a href="https://www.flaticon.com/free-icon/image_6489396" target="_blank">Artist</a>,
                                 <a href="https://www.flaticon.com/free-icon/video-player_6933179" target="_blank">Video</a>,

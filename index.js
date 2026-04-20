@@ -1,6 +1,19 @@
 /*********************************************************************
 Helper Functions
 *********************************************************************/
+function debounce(fn, delay) {
+  let timeoutId;
+
+  return function (...args) {
+    const context = this;
+
+    clearTimeout(timeoutId);
+
+    timeoutId = setTimeout(() => {
+      fn.apply(context, args);
+    }, delay);
+  };
+}
 function runOnce(func) {
     let hasRun = false;
     let output;
@@ -241,6 +254,16 @@ function toggleCarousel(next) {
     updateCarousel();
 }
 
+// Fix sizing issue on Firefox
+function fixTablePersonnelWidth() {
+    const tablePersonnel = cssGetId('table-personnel');
+    if (window.innerWidth > 1200) {
+        tablePersonnel.style.setProperty('width', `${tablePersonnel.scrollWidth}px`);
+    } else {
+        tablePersonnel.style.removeProperty('width');
+    }
+}
+
 
 /*********************************************************************
 Youtube video embed
@@ -288,7 +311,7 @@ function goToVideoChapter(element) {
 
 
 /*********************************************************************
-Scrolling
+Mouse events
 *********************************************************************/
 function scrollHorizontally(event) {
     const { target, deltaX, deltaY } = event;
@@ -301,6 +324,16 @@ function scrollHorizontally(event) {
     event.preventDefault();
     target.scrollLeft += deltaX !== 0 ? deltaX : deltaY;
 }
+const handleClick = (() => {
+    const button = cssGetFirst('#section-musicians .toolbar .toolbar-filter');
+    const window = cssGetId('musicians-filter-menu');
+
+    return (event) => {
+        if (!button.contains(event.target) && !window.contains(event.target)) {
+            window.classList.add('toolbar-filter-menu-hidden');
+        }        
+    }
+})();
 
 
 /*********************************************************************
@@ -367,10 +400,14 @@ window.addEventListener('DOMContentLoaded', () => {
     else if (h < 18)    introBanner = "👋 Good afternoon, LMC!";
     else                introBanner = "👋 Good evening, LMC!";
     cssGetId('home-banner').innerText = introBanner;
+
+    fixTablePersonnelWidth();
 });
 window.addEventListener('resize', () => {
     updateCarousel();
+    fixTablePersonnelWidth();
 })
+window.addEventListener('click', handleClick);
 
 
 /*********************************************************************
@@ -536,28 +573,88 @@ async function injectHomeBulletin() {
     }
 }
 
-let MUSICIANS_FILTERS = {
-    memberType: 'current',
+let TABLE_MUSICIANS = {
+    pageSize: 10,
+    tags: 'all',
+    filters: {
+        memberType: 'current',
+        page: 0,
+        name: '',
+        joinedBefore: '',
+        joinedAfter: '',
+        includeTags: '',
+        excludeTags: ''
+    }
 }
 const updateMusiciansTable = (() => {
     const idToRow = {};
     const table = cssGetFirst('#table-musicians tbody');
+    const pageCount = cssGetId('table-page-count');
+    let prevMembers = undefined;
 
-    // filters: name, tag, tag type, current/past members, was exec 
-    // parameters: page number, page size
-    return async () => {
-        const members = MEMBERS.filter(x => {
-            if (MUSICIANS_FILTERS.memberType === 'current' && x.left) return false;
-            if (MUSICIANS_FILTERS.memberType === 'past' && !x.left) return false;
+    // filters: name, joined before/after/equal, tag include/exclude
+    return async (reFilter=true) => {
+        const members = (reFilter || !prevMembers) ? MEMBERS.filter(x => {
+            const { filters: { memberType, name, joinedBefore, joinedAfter, includeTags, excludeTags } } = TABLE_MUSICIANS;
+            if (memberType === 'current' && x.left) return false;
+            if (memberType === 'past' && !x.left) return false;
+            if (name && !x.name.toLowerCase().includes(name.toLowerCase())) return false;
+            
+            if (joinedBefore || joinedAfter) {
+                const [month, year] = x.joined.split(' ');
+                const joined = new Date(parseInt(year, 10), month === 'Fall' ? 9 : 0);
+                if (joinedBefore) {
+                    const before = joinedBefore.split(' ');
+                    if (before.length !== 2) return false;
 
+                    const yearBefore = parseInt(before[1], 10);
+                    if (!yearBefore) return false;
+                    
+                    const monthBefore = before[0].toLowerCase();
+                    if (monthBefore !== 'fall' && monthBefore !== 'winter') return false;
+
+                    if (new Date(yearBefore, monthBefore === 'fall' ? 9 : 0) < joined) return false;
+                }
+                if (joinedAfter) {
+                    const after = joinedAfter.split(' ');
+                    if (after.length !== 2) return false;
+
+                    const yearAfter = parseInt(after[1], 10);
+                    if (!yearAfter) return false;
+                    
+                    const monthAfter = after[0].toLowerCase();
+                    if (monthAfter !== 'fall' && monthAfter !== 'winter') return false;
+
+                    if (new Date(yearAfter, monthAfter === 'fall' ? 9 : 0) > joined) return false;
+                }
+            }
+            if (includeTags || excludeTags) {
+                const tags = new Set([...x.roles, ...x.instruments].map(x => x.toLowerCase()));
+                if (includeTags && includeTags.split(',').map(x => x.toLowerCase().trim()).some(x => !tags.has(x))) return false;
+                if (excludeTags && excludeTags.split(',').map(x => x.toLowerCase().trim()).some(x => tags.has(x))) return false;
+            }
 
             return true;
-        });
+        }) : prevMembers;
+        prevMembers = members;
 
+        // Update pagination display
+        let start = 0;
+        let end = 0;
+        if (members.length === 0) {
+            pageCount.innerHTML = `0-0 of 0`
+        } else {
+            const n = Math.ceil(members.length / TABLE_MUSICIANS.pageSize);
+            TABLE_MUSICIANS.filters.page = (TABLE_MUSICIANS.filters.page + n) % n;
+            start = TABLE_MUSICIANS.filters.page * TABLE_MUSICIANS.pageSize;
+            end = Math.min(members.length, (TABLE_MUSICIANS.filters.page + 1) * TABLE_MUSICIANS.pageSize);
+            pageCount.innerHTML = `${start + 1}-${end} of ${members.length}`
+        }
+
+        // Re-generate rows
         const fragment = document.createDocumentFragment();
         const nextIdToRow = {};
-        
-        for (const member of members) {
+        for (const member of members.slice(start, end)) {
             let row = idToRow[member.id];
             if (!row) {
                 row = construct({
@@ -571,9 +668,13 @@ const updateMusiciansTable = (() => {
                         children: [{
                             element: 'p',
                             classes: ['tag-container'],
-                            children: [...member.instruments, ...member.roles].map(x => ({
+                            children: [
+                                ...member.instruments.map(x => ({ text: x, type: 'instrument' })),
+                                ...member.roles.map(x => ({ text: x, type: 'role' }))
+                            ].map(x => ({
                                 element: 'span',
-                                innerText: x
+                                classes: [`li-${x.type}`],
+                                innerText: x.text
                             }))
                         }]
                     }, {
@@ -616,23 +717,55 @@ const updateMusiciansTable = (() => {
     } 
 })();
 
-function toggleMemberTypeButton(element) {
-    if (MUSICIANS_FILTERS.memberType === 'current') {
-        MUSICIANS_FILTERS.memberType = 'past';
+function toggleMenuFilterMusician() {
+    cssGetId('musicians-filter-menu').classList.toggle('toolbar-filter-menu-hidden');
+}
+function toggleButtonMemberType(element) {
+    if (TABLE_MUSICIANS.filters.memberType === 'current') {
+        TABLE_MUSICIANS.filters.memberType = 'past';
         element.innerText = 'Past Members';
-    } else if (MUSICIANS_FILTERS.memberType === 'past') {
-        MUSICIANS_FILTERS.memberType = 'all';
+    } else if (TABLE_MUSICIANS.filters.memberType === 'past') {
+        TABLE_MUSICIANS.filters.memberType = 'all';
         element.innerText = 'All Members';
     } else {
-        MUSICIANS_FILTERS.memberType = 'current';
+        TABLE_MUSICIANS.filters.memberType = 'current';
         element.innerText = 'Current Members';
     }
+    TABLE_MUSICIANS.filters.page = 0;
     updateMusiciansTable();
 }
+const toggleButtonTagType = (() => {
+    const style = document.createElement('style');
+    document.head.appendChild(style);
 
-function toggleTagTypeButton(element) {
-
+    return (element) => {
+        if (TABLE_MUSICIANS.tags === 'all') {
+            TABLE_MUSICIANS.tags = 'instruments';
+            element.innerText = 'Instrument Tags';
+            style.textContent = '.li-role { display: none }';
+        } else if (TABLE_MUSICIANS.tags === 'instruments') {
+            TABLE_MUSICIANS.tags = 'roles';
+            element.innerText = 'Role Tags';
+            style.textContent = '.li-instrument { display: none }';
+        } else {
+            TABLE_MUSICIANS.tags = 'all';
+            element.innerText = 'All Tags';
+            style.textContent = '';
+        }
+    }
+})();
+function musiciansPageChange(delta) {
+    TABLE_MUSICIANS.filters.page += delta;
+    updateMusiciansTable(false);
 }
+const changeFilterMusicians = debounce(() => {
+    TABLE_MUSICIANS.filters.name = cssGetId('musician-filter-name').value;
+    TABLE_MUSICIANS.filters.joinedBefore = cssGetId('musician-filter-joined-before').value;
+    TABLE_MUSICIANS.filters.joinedAfter = cssGetId('musician-filter-joined-after').value;
+    TABLE_MUSICIANS.filters.includeTags = cssGetId('musician-filter-include-tags').value;
+    TABLE_MUSICIANS.filters.excludeTags = cssGetId('musician-filter-exclude-tags').value;
+    updateMusiciansTable();
+}, 500);
 
 async function injectMembers() {
     const instruments = MEMBERS.filter(x => !x.left).map(x => x.instruments).flat();
@@ -660,7 +793,8 @@ async function injectMembers() {
 
     const nameSubstitutions = {
         'Alto Saxophone': 'Alto Sax',
-        'Tenor Saxophone': 'Tenor Sax'
+        'Tenor Saxophone': 'Tenor Sax',
+        'Baritone Saxophone': 'Baritone Sax',
     }
     const tablePersonnel = cssGetId('table-personnel');
     Object.entries(personnel).sort((a, b) => {

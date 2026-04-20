@@ -590,10 +590,10 @@ Navigation
 /* Nav (including dropdown menus) should be above main content */
 main {
     position: relative;
-    z-index: 1;
+    z-index: 2;
 }
 header, #nav-page {
-    z-index: 2;
+    z-index: 3;
 }
 
 #nav-page-desktop {
@@ -794,7 +794,7 @@ Tabs
     font-family: "Atkinson Hyperlegible";
     color: rgb(230, 230, 230);
     font-size: calc(18 * var(--px));
-    overflow-x: hidden;
+    overflow-x: clip;
 }
 .tab h1, .tab h2 {
     font-family: "Geologica";
@@ -1725,7 +1725,7 @@ Notifications / Announcements
 }
 #announcement-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(calc(500 * var(--px)), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(500 * var(--px))), 1fr));
     gap: calc(15 * var(--px));
 }
 #section-upcoming-events {
@@ -1796,7 +1796,7 @@ Notifications / Announcements
     }
     #section-announcements, #section-upcoming-events {
         padding: calc(35 * var(--px));
-        width: 100vw;
+        width: 100%;
     }
     #section-announcements:not(.section-announcements-full) {
         padding-top: 0;
@@ -2098,16 +2098,17 @@ Personnel
 #table-personnel {
     --table-icon-width: calc(105 * var(--px));
     --table-icon-gap: calc(10 * var(--px));
+
     display: flex;
     flex-direction: column;
-    height: calc(4 * var(--table-icon-width) + 3 * var(--table-icon-gap));
     flex-wrap: wrap;
-    gap: var(--table-icon-gap);
-    list-style-type: none;
-    padding: 0;
-    width: auto;
     align-content: flex-start;
     justify-content: flex-start;
+
+    gap: var(--table-icon-gap);
+    height: calc(4 * var(--table-icon-width) + 3 * var(--table-icon-gap));
+    list-style-type: none;
+    padding: 0;
 }
 @media screen and (max-width: 1200px) {
     #table-personnel {
@@ -2192,11 +2193,12 @@ Personnel
     padding: calc(0.02 * var(--table-icon-width)) calc(0.04 * var(--table-icon-width));
     border-radius: calc(0.08 * var(--table-icon-width));
 }
+.personnel-piccolo { background-image: url('assets/icons/instruments/piccolo.png'); }
 .personnel-flute { background-image: url('assets/icons/instruments/flute.png'); }
-.personnel-clarinet { background-image: url('assets/icons/instruments/clarinet.png'); }
+.personnel-clarinet, .personnel-bass-clarinet { background-image: url('assets/icons/instruments/clarinet.png'); }
 .personnel-oboe { background-image: url('assets/icons/instruments/oboe.png'); }
 .personnel-bassoon { background-image: url('assets/icons/instruments/bassoon.png'); }
-.personnel-alto-saxophone, .personnel-tenor-saxophone { background-image: url('assets/icons/instruments/saxophone.png'); background-position: 60% 60%; }
+.personnel-alto-saxophone, .personnel-tenor-saxophone, .personnel-baritone-saxophone { background-image: url('assets/icons/instruments/saxophone.png'); background-position: 60% 60%; }
 .personnel-trumpet { background-image: url('assets/icons/instruments/trumpet.png'); background-position: 60% 60%; }
 .personnel-french-horn { background-image: url('assets/icons/instruments/french horn.png'); background-position: 50% 60%; }
 .personnel-trombone { background-image: url('assets/icons/instruments/trombone.png'); background-position: 50% 70%; }
@@ -2213,6 +2215,8 @@ Personnel
 .personnel-bagpipes { background-image: url('assets/icons/instruments/bagpipes.png'); background-size: 55%; }
 .personnel-accordion { background-image: url('assets/icons/instruments/accordion.png'); background-size: 60%; }
 .personnel-theremin { background-image: url('assets/icons/instruments/theremin.png'); background-size: 60%; }
+.personnel-recorder { background-image: url('assets/icons/instruments/recorder.png'); }
+.personnel-harmonica { background-image: url('assets/icons/instruments/harmonica.png'); }
 
 .personnel-arranger { background-image: url('assets/icons/music-notes.svg'); }
 .personnel-total { background-image: url('assets/icons/sum.svg'); }
@@ -2252,7 +2256,7 @@ Exec team
 }
 #exec-team-profile {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(calc(360 * var(--px)), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(360 * var(--px))), 1fr));
     list-style: none;
     padding-left: 0;
     gap: calc(20 * var(--px));
@@ -2372,8 +2376,9 @@ Musicians table
     list-style: none;
     padding-left: 0;
     gap: calc(8 * var(--px));
+    position: relative;
 }
-.toolbar li {
+.toolbar li:not(.toolbar-filter-menu) {
     color: black;
     font-family: 'DM Sans';
     font-size: calc(16 * var(--px));
@@ -2385,16 +2390,16 @@ Musicians table
     transition: 0.2s;
     border-radius: calc(8 * var(--px));
 }
-.toolbar li:hover {
+.toolbar li:not(.toolbar-filter-menu):hover {
     background-color: rgba(200, 200, 200, 0.9);
     filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.2));
 }
-.toolbar li:active {
+.toolbar li:not(.toolbar-filter-menu):active {
     background-color: rgba(150, 150, 150, 0.9);
     filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.5));
     transition: 0s;
 }
-.toolbar-options {
+.toolbar-filter {
     width: calc(28 * var(--px));
     background-size: 60%;
     background-position: center;
@@ -2406,7 +2411,39 @@ Musicians table
     align-items: center;
     padding: 0 calc(8 * var(--px));
 }
-
+.toolbar-filter-menu {
+    font-family: 'Atkinson Hyperlegible';
+    display: grid;
+    grid-template-columns: auto auto;
+    align-items: center;
+    border-radius: calc(8 * var(--px));
+    gap: 0 calc(10 * var(--px));
+    position: absolute;
+    top: calc(35 * var(--px));
+    left: 0;
+    padding: calc(15 * var(--px));
+    color: white;
+    background-color: rgba(0, 0, 20, 0.8);
+    filter: drop-shadow(0px 0px 5px rgba(0, 0, 20, 0.5));
+}
+.toolbar-filter-menu label {
+    text-wrap: nowrap;
+    font-size: calc(18 * var(--px));
+}
+.toolbar-filter-menu input {
+    font-family: 'Atkinson Hyperlegible';
+    border: none;
+    background-color: rgba(50, 50, 50, 0.5);
+    padding: calc(5 * var(--px)) calc(10 * var(--px));
+    color: white;
+    font-size: calc(16 * var(--px));
+}
+.toolbar-filter-menu input::placeholder {
+    color: rgb(122, 122, 122);
+}
+.toolbar-filter-menu-hidden {
+    display: none;
+}
 
 
 /*******************************
@@ -2824,8 +2861,11 @@ Paginated Table
     align-items: flex-end;
     font-weight: 400;
 }
-.pagination span {
-    margin-right: 5px;
+#table-page-count {
+    text-wrap: nowrap;
+    margin-right: calc(5 * var(--px));
+    margin-left: calc(10 * var(--px));
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .paginate-arrow {
@@ -3567,6 +3607,7 @@ Get involved text blocks
 #section-get-involved-intro {
     display: flex;
     flex-direction: row;
+    width: 100%;
 }
 #section-stay-updated {
     width: 50%;
