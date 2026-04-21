@@ -158,6 +158,82 @@ function parseLinks(discord, links) {
     return data;
 }
 
+const instrumentOrder = {
+    'alto saxophone': '5',
+    'tenor saxophone': '5',
+    'baritone saxophone': '5',
+    
+    'oboe': '3',
+    'clarinet': '3',
+    'bass clarinet': '3',
+
+    'piccolo': '4',
+    'recorder': '4',
+    'flute': '4',
+
+    'trumpet': '6',
+    'trombone': '6',
+
+    'ukulele': '1',
+    'acoustic guitar': '1',
+    'electric guitar': '1',
+    'bass guitar': '1',
+
+    'violin': '2',
+    'cello': '2',
+    'double bass': '2',
+
+    'piano': '0',
+    'drums': '0',
+    'voice': '0',
+}
+function instrumentSorter(a, b) {
+    const groupA = instrumentOrder[a.toLowerCase()];
+    const groupB = instrumentOrder[b.toLowerCase()];
+    if (!groupA || !groupB) {
+        return a.localeCompare(b);
+    } else if (!groupA) {
+        return -1;
+    } else if (!groupB) {
+        return 1;
+    }
+    const i = groupA.localeCompare(groupB);
+    if (i === 0) {
+        return a.localeCompare(b);
+    }
+    return i;
+}
+const roleOrder = {
+    'executive': '0',
+    'assistant executive': '1',
+    'logistics': '2',
+    'arranger': '2',
+    'artist': '2',
+    'website': '2',
+    'og': '3',
+}
+function roleSorter(a, b) {
+    a = a.toLowerCase();
+    b = b.toLowerCase();
+    if (a.includes(' (')) { a = a.slice(0, ' ('); }
+    if (b.includes(' (')) { b = b.slice(0, ' ('); }
+
+    const groupA = roleOrder[a];
+    const groupB = roleOrder[b];
+    if (!groupA || !groupB) {
+        return a.localeCompare(b);
+    } else if (!groupA) {
+        return -1;
+    } else if (!groupB) {
+        return 1;
+    }
+    const i = groupA.localeCompare(groupB);
+    if (i === 0) {
+        return a.localeCompare(b);
+    }
+    return i;
+}
+
 const memberRows = new Set(['Discord', 'Public Name', 'Instruments', 'Roles', 'Season Start', 'Season End', 'Personal Links']);
 async function uploadMembers(event) {
     const raw = await event.files[0].text();
@@ -205,8 +281,8 @@ async function uploadMembers(event) {
             name: row[indices['Public Name']],
             joined: parseSeason(row[indices['Season Start']]),
             left: row[indices['Season End']],
-            instruments: row[indices['Instruments']].split(',').map(x => parseInstrument(x.trim())).sort(),
-            roles: row[indices['Roles']] ? row[indices['Roles']].split(',').map(x => parseRole(x.trim())).sort() : [],
+            instruments: row[indices['Instruments']].split(',').map(x => parseInstrument(x.trim())).sort(instrumentSorter),
+            roles: row[indices['Roles']] ? row[indices['Roles']].split(',').map(x => parseRole(x.trim())).sort(roleSorter) : [],
             links: parseLinks(discord, row[indices['Personal Links']] ? row[indices['Personal Links']].split('\n') : [])
         }
     });

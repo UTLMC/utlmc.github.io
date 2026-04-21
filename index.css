@@ -1459,7 +1459,7 @@ Home page info cards
 Home page horizontal scroll gallery
 *******************************/
 #section-home-gallery {
-    width: 100vw;
+    width: 100%;
     display: flex;
     flex-direction: column;
     cursor: grab;
@@ -2417,7 +2417,7 @@ Musicians table
     grid-template-columns: auto auto;
     align-items: center;
     border-radius: calc(8 * var(--px));
-    gap: 0 calc(10 * var(--px));
+    gap: 0 calc(15 * var(--px));
     position: absolute;
     top: calc(35 * var(--px));
     left: 0;
@@ -2758,16 +2758,17 @@ Tags
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
-    gap: 6px 5px;
+    gap: calc(6 * var(--px)) calc(5 * var(--px));
 }
 .tag-container span {
     background-color: rgb(100, 100, 100);
     color: white;
-    border-radius: 10px;
-    padding: 0px 10px;
+    border-radius: calc(8 * var(--px));
+    padding: 0px calc(8 * var(--px));
     text-wrap: nowrap;
     font-family: "DM Sans";
     font-size: calc(17 * var(--px));
+    letter-spacing: calc(-0.5 * var(--px));
 }
 #table-music-archive .tag-container {
     justify-content: center;
@@ -3390,10 +3391,6 @@ Concert widget
         display: grid;
         grid-template-rows: 1fr 1fr 1fr;
         grid-auto-flow: column;
-        overflow-x: auto;
-    }
-    #nav-events-sidebar {
-        height: 183.2px;  /* magic number, hard-coded height */
     }
     .section-events-no-sidebar #nav-events-sidebar {
         height: 0px;

@@ -26,6 +26,21 @@ function runOnce(func) {
         return output;
     };
 }
+function extractRGB(str) {
+    const regex = /rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)/gi;
+    const results = [];
+    let match = regex.exec(str);
+    while (match) {
+        const r = parseInt(match[1], 10);
+        const g = parseInt(match[2], 10);
+        const b = parseInt(match[3], 10);
+        results.push([r, g, b]);
+        match = regex.exec(str);
+    }
+
+    return results;
+}
+
 function assert(condition, errorMessage) {
     if (!condition) {
         throw new Error(errorMessage);
@@ -585,56 +600,103 @@ let TABLE_MUSICIANS = {
         excludeTags: ''
     }
 }
+function filterMusician(x) {
+    const { filters: { memberType, name, joinedBefore, joinedAfter, includeTags, excludeTags } } = TABLE_MUSICIANS;
+    if (memberType === 'current' && x.left) return false;
+    if (memberType === 'past' && !x.left) return false;
+    if (name && !x.name.toLowerCase().includes(name.toLowerCase())) return false;
+    
+    if (joinedBefore || joinedAfter) {
+        const [month, year] = x.joined.split(' ');
+        const joined = new Date(parseInt(year, 10), month === 'Fall' ? 9 : 0);
+        if (joinedBefore) {
+            const before = joinedBefore.split(' ');
+            if (before.length !== 2) return false;
+
+            const yearBefore = parseInt(before[1], 10);
+            if (!yearBefore) return false;
+            
+            const monthBefore = before[0].toLowerCase();
+            if (monthBefore !== 'fall' && monthBefore !== 'winter') return false;
+
+            if (new Date(yearBefore, monthBefore === 'fall' ? 9 : 0) < joined) return false;
+        }
+        if (joinedAfter) {
+            const after = joinedAfter.split(' ');
+            if (after.length !== 2) return false;
+
+            const yearAfter = parseInt(after[1], 10);
+            if (!yearAfter) return false;
+            
+            const monthAfter = after[0].toLowerCase();
+            if (monthAfter !== 'fall' && monthAfter !== 'winter') return false;
+
+            if (new Date(yearAfter, monthAfter === 'fall' ? 9 : 0) > joined) return false;
+        }
+    }
+    if (includeTags || excludeTags) {
+        const tags = new Set([...x.roles.map(x => x.slice(0, x.indexOf(' ('))), ...x.instruments].map(x => x.toLowerCase()));
+        if (includeTags && includeTags.split(',').map(x => x.toLowerCase().trim()).some(x => !tags.has(x))) return false;
+        if (excludeTags && excludeTags.split(',').map(x => x.toLowerCase().trim()).some(x => tags.has(x))) return false;
+    }
+
+    return true;
+}
+function constructMusicianRow(member) {
+    return construct({
+        element: 'tr',
+        id: `section-musician-${member.id}`,
+        children: [{
+            element: 'td',
+            innerText: member.name
+        }, {
+            element: 'td',
+            children: [{
+                element: 'p',
+                classes: ['tag-container'],
+                children: [
+                    ...member.instruments.map(x => ({ text: x, type: 'instrument' })),
+                    ...member.roles.map(x => ({ text: x, type: 'role' }))
+                ].map(x => ({
+                    element: 'span',
+                    classes: [`li-${x.type}`],
+                    innerText: x.text,
+                    style: getTagColour(x.text)
+                }))
+            }]
+        }, {
+            element: 'td',
+            innerText: member.joined
+        }, {
+            element: 'td',
+            children: [{
+                element: 'ul',
+                classes: ['list-social-media'],
+                children: Object.entries(member.links).map(([site, info]) => ({
+                    element: 'li',
+                    classes: [`li-${site}`],
+                    innerText: Array.isArray(info) ? '' : info,
+                    children: Array.isArray(info) ? [{
+                        element: 'a',
+                        innerText: info[0],
+                        attributes: {
+                            href: info[1],
+                            target: '_blank'
+                        }
+                    }] : []
+                }))
+            }]
+        }]
+    });
+}
 const updateMusiciansTable = (() => {
     const idToRow = {};
     const table = cssGetFirst('#table-musicians tbody');
     const pageCount = cssGetId('table-page-count');
     let prevMembers = undefined;
 
-    // filters: name, joined before/after/equal, tag include/exclude
     return async (reFilter=true) => {
-        const members = (reFilter || !prevMembers) ? MEMBERS.filter(x => {
-            const { filters: { memberType, name, joinedBefore, joinedAfter, includeTags, excludeTags } } = TABLE_MUSICIANS;
-            if (memberType === 'current' && x.left) return false;
-            if (memberType === 'past' && !x.left) return false;
-            if (name && !x.name.toLowerCase().includes(name.toLowerCase())) return false;
-            
-            if (joinedBefore || joinedAfter) {
-                const [month, year] = x.joined.split(' ');
-                const joined = new Date(parseInt(year, 10), month === 'Fall' ? 9 : 0);
-                if (joinedBefore) {
-                    const before = joinedBefore.split(' ');
-                    if (before.length !== 2) return false;
-
-                    const yearBefore = parseInt(before[1], 10);
-                    if (!yearBefore) return false;
-                    
-                    const monthBefore = before[0].toLowerCase();
-                    if (monthBefore !== 'fall' && monthBefore !== 'winter') return false;
-
-                    if (new Date(yearBefore, monthBefore === 'fall' ? 9 : 0) < joined) return false;
-                }
-                if (joinedAfter) {
-                    const after = joinedAfter.split(' ');
-                    if (after.length !== 2) return false;
-
-                    const yearAfter = parseInt(after[1], 10);
-                    if (!yearAfter) return false;
-                    
-                    const monthAfter = after[0].toLowerCase();
-                    if (monthAfter !== 'fall' && monthAfter !== 'winter') return false;
-
-                    if (new Date(yearAfter, monthAfter === 'fall' ? 9 : 0) > joined) return false;
-                }
-            }
-            if (includeTags || excludeTags) {
-                const tags = new Set([...x.roles, ...x.instruments].map(x => x.toLowerCase()));
-                if (includeTags && includeTags.split(',').map(x => x.toLowerCase().trim()).some(x => !tags.has(x))) return false;
-                if (excludeTags && excludeTags.split(',').map(x => x.toLowerCase().trim()).some(x => tags.has(x))) return false;
-            }
-
-            return true;
-        }) : prevMembers;
+        const members = (reFilter || !prevMembers) ? MEMBERS.filter(filterMusician) : prevMembers;
         prevMembers = members;
 
         // Update pagination display
@@ -656,50 +718,7 @@ const updateMusiciansTable = (() => {
         for (const member of members.slice(start, end)) {
             let row = idToRow[member.id];
             if (!row) {
-                row = construct({
-                    element: 'tr',
-                    id: `section-musician-${member.id}`,
-                    children: [{
-                        element: 'td',
-                        innerText: member.name
-                    }, {
-                        element: 'td',
-                        children: [{
-                            element: 'p',
-                            classes: ['tag-container'],
-                            children: [
-                                ...member.instruments.map(x => ({ text: x, type: 'instrument' })),
-                                ...member.roles.map(x => ({ text: x, type: 'role' }))
-                            ].map(x => ({
-                                element: 'span',
-                                classes: [`li-${x.type}`],
-                                innerText: x.text
-                            }))
-                        }]
-                    }, {
-                        element: 'td',
-                        innerText: member.joined
-                    }, {
-                        element: 'td',
-                        children: [{
-                            element: 'ul',
-                            classes: ['list-social-media'],
-                            children: Object.entries(member.links).map(([site, info]) => ({
-                                element: 'li',
-                                classes: [`li-${site}`],
-                                innerText: Array.isArray(info) ? '' : info,
-                                children: Array.isArray(info) ? [{
-                                    element: 'a',
-                                    innerText: info[0],
-                                    attributes: {
-                                        href: info[1],
-                                        target: '_blank'
-                                    }
-                                }] : []
-                            }))
-                        }]
-                    }]
-                });
+                row = constructMusicianRow(member);
             }
             fragment.appendChild(row);
             nextIdToRow[member.id] = row;
@@ -766,7 +785,28 @@ const changeFilterMusicians = debounce(() => {
     updateMusiciansTable();
 }, 500);
 
+function getTagColour(name) {
+    name = name.toLowerCase();
+    if (name.includes(' (')) {
+        name = name.slice(0, name.indexOf(' ('));
+    }
+    const background = TAGS[name];
+    if (background) {
+        const rgbs = extractRGB(background);
+        const color = rgbs.flat().reduce((a, b) => a + b) / (rgbs.length * 3) > 128 ? 'black' : 'white';
+        if (background.startsWith('linear-gradient')) {
+            return { color, 'background-image': background }
+        } else if (background.startsWith('rgb')) {
+            return { color, 'background-color': background }
+        } else {
+            throw new Error(background);
+        }
+    }
+    return {};
+}
+
 async function injectMembers() {
+    // Get personnel - instruments + specific roles
     const instruments = MEMBERS.filter(x => !x.left).map(x => x.instruments).flat();
     let total = 0;
     const personnel = {};
@@ -790,6 +830,7 @@ async function injectMembers() {
     personnel.Total = MEMBERS.filter(x => !x.left).length;
     personnelRoles.add('Total');
 
+    // Render personnel
     const nameSubstitutions = {
         'Alto Saxophone': 'Alto Sax',
         'Tenor Saxophone': 'Tenor Sax',
@@ -896,7 +937,8 @@ async function injectMembers() {
                     classes: ['tag-container'],
                     children: nonExecRoles.map(x => ({
                         element: 'span',
-                        innerText: x
+                        innerText: x,
+                        style: getTagColour(x)
                     }))
                 }, {
                     element: 'ul',
@@ -976,7 +1018,6 @@ async function injectFAQ() {
     }
 }
 
-const TAGS = {};
 async function injectFormLinks() {
     for (const [id, link] of Object.entries(FORM_LINKS)) {
         cssGetId(id).setAttribute('href', link);

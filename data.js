@@ -1,3 +1,39 @@
+const TAGS = {
+    'executive': 'linear-gradient(to right in oklab, rgb(47, 7, 67), rgb(65, 41, 90))',
+    'assistant executive': 'linear-gradient(to right in oklab, rgb(47, 7, 67), rgb(65, 41, 90))',
+    'logistics': 'linear-gradient(to right in oklab, rgb(47, 7, 67), rgb(65, 41, 90))',
+    'arranger': 'linear-gradient(to right in oklab, rgb(47, 7, 67), rgb(65, 41, 90))',
+    'artist': 'linear-gradient(to right in oklab, rgb(47, 7, 67), rgb(65, 41, 90))',
+    'website': 'linear-gradient(to right in oklab, rgb(47, 7, 67), rgb(65, 41, 90))',
+    'og': 'linear-gradient(to right in oklab, rgb(137, 33, 107), rgb(218, 68, 83))',
+
+    'ukulele': 'linear-gradient(to right in oklab, rgb(255, 150, 150), rgb(255, 100, 100))',
+    'acoustic guitar': 'linear-gradient(to right in oklab, rgb(255, 150, 150), rgb(255, 100, 100))',
+    'electric guitar': 'linear-gradient(to right in oklab, rgb(255, 150, 150), rgb(255, 100, 100))',
+    'bass guitar': 'linear-gradient(to right in oklab, rgb(255, 150, 150), rgb(255, 100, 100))',
+
+    'voice': 'rgb(255, 255, 255)',
+    'piano': 'rgb(255, 255, 255)',
+    'drums': 'rgb(255, 255, 255)',
+    
+    'trumpet': 'linear-gradient(to right in oklab, rgb(255, 255, 110), rgb(255, 240, 160))',
+    'trombone': 'linear-gradient(to right in oklab, rgb(255, 255, 110), rgb(255, 240, 160))',
+    
+    'violin': 'rgb(230, 130, 50)',
+    'cello': 'rgb(230, 130, 50)',
+    'double bass': 'rgb(230, 130, 50)',
+
+    'piccolo': 'rgb(180, 180, 180)',
+    'recorder': 'rgb(180, 180, 180)',
+    'flute': 'rgb(180, 180, 180)',
+    'oboe': 'linear-gradient(to right in oklab, rgb(50, 50, 50), rgb(40, 60, 50))',
+    'clarinet': 'linear-gradient(to right in oklab, rgb(50, 50, 50), rgb(40, 60, 50))',
+    'bass clarinet': 'linear-gradient(to right in oklab, rgb(50, 50, 50), rgb(40, 60, 50))',
+    'alto saxophone': 'rgb(220, 190, 70)',
+    'tenor saxophone': 'rgb(220, 190, 70)',
+    'baritone saxophone': 'rgb(220, 190, 70)',
+}
+
 const CURRENT_EVENT = {
     type: 'concert',
     links: {
@@ -65,8 +101,11 @@ const MEMBERS = [
         "joined": "Fall 2023",
         "left": "Fall 2024",
         "instruments": [
+            "Drums",
+            "Piano",
             "Bass Guitar",
-            "Drums"
+            "Electric Guitar",
+            "Double Bass"
         ],
         "roles": [
             "Executive (23)",
@@ -80,11 +119,11 @@ const MEMBERS = [
         "joined": "Fall 2023",
         "left": "",
         "instruments": [
+            "Piano",
+            "Voice",
             "Acoustic Guitar",
             "Bass Guitar",
-            "Piano",
-            "Trombone",
-            "Voice"
+            "Trombone"
         ],
         "roles": [
             "Executive (23/24)",
@@ -103,8 +142,8 @@ const MEMBERS = [
             "Violin"
         ],
         "roles": [
-            "Arranger",
             "Executive (23/25)",
+            "Arranger",
             "OG"
         ],
         "links": {
@@ -121,14 +160,14 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "",
         "instruments": [
-            "Acoustic Guitar",
             "Piano",
-            "Violin",
-            "Voice"
+            "Voice",
+            "Acoustic Guitar",
+            "Violin"
         ],
         "roles": [
-            "Arranger",
             "Executive (25)",
+            "Arranger",
             "OG"
         ],
         "links": {
@@ -142,7 +181,9 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "Fall 2024",
         "instruments": [
-            "Voice"
+            "Piano",
+            "Voice",
+            "Acoustic Guitar"
         ],
         "roles": [
             "OG"
@@ -206,11 +247,11 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "",
         "instruments": [
+            "Piano",
+            "Voice",
             "Acoustic Guitar",
             "Bass Guitar",
-            "Electric Guitar",
-            "Piano",
-            "Voice"
+            "Electric Guitar"
         ],
         "roles": [
             "OG"
@@ -223,13 +264,13 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "",
         "instruments": [
-            "Flute",
-            "Piano"
+            "Piano",
+            "Flute"
         ],
         "roles": [
             "Arranger",
-            "OG",
-            "Website"
+            "Website",
+            "OG"
         ],
         "links": {}
     },
@@ -239,9 +280,9 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "",
         "instruments": [
+            "Voice",
             "Trombone",
-            "Trumpet",
-            "Voice"
+            "Trumpet"
         ],
         "roles": [
             "Artist",
@@ -255,13 +296,13 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "",
         "instruments": [
+            "Piano",
+            "Voice",
+            "Ukulele",
+            "Clarinet",
             "Alto Saxophone",
             "Baritone Saxophone",
-            "Clarinet",
-            "Piano",
-            "Tenor Saxophone",
-            "Ukulele",
-            "Voice"
+            "Tenor Saxophone"
         ],
         "roles": [
             "Artist",
@@ -288,10 +329,10 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "",
         "instruments": [
-            "Electric Guitar",
             "Piano",
-            "Violin",
-            "Voice"
+            "Voice",
+            "Electric Guitar",
+            "Violin"
         ],
         "roles": [
             "Arranger",
@@ -310,17 +351,6 @@ const MEMBERS = [
     },
     {
         "id": 14,
-        "name": "Michelle",
-        "joined": "Fall 2025",
-        "left": "",
-        "instruments": [
-            "Piano"
-        ],
-        "roles": [],
-        "links": {}
-    },
-    {
-        "id": 15,
         "name": "Yuki",
         "joined": "Fall 2024",
         "left": "Fall 2024",
@@ -331,7 +361,7 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 16,
+        "id": 15,
         "name": "Katie",
         "joined": "Fall 2024",
         "left": "Winter 2025",
@@ -342,18 +372,19 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 17,
+        "id": 16,
         "name": "Daniel",
         "joined": "Fall 2024",
         "left": "Winter 2025",
         "instruments": [
+            "Voice",
             "Alto Saxophone"
         ],
         "roles": [],
         "links": {}
     },
     {
-        "id": 18,
+        "id": 17,
         "name": "Amber",
         "joined": "Fall 2024",
         "left": "Winter 2025",
@@ -365,7 +396,7 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 19,
+        "id": 18,
         "name": "Peter",
         "joined": "Fall 2024",
         "left": "Winter 2025",
@@ -376,7 +407,7 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 20,
+        "id": 19,
         "name": "Edison",
         "joined": "Fall 2024",
         "left": "Winter 2025",
@@ -387,21 +418,21 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 21,
+        "id": 20,
         "name": "Jimin",
         "joined": "Fall 2024",
         "left": "",
         "instruments": [
             "Drums",
-            "Electric Guitar",
             "Piano",
-            "Voice"
+            "Voice",
+            "Electric Guitar"
         ],
         "roles": [],
         "links": {}
     },
     {
-        "id": 22,
+        "id": 21,
         "name": "James Inneo",
         "joined": "Fall 2024",
         "left": "",
@@ -412,7 +443,7 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 23,
+        "id": 22,
         "name": "Emily",
         "joined": "Fall 2024",
         "left": "",
@@ -423,7 +454,7 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 24,
+        "id": 23,
         "name": "Robin",
         "joined": "Fall 2024",
         "left": "",
@@ -435,13 +466,14 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 25,
+        "id": 24,
         "name": "Kasey",
         "joined": "Fall 2024",
         "left": "",
         "instruments": [
-            "Trumpet",
-            "Voice"
+            "Voice",
+            "Ukulele",
+            "Trumpet"
         ],
         "roles": [
             "Artist"
@@ -449,20 +481,20 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 26,
+        "id": 25,
         "name": "Anon",
         "joined": "Fall 2024",
         "left": "",
         "instruments": [
             "Bass Guitar",
-            "Cello",
-            "Electric Guitar"
+            "Electric Guitar",
+            "Cello"
         ],
         "roles": [],
         "links": {}
     },
     {
-        "id": 27,
+        "id": 26,
         "name": "Han",
         "joined": "Fall 2024",
         "left": "",
@@ -479,15 +511,15 @@ const MEMBERS = [
         }
     },
     {
-        "id": 28,
+        "id": 27,
         "name": "Rylen Fong",
         "joined": "Fall 2024",
         "left": "",
         "instruments": [
             "Acoustic Guitar",
-            "Alto Saxophone",
+            "Ukulele",
             "Clarinet",
-            "Ukulele"
+            "Alto Saxophone"
         ],
         "roles": [
             "Arranger"
@@ -500,7 +532,7 @@ const MEMBERS = [
         }
     },
     {
-        "id": 29,
+        "id": 28,
         "name": "Raekye",
         "joined": "Fall 2024",
         "left": "",
@@ -511,7 +543,7 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 30,
+        "id": 29,
         "name": "Angelina Zheng",
         "joined": "Fall 2024",
         "left": "",
@@ -523,7 +555,7 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 31,
+        "id": 30,
         "name": "Tommy",
         "joined": "Fall 2024",
         "left": "",
@@ -534,13 +566,51 @@ const MEMBERS = [
         "links": {}
     },
     {
+        "id": 31,
+        "name": "xx.kamikaze.yasuomaster.69.xx",
+        "joined": "Fall 2024",
+        "left": "Winter 2025",
+        "instruments": [
+            "Violin",
+            "Vocals"
+        ],
+        "roles": [],
+        "links": {}
+    },
+    {
         "id": 32,
+        "name": "Yuki ",
+        "joined": "Fall 2024",
+        "left": "Fall 2024",
+        "instruments": [
+            "Clarinet",
+            "Piano/Keyboard"
+        ],
+        "roles": [],
+        "links": {}
+    },
+    {
+        "id": 33,
+        "name": "Tyrone Fang",
+        "joined": "Fall 2024",
+        "left": "",
+        "instruments": [
+            "Voice",
+            "Acoustic Guitar",
+            "Bass Guitar",
+            "Electric Guitar"
+        ],
+        "roles": [],
+        "links": {}
+    },
+    {
+        "id": 34,
         "name": "Crystal Y.",
         "joined": "Winter 2025",
         "left": "",
         "instruments": [
-            "Ukulele",
-            "Voice"
+            "Voice",
+            "Ukulele"
         ],
         "roles": [
             "Artist"
@@ -548,7 +618,7 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 33,
+        "id": 35,
         "name": "Hayden Hoffort",
         "joined": "Winter 2025",
         "left": "",
@@ -559,7 +629,7 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 34,
+        "id": 36,
         "name": "Johnathan H.",
         "joined": "Winter 2025",
         "left": "",
@@ -570,39 +640,37 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 35,
+        "id": 37,
         "name": "Kae",
         "joined": "Winter 2025",
         "left": "",
         "instruments": [
+            "Voice",
             "Bass Guitar",
-            "Electric Guitar",
-            "Voice"
+            "Electric Guitar"
         ],
         "roles": [],
         "links": {}
     },
     {
-        "id": 36,
-        "name": "Tyrone Fang",
-        "joined": "Fall 2024",
+        "id": 38,
+        "name": "Michelle",
+        "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Bass Guitar",
-            "Electric Guitar",
-            "Voice"
+            "Piano"
         ],
         "roles": [],
         "links": {}
     },
     {
-        "id": 37,
+        "id": 39,
         "name": "Sophia",
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Bass Guitar",
-            "Voice"
+            "Voice",
+            "Bass Guitar"
         ],
         "roles": [
             "Assistant Executive (25)"
@@ -612,7 +680,7 @@ const MEMBERS = [
         }
     },
     {
-        "id": 38,
+        "id": 40,
         "name": "Eric",
         "joined": "Fall 2025",
         "left": "",
@@ -628,7 +696,7 @@ const MEMBERS = [
         }
     },
     {
-        "id": 39,
+        "id": 41,
         "name": "Zachary Pang",
         "joined": "Fall 2025",
         "left": "",
@@ -639,20 +707,20 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 40,
+        "id": 42,
         "name": "Olivia Yip",
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
+            "Voice",
             "Acoustic Guitar",
-            "Ukulele",
-            "Voice"
+            "Ukulele"
         ],
         "roles": [],
         "links": {}
     },
     {
-        "id": 41,
+        "id": 43,
         "name": "Emma Ethina Islam",
         "joined": "Fall 2025",
         "left": "",
@@ -663,79 +731,55 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 42,
+        "id": 44,
         "name": "Brian Lin",
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Electric Guitar",
             "Piano",
-            "Voice"
-        ],
-        "roles": [],
-        "links": {}
-    },
-    {
-        "id": 43,
-        "name": "Fatima Gonsalves",
-        "joined": "Fall 2025",
-        "left": "",
-        "instruments": [
-            "Bass Guitar",
-            "Piano",
-            "Voice"
-        ],
-        "roles": [],
-        "links": {}
-    },
-    {
-        "id": 44,
-        "name": "Carmen",
-        "joined": "Fall 2025",
-        "left": "",
-        "instruments": [
-            "Electric Guitar",
-            "Piano",
-            "Voice"
+            "Voice",
+            "Electric Guitar"
         ],
         "roles": [],
         "links": {}
     },
     {
         "id": 45,
-        "name": "J. Mansia",
+        "name": "Fatima Gonsalves",
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Bass Guitar",
-            "Drums",
-            "Electric Guitar",
             "Piano",
-            "Violin",
-            "Voice"
+            "Voice",
+            "Bass Guitar"
         ],
         "roles": [],
         "links": {}
     },
     {
         "id": 46,
-        "name": "Simba",
+        "name": "Carmen",
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Alto Saxophone",
-            "Violin"
+            "Piano",
+            "Voice",
+            "Electric Guitar"
         ],
         "roles": [],
         "links": {}
     },
     {
         "id": 47,
-        "name": "Skylar",
+        "name": "J. Mansia",
         "joined": "Fall 2025",
-        "left": "Fall 2025",
+        "left": "",
         "instruments": [
-            "Flute",
+            "Drums",
+            "Piano",
+            "Voice",
+            "Bass Guitar",
+            "Electric Guitar",
             "Violin"
         ],
         "roles": [],
@@ -743,6 +787,30 @@ const MEMBERS = [
     },
     {
         "id": 48,
+        "name": "Simba",
+        "joined": "Fall 2025",
+        "left": "",
+        "instruments": [
+            "Violin",
+            "Alto Saxophone"
+        ],
+        "roles": [],
+        "links": {}
+    },
+    {
+        "id": 49,
+        "name": "Skylar",
+        "joined": "Fall 2025",
+        "left": "Fall 2025",
+        "instruments": [
+            "Violin",
+            "Flute"
+        ],
+        "roles": [],
+        "links": {}
+    },
+    {
+        "id": 50,
         "name": "Nicole Liu",
         "joined": "Fall 2025",
         "left": "Fall 2025",
@@ -754,7 +822,7 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 49,
+        "id": 51,
         "name": "Benjamin L.",
         "joined": "Fall 2025",
         "left": "",
@@ -765,21 +833,21 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 50,
+        "id": 52,
         "name": "Brandon Law",
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Alto Saxophone",
             "Piano",
-            "Tenor Saxophone",
-            "Voice"
+            "Voice",
+            "Alto Saxophone",
+            "Tenor Saxophone"
         ],
         "roles": [],
         "links": {}
     },
     {
-        "id": 51,
+        "id": 53,
         "name": "Efren Wang",
         "joined": "Fall 2025",
         "left": "",
@@ -793,31 +861,31 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 52,
+        "id": 54,
         "name": "William",
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Electric Guitar",
-            "Voice"
+            "Voice",
+            "Electric Guitar"
         ],
         "roles": [],
         "links": {}
     },
     {
-        "id": 53,
+        "id": 55,
         "name": "Ericka",
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Acoustic Guitar",
-            "Voice"
+            "Voice",
+            "Acoustic Guitar"
         ],
         "roles": [],
         "links": {}
     },
     {
-        "id": 54,
+        "id": 56,
         "name": "Alexander Davydenko",
         "joined": "Fall 2025",
         "left": "",
@@ -828,7 +896,7 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 55,
+        "id": 57,
         "name": "Emre",
         "joined": "Fall 2025",
         "left": "",
@@ -840,36 +908,36 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 56,
+        "id": 58,
         "name": "Sofia Gondim",
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Bass Clarinet",
+            "Piano",
+            "Voice",
             "Bass Guitar",
             "Electric Guitar",
-            "Piano",
-            "Voice"
+            "Bass Clarinet"
         ],
         "roles": [],
         "links": {}
     },
     {
-        "id": 57,
+        "id": 59,
         "name": "Andrew Tan",
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Bass Guitar",
-            "Electric Guitar",
             "Piano",
-            "Voice"
+            "Voice",
+            "Bass Guitar",
+            "Electric Guitar"
         ],
         "roles": [],
         "links": {}
     },
     {
-        "id": 58,
+        "id": 60,
         "name": "Emmett Hartley",
         "joined": "Fall 2025",
         "left": "",
@@ -882,34 +950,34 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 59,
+        "id": 61,
         "name": "Jonathan",
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
+            "Piano",
+            "Voice",
             "Bass Guitar",
             "Electric Guitar",
-            "Flute",
-            "Piano",
-            "Voice"
+            "Flute"
         ],
         "roles": [],
         "links": {}
     },
     {
-        "id": 60,
+        "id": 62,
         "name": "FH",
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Clarinet",
-            "Piano"
+            "Piano",
+            "Clarinet"
         ],
         "roles": [],
         "links": {}
     },
     {
-        "id": 61,
+        "id": 63,
         "name": "Xianghai (Steven)",
         "joined": "Fall 2025",
         "left": "",
@@ -922,7 +990,7 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 62,
+        "id": 64,
         "name": "Julian",
         "joined": "Fall 2025",
         "left": "",
@@ -935,7 +1003,7 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 63,
+        "id": 65,
         "name": "Joe",
         "joined": "Winter 2026",
         "left": "",
@@ -946,22 +1014,22 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 64,
+        "id": 66,
         "name": "Paul Y.",
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Alto Saxophone",
-            "Bass Guitar",
             "Drums",
+            "Piano",
+            "Bass Guitar",
             "Electric Guitar",
-            "Piano"
+            "Alto Saxophone"
         ],
         "roles": [],
         "links": {}
     },
     {
-        "id": 65,
+        "id": 67,
         "name": "Ze",
         "joined": "Winter 2026",
         "left": "",
@@ -972,7 +1040,7 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 66,
+        "id": 68,
         "name": "Kaveh",
         "joined": "Winter 2026",
         "left": "",
@@ -983,23 +1051,23 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 67,
+        "id": 69,
         "name": "Cathy Z.",
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Alto Saxophone",
+            "Voice",
             "Flute",
             "Piccolo",
             "Recorder",
-            "Tenor Saxophone",
-            "Voice"
+            "Alto Saxophone",
+            "Tenor Saxophone"
         ],
         "roles": [],
         "links": {}
     },
     {
-        "id": 68,
+        "id": 70,
         "name": "Cailyn",
         "joined": "Winter 2026",
         "left": "",
@@ -1010,7 +1078,7 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 69,
+        "id": 71,
         "name": "Kaden Calvert",
         "joined": "Winter 2026",
         "left": "",
@@ -1021,7 +1089,7 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 70,
+        "id": 72,
         "name": "Kai Kang Nie",
         "joined": "Winter 2026",
         "left": "",
@@ -1033,7 +1101,7 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 71,
+        "id": 73,
         "name": "Celina L.",
         "joined": "Winter 2026",
         "left": "",
@@ -1044,32 +1112,32 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 72,
+        "id": 74,
         "name": "Lucia",
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Electric Guitar",
             "Piano",
-            "Voice"
+            "Voice",
+            "Electric Guitar"
         ],
         "roles": [],
         "links": {}
     },
     {
-        "id": 73,
+        "id": 75,
         "name": "Leo",
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Bass Guitar",
-            "Piano"
+            "Piano",
+            "Bass Guitar"
         ],
         "roles": [],
         "links": {}
     },
     {
-        "id": 74,
+        "id": 76,
         "name": "Phillip Hsu",
         "joined": "Winter 2026",
         "left": "",
@@ -1081,7 +1149,7 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 75,
+        "id": 77,
         "name": "Hana",
         "joined": "Winter 2026",
         "left": "",
@@ -1092,7 +1160,7 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 76,
+        "id": 78,
         "name": "Prashanth Shyamala",
         "joined": "Winter 2026",
         "left": "",
@@ -1103,14 +1171,14 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 77,
+        "id": 79,
         "name": "Charlene Chiang",
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
+            "Piano",
             "Bass Guitar",
             "Clarinet",
-            "Piano",
             "Trombone",
             "Trumpet"
         ],
@@ -1118,7 +1186,7 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 78,
+        "id": 80,
         "name": "Colin Boothby",
         "joined": "Winter 2026",
         "left": "",
@@ -1129,7 +1197,7 @@ const MEMBERS = [
         "links": {}
     },
     {
-        "id": 79,
+        "id": 81,
         "name": "yams",
         "joined": "Winter 2026",
         "left": "",
