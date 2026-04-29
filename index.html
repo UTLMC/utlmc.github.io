@@ -592,20 +592,20 @@
             <section id="section-musicians">
                 <h1>Musicians 🎵</h1>
                 <ul class="toolbar">
-                    <li class="toolbar-filter" onclick="toggleMenuFilterMusician(true)"></li>
+                    <li class="toolbar-filter" onclick="toggleMenuFilterMusician()"></li>
                     <li class="toolbar-button" onclick="toggleButtonMemberType(this)">Current Members</li>
-                    <li class="toolbar-button" onclick="toggleButtonTagType(this)">All Tags</li>
+                    <li class="toolbar-button" onclick="toggleButtonMemberTagType(this)">All Tags</li>
                     <li class="toolbar-filter-menu toolbar-filter-menu-hidden" id="musicians-filter-menu">
                         <label for="musician-filter-name">Name</label>
-                        <input id="musician-filter-name" type="text" placeholder="e.g. Name" oninput="changeFilterMusicians()" />
+                        <input id="musician-filter-name" type="text" placeholder="e.g. Mike" oninput="changeFilterMusicians()" />
                         <label for="musician-filter-joined-before">Joined Before</label>
                         <input id="musician-filter-joined-before" type="text" placeholder="e.g. Winter 2024" oninput="changeFilterMusicians()" />
                         <label for="musician-filter-joined-after">Joined After</label>
                         <input id="musician-filter-joined-after" type="text" placeholder="e.g. Fall 2025" oninput="changeFilterMusicians()" />
-                        <label for="musician-filter-include-tags">Include Tags</label>
-                        <input id="musician-filter-include-tags" type="text" placeholder="e.g. Tag 1, Tag 2, ..." oninput="changeFilterMusicians()" />
-                        <label for="musician-filter-exclude-tags">Exclude Tags</label>
-                        <input id="musician-filter-exclude-tags" type="text" placeholder="e.g. Tag 1, Tag 2, ..." oninput="changeFilterMusicians()" />
+                        <label for="musician-filter-include-tags">(+) Tags</label>
+                        <input id="musician-filter-include-tags" type="text" placeholder="e.g. Piano, Artist, ..." oninput="changeFilterMusicians()" />
+                        <label for="musician-filter-exclude-tags">(−) Tags</label>
+                        <input id="musician-filter-exclude-tags" type="text" placeholder="e.g. Piano, Artist, ..." oninput="changeFilterMusicians()" />
                     </li>
                 </ul>
                 <div id="table-musicians" class="table">
@@ -677,9 +677,26 @@
             <section id="section-music-archive">
                 <h1>Music Archive</h1>
                 <ul class="toolbar">
-                    <li class="toolbar-filter"></li>
-                    <li class="toolbar-button">Current Members</li>
-                    <li class="toolbar-button">All Tag Types</li>
+                    <li class="toolbar-filter" onclick="toggleMenuFilterMusic()"></li>
+                    <li class="toolbar-button" onclick="toggleButtonMusicPerformances(this)">All Performances</li>
+                    <li class="toolbar-button" onclick="toggleButtonMusicMediaOrigin(this)">All Media Origins</li>
+                    <li class="toolbar-button" onclick="toggleButtonMusicLinkType(this)">All Link Types</li>
+                    <li class="toolbar-filter-menu toolbar-filter-menu-hidden" id="music-filter-menu">
+                        <label for="music-filter-title">Title</label>
+                        <input id="music-filter-title" type="text" placeholder="e.g. Zankyosanka" oninput="changeFilterMusic()" />
+                        <label for="music-filter-composer">Composer</label>
+                        <input id="music-filter-composer" type="text" placeholder="e.g. Aimer" oninput="changeFilterMusic()" />
+                        <label for="music-filter-arranger">Arranger</label>
+                        <input id="music-filter-arranger" type="text" placeholder="e.g. Sean" oninput="changeFilterMusic()" />
+                        <label for="music-filter-from">From</label>
+                        <input id="music-filter-from" type="text" placeholder="e.g. Demon Slayer" oninput="changeFilterMusic()" />
+                        <label for="music-filter-performed">Performed</label>
+                        <input id="music-filter-performed" type="text" placeholder="e.g. Concert Name" oninput="changeFilterMusic()" />
+                        <label for="music-filter-include-instruments">(+) Instruments</label>
+                        <input id="music-filter-include-instruments" type="text" placeholder="e.g. Piano, Voice, ..." oninput="changeFilterMusic()" />
+                        <label for="music-filter-exclude-instruments">(−) Instruments</label>
+                        <input id="music-filter-exclude-instruments" type="text" placeholder="e.g. Piano, Voice, ..." oninput="changeFilterMusic()" />
+                    </li>
                 </ul>
                 <div id='table-music-archive' class="table">
                     <table>
@@ -689,17 +706,18 @@
                                 <th>Composer(s)</th>
                                 <th>Arranger(s)</th>
                                 <th>From</th>
+                                <th>Links</th>
                                 <th>Performed</th>
                                 <th>Instrumentation</th>
-                                <th>Sheet Music</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <!-- <tr>
                                 <td>Song 1</td>
                                 <td>Dude 1</td>
                                 <td></td>
                                 <td>Anime 1</td>
+                                <td><div class='music-archive-links'><a href="#"></a></div></td>
                                 <td>
                                     <p class="tag-container">
                                         <span>Fall 2025</span>
@@ -712,13 +730,13 @@
                                         <span>Drums</span>
                                     </p>
                                 </td>
-                                <td><a href="#"></a></td>
                             </tr>
                             <tr>
                                 <td>Song 2</td>
                                 <td>Dude 2, Dude 3</td>
                                 <td></td>
                                 <td>Game 1</td>
+                                <td><div class='music-archive-links'><a href="#"></a></div></td>
                                 <td>
                                     <p class="tag-container">
                                         <span>Summer 2020</span>
@@ -728,14 +746,14 @@
                                     <p class="tag-container">
                                         <span>Electric Guitar <em>×2</em></span>
                                     </p>
-                                </td>                                
-                                <td><a href="#"></a></td>
+                                </td>
                             </tr>
                             <tr>
                                 <td>Song With a Very Long Title</td>
                                 <td>Dude with an extremely long name</td>
                                 <td>Dude with an extremely long name</td>
                                 <td>Series with a very long name</td>
+                                <td><div class='music-archive-links'><a href="#"></a></div></td>
                                 <td>
                                     <p class="tag-container">
                                         <span>Summer 2020</span>
@@ -751,8 +769,7 @@
                                         <span>Piano</span>
                                     </p>
                                 </td>
-                                <td><a href="#"></a></td>
-                            </tr>
+                            </tr> -->
                         </tbody>
                     </table>
                 </div>

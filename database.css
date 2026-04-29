@@ -204,7 +204,7 @@ menu li:before {
 #nav-small-ensemble:before { background-image: url('assets/icons/music-note.png'); }
 #nav-concerts:before { background-image: url('assets/icons/mic.png'); }  /* https://www.flaticon.com/free-icon/microphone_3472711 */
 #nav-resource-links:before { background-image: url('assets/icons/link.png'); }  /* https://www.flaticon.com/free-icon/link_154843 */
-#nav-embeds:before { background-image: url('assets/icons/embeds.png'); }  /* https://www.flaticon.com/free-icon/external-link_7268615 */
+#nav-embeds:before { background-image: url('assets/icons/embed.png'); }  /* https://www.flaticon.com/free-icon/external-link_7268615 */
 #nav-documents:before { background-image: url('assets/icons/forms.png'); }  /* https://www.flaticon.com/free-icon/form_6868789 */
 #nav-faq:before { background-image: url('assets/icons/faq.png'); }  /* https://www.flaticon.com/free-icon/faq_10042848 */
 

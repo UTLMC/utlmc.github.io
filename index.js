@@ -341,13 +341,19 @@ function scrollHorizontally(event) {
     target.scrollLeft += deltaX !== 0 ? deltaX : deltaY;
 }
 const handleClick = (() => {
-    const button = cssGetFirst('#section-musicians .toolbar .toolbar-filter');
-    const window = cssGetId('musicians-filter-menu');
+    const button1 = cssGetFirst('#section-musicians .toolbar .toolbar-filter');
+    const window1 = cssGetId('musicians-filter-menu');
+
+    const button2 = cssGetFirst('#section-music-archive .toolbar .toolbar-filter');
+    const window2 = cssGetId('music-filter-menu');
 
     return (event) => {
-        if (!button.contains(event.target) && !window.contains(event.target)) {
-            window.classList.add('toolbar-filter-menu-hidden');
-        }        
+        if (!button1.contains(event.target) && !window1.contains(event.target)) {
+            window1.classList.add('toolbar-filter-menu-hidden');
+        }
+        if (!button2.contains(event.target) && !window2.contains(event.target)) {
+            window2.classList.add('toolbar-filter-menu-hidden');
+        }
     }
 })();
 
@@ -395,6 +401,7 @@ window.addEventListener('DOMContentLoaded', () => {
     injectFAQ();
     injectFormLinks();
     injectCarousel();
+    updateMusicTable();
 
     // Navigate to tab in hash
     const page = window.location.hash.substring(1);
@@ -635,7 +642,7 @@ function filterMusician(x) {
         }
     }
     if (includeTags || excludeTags) {
-        const tags = new Set([...x.roles.map(x => x.slice(0, x.indexOf(' ('))), ...x.instruments].map(x => x.toLowerCase()));
+        const tags = new Set([...x.roles.map(x => x.slice(0, x.includes(" (") ? x.indexOf(' (') : undefined)), ...x.instruments].map(x => x.toLowerCase()));
         if (includeTags && includeTags.split(',').map(x => x.toLowerCase().trim()).some(x => !tags.has(x))) return false;
         if (excludeTags && excludeTags.split(',').map(x => x.toLowerCase().trim()).some(x => tags.has(x))) return false;
     }
@@ -752,7 +759,7 @@ function toggleButtonMemberType(element) {
     TABLE_MUSICIANS.filters.page = 0;
     updateMusiciansTable();
 }
-const toggleButtonTagType = (() => {
+const toggleButtonMemberTagType = (() => {
     const style = document.createElement('style');
     document.head.appendChild(style);
 
@@ -783,7 +790,7 @@ const changeFilterMusicians = debounce(() => {
     TABLE_MUSICIANS.filters.includeTags = cssGetId('musician-filter-include-tags').value;
     TABLE_MUSICIANS.filters.excludeTags = cssGetId('musician-filter-exclude-tags').value;
     updateMusiciansTable();
-}, 500);
+}, 300);
 
 function getTagColour(name) {
     name = name.toLowerCase();
@@ -989,6 +996,279 @@ async function injectMembers() {
 
     updateMusiciansTable();
 }
+
+let TABLE_MUSIC = {
+    filters: {
+        performance: 'all',
+        mediaOrigin: 'all',
+        filterSheetMusic: false,
+        title: '',
+        composer: '',
+        arranger: '',
+        from: '',
+        performed: '',
+        includeInstruments: '',
+        excludeInstruments: ''
+    }
+}
+function toggleButtonMusicPerformances(element) {
+    if (TABLE_MUSIC.filters.performance === 'all') {
+        TABLE_MUSIC.filters.performance = 'large';
+        element.innerText = 'Large Ensembles';
+    } else if (TABLE_MUSIC.filters.performance === 'large') {
+        TABLE_MUSIC.filters.performance = 'small';
+        element.innerText = 'Small Ensembles';
+    } else if (TABLE_MUSIC.filters.performance === 'small') {
+        TABLE_MUSIC.filters.performance = 'recording';
+        element.innerText = 'Recording Projects';
+    } else if (TABLE_MUSIC.filters.performance === 'recording') {
+        TABLE_MUSIC.filters.performance = 'external';
+        element.innerText = 'External Groups';
+    } else {
+        TABLE_MUSIC.filters.performance = 'all';
+        element.innerText = 'All Performances';
+    }
+    updateMusicTable();
+};
+function toggleButtonMusicMediaOrigin(element) {
+    if (TABLE_MUSIC.filters.mediaOrigin === 'all') {
+        TABLE_MUSIC.filters.mediaOrigin = 'anime';
+        element.innerText = 'Anime Music';
+    } else if (TABLE_MUSIC.filters.mediaOrigin === 'anime') {
+        TABLE_MUSIC.filters.mediaOrigin = 'vg';
+        element.innerText = 'Video Game Music';
+    } else if (TABLE_MUSIC.filters.mediaOrigin === 'vg') {
+        TABLE_MUSIC.filters.mediaOrigin = 'vocaloid';
+        element.innerText = 'Vocaloid Music';
+    } else {
+        TABLE_MUSIC.filters.mediaOrigin = 'all';
+        element.innerText = 'All Media Origins';
+    }
+    updateMusicTable();
+}
+function toggleButtonMusicLinkType(element) {
+    element.innerText = TABLE_MUSIC.filters.filterSheetMusic ? 'All Link Types' : 'Has Sheet Music';
+    TABLE_MUSIC.filters.filterSheetMusic = !TABLE_MUSIC.filters.filterSheetMusic;
+    updateMusicTable();
+}
+function getInstrumentationFromPerformers(performers) {
+    return Object.entries(performers).map(([instrument, players]) => (
+        players.length > 1 ? `${instrument} (${players.length})` : instrument
+    ));
+}
+function initMusicTable() {
+    const table = cssGetFirst('#table-music-archive tbody');
+    const rows = [];
+    let j = 0;
+    const originalRow = {};
+
+    MUSIC.forEach((x, i) => {
+        // Create multiple versions of the same song if the song has multiple arrangements, as judged by
+        // - Different sheet music links
+        // - Different instrumentation or arranger (if applicable)
+
+        let versions = {};
+        const first = x.performances[0];
+        if (!first) {
+            throw new Error(`No performances found: ${x}`);
+        }
+        const firstData = {
+            instrumentation: getInstrumentationFromPerformers(first.performers),
+            concerts: first.concerts,
+            songType: first.songType
+        };
+        if (first.arranger) {
+            firstData.arranger = first.arranger.map(y => typeof(y) === 'number' ? MEMBERS[y].name : y).join(', ');
+        }
+        if (first.sheetMusic) { firstData.sheetMusic = first.sheetMusic }
+
+        // Index performances by sheet music/instrumentation
+        if (first.sheetMusic) {
+            versions[first.sheetMusic] = firstData
+        } else {
+            versions[getInstrumentationFromPerformers(first.performers).join('|')] = firstData;
+        }
+
+        // If performances match a pre-existing one, append the concert
+        for (const performance of x.performances.slice(1)) {
+            const i1 = versions[performance.sheetMusic]?.instrumentation.join('|');
+            const i2 = getInstrumentationFromPerformers(performance.performers).join('|');
+            const a1 = versions[performance.sheetMusic]?.arranger.join('|');
+            const a2 = performance.arranger.join('|');
+
+            if (performance.sheetMusic && versions[performance.sheetMusic]) {
+                if (i1 !== i2) { throw new Error(`[${x.name}] Expected performances with same sheet music to have same instrumentation`); }
+                if (a1 !== a2) { throw new Error(`[${x.name}] Expected performances with same sheet music to have same arranger`); }
+                versions[performance.sheetMusic].concerts.push(...performance.concerts);
+            } else if (i1 === i2 && a1 === a2) {
+                versions[i1].concerts.push(...performance.concerts);
+            } else {
+                const indexer = performance.sheetMusic || i2;
+                const newData = {
+                    instrumentation: getInstrumentationFromPerformers(performance.performers),
+                    concerts: performance.concerts,
+                    songType: performance.songType
+                };
+                if (performance.arranger) {
+                    newData.arranger = performance.arranger.map(y => typeof(y) === 'number' ? MEMBERS[y].name : y).join(', ');
+                }
+                if (performance.sheetMusic) { newData.sheetMusic = performance.sheetMusic; }
+                versions[indexer] = newData;
+            }
+        }
+        versions = Object.values(versions);
+        for (let k = 0; k < versions.length; k++) {
+            originalRow[k + j] = i;
+        }
+        j += versions.length;
+        rows.push(...versions);
+    });
+
+    return [table, rows, originalRow];
+}
+function constructMusicTableRow(version, x) {
+    const links = [
+        ['table-music-archive-reference', x.reference],
+        ['table-music-archive-recording',  version.concerts.includes('Recording') ? SETLISTS['Recording'][x.id] : undefined],
+        ['table-music-archive-sheet-music', version.sheetMusic]
+    ].filter(link => !!link[1]);
+
+    return construct({
+            element: 'tr',
+        children: [{
+            element: 'td',
+            innerText: x.name,
+        }, {
+            element: 'td',
+            innerText: x.composer
+        }, {
+            element: 'td',
+            innerText: version.arranger
+        }, {
+            element: 'td',
+            innerText: x.from
+        }, {
+            element: 'td',
+            children: [{
+                element: 'div',
+                classes: ['table-music-archive-links'],
+                children: links.map(([className, link]) => ({
+                    element: 'a',
+                    classes: [className],
+                    attributes: {
+                        href: link,
+                        target: '_blank'
+                    }
+                }))
+            }]
+        }, {
+            element: 'td',
+            children: [{
+                element: 'p',
+                classes: ['tag-container'],
+                children: version.concerts.map(concert => ({
+                    element: 'span',
+                    innerText: concert
+                }))
+            }]
+        }, {
+            element: 'td',
+            children: [{
+                element: 'p',
+                classes: ['tag-container'],
+                children: version.instrumentation.map(instrument => {
+                    let name = parseInt(instrument, 10) !== NaN ? INSTRUMENTS[parseInt(instrument, 10)] : instrument;
+                    let innerHTML = name;
+                    if (instrument.includes('(')) {
+                        name = instrument.slice(0, instrument.lastIndexOf('(')).trim();
+                        name = parseInt(name, 10) !== NaN ? INSTRUMENTS[parseInt(name, 10)] : name;
+                        const count = instrument.slice(instrument.lastIndexOf('(') + 1, instrument.lastIndexOf(')'));
+                        innerHTML = `${name} <em>×${count}</em>`
+                    }
+
+                    return {
+                        element: 'span',
+                        innerHTML,
+                        style: getTagColour(name)
+                    }
+                })
+            }]
+        }]
+    });
+}
+function toggleMenuFilterMusic() {
+    cssGetId('music-filter-menu').classList.toggle('toolbar-filter-menu-hidden');
+}
+const changeFilterMusic = debounce(() => {
+    TABLE_MUSIC.filters.title = cssGetId('music-filter-title').value;
+    TABLE_MUSIC.filters.composer = cssGetId('music-filter-composer').value;
+    TABLE_MUSIC.filters.arranger = cssGetId('music-filter-arranger').value;
+    TABLE_MUSIC.filters.from = cssGetId('music-filter-from').value;
+    TABLE_MUSIC.filters.performed = cssGetId('music-filter-performed').value;
+    TABLE_MUSIC.filters.includeInstruments = cssGetId('music-filter-include-instruments').value;
+    TABLE_MUSIC.filters.excludeInstruments = cssGetId('music-filter-exclude-instruments').value;
+    updateMusicTable();
+}, 300);
+function filterMusic(version, x) {
+    if (TABLE_MUSIC.filters.performance !== 'all') {
+        if (TABLE_MUSIC.filters.performance === 'large' && version.songType !== 'Large') return true;
+        if (TABLE_MUSIC.filters.performance === 'small' && version.songType !== 'Small') return true;
+        if (TABLE_MUSIC.filters.performance === 'external' && version.songType !== 'External') return true;
+        if (TABLE_MUSIC.filters.performance === 'recording' && ! version.concerts.includes('Recording')) return true;
+    }
+    if (TABLE_MUSIC.filters.mediaOrigin !== 'all') {
+        if (TABLE_MUSIC.filters.mediaOrigin === 'anime' && x.mediaOrigin !== 'Anime') return true;
+        if (TABLE_MUSIC.filters.mediaOrigin === 'vg' && x.mediaOrigin !== 'Video Game') return true;
+        if (TABLE_MUSIC.filters.mediaOrigin === 'vocaloid' && x.mediaOrigin !== 'Vocaloid') return true;
+    }
+    if (TABLE_MUSIC.filters.filterSheetMusic && !version.sheetMusic) return true;
+
+    if (TABLE_MUSIC.filters.title && !x.name.toLowerCase().includes(TABLE_MUSIC.filters.title.toLowerCase())) return true;
+    if (TABLE_MUSIC.filters.composer && !x.composer.toLowerCase().includes(TABLE_MUSIC.filters.composer.toLowerCase())) return true;
+    if (TABLE_MUSIC.filters.arranger && (!version.arranger || !version.arranger.toLowerCase().includes(TABLE_MUSIC.filters.arranger.toLowerCase()))) return true;
+    if (TABLE_MUSIC.filters.from && (!x.from || !x.from.toLowerCase().includes(TABLE_MUSIC.filters.from.toLowerCase()))) return true;
+    
+    if (TABLE_MUSIC.filters.performed && !version.concerts.some(y => (
+        y.toLowerCase().includes(TABLE_MUSIC.filters.performed.toLowerCase())
+    ))) {
+        return true;
+    }
+
+    if (TABLE_MUSIC.filters.includeInstruments || TABLE_MUSIC.filters.excludeInstruments) {
+        const instruments = new Set(version.instrumentation.map(i => INSTRUMENTS[parseInt(i, 10)].toLowerCase()));
+        if (TABLE_MUSIC.filters.includeInstruments) {
+            const filter = TABLE_MUSIC.filters.includeInstruments.split(',').map(x => x.trim().toLowerCase());
+            if (filter.some(y => !instruments.has(y))) return true;
+        }
+        if (TABLE_MUSIC.filters.excludeInstruments) {
+            const filter = TABLE_MUSIC.filters.excludeInstruments.split(',').map(x => x.trim().toLowerCase());
+            if (filter.some(y => instruments.has(y))) return true;
+        }
+    }
+    return false;
+}
+const updateMusicTable = (() => {
+    const [table, rows, originalRow] = initMusicTable();   
+    const elements = {};
+
+    return async () => {
+        const fragment = document.createDocumentFragment();
+        for (let i = 0; i < rows.length; i++) {
+            const version = rows[i];
+            const x = MUSIC[originalRow[i]];
+
+            if (filterMusic(version, x)) {
+                continue;
+            }
+
+            if (!elements[i]) {
+                elements[i] = constructMusicTableRow(version, x);
+            }
+            fragment.appendChild(elements[i]);
+        }
+        table.replaceChildren(fragment);
+    }
+})();
 
 async function injectFAQ() {
     const container = cssGetId('faq-container');

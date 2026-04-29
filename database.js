@@ -30,6 +30,28 @@ function cssGetAll(query) {
         throw new Error(`Invalid query ${query}`);
     return result;
 }
+function timestampToSeconds(timestamp) {
+    const parts = timestamp.split(':').map(x => parseInt(x, 10));
+
+    if (parts.some(isNaN)) {
+        throw new Error(timestamp);
+    }
+
+    if (parts.length === 3) {
+        // HH:MM:SS
+        const [hours, minutes, secs] = parts;
+        return hours * 3600 + minutes * 60 + secs;
+    } else if (parts.length === 2) {
+        // MM:SS
+        const [minutes, secs] = parts;
+        return minutes * 60 + secs;
+    } else if (parts.length === 1) {
+        // SS
+        return parts[0];
+    } else {
+        throw new Error(timestamp);
+    }
+}
 
 
 /*********************************************************************
@@ -70,6 +92,8 @@ function parseCSV(csv) {
     let field = "";
     let inQuotes = false;
 
+    csv = csv.replace(/[‘’]/g, "'")
+
     for (let i = 0; i < csv.length; i++) {
         const char = csv[i];
         const nextChar = csv[i + 1];
@@ -108,7 +132,7 @@ function parseCSV(csv) {
         rows.push(current);
     }
 
-    return rows;
+    return rows.map(x => x.map(y => y.trim()));
 }
 
 
@@ -159,33 +183,40 @@ function parseLinks(discord, links) {
 }
 
 const instrumentOrder = {
-    'alto saxophone': '5',
-    'tenor saxophone': '5',
-    'baritone saxophone': '5',
+    'alto saxophone': '5.1',
+    'tenor saxophone': '5.2',
+    'baritone saxophone': '5.3',
     
-    'oboe': '3',
-    'clarinet': '3',
-    'bass clarinet': '3',
+    'oboe': '4.1',
+    'english horn': '4.2',
+    'clarinet': '4.3',
+    'bass clarinet': '4.4',
+    'bassoon': '4.5',
 
-    'piccolo': '4',
-    'recorder': '4',
-    'flute': '4',
+    'piccolo': '3.1',
+    'recorder': '3.3',
+    'flute': '3.2',
 
-    'trumpet': '6',
-    'trombone': '6',
+    'trumpet': '6.1',
+    'french horn': '6.2',
+    'trombone': '6.3',
+    'euphonium': '6.4',
+    'tuba': '6.5',
 
-    'ukulele': '1',
-    'acoustic guitar': '1',
-    'electric guitar': '1',
-    'bass guitar': '1',
+    'ukulele': '1.1',
+    'acoustic guitar': '1.1',
+    'electric guitar': '1.2',
+    'bass guitar': '1.3',
 
-    'violin': '2',
-    'cello': '2',
-    'double bass': '2',
+    'violin': '2.1',
+    'viola': '2.2',
+    'cello': '2.3',
+    'double bass': '2.4',
 
-    'piano': '0',
-    'drums': '0',
-    'voice': '0',
+    'voice': '0.1',
+    'piano': '0.2',
+    'electric piano': '0.3',
+    'drums': '0.4',
 }
 function instrumentSorter(a, b) {
     const groupA = instrumentOrder[a.toLowerCase()];
@@ -234,9 +265,8 @@ function roleSorter(a, b) {
     return i;
 }
 
-const memberRows = new Set(['Discord', 'Public Name', 'Instruments', 'Roles', 'Season Start', 'Season End', 'Personal Links']);
-async function uploadMembers(event) {
-    const raw = await event.files[0].text();
+async function uploadMembers(element) {
+    const raw = await element.files[0].text();
     const data = parseCSV(raw);
     
     if (data.length <= 1) {
@@ -251,17 +281,20 @@ async function uploadMembers(event) {
     }
 
     // Map column to row index
+    const rows = new Set(['Discord', 'Public Name', 'Instruments', 'Roles', 'Season Start', 'Season End', 'Personal Links']);
     const indices = {};
     for (let i = 0; i < data[0].length; i++) {
-        if (memberRows.has(data[0][i])) {
+        if (rows.has(data[0][i])) {
             indices[data[0][i]] = i;
         }
     }
 
+    // Filter for real members
     const members = data.filter((row, i) => (
         i > 0 && row[indices['Public Name']] && row[indices['Season Start']] && row[indices['Discord']]
     ));
 
+    // Get current year
     const now = new Date();
     let year = now.getMonth() >= 7 ? now.getFullYear() : now.getFullYear() - 1;
     while (!members.some(row => row[indices['Roles']].includes(String(year).slice(2)))) {
@@ -272,6 +305,7 @@ async function uploadMembers(event) {
     }
 
     const parsed = members.map((row, i) => {
+        // Only show Discord of current execs
         const rawRoles = row[indices['Roles']];
         const isExec = rawRoles.includes(` (`) && rawRoles.includes(`${String(year).slice(2)}`);
         const discord = isExec ? row[indices['Discord']] : undefined;
@@ -289,5 +323,175 @@ async function uploadMembers(event) {
     
     console.log(JSON.stringify(parsed, null, 4))
 
+    const discords = members.map(row => row[indices['Discord']]);
+    return [parsed, discords];
+}
+
+async function uploadMusic(element) {
+    const raw = await element.files[0].text();
+    const data = parseCSV(raw);
+    
+    if (data.length <= 1) {
+        console.log('[]');
+        return [];
+    }
+
+    for (let i = 1; i < data.length; i++) {
+        if (data[0].length !== data[i].length) {
+            throw new Error(`Mismatch in number of rows. Column 1 = ${data[0].length} != ${data[i].length} = Column ${i + 1}`);
+        }
+    }
+
+    // Map column to row index
+    const rows = new Set(['Name', 'Artist', 'From', 'Media Origin', 'Reference']);
+    const indices = {};
+    for (let i = 0; i < data[0].length; i++) {
+        if (rows.has(data[0][i])) {
+            indices[data[0][i]] = i;
+        }
+    }
+
+    const parsed = data.slice(1).map((row, i) => {
+        const from = row[indices['From']];
+        const mediaOrigin = row[indices['Media Origin']];
+        const reference = row[indices['Reference']];
+        const data = {
+            id: i,
+            name: row[indices['Name']],
+            composer: row[indices['Artist']]
+        }
+        if (from) { data.from = from }
+        if (mediaOrigin) { data.mediaOrigin = mediaOrigin }
+        if (reference) { data.reference = reference }
+        return data;
+    });
+    
+    // console.log(JSON.stringify(parsed, null, 4));
     return parsed;
+}
+
+async function uploadPerformances(element) {
+    let musicData = await uploadMusic(cssGetId('upload-music'));
+    musicData = Object.fromEntries(musicData.map(x => [x.name, x]));
+
+    const raw = await element.files[0].text();
+    let [header, ...data] = parseCSV(raw);
+
+    for (let i = 0; i < data.length; i++) {
+        if (header.length !== data[i].length) {
+            throw new Error(`Mismatch in number of rows. Column 1 = ${header.length} != ${data[i].length} = Column ${i + 1}`);
+        }
+    }
+
+    // Map column to row index
+    const rows = new Set(['Name', 'Arranger', 'Sheet Music', 'Concerts', 'Song Type', 'Group', 'Instrumentation', 'Performers']);
+    const indices = {};
+    for (let i = 0; i < header.length; i++) {
+        if (rows.has(header[i])) {
+            indices[header[i]] = i;
+        }
+    }
+
+    const split = x => x.split('\n').map(x => x.trim());
+    const setlists = {};
+
+    // Members data
+    const [memberData, discords] = await uploadMembers(cssGetId('upload-members'));
+    const discordToIdMap = Object.fromEntries(memberData.map((x, i) => [discords[i], x.id]));
+    const discordToId = x => discordToIdMap[x] ?? x;
+    let instruments = memberData.map(x => x.instruments).flat();
+    instruments.push(...data.map(row => split(row[indices['Instrumentation']]).flat()).flat())
+    instruments = Array.from(new Set(instruments)).sort(instrumentSorter);
+    console.log(instruments);
+    const instrumentToId = Object.fromEntries(instruments.map((x, i) => [x, i]));
+
+    data.forEach((row) => {
+        const name = row[indices['Name']];
+        if (!musicData[name]) {
+            throw new Error(`Performance found for non-existent song "${name}".`);
+        }
+
+        if (!musicData[name].performances) {
+            musicData[name].performances = [];
+        }
+        let instrumentation = split(row[indices['Instrumentation']]);
+        let performers = split(row[indices['Performers']]).map(x => x.split(',').map(y => y.trim()));
+        const inds = instrumentation.map((_, i) => i).sort((a, b) => instrumentSorter(instrumentation[a], instrumentation[b]));
+        instrumentation = inds.map(i => instrumentToId[instrumentation[i]]);
+        performers = inds.map(i => performers[i]?.map(performer => discordToId(performer)));
+
+        const concerts = split(row[indices['Concerts']]);
+
+        // Fill out concert setlist info
+        let recordingUrl;
+        const concertNames = [];
+        for (const concert of concerts) {
+            let concertName = concert;
+            let p1, p2;
+
+            // <name> [<setlist order>, <setlist timestamp>]
+            // <name> [<setlist order>]
+            // Recording [<link>]
+            if (concert.includes('[') && concert.includes(']')) {
+                concertName = concert.slice(0, concert.lastIndexOf('[')).trim();
+                p1 = concert.slice(concert.lastIndexOf('[') + 1, concert.lastIndexOf(']'));
+            
+                if (p1.includes(',')) {
+                    [p1, p2] = p1.split(',').map(x => x.trim());
+                    p2 = timestampToSeconds(p2);
+                }
+            }
+            const id = musicData[name].id;
+            if (p1) {
+                if (!setlists[concertName]) {
+                    setlists[concertName] = {};
+                }
+                if (concertName === 'Recording') {
+                    setlists[concertName][id] = p1;
+                } else {
+                    const number = parseInt(p1, 10) - 1;
+                    if (isNaN(number)) {
+                        console.warn(`[${name}] ${concert}`)
+                    } else {
+                        setlists[concertName][number] = id;
+                    }
+                }
+            } else {
+                if (!setlists[concertName]) {
+                    setlists[concertName] = [];
+                }
+                setlists[concertName].push(id);
+            }
+            concertNames.push(concertName);
+        }
+
+        // Fill out song performance info
+        const newData = {
+            concerts: concertNames,
+            performers: Object.fromEntries(instrumentation.map((x, i) => [x, performers[i] ?? ['']]))
+        }
+        const arranger = row[indices['Arranger']].split(',').map(x => discordToId(x.trim()));
+        const sheetMusic = row[indices['Sheet Music']];
+        const group = row[indices['Group']];
+        const songType = row[indices['Song Type']];
+        if (arranger) { newData.arranger = arranger };
+        if (sheetMusic) { newData.sheetMusic = sheetMusic };
+        if (group) { newData.group = group };
+        if (songType) { newData.songType = songType };
+
+        musicData[name].performances.push(newData);
+    });
+
+    musicData = Object.values(musicData);
+
+    for (const name in setlists) {
+        if (name === 'Recording' || Array.isArray(setlists[name])) {
+            continue;
+        }
+        setlists[name] = Object.values(setlists[name]);
+    }
+
+    console.log(JSON.stringify(musicData, null, 4));
+    console.log(JSON.stringify(setlists, null, 4));
+    return musicData;
 }

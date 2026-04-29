@@ -2425,6 +2425,7 @@ Musicians table
     color: white;
     background-color: rgba(0, 0, 20, 0.8);
     filter: drop-shadow(0px 0px 5px rgba(0, 0, 20, 0.5));
+    z-index: 1;
 }
 .toolbar-filter-menu label {
     text-wrap: nowrap;
@@ -2433,13 +2434,13 @@ Musicians table
 .toolbar-filter-menu input {
     font-family: 'Atkinson Hyperlegible';
     border: none;
-    background-color: rgba(50, 50, 50, 0.5);
+    background-color: rgba(28, 20, 58, 0.8);
     padding: calc(5 * var(--px)) calc(10 * var(--px));
-    color: white;
+    color: rgb(206, 210, 255);
     font-size: calc(16 * var(--px));
 }
 .toolbar-filter-menu input::placeholder {
-    color: rgb(122, 122, 122);
+    color: rgb(118, 119, 192);
 }
 .toolbar-filter-menu-hidden {
     display: none;
@@ -2770,9 +2771,6 @@ Tags
     font-size: calc(17 * var(--px));
     letter-spacing: calc(-0.5 * var(--px));
 }
-#table-music-archive .tag-container {
-    justify-content: center;
-}
 
 
 /*******************************
@@ -2951,27 +2949,11 @@ Paginated table column width adjustment
     text-wrap: nowrap;
     min-width: calc(150 * var(--px))
 }
-#table-music-archive th:nth-child(5), #table-music-archive th:nth-child(6), #table-music-archive th:nth-child(7) {
+#table-music-archive th:nth-child(5) {
     text-align: center;
-    min-width: auto;
 }
-#table-music-archive a {
-    display: block;
-    margin: auto;
-    height: calc(22 * var(--px));
-    aspect-ratio: 1;
-    background-image: url('assets/icons/embeds.svg');
-    background-size: contain;
-    background-repeat: no-repeat;
-    filter: invert(1);
-    transition: 0.2s;
-}
-#table-music-archive a:hover {
-    filter: invert(0.8);
-}
-#table-music-archive a:active {
-    filter: invert(0.5);
-    transition: 0s;
+#table-music-archive th:nth-child(7) {
+    min-width: calc(400 * var(--px));
 }
 
 
@@ -3001,9 +2983,12 @@ Events
     transition: 0.4s;
     width: var(--sidebar-container-width);
     min-width: var(--sidebar-container-width);
+    transition: 0.2s;
+    height: auto;
+    interpolate-size: allow-keywords;
 }
 #nav-events-sidebar .toolbar {
-    padding: calc(10 * var(--px));
+    padding: calc(15 * var(--px));
     background-image: linear-gradient(to right, rgba(255, 255, 255, 0.2), rgba(0, 0, 255, 0));
     /* background-color: rgba(255, 255, 255, 0.1); */
     width: var(--sidebar-width);
@@ -3014,7 +2999,7 @@ Events
     width: var(--sidebar-width);
 }
 #nav-events li {
-    padding: calc(9 * var(--px)) calc(10 * var(--px));
+    padding: calc(10 * var(--px)) calc(15 * var(--px));
     transition: 0.2s;
     user-select: none;
     display: flex;
@@ -3391,6 +3376,7 @@ Concert widget
         display: grid;
         grid-template-rows: 1fr 1fr 1fr;
         grid-auto-flow: column;
+        overflow: auto;
     }
     .section-events-no-sidebar #nav-events-sidebar {
         height: 0px;
@@ -3596,6 +3582,36 @@ Resources - music archive
     background-image: linear-gradient(to right, rgba(48, 31, 105, 0.7), rgba(32, 18, 77, 1) calc(250 * var(--px)), rgba(32, 18, 77, 1) calc(100vw - 250 * var(--px)), rgba(48, 31, 105, 0.7));
     z-index: -1;
 }
+#section-music-archive em {
+    color: unset;
+    font-weight: bold;
+    opacity: 0.5;
+}
+.table-music-archive-links {
+    display: flex;
+    justify-content: center;
+    gap: calc(5 * var(--px));
+}
+#table-music-archive a {
+    display: block;
+    height: calc(22 * var(--px));
+    aspect-ratio: 1;
+    background-size: contain;
+    background-repeat: no-repeat;
+    filter: invert(1);
+    transition: 0.2s;
+}
+#table-music-archive a:hover {
+    filter: invert(0.8);
+}
+#table-music-archive a:active {
+    filter: invert(0.5);
+    transition: 0s;
+}
+.table-music-archive-reference { background-image: url('assets/icons/embed.svg'); }
+.table-music-archive-recording { background-image: url('assets/icons/logos/youtube-monochrome.svg') }
+.table-music-archive-sheet-music { background-image: url('assets/icons/logos/drive.svg'); }
+
 
 
 /*******************************
