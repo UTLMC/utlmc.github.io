@@ -2978,7 +2978,6 @@ Events
     --sidebar-container-width: 0px !important;
 }
 #nav-events-sidebar {
-    overflow: hidden;
     background-color: #1c4587;
     transition: 0.4s;
     width: var(--sidebar-container-width);
@@ -2988,6 +2987,9 @@ Events
     interpolate-size: allow-keywords;
     display: flex;
     flex-direction: column;
+}
+.nav-events-sidebar-closed {
+    position: unset;
 }
 #events-sidebar-toolbar-container {
     padding: calc(15 * var(--px));

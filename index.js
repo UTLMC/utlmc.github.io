@@ -246,7 +246,9 @@ function toggleEventsSidebar(element) {
     element.classList.toggle(className);
 
     const section = cssGetId('section-events');
-    section.classList.toggle('section-events-no-sidebar')
+    section.classList.toggle('section-events-no-sidebar');
+
+    cssGetFirst('#nav-events-sidebar .toolbar').classList.toggle('nav-events-sidebar-closed');
 }
 function genericToggleTab(element, object) {
     const navActiveClass = `nav-${object}-active`;
