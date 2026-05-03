@@ -19,21 +19,19 @@
             </hgroup>
             <menu>
                 <li id="nav-home" class="nav-active" onclick="toggleTab(event)">Home</li>
-                <li id="nav-announcements" onclick="toggleTab(event)">Announcements</li>
+                <li id="nav-tags" onclick="toggleTab(event)">Tags</li>
+                <li id="nav-bulletin" onclick="toggleTab(event)">Bulletin</li>
+                <li id="nav-links" onclick="toggleTab(event)">Links</li>
+                <li id="nav-images" onclick="toggleTab(event)">Images</li>
                 <li id="nav-members" onclick="toggleTab(event)">Members</li>
-                <li id="nav-subgroups" onclick="toggleTab(event)">Subgroups</li>
-                <li id="nav-large-ensemble" onclick="toggleTab(event)">Large Ensemble</li>
-                <li id="nav-small-ensemble" onclick="toggleTab(event)">Small Ensemble</li>
-                <li id="nav-concerts" onclick="toggleTab(event)">Concerts</li>
-                <li id="nav-resource-links" onclick="toggleTab(event)">Resource Links</li>
-                <li id="nav-embeds" onclick="toggleTab(event)">Embeds</li>
-                <li id="nav-documents" onclick="toggleTab(event)">Documents</li>
+                <li id="nav-music" onclick="toggleTab(event)">Music</li>
+                <li id="nav-events" onclick="toggleTab(event)">Events</li>
                 <li id="nav-faq" onclick="toggleTab(event)">FAQ</li>
             </menu>
         </nav>
         <div class="container-io">
             <div class="container-io-button">
-                <label class="io-button" id="download-button" for="download-data">Download Data</label>
+                <label class="io-button" id="download-button" for="download-data">Export Data</label>
                 <input type="button" id="download-data" onclick="downloadData()">
                 <label class="io-button" id="upload-button" for="upload-data">Upload Data</label>
                 <input type="file" id="upload-data" onchange="uploadData()" accept=".js">
@@ -44,8 +42,8 @@
     <main>
         <article class="tab-active" id="tab-home">
             <h1>Home</h1>
-            <p>This website is an editor for uploading LMC data, viewing it, making changes, and exporting it for use in <a href="https://github.com/UTLMC/utlmc.github.io" target="_blank">the LMC website</a>. Data files must be put in the same folder as <span class="code">index.html</span> and be named <span class="code">data.js</span> to be recognized. Please remember to export your changes before exiting or refreshing this page, as they are NOT stored.</p>
-            <p>The editor was created to shield you from interacting with the inner HTML/CSS/Javascript code in the website itself.</p>
+            <p>This website is an editor for handling LMC data for use in <a href="https://github.com/UTLMC/utlmc.github.io" target="_blank">the LMC website</a>. You must save exported data into <code>data.js</code>.</p>
+            <p>For now, export the main tabs in the Google Sheets file "LMC Database", upload them here, click "Parse Data", and copy paste the parsed data in the console into <code>data.js</code>.</p>
             <p>People</p>
             <input type="file" id="upload-members" accept=".csv, text/csv">
             <p>Songs</p>
@@ -56,26 +54,14 @@
             <input type="file" id="upload-performances" accept=".csv, text/csv">
             <input type="button" id="parse-data" value="Parse Data" onclick="parseData()">
         </article>
-        <article id="tab-announcements">
-            <h1>Announcements</h1>
+        <article id="tab-tags">
+            <h1>Tags</h1>
         </article>
-        <article id="tab-members">
-            <h1>Members</h1>        
+        <article id="tab-bulletin">
+            <h1>Bulletin</h1>
         </article>
-        <article id="tab-subgroups">
-            <h1>Subgroups</h1>
-        </article>
-        <article id="tab-large-ensemble">
-            <h1>Large Ensemble</h1>
-        </article>
-        <article id="tab-small-ensemble">
-            <h1>Small Ensemble</h1>
-        </article>
-        <article id="tab-concerts">
-            <h1>Concerts</h1>
-        </article>
-        <article id="tab-resource-links">
-            <h1>Resource Links</h1>
+        <article id="tab-links">
+            <h1>Links</h1>
             <h2>Practice</h2>
             <dl>
                 <dt class="editable-text"><p contenteditable="plaintext-only">Metronome</p></dt>
@@ -84,9 +70,6 @@
                 <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
             </dl>
 
-        </article>
-        <article id="tab-embeds">
-            <h1>Embeds</h1>
             <dl>
                 <dt>Rehearsal Calendar <span>Google Calendar</span></dt>
                 <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
@@ -102,26 +85,17 @@
                 <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
             </dl>
         </article>
-        <article id="tab-documents">
-            <h1>Documents</h1>
-            <dl class="documents-table">
-                <dt>Song Suggestion</dt>
-                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
-                <dt>Song Voting</dt>
-                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
-                <dt>Ideas and Feedback</dt>
-                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
-                <dt>Small Ensemble Registration</dt>
-                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
-                <dt>Equipment or Room Requests</dt>
-                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
-                <dt>Online Project Assistance</dt>
-                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
-                <dt>New Member Registration</dt>
-                <dd class="editable-text"><p contenteditable="plaintext-only">https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q</p></dd>
-                <dt>Code of Conduct</dt>
-                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
-            </dl>
+        <article id="tab-images">
+            <h1>Images</h1>
+        </article>
+        <article id="tab-members">
+            <h1>Members</h1>
+        </article>
+        <article id="tab-music">
+            <h1>Music</h1>
+        </article>
+        <article id="tab-events">
+            <h1>Events</h1>
         </article>
         <article id="tab-faq">
             <h1>Frequently Asked Questions</h1>

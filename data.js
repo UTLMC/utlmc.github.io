@@ -46,7 +46,7 @@ const CURRENT_EVENT = {
     title: '2026 End of Winter Concert',
     dateStart: new Date(2026, 3, 5, 17, 0, 0),
     dateEnd: new Date(2026, 3, 5, 20, 0, 0),
-    hideAfter: new Date(2026, 4, 1, 0, 0, 0),
+    hideAfter: new Date(2026, 7, 1, 0, 0, 0),
     location: '252 Bloor Street West (OISE C-162)',
     tickets: '$5, pay in-person',
     preConcertDescription: [

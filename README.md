@@ -1,19 +1,19 @@
-# UTSAMA Light Music Club 
+# UT-SAMA Light Music Club 
 
 This is the website for Light Music Club (LMC), a branch of the University of Toronto Student Anime & Manga Association (UTSAMA). We are a student-led music club focused on performing music from anime, video games, and J-pop.
 
-## Non-Technical Guide (Execs)
+## File Structure
 
-In most scenarios, it suffices to go to the database website (utlmc.github.io/database), make changes, save the corresponding `data.js` file, then replace the old version of that file. Occasionally, you may also need to edit text in `index.html`. Images are inside the `assets` folder. You can verify your changes are rendering properly by opening `index.html` with a web browser.
+The website is implemented as a single `index.html` with accompanying CSS and JS files of the same name. Text from `data.js` is dynamically rendered into the base HTML with `index.js`. This is chosen for a few reasons:
+- Manually editing the HTML file every time is a bad idea
+- The club cannot expect a steady stream of CS skill so it needs basic functionality like updating data to be as easy as possible, hence we separate data from code. SEO may suffer if data is not hard-coded into `index.html` so we keep small/rarely-changing data hard-coded.
+- React, other frontend technologies, or a proper backend all require use of the command line, which is inaccessible for non-CS students and even early CS students.
 
-If you don't want to install Github Desktop, then every time you want to make a change you should download the repository and unzip it. Edit `index.html`, log into the LMC account, then manually upload it to the repository.
+In the future, `database.html` will be a simpler interface for non-technical people to upload CSVs from "LMC Database", upload `data.js`, and save changes to `data.js`.
 
-If you want to use Github Desktop, use it to log into your Github account, clone an online repository, and pick this one. This will create a local copy of the Github repository, which you can edit and save back onto Github repository. Use the "fetch/pull" button to import the latest changes from the repository.
+There is also a separate setlist website for usage during concerts at `setlist.html`.
 
-When you have finished, use Github Desktop to make a "commit" (a bundle of changes with a description. You can make whatever description oyu want), then push that commit onto the master repository in Github. The changes will automatically become visible on utlmc.github.io after some time.
 
-If something fails horrendously or you want to request a feature, please contact a dev.
+## Updating Data (as of 3 May 2026)
 
-## Technical Guide
-
-The website is implemented as a single `index.html`. Text from `data.js` is dynamically rendered into the base HTML using `index.js`. This was done in order to shield non-technical people from having to edit the actual HTML/CSS/JS as much as possible, but makes SEO a bit more difficult
+Go to the Google Sheets file called "LMC Database" and make your changes there. Once complete, hit `File -> Download -> Comma Separated Values (.csv)` for each of the four main tabs (People, Songs, Performances, Events). Then go to `utlmc.github.io/database`, upload each file, and press the "Parse Data" button. Open the development menu (press F12 on Windows Chrome), navigate to the "Console" tab, and right-click + copy object on the objects that pop up. Paste them in the correct spot in `data.js`.

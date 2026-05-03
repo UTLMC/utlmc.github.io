@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Figtree:ital,wght@0,300..900;1,300..900&family=Geologica:wght@100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Zilla+Slab:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Figtree:ital,wght@0,300..900;1,300..900&family=Geologica:wght@100..900&family=Cascadia+Code&family=Zilla+Slab:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
 
 /*
 light
@@ -34,7 +34,7 @@ h1, h2, h3, h4, p, ul, menu {
 /*******************************
 Special text formatting
 *******************************/
-.code {
+code {
     font-family: 'Cascadia Code';
 }
 a {
@@ -196,17 +196,15 @@ menu li:before {
     filter: invert(0.5) sepia(100%) saturate(150%) hue-rotate(-20deg);
     transition: 0.2s;
 }
-#nav-home:before { background-image: url('assets/icons/home-filled.png'); }
-#nav-announcements:before { background-image: url('assets/icons/announcements.png'); }  /* https://www.flaticon.com/free-icon/megaphone_7729329 */
-#nav-members:before { background-image: url('assets/icons/person.png'); }  /* https://www.flaticon.com/free-icon/profile_3106921 */
-#nav-subgroups:before { background-image: url('assets/icons/subgroups.png'); }
-#nav-large-ensemble:before { background-image: url('assets/icons/music-notes.png'); }
-#nav-small-ensemble:before { background-image: url('assets/icons/music-note.png'); }
-#nav-concerts:before { background-image: url('assets/icons/mic.png'); }  /* https://www.flaticon.com/free-icon/microphone_3472711 */
-#nav-resource-links:before { background-image: url('assets/icons/link.png'); }  /* https://www.flaticon.com/free-icon/link_154843 */
-#nav-embeds:before { background-image: url('assets/icons/embed.png'); }  /* https://www.flaticon.com/free-icon/external-link_7268615 */
-#nav-documents:before { background-image: url('assets/icons/forms.png'); }  /* https://www.flaticon.com/free-icon/form_6868789 */
-#nav-faq:before { background-image: url('assets/icons/faq.png'); }  /* https://www.flaticon.com/free-icon/faq_10042848 */
+#nav-home:before { background-image: url('assets/icons/home-filled.svg'); }
+#nav-tags:before { background-image: url('assets/icons/tag.svg'); }  /* https://www.flaticon.com/free-icon/price-tag_721550 */
+#nav-bulletin:before { background-image: url('assets/icons/pin-filled.svg'); }
+#nav-links:before { background-image: url('assets/icons/embed.svg'); }
+#nav-images:before { background-image: url('assets/icons/image-filled.svg'); }
+#nav-members:before { background-image: url('assets/icons/users.svg'); }
+#nav-music:before { background-image: url('assets/icons/music-note.svg'); }
+#nav-events:before { background-image: url('assets/icons/events-filled.svg'); }  /* https://www.flaticon.com/free-icon/event_6904072 */
+#nav-faq:before { background-image: url('assets/icons/faq.svg'); }  /* https://www.flaticon.com/free-icon/faq_10042848 */
 
 
 /*******************************
@@ -214,6 +212,7 @@ Articles
 *******************************/
 main {
     flex-grow: 1;
+    min-width: 500px;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -224,6 +223,7 @@ main article {
 main article h1 {
     --text-size: 32px;
     font-family: 'Geologica';
+    font-weight: normal;
     font-size: var(--text-size);
     position: relative;
     margin-bottom: calc(0.3 * var(--text-size));
