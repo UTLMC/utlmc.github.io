@@ -102,8 +102,8 @@ const MEMBERS = [
         "joined": "Fall 2023",
         "left": "Fall 2024",
         "instruments": [
-            "Drums",
             "Piano",
+            "Drums",
             "Electric Guitar",
             "Bass Guitar",
             "Double Bass"
@@ -120,8 +120,8 @@ const MEMBERS = [
         "joined": "Fall 2023",
         "left": "",
         "instruments": [
-            "Piano",
             "Voice",
+            "Piano",
             "Acoustic Guitar",
             "Bass Guitar",
             "Trombone"
@@ -161,8 +161,8 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "",
         "instruments": [
-            "Piano",
             "Voice",
+            "Piano",
             "Acoustic Guitar",
             "Violin"
         ],
@@ -182,8 +182,8 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "Fall 2024",
         "instruments": [
-            "Piano",
             "Voice",
+            "Piano",
             "Acoustic Guitar"
         ],
         "roles": [
@@ -216,8 +216,8 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "Winter 2025",
         "instruments": [
-            "Drums",
-            "Voice"
+            "Voice",
+            "Drums"
         ],
         "roles": [
             "OG"
@@ -248,8 +248,8 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "",
         "instruments": [
-            "Piano",
             "Voice",
+            "Piano",
             "Acoustic Guitar",
             "Electric Guitar",
             "Bass Guitar"
@@ -297,8 +297,8 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "",
         "instruments": [
-            "Piano",
             "Voice",
+            "Piano",
             "Ukulele",
             "Clarinet",
             "Alto Saxophone",
@@ -330,8 +330,8 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "",
         "instruments": [
-            "Piano",
             "Voice",
+            "Piano",
             "Electric Guitar",
             "Violin"
         ],
@@ -423,9 +423,9 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "",
         "instruments": [
-            "Drums",
-            "Piano",
             "Voice",
+            "Piano",
+            "Drums",
             "Electric Guitar"
         ],
         "roles": [],
@@ -548,8 +548,8 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "",
         "instruments": [
-            "Piano",
-            "Voice"
+            "Voice",
+            "Piano"
         ],
         "roles": [],
         "links": {}
@@ -685,8 +685,8 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Piano",
-            "Voice"
+            "Voice",
+            "Piano"
         ],
         "roles": [
             "Assistant Executive (25)"
@@ -736,8 +736,8 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Piano",
             "Voice",
+            "Piano",
             "Electric Guitar"
         ],
         "roles": [],
@@ -749,8 +749,8 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Piano",
             "Voice",
+            "Piano",
             "Bass Guitar"
         ],
         "roles": [],
@@ -762,8 +762,8 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Piano",
             "Voice",
+            "Piano",
             "Electric Guitar"
         ],
         "roles": [],
@@ -775,9 +775,9 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Drums",
-            "Piano",
             "Voice",
+            "Piano",
+            "Drums",
             "Electric Guitar",
             "Bass Guitar",
             "Violin"
@@ -838,8 +838,8 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Piano",
             "Voice",
+            "Piano",
             "Alto Saxophone",
             "Tenor Saxophone"
         ],
@@ -913,8 +913,8 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Piano",
             "Voice",
+            "Piano",
             "Electric Guitar",
             "Bass Guitar",
             "Bass Clarinet"
@@ -928,8 +928,8 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Piano",
             "Voice",
+            "Piano",
             "Electric Guitar",
             "Bass Guitar"
         ],
@@ -955,8 +955,8 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Piano",
             "Voice",
+            "Piano",
             "Electric Guitar",
             "Bass Guitar",
             "Flute"
@@ -983,8 +983,8 @@ const MEMBERS = [
         "left": "",
         "instruments": [
             "Harmonica",
-            "Piano",
-            "Voice"
+            "Voice",
+            "Piano"
         ],
         "roles": [],
         "links": {}
@@ -995,9 +995,9 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Drums",
+            "Voice",
             "Piano",
-            "Voice"
+            "Drums"
         ],
         "roles": [],
         "links": {}
@@ -1019,8 +1019,8 @@ const MEMBERS = [
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Drums",
             "Piano",
+            "Drums",
             "Electric Guitar",
             "Bass Guitar",
             "Alto Saxophone"
@@ -1117,8 +1117,8 @@ const MEMBERS = [
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Piano",
             "Voice",
+            "Piano",
             "Electric Guitar"
         ],
         "roles": [],
@@ -1222,8 +1222,8 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "UT-SAMA 20th Anniversary Event",
-                    "October 2024 Concert"
+                    1,
+                    2
                 ],
                 "performers": {
                     "4": [
@@ -1275,8 +1275,8 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "UT-SAMA 20th Anniversary Event",
-                    "October 2024 Concert"
+                    1,
+                    2
                 ],
                 "performers": {
                     "4": [
@@ -1328,8 +1328,8 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "UT-SAMA 20th Anniversary Event",
-                    "October 2024 Concert"
+                    1,
+                    2
                 ],
                 "performers": {
                     "4": [
@@ -1381,11 +1381,10 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Genshiken Festival 2024",
-                    "UT-SAMA 20th Anniversary Event",
-                    "October 2024 Concert",
-                    "End of Fall 2024 Concert",
-                    "Recording"
+                    0,
+                    1,
+                    2,
+                    3
                 ],
                 "performers": {
                     "4": [
@@ -1404,10 +1403,8 @@ const MUSIC = [
                         13
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
-                "songType": "Small"
+                "songType": "Small",
+                "link": "https://www.youtube.com/watch?v=FvuYsi84Sfg"
             }
         ]
     },
@@ -1420,12 +1417,11 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Genshiken Festival 2024",
-                    "UT-SAMA 20th Anniversary Event",
+                    0,
+                    1,
                     "RCAG Studio Night 2024????",
-                    "October 2024 Concert",
-                    "End of Fall 2024 Concert",
-                    "Recording"
+                    2,
+                    3
                 ],
                 "performers": {
                     "4": [
@@ -1441,10 +1437,8 @@ const MUSIC = [
                         1
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
-                "songType": "Small"
+                "songType": "Small",
+                "link": "https://www.youtube.com/watch?v=_f_jcX2gmpQ"
             }
         ]
     },
@@ -1458,9 +1452,9 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Genshiken Festival 2024",
-                    "UT-SAMA 20th Anniversary Event",
-                    "October 2024 Concert"
+                    0,
+                    1,
+                    2
                 ],
                 "performers": {
                     "4": [
@@ -1498,8 +1492,8 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "UT-SAMA 20th Anniversary Event",
-                    "October 2024 Concert"
+                    1,
+                    2
                 ],
                 "performers": {
                     "4": [
@@ -1516,9 +1510,6 @@ const MUSIC = [
                         7
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -1533,7 +1524,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "UT-SAMA 20th Anniversary Event"
+                    1
                 ],
                 "performers": {
                     "5": [
@@ -1541,9 +1532,6 @@ const MUSIC = [
                         38
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -1558,8 +1546,8 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "UT-SAMA 20th Anniversary Event",
-                    "October 2024 Concert"
+                    1,
+                    2
                 ],
                 "performers": {
                     "4": [
@@ -1575,9 +1563,6 @@ const MUSIC = [
                         13
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -1590,9 +1575,8 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "UT-SAMA 20th Anniversary Event",
-                    "October 2024 Concert",
-                    "Recording"
+                    1,
+                    2
                 ],
                 "performers": {
                     "4": [
@@ -1608,10 +1592,8 @@ const MUSIC = [
                         1
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
-                "songType": "Small"
+                "songType": "Small",
+                "link": "https://www.youtube.com/watch?v=d0apOZbRKU4"
             }
         ]
     },
@@ -1625,8 +1607,8 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "UT-SAMA 20th Anniversary Event",
-                    "October 2024 Concert"
+                    1,
+                    2
                 ],
                 "performers": {
                     "4": [
@@ -1643,9 +1625,6 @@ const MUSIC = [
                         7
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -1660,9 +1639,9 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "UT-SAMA 20th Anniversary Event",
-                    "October 2024 Concert",
-                    "End of Fall 2024 Concert"
+                    1,
+                    2,
+                    3
                 ],
                 "performers": {
                     "4": [
@@ -1675,9 +1654,6 @@ const MUSIC = [
                         20
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -1691,9 +1667,7 @@ const MUSIC = [
         "reference": "https://www.youtube.com/watch?v=XJ9XtKJHvjQ",
         "performances": [
             {
-                "concerts": [
-                    "Recording"
-                ],
+                "concerts": [],
                 "performers": {
                     "4": [
                         5
@@ -1708,7 +1682,8 @@ const MUSIC = [
                 "arranger": [
                     9
                 ],
-                "songType": "Small"
+                "songType": "Small",
+                "link": "https://www.youtube.com/watch?v=oTlV8LhFbxQ"
             }
         ]
     },
@@ -1722,7 +1697,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2024 Concert"
+                    3
                 ],
                 "performers": {
                     "5": [
@@ -1777,7 +1752,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2024 Concert"
+                    3
                 ],
                 "performers": {
                     "4": [
@@ -1832,7 +1807,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2024 Concert"
+                    3
                 ],
                 "performers": {
                     "4": [
@@ -1890,7 +1865,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2024 Concert"
+                    3
                 ],
                 "performers": {
                     "4": [
@@ -1929,7 +1904,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2024 Concert"
+                    3
                 ],
                 "performers": {
                     "4": [
@@ -1945,9 +1920,6 @@ const MUSIC = [
                         13
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -1961,9 +1933,7 @@ const MUSIC = [
         "reference": "https://www.youtube.com/watch?v=WqGOaOHu5uY",
         "performances": [
             {
-                "concerts": [
-                    "Recording"
-                ],
+                "concerts": [],
                 "performers": {
                     "4": [
                         5
@@ -1981,11 +1951,12 @@ const MUSIC = [
                 "arranger": [
                     9
                 ],
-                "songType": "Small"
+                "songType": "Small",
+                "link": "https://www.youtube.com/watch?v=w5HBakdZ06E"
             },
             {
                 "concerts": [
-                    "End of Fall 2024 Concert"
+                    3
                 ],
                 "performers": {
                     "4": [
@@ -2022,8 +1993,8 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2024 Concert",
-                    "End of Winter 2025 Concert"
+                    3,
+                    7
                 ],
                 "performers": {
                     "4": [
@@ -2065,7 +2036,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2024 Concert"
+                    3
                 ],
                 "performers": {
                     "3": [
@@ -2084,9 +2055,6 @@ const MUSIC = [
                         21
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -2099,7 +2067,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2024 Concert"
+                    3
                 ],
                 "performers": {
                     "7": [
@@ -2112,9 +2080,6 @@ const MUSIC = [
                         21
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -2127,7 +2092,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2024 Concert"
+                    3
                 ],
                 "performers": {
                     "4": [
@@ -2146,9 +2111,6 @@ const MUSIC = [
                         1
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -2163,8 +2125,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2024 Concert",
-                    "Recording"
+                    3
                 ],
                 "performers": {
                     "5": [
@@ -2175,7 +2136,8 @@ const MUSIC = [
                     "Animenz"
                 ],
                 "sheetMusic": "#",
-                "songType": "Small"
+                "songType": "Small",
+                "link": "https://www.youtube.com/watch?v=IelVOYXLZaA"
             }
         ]
     },
@@ -2187,7 +2149,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2024 Concert"
+                    3
                 ],
                 "performers": {
                     "4": [
@@ -2214,7 +2176,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2024 Concert"
+                    3
                 ],
                 "performers": {
                     "4": [
@@ -2233,9 +2195,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "Tokuiten",
                 "songType": "Small"
             }
@@ -2251,7 +2210,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2024 Concert"
+                    3
                 ],
                 "performers": {
                     "4": [
@@ -2270,9 +2229,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "Tokuiten",
                 "songType": "Small"
             }
@@ -2288,7 +2244,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2024 Concert"
+                    3
                 ],
                 "performers": {
                     "4": [
@@ -2307,9 +2263,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "Tokuiten",
                 "songType": "Small"
             }
@@ -2324,9 +2277,7 @@ const MUSIC = [
         "reference": "https://www.youtube.com/watch?v=L5BDyjgbjPU",
         "performances": [
             {
-                "concerts": [
-                    "Recording"
-                ],
+                "concerts": [],
                 "performers": {
                     "4": [
                         ""
@@ -2347,7 +2298,8 @@ const MUSIC = [
                 "arranger": [
                     9
                 ],
-                "songType": "Small"
+                "songType": "Small",
+                "link": "https://www.youtube.com/watch?v=-7cIocnaWuI"
             }
         ]
     },
@@ -2360,9 +2312,7 @@ const MUSIC = [
         "reference": "https://www.youtube.com/watch?v=O3ZYjfMqAsc",
         "performances": [
             {
-                "concerts": [
-                    "Recording"
-                ],
+                "concerts": [],
                 "performers": {
                     "10": [
                         5,
@@ -2372,10 +2322,8 @@ const MUSIC = [
                         6
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
-                "songType": "Small"
+                "songType": "Small",
+                "link": "https://www.youtube.com/watch?v=BkWCOBDLsZI"
             }
         ]
     },
@@ -2389,7 +2337,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Winter 2025 Concert"
+                    7
                 ],
                 "performers": {
                     "5": [
@@ -2449,7 +2397,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Winter 2025 Concert"
+                    7
                 ],
                 "performers": {
                     "4": [
@@ -2495,7 +2443,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Winter 2025 Concert"
+                    7
                 ],
                 "performers": {
                     "5": [
@@ -2542,7 +2490,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Winter 2025 Concert"
+                    7
                 ],
                 "performers": {
                     "4": [
@@ -2589,8 +2537,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Winter 2025 Concert",
-                    "Recording"
+                    7
                 ],
                 "performers": {
                     "5": [
@@ -2612,7 +2559,8 @@ const MUSIC = [
                 "arranger": [
                     9
                 ],
-                "songType": "Small"
+                "songType": "Small",
+                "link": "https://www.youtube.com/watch?v=XQHnKNeKknc"
             }
         ]
     },
@@ -2626,7 +2574,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Winter 2025 Concert"
+                    7
                 ],
                 "performers": {
                     "4": [
@@ -2661,7 +2609,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Winter 2025 Concert"
+                    7
                 ],
                 "performers": {
                     "4": [
@@ -2680,9 +2628,6 @@ const MUSIC = [
                         12
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -2695,7 +2640,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Winter 2025 Concert"
+                    7
                 ],
                 "performers": {
                     "4": [
@@ -2709,9 +2654,6 @@ const MUSIC = [
                         20
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -2726,7 +2668,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Winter 2025 Concert"
+                    7
                 ],
                 "performers": {
                     "4": [
@@ -2745,9 +2687,6 @@ const MUSIC = [
                         22
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -2761,7 +2700,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Winter 2025 Concert"
+                    7
                 ],
                 "performers": {
                     "4": [
@@ -2781,9 +2720,6 @@ const MUSIC = [
                         22
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -2796,7 +2732,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Winter 2025 Concert"
+                    7
                 ],
                 "performers": {
                     "4": [
@@ -2812,9 +2748,6 @@ const MUSIC = [
                         1
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -2828,7 +2761,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Winter 2025 Concert"
+                    7
                 ],
                 "performers": {
                     "4": [
@@ -2846,9 +2779,6 @@ const MUSIC = [
                         21
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -2863,7 +2793,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Winter 2025 Concert"
+                    7
                 ],
                 "performers": {
                     "4": [
@@ -2902,7 +2832,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Winter 2025 Concert"
+                    7
                 ],
                 "performers": {
                     "4": [
@@ -2924,9 +2854,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "Tokuiten",
                 "songType": "Small"
             }
@@ -2940,7 +2867,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Winter 2025 Concert"
+                    7
                 ],
                 "performers": {
                     "4": [
@@ -2962,9 +2889,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "Tokuiten",
                 "songType": "Small"
             }
@@ -2980,7 +2904,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Winter 2025 Concert"
+                    7
                 ],
                 "performers": {
                     "4": [
@@ -3002,9 +2926,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "Tokuiten",
                 "songType": "Small"
             }
@@ -3020,7 +2941,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Winter 2025 Concert"
+                    7
                 ],
                 "performers": {
                     "4": [
@@ -3042,9 +2963,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "Tokuiten",
                 "songType": "Small"
             }
@@ -3060,7 +2978,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Winter 2025 Concert"
+                    7
                 ],
                 "performers": {
                     "4": [
@@ -3116,9 +3034,7 @@ const MUSIC = [
         "reference": "https://www.youtube.com/watch?v=DtMOAvOWTvY",
         "performances": [
             {
-                "concerts": [
-                    "Recording"
-                ],
+                "concerts": [],
                 "performers": {
                     "4": [
                         5
@@ -3145,7 +3061,8 @@ const MUSIC = [
                 "arranger": [
                     9
                 ],
-                "songType": "Small"
+                "songType": "Small",
+                "link": "https://www.youtube.com/watch?v=zVNVMBZ1kPg"
             }
         ]
     },
@@ -3156,19 +3073,15 @@ const MUSIC = [
         "reference": "https://www.youtube.com/watch?v=R2OvE1oX_fs",
         "performances": [
             {
-                "concerts": [
-                    "Recording"
-                ],
+                "concerts": [],
                 "performers": {
                     "4": [
                         1,
                         5
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
-                "songType": "Small"
+                "songType": "Small",
+                "link": "https://www.youtube.com/watch?v=jHEf-jMVkFA"
             }
         ]
     },
@@ -3179,8 +3092,8 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "RCAG Studio Night 2025",
-                    "End of Fall 2025 Concert"
+                    9,
+                    10
                 ],
                 "performers": {
                     "4": [
@@ -3217,7 +3130,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "RCAG Studio Night 2025"
+                    9
                 ],
                 "performers": {
                     "5": [
@@ -3241,7 +3154,7 @@ const MUSIC = [
             },
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "4": [
@@ -3301,8 +3214,8 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert",
-                    "Tunes & Treats 2026 Concert"
+                    10,
+                    13
                 ],
                 "performers": {
                     "4": [
@@ -3321,9 +3234,6 @@ const MUSIC = [
                         1
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "2group2",
                 "songType": "Small"
             }
@@ -3337,7 +3247,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "4": [
@@ -3356,9 +3266,6 @@ const MUSIC = [
                         1
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "2group2",
                 "songType": "Small"
             }
@@ -3374,7 +3281,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "4": [
@@ -3407,7 +3314,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "7": [
@@ -3451,7 +3358,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "4": [
@@ -3499,7 +3406,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "4": [
@@ -3519,9 +3426,6 @@ const MUSIC = [
                         22
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -3536,7 +3440,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "4": [
@@ -3558,9 +3462,6 @@ const MUSIC = [
                         22
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -3575,7 +3476,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "5": [
@@ -3607,7 +3508,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "4": [
@@ -3647,7 +3548,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "4": [
@@ -3666,9 +3567,6 @@ const MUSIC = [
                         58
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -3683,7 +3581,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "4": [
@@ -3738,7 +3636,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "4": [
@@ -3788,7 +3686,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "4": [
@@ -3807,9 +3705,6 @@ const MUSIC = [
                         60
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -3821,7 +3716,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "4": [
@@ -3844,9 +3739,6 @@ const MUSIC = [
                         48
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -3861,7 +3753,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "4": [
@@ -3894,7 +3786,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "5": [
@@ -3929,7 +3821,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "5": [
@@ -3962,7 +3854,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "5": [
@@ -4004,7 +3896,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "4": [
@@ -4045,7 +3937,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "5": [
@@ -4070,7 +3962,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "4": [
@@ -4127,7 +4019,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "End of Fall 2025 Concert"
+                    10
                 ],
                 "performers": {
                     "4": [
@@ -4194,7 +4086,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Tunes & Treats 2026 Concert"
+                    13
                 ],
                 "performers": {
                     "4": [
@@ -4213,9 +4105,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "LMC Jazz Group",
                 "songType": "Small"
             }
@@ -4228,7 +4117,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Tunes & Treats 2026 Concert"
+                    13
                 ],
                 "performers": {
                     "4": [
@@ -4244,9 +4133,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "LMC Jazz Group",
                 "songType": "Small"
             }
@@ -4259,7 +4145,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Tunes & Treats 2026 Concert"
+                    13
                 ],
                 "performers": {
                     "4": [
@@ -4281,9 +4167,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "LMC Jazz Group",
                 "songType": "Small"
             }
@@ -4296,7 +4179,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Tunes & Treats 2026 Concert"
+                    13
                 ],
                 "performers": {
                     "4": [
@@ -4329,7 +4212,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Tunes & Treats 2026 Concert"
+                    13
                 ],
                 "performers": {
                     "4": [
@@ -4344,9 +4227,6 @@ const MUSIC = [
                         "Emiri"
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "New Resonance Choir",
                 "songType": "External"
             }
@@ -4359,7 +4239,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Tunes & Treats 2026 Concert"
+                    13
                 ],
                 "performers": {
                     "4": [
@@ -4374,9 +4254,6 @@ const MUSIC = [
                         "Emiri"
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "New Resonance Choir",
                 "songType": "External"
             }
@@ -4390,7 +4267,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Tunes & Treats 2026 Concert"
+                    13
                 ],
                 "performers": {
                     "4": [
@@ -4399,9 +4276,6 @@ const MUSIC = [
                         "Fiona"
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "New Resonance Choir",
                 "songType": "External"
             }
@@ -4414,7 +4288,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Tunes & Treats 2026 Concert"
+                    13
                 ],
                 "performers": {
                     "4": [
@@ -4426,9 +4300,6 @@ const MUSIC = [
                         "Emiri"
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "New Resonance Choir",
                 "songType": "External"
             }
@@ -4441,8 +4312,8 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Tunes & Treats 2026 Concert",
-                    "Succession 2026 Concert"
+                    13,
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -4458,9 +4329,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "2group 2",
                 "songType": "Small"
             }
@@ -4475,7 +4343,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Tunes & Treats 2026 Concert"
+                    13
                 ],
                 "performers": {
                     "4": [
@@ -4485,9 +4353,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -4501,7 +4366,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Tunes & Treats 2026 Concert"
+                    13
                 ],
                 "performers": {
                     "4": [
@@ -4511,9 +4376,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -4525,16 +4387,13 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Tunes & Treats 2026 Concert"
+                    13
                 ],
                 "performers": {
                     "5": [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -4548,7 +4407,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Tunes & Treats 2026 Concert"
+                    13
                 ],
                 "performers": {
                     "5": [
@@ -4580,7 +4439,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Tunes & Treats 2026 Concert"
+                    13
                 ],
                 "performers": {
                     "4": [
@@ -4611,7 +4470,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Tunes & Treats 2026 Concert"
+                    13
                 ],
                 "performers": {
                     "4": [
@@ -4630,9 +4489,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "39!",
                 "songType": "Small"
             }
@@ -4646,7 +4502,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Tunes & Treats 2026 Concert"
+                    13
                 ],
                 "performers": {
                     "5": [
@@ -4675,7 +4531,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Tunes & Treats 2026 Concert"
+                    13
                 ],
                 "performers": {
                     "5": [
@@ -4710,16 +4566,13 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Tunes & Treats 2026 Concert"
+                    13
                 ],
                 "performers": {
                     "5": [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -4731,7 +4584,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Tunes & Treats 2026 Concert"
+                    13
                 ],
                 "performers": {
                     "4": [
@@ -4750,9 +4603,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "Super Sentai",
                 "songType": "Small"
             }
@@ -4765,7 +4615,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Tunes & Treats 2026 Concert"
+                    13
                 ],
                 "performers": {
                     "4": [
@@ -4784,9 +4634,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "Super Sentai",
                 "songType": "Small"
             }
@@ -4799,7 +4646,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Tunes & Treats 2026 Concert"
+                    13
                 ],
                 "performers": {
                     "4": [
@@ -4815,9 +4662,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "Super Sentai",
                 "songType": "Small"
             }
@@ -4832,7 +4676,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "1": [
@@ -4883,7 +4727,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -4899,9 +4743,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -4915,16 +4756,13 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "5": [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -4936,7 +4774,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -4949,9 +4787,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "Bows 4 Belts",
                 "songType": "Small"
             }
@@ -4964,7 +4799,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -4980,9 +4815,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "Bows 4 Belts",
                 "songType": "Small"
             }
@@ -4997,7 +4829,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -5043,7 +4875,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -5062,9 +4894,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -5076,7 +4905,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -5095,9 +4924,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -5111,7 +4937,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "0": [
@@ -5163,7 +4989,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -5214,7 +5040,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -5265,7 +5091,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -5284,9 +5110,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -5299,7 +5122,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -5318,9 +5141,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -5334,7 +5154,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -5350,9 +5170,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -5366,7 +5183,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -5419,7 +5236,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -5438,9 +5255,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -5452,7 +5266,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -5509,7 +5323,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "5": [
@@ -5559,7 +5373,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "5": [
@@ -5600,7 +5414,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "5": [
@@ -5626,7 +5440,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "2": [
@@ -5685,7 +5499,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "5": [
@@ -5718,7 +5532,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -5734,9 +5548,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "Masters of Spinjitzu (Formerly Super Sentai)",
                 "songType": "Small"
             }
@@ -5749,7 +5560,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -5765,9 +5576,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "group": "2group 2",
                 "songType": "Small"
             }
@@ -5780,7 +5588,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -5811,9 +5619,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -5826,7 +5631,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -5842,9 +5647,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -5857,7 +5659,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -5917,7 +5719,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -5936,9 +5738,6 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
@@ -5952,7 +5751,7 @@ const MUSIC = [
         "performances": [
             {
                 "concerts": [
-                    "Succession 2026 Concert"
+                    14
                 ],
                 "performers": {
                     "4": [
@@ -5977,210 +5776,434 @@ const MUSIC = [
                         ""
                     ]
                 },
-                "arranger": [
-                    ""
-                ],
                 "songType": "Small"
             }
         ]
     }
 ];
 
-const SETLISTS = {
-    "UT-SAMA 20th Anniversary Event": [
-        0,
-        3,
-        4,
-        1,
-        5,
-        6,
-        2,
-        7,
-        8,
-        9,
-        10
-    ],
-    "October 2024 Concert": [
-        3,
-        9,
-        4,
-        0,
-        5,
-        6,
-        1,
-        11,
-        8,
-        2,
-        10
-    ],
-    "Genshiken Festival 2024": [
-        3,
-        4,
-        5
-    ],
-    "End of Fall 2024 Concert": [
-        13,
-        21,
-        11,
-        20,
-        14,
-        17,
-        16,
-        19,
-        3,
-        4,
-        22,
-        18,
-        23,
-        24,
-        15,
-        25,
-        26,
-        27
-    ],
-    "Recording": {
-        "3": "https://www.youtube.com/watch?v=FvuYsi84Sfg",
-        "4": "https://www.youtube.com/watch?v=_f_jcX2gmpQ",
-        "9": "https://www.youtube.com/watch?v=d0apOZbRKU4",
-        "12": "https://www.youtube.com/watch?v=oTlV8LhFbxQ",
-        "18": "https://www.youtube.com/watch?v=w5HBakdZ06E",
-        "23": "https://www.youtube.com/watch?v=IelVOYXLZaA",
-        "28": "https://www.youtube.com/watch?v=-7cIocnaWuI",
-        "29": "https://www.youtube.com/watch?v=BkWCOBDLsZI",
-        "34": "https://www.youtube.com/watch?v=XQHnKNeKknc",
-        "48": "https://www.youtube.com/watch?v=zVNVMBZ1kPg",
-        "49": "https://www.youtube.com/watch?v=jHEf-jMVkFA"
-    },
-    "RCAG Studio Night 2024????": [
-        4
-    ],
-    "End of Winter 2025 Concert": [
-        30,
-        34,
-        32,
-        33,
-        35,
-        36,
-        37,
-        38,
-        39,
-        19,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        31,
-        47
-    ],
-    "RCAG Studio Night 2025": [
-        50,
-        51
-    ],
-    "End of Fall 2025 Concert": [
-        51,
-        52,
-        53,
-        54,
-        55,
-        56,
-        57,
-        58,
-        59,
-        60,
-        61,
-        62,
-        63,
-        64,
-        50,
-        65,
-        66,
-        67,
-        68,
-        69,
-        70,
-        71,
-        72,
-        73
-    ],
-    "Tunes & Treats 2026 Concert": [
-        74,
-        75,
-        76,
-        77,
-        78,
-        79,
-        80,
-        81,
-        52,
-        82,
-        83,
-        84,
-        85,
-        86,
-        87,
-        88,
-        89,
-        90,
-        91,
-        92,
-        93,
-        94
-    ],
-    "Succession 2026 Concert": [
-        95,
-        96,
-        97,
-        98,
-        99,
-        100,
-        101,
-        102,
-        103,
-        104,
-        105,
-        106,
-        107,
-        108,
-        109,
-        110,
-        111,
-        112,
-        113,
-        114,
-        115,
-        116,
-        117,
-        82,
-        118,
-        119,
-        120,
-        121,
-        122,
-        123
-    ]
-};
-
 const EVENTS = [
     {
-        id: 0,
-        type: 'concert',
-        name: 'UT-SAMA 20th Anniversary Event',
-        location: '',
-        start: new Date(2024, 3, 4),
-        end: new Date(2024, 3, 4),
-        setlist: [],
-        gallery: '#',
-        video: 'https://www.youtube.com/watch?v=ob0COvRRvDI',
-        videoChapters: [
-
+        "id": 0,
+        "type": "External",
+        "name": "Genshiken Festival 2024",
+        "location": "",
+        "description": "A one-day anime convention organized by students from a variety of Ontario University Anime Clubs",
+        "date": "2024-03-23",
+        "setlist": [
+            3,
+            4,
+            5
         ]
     },
     {
-        id: 1,
-        type: 'concert'
+        "id": 1,
+        "type": "Concert",
+        "name": "UT-SAMA 20th Anniversary Event",
+        "location": "UTSU Student Commons",
+        "description": "",
+        "date": "2024-04-04",
+        "video": "https://youtu.be/ob0COvRRvDI?si=C6Ghd22rm7d2FAtY",
+        "setlist": [
+            0,
+            3,
+            4,
+            1,
+            5,
+            6,
+            2,
+            7,
+            8,
+            9,
+            10
+        ]
+    },
+    {
+        "id": 2,
+        "type": "Concert",
+        "name": "October 2024 Concert",
+        "location": "Cat's Eye",
+        "description": "",
+        "date": "2024-10-04",
+        "time": "19:30-20:30",
+        "video": "https://youtu.be/JtuPSpsSQYk?si=frbInyV_qx6DIKQc",
+        "setlist": [
+            3,
+            9,
+            4,
+            0,
+            5,
+            6,
+            1,
+            11,
+            8,
+            2,
+            10
+        ]
+    },
+    {
+        "id": 3,
+        "type": "Concert",
+        "name": "End of Fall 2024 Concert",
+        "location": "Cat's Eye",
+        "description": "",
+        "date": "2025-01-24",
+        "time": "19:00-20:30",
+        "video": "https://youtu.be/TiStCNPn10s?si=oCxHak2aO2owo2Fh",
+        "setlist": [
+            13,
+            21,
+            11,
+            20,
+            14,
+            17,
+            16,
+            19,
+            3,
+            4,
+            22,
+            18,
+            23,
+            24,
+            15,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "id": 4,
+        "type": "Workshop",
+        "name": "Chord Theory Workshop 2025",
+        "location": "",
+        "description": "???",
+        "date": "2025-02-13"
+    },
+    {
+        "id": 5,
+        "type": "Workshop",
+        "name": "Music Production Workshop 2025",
+        "location": "OISE 2279",
+        "description": "???",
+        "date": "2025-02-27"
+    },
+    {
+        "id": 6,
+        "type": "Other",
+        "name": "Blind Test 2025",
+        "location": "OISE C-154",
+        "description": "???",
+        "date": "2025-03-08",
+        "video": "https://www.youtube.com/watch?v=0CJ_9BmtAXY"
+    },
+    {
+        "id": 7,
+        "type": "Concert",
+        "name": "End of Winter 2025 Concert",
+        "location": "OISE G-162",
+        "description": "???",
+        "date": "2025-04-07",
+        "time": "19:00-20:30",
+        "video": "https://youtu.be/k1CZLnxSWDc?si=bs4sXQO-8NfzL65J",
+        "setlist": [
+            [
+                30,
+                136
+            ],
+            [
+                34,
+                536
+            ],
+            [
+                32,
+                818
+            ],
+            [
+                33,
+                1062
+            ],
+            [
+                35,
+                1309
+            ],
+            [
+                36,
+                1544
+            ],
+            [
+                37,
+                1816
+            ],
+            [
+                38,
+                2214
+            ],
+            [
+                39,
+                2508
+            ],
+            [
+                19,
+                2769
+            ],
+            [
+                40,
+                3071
+            ],
+            [
+                41,
+                3330
+            ],
+            [
+                42,
+                3480
+            ],
+            [
+                43,
+                3698
+            ],
+            [
+                44,
+                4020
+            ],
+            [
+                45,
+                4341
+            ],
+            [
+                46,
+                4779
+            ],
+            [
+                31,
+                5154
+            ],
+            [
+                47,
+                5442
+            ]
+        ]
+    },
+    {
+        "id": 8,
+        "type": "Workshop",
+        "name": "Arranging Workshop 2025",
+        "location": "OISE C-154",
+        "description": "???",
+        "date": "2025-11-09"
+    },
+    {
+        "id": 9,
+        "type": "External",
+        "name": "RCAG Studio Night 2025",
+        "location": "",
+        "description": "???",
+        "date": "2025-11-13",
+        "setlist": [
+            50,
+            51
+        ]
+    },
+    {
+        "id": 10,
+        "type": "Concert",
+        "name": "End of Fall 2025 Concert",
+        "location": "OISE G-162",
+        "description": "???",
+        "date": "2025-11-29",
+        "time": "18:00-21:00",
+        "video": "https://youtu.be/wuObU4_nbtI?si=Mzomwl0pLPOMRzA-",
+        "setlist": [
+            [
+                51,
+                0
+            ],
+            [
+                52,
+                244
+            ],
+            [
+                53,
+                556
+            ],
+            [
+                54,
+                839
+            ],
+            [
+                55,
+                1096
+            ],
+            [
+                56,
+                1262
+            ],
+            [
+                57,
+                1426
+            ],
+            [
+                58,
+                1658
+            ],
+            [
+                59,
+                1923
+            ],
+            [
+                60,
+                2095
+            ],
+            [
+                61,
+                2327
+            ],
+            [
+                62,
+                2743
+            ],
+            [
+                63,
+                3025
+            ],
+            [
+                64,
+                3249
+            ],
+            [
+                50,
+                3390
+            ],
+            [
+                65,
+                3574
+            ],
+            [
+                66,
+                3863
+            ],
+            [
+                67,
+                4105
+            ],
+            [
+                68,
+                4280
+            ],
+            [
+                69,
+                4434
+            ],
+            [
+                70,
+                4892
+            ],
+            [
+                71,
+                5087
+            ],
+            [
+                72,
+                5392
+            ],
+            [
+                73,
+                5616
+            ]
+        ]
+    },
+    {
+        "id": 11,
+        "type": "External",
+        "name": "Hemoglobal Connect Benefit Concert 2026",
+        "location": "Trinity-St. Paul's United Church",
+        "description": "???",
+        "date": "2026-01-23",
+        "time": "18:00-20:00"
+    },
+    {
+        "id": 12,
+        "type": "Workshop",
+        "name": "Sound Equipment Workshop 2026",
+        "location": "OISE 5240",
+        "description": "???",
+        "date": "2026-01-30",
+        "time": "16:30-??:??",
+        "gallery": "https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv"
+    },
+    {
+        "id": 13,
+        "type": "Concert",
+        "name": "Tunes & Treats 2026 Concert",
+        "location": "OISE C-154",
+        "description": "???",
+        "date": "2026-03-06",
+        "time": "18:00-21:00",
+        "setlist": [
+            74,
+            75,
+            76,
+            77,
+            78,
+            79,
+            80,
+            81,
+            52,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87,
+            88,
+            89,
+            90,
+            91,
+            92,
+            93,
+            94
+        ]
+    },
+    {
+        "id": 14,
+        "type": "Concert",
+        "name": "Succession 2026 Concert",
+        "location": "OISE G-162",
+        "description": "???",
+        "date": "2026-04-05",
+        "time": "13:00-20:00",
+        "setlist": [
+            95,
+            96,
+            97,
+            98,
+            99,
+            100,
+            101,
+            102,
+            103,
+            104,
+            105,
+            106,
+            107,
+            108,
+            109,
+            110,
+            111,
+            112,
+            113,
+            114,
+            115,
+            116,
+            117,
+            82,
+            118,
+            119,
+            120,
+            121,
+            122,
+            123
+        ]
     }
 ];
 

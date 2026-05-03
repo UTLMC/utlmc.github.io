@@ -149,16 +149,6 @@ function parseSeason(season) {
     return season;
 }
 
-function parseInstrument(instrument) {
-
-    return instrument;
-}
-
-function parseRole(role) {
-
-    return role;
-}
-
 function parseLinks(discord, links) {
     const data = {};
     if (discord) {
@@ -315,13 +305,11 @@ async function uploadMembers(element) {
             name: row[indices['Public Name']],
             joined: parseSeason(row[indices['Season Start']]),
             left: row[indices['Season End']],
-            instruments: row[indices['Instruments']].split(',').map(x => parseInstrument(x.trim())).sort(instrumentSorter),
-            roles: row[indices['Roles']] ? row[indices['Roles']].split(',').map(x => parseRole(x.trim())).sort(roleSorter) : [],
+            instruments: row[indices['Instruments']].split(',').map(x => x.trim()).sort(instrumentSorter),
+            roles: row[indices['Roles']] ? row[indices['Roles']].split(',').map(x => x.trim()).sort(roleSorter) : [],
             links: parseLinks(discord, row[indices['Personal Links']] ? row[indices['Personal Links']].split('\n') : [])
         }
     });
-    
-    console.log(JSON.stringify(parsed, null, 4))
 
     const discords = members.map(row => row[indices['Discord']]);
     return [parsed, discords];
@@ -366,12 +354,10 @@ async function uploadMusic(element) {
         return data;
     });
     
-    // console.log(JSON.stringify(parsed, null, 4));
     return parsed;
 }
 
-async function uploadPerformances(element) {
-    let musicData = await uploadMusic(cssGetId('upload-music'));
+async function uploadPerformances(element, memberData, discords, musicData, eventData) {
     musicData = Object.fromEntries(musicData.map(x => [x.name, x]));
 
     const raw = await element.files[0].text();
@@ -396,16 +382,18 @@ async function uploadPerformances(element) {
     const setlists = {};
 
     // Members data
-    const [memberData, discords] = await uploadMembers(cssGetId('upload-members'));
     const discordToIdMap = Object.fromEntries(memberData.map((x, i) => [discords[i], x.id]));
     const discordToId = x => discordToIdMap[x] ?? x;
     let instruments = memberData.map(x => x.instruments).flat();
     instruments.push(...data.map(row => split(row[indices['Instrumentation']]).flat()).flat())
     instruments = Array.from(new Set(instruments)).sort(instrumentSorter);
-    console.log(instruments);
     const instrumentToId = Object.fromEntries(instruments.map((x, i) => [x, i]));
 
-    data.forEach((row) => {
+    // Event data
+    const eventToIdMap = Object.fromEntries(eventData.map(x => [x.name, x.id]));
+    const eventToId = x => eventToIdMap[x] ?? x;
+
+    data.forEach(row => {
         const name = row[indices['Name']];
         if (!musicData[name]) {
             throw new Error(`Performance found for non-existent song "${name}".`);
@@ -441,43 +429,51 @@ async function uploadPerformances(element) {
                     p2 = timestampToSeconds(p2);
                 }
             }
-            const id = musicData[name].id;
             if (p1) {
+                if (concertName === 'Recording') {
+                    // Recording [<p1>]
+                    recordingUrl = p1;
+                    continue;
+                }
+                
                 if (!setlists[concertName]) {
                     setlists[concertName] = {};
                 }
-                if (concertName === 'Recording') {
-                    setlists[concertName][id] = p1;
+                const number = parseInt(p1, 10) - 1;
+                if (isNaN(number)) {
+                    console.warn(`[${name}] ${concert}`)
                 } else {
-                    const number = parseInt(p1, 10) - 1;
-                    if (isNaN(number)) {
-                        console.warn(`[${name}] ${concert}`)
+                    // <name> [<p1>] or <name> [<p1>, <p2>]
+                    if (p2 !== undefined) {
+                        setlists[concertName][number] = [musicData[name].id, p2];
                     } else {
-                        setlists[concertName][number] = id;
+                        setlists[concertName][number] = musicData[name].id;
                     }
                 }
             } else {
+                // <name>
                 if (!setlists[concertName]) {
                     setlists[concertName] = [];
                 }
-                setlists[concertName].push(id);
+                setlists[concertName].push(musicData[name].id);
             }
             concertNames.push(concertName);
         }
 
         // Fill out song performance info
         const newData = {
-            concerts: concertNames,
+            concerts: concertNames.map(eventToId),
             performers: Object.fromEntries(instrumentation.map((x, i) => [x, performers[i] ?? ['']]))
         }
-        const arranger = row[indices['Arranger']].split(',').map(x => discordToId(x.trim()));
+        const arranger = row[indices['Arranger']]
         const sheetMusic = row[indices['Sheet Music']];
         const group = row[indices['Group']];
         const songType = row[indices['Song Type']];
-        if (arranger) { newData.arranger = arranger };
+        if (arranger) { newData.arranger = arranger.split(',').map(x => discordToId(x.trim())); };
         if (sheetMusic) { newData.sheetMusic = sheetMusic };
         if (group) { newData.group = group };
         if (songType) { newData.songType = songType };
+        if (recordingUrl) { newData.link = recordingUrl };
 
         musicData[name].performances.push(newData);
     });
@@ -485,13 +481,80 @@ async function uploadPerformances(element) {
     musicData = Object.values(musicData);
 
     for (const name in setlists) {
-        if (name === 'Recording' || Array.isArray(setlists[name])) {
+        if (Array.isArray(setlists[name])) {
             continue;
         }
         setlists[name] = Object.values(setlists[name]);
     }
 
-    console.log(JSON.stringify(musicData, null, 4));
-    console.log(JSON.stringify(setlists, null, 4));
-    return musicData;
+    return [musicData, setlists, instruments];
+}
+
+async function uploadEvents(element) {
+    const raw = await element.files[0].text();
+    let [header, ...data] = parseCSV(raw);
+
+    for (let i = 0; i < data.length; i++) {
+        if (header.length !== data[i].length) {
+            throw new Error(`Mismatch in number of rows. Column 1 = ${header.length} != ${data[i].length} = Column ${i + 1}`);
+        }
+    }
+
+    // Map column to row index 
+    const rows = new Set(['Name', 'Type', 'Date', 'Time', 'Location', 'Description', 'Gallery', 'Video']);
+    const indices = {};
+    for (let i = 0; i < header.length; i++) {
+        if (rows.has(header[i])) {
+            indices[header[i]] = i;
+        }
+    }
+
+    const parsed = data.map((row, i) => {
+        const result = {
+            id: i,
+            type: row[indices['Type']],
+            name: row[indices['Name']],
+            location: row[indices['Location']],
+            description: row[indices['Description']],
+            date: row[indices['Date']]
+        };
+        const time = row[indices['Time']];
+        if (time) result.time = time;
+        const gallery = row[indices['Gallery']];
+        if (gallery) result.gallery = gallery;
+        const video = row[indices['Video']];
+        if (video) result.video = video;
+        return result;
+    }) 
+    return parsed;
+}
+
+function enrichEventData(events, setlists) {
+    const map = Object.fromEntries(events.map(x => [x.name, x]));
+    for (const name in setlists) {
+        let setlist = setlists[name];
+        if (!setlist) {
+            continue;
+        }
+        if (!map[name]) {
+            console.warn(`Unknown concert ${name}, expected something from ${events.map(x => x.name)}`);
+            continue;
+        }
+        map[name].setlist = setlist;
+    }
+    return events;
+}
+
+async function parseData() {
+    const [memberData, discords] = await uploadMembers(cssGetId('upload-members'));
+    const musicData = await uploadMusic(cssGetId('upload-music'));
+    const eventData = await uploadEvents(cssGetId('upload-events'));
+
+    const [performancesData, setlists, instruments] = await uploadPerformances(cssGetId('upload-performances'), memberData, discords, musicData, eventData);
+    const fullEventData = enrichEventData(eventData, setlists);
+
+    console.log(instruments);
+    console.log(memberData);
+    console.log(fullEventData);
+    console.log(performancesData);
 }

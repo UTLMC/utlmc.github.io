@@ -46,13 +46,21 @@
             <h1>Home</h1>
             <p>This website is an editor for uploading LMC data, viewing it, making changes, and exporting it for use in <a href="https://github.com/UTLMC/utlmc.github.io" target="_blank">the LMC website</a>. Data files must be put in the same folder as <span class="code">index.html</span> and be named <span class="code">data.js</span> to be recognized. Please remember to export your changes before exiting or refreshing this page, as they are NOT stored.</p>
             <p>The editor was created to shield you from interacting with the inner HTML/CSS/Javascript code in the website itself.</p>
+            <p>People</p>
+            <input type="file" id="upload-members" accept=".csv, text/csv">
+            <p>Songs</p>
+            <input type="file" id="upload-music" accept=".csv, text/csv">
+            <p>Events</p>
+            <input type="file" id="upload-events" accept=".csv, text/csv">
+            <p>Performances</p>
+            <input type="file" id="upload-performances" accept=".csv, text/csv">
+            <input type="button" id="parse-data" value="Parse Data" onclick="parseData()">
         </article>
         <article id="tab-announcements">
             <h1>Announcements</h1>
         </article>
         <article id="tab-members">
             <h1>Members</h1>        
-            <input type="file" id="upload-members" onchange="uploadMembers(this)" accept=".csv, text/csv">
         </article>
         <article id="tab-subgroups">
             <h1>Subgroups</h1>
@@ -65,8 +73,6 @@
         </article>
         <article id="tab-concerts">
             <h1>Concerts</h1>
-            <input type="file" id="upload-music" onchange="uploadMusic(this)" accept=".csv, text/csv">
-            <input type="file" id="upload-performers" onchange="uploadPerformances(this)" accept=".csv, text/csv">
         </article>
         <article id="tab-resource-links">
             <h1>Resource Links</h1>

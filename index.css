@@ -2970,8 +2970,8 @@ Events
 }
 @media screen and (max-width: 1300px) {
     #section-events {
-        --sidebar-container-width: calc(300 * var(--px));
-        --sidebar-width: calc(300 * var(--px));
+        --sidebar-container-width: calc(350 * var(--px));
+        --sidebar-width: calc(350 * var(--px));
     }
 }
 .section-events-no-sidebar {
@@ -2986,8 +2986,10 @@ Events
     transition: 0.2s;
     height: auto;
     interpolate-size: allow-keywords;
+    display: flex;
+    flex-direction: column;
 }
-#nav-events-sidebar .toolbar {
+#events-sidebar-toolbar-container {
     padding: calc(15 * var(--px));
     background-image: linear-gradient(to right, rgba(255, 255, 255, 0.2), rgba(0, 0, 255, 0));
     /* background-color: rgba(255, 255, 255, 0.1); */
@@ -2997,6 +2999,8 @@ Events
 /* Left sidebar content */
 #nav-events {
     width: var(--sidebar-width);
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 #nav-events li {
     padding: calc(10 * var(--px)) calc(15 * var(--px));
@@ -3027,13 +3031,10 @@ Events
     background-color: rgba(150, 150, 255, 0.5);
 }
 
-.nav-events-upcoming span:first-child {
-    position: relative;
-}
 .nav-events-upcoming span:first-child:after {
     content: '';
-    position: absolute;
-    /* background-color: yellow; */
+    display: inline-block;
+    margin-bottom: calc(-3 * var(--px));
     margin-left: calc(5 * var(--px));
     width: calc(18 * var(--px));
     height: calc(18 * var(--px));
@@ -3068,6 +3069,11 @@ Events
     padding: var(--section-spacing);
     gap: calc(20 * var(--px));
     transition: 0.2s;
+}
+@media screen and (min-width: 900px) {
+    #event-body {
+        min-height: 100vh;
+    }
 }
 #event-header {
     display: flex;
@@ -3285,12 +3291,47 @@ Concert widget
     margin-bottom: 8px;
     color: rgb(255, 208, 255);
     width: fit-content;
+    text-align: center;
 }
 #concert-performers li p {
     letter-spacing: -0.5px;
     text-wrap: nowrap;
     color: rgba(255, 174, 255, 0.6);
     width: fit-content;
+}
+
+.concert-performers-button {
+    position: relative;
+}
+.concert-performers-button dl {
+    z-index: 2;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.8);
+    filter: drop-shadow(0 0 calc(5 * var(--px)) rgba(0, 0, 0, 0.5));
+    border-radius: calc(5 * var(--px));
+    top: calc(15 * var(--px));
+    left: 0;
+    grid-template-columns: 1fr 1fr;
+    gap: calc(5 * var(--px)) calc(20 * var(--px));
+    padding: calc(10 * var(--px)) calc(15 * var(--px));
+    display: none;
+    cursor: auto;
+    pointer-events: none;
+}
+.concert-performers-caption-active dl {
+    display: grid !important;
+}
+.concert-performers-button dt, .concert-performers-button dd {
+    text-align: left;
+}
+.concert-performers-button dt {
+    text-wrap: nowrap;
+    color: lightgrey;
+}
+.concert-performers-button dd {
+    text-wrap: nowrap;
+    color: white;
+    margin: 0;
 }
 
 /* Concert widget video */
@@ -3376,7 +3417,8 @@ Concert widget
         display: grid;
         grid-template-rows: 1fr 1fr 1fr;
         grid-auto-flow: column;
-        overflow: auto;
+        overflow-x: auto;
+        overflow-y: clip;
     }
     .section-events-no-sidebar #nav-events-sidebar {
         height: 0px;

@@ -893,13 +893,24 @@
         <article id="tab-events" class="tab">
             <section id="section-events">
                 <nav id="nav-events-sidebar">
-                    <ul class="toolbar">
-                        <li class="toolbar-filter"></li>
-                        <li class="toolbar-button">All Event Types</li>
-                        <li class="toolbar-button">All Tag Types</li>
-                    </ul>
+                    <div id="events-sidebar-toolbar-container">
+                        <ul class="toolbar">
+                            <li class="toolbar-filter" onclick="toggleMenuFilterEvent()"></li>
+                            <li class="toolbar-button" onclick="toggleButtonEventType(this)">All Event Types</li>
+                            <li class="toolbar-filter-menu toolbar-filter-menu-hidden" id="events-filter-menu">
+                                <label for="event-filter-name">Name</label>
+                                <input id="event-filter-name" type="text" placeholder="e.g. End of Fall 2025" oninput="changeFilterEvents()" />
+                                <label for="event-filter-before">Before</label>
+                                <input id="event-filter-before" type="text" placeholder="e.g. 2025-04-01" oninput="changeFilterEvents()" />
+                                <label for="event-filter-after">After</label>
+                                <input id="event-filter-after" type="text" placeholder="e.g. 2026-11-12" oninput="changeFilterEvents()" />
+                                <label for="event-filter-location">Location</label>
+                                <input id="event-filter-location" type="text" placeholder="e.g. OISE C154" oninput="changeFilterEvents()" />
+                            </li>
+                        </ul>
+                    </div>
                     <menu id="nav-events">
-                        <li onclick="toggleEventTab(this)" class="nav-events-upcoming">
+                        <!-- <li onclick="toggleEventTab(this)" class="nav-events-upcoming">
                             <span>End of Winter Concert</span>
                             <span>2026/01</span>
                         </li>
@@ -914,7 +925,7 @@
                         <li onclick="toggleEventTab(this)">
                             <span>UTSAMA Xth Anniversary Concert</span>
                             <span>2023/11</span>
-                        </li>
+                        </li> -->
                     </menu>
                 </nav>
                 <article id="event-body">
@@ -943,7 +954,7 @@
 
                     <article id="tab-concert-setlist" class="tab-concert tab-concert-active">
                         <ul id="concert-items">
-                            <li class="concert-item">
+                            <!-- <li class="concert-item">
                                 <hgroup>
                                     <h4>Theme of Stone Ocean
                                         <span class="concert-item-title-bracket">(Jolyne's Theme)</span>
@@ -955,108 +966,40 @@
                                 </hgroup>
                                 <div>
                                     <span class="concert-item-group-name">Masters of Spinjitzu (formerly Super Sentai)</span>
-                                    <span class="concert-item-button">
+                                    <span class="concert-item-button concert-performers-button" onclick="toggleSongPerformersCaption(this)">
                                         <img src="assets/icons/users.svg" />
+                                        <dl>
+                                            <dt>Instr1</dt>
+                                            <dd>Name1</dd>
+                                            <dt>Instr1</dt>
+                                            <dd>Name2</dd>
+                                            <dt>Instr3</dt>
+                                            <dd>Name3</dd>
+                                        </dl>
                                     </span>
                                     <a class="concert-item-button" href="#" target="_blank">
                                         <img src="assets/icons/logos/drive.svg" />
                                     </a>
                                 </div>
-                            </li>
-                            <li class="concert-item">
-                                <hgroup>
-                                    <h4>Delfino Plaza
-                                        <span class="concert-item-title-bracket">(French Jazz ver.)</span>
-                                        <span class="concert-item-title-number">// 02</span>
-                                    </h4>
-                                    <p><span>by</span> Koji Kondo</p>
-                                    <p><span>arranged by</span> 8-Bit Big Band</p>
-                                    <p><span>from</span> Super Mario Sunshine</p>
-                                </hgroup>
-                                <div>
-                                    <span class="concert-item-group-name">Group Name</span>
-                                    <span class="concert-item-button">
-                                        <img src="assets/icons/users.svg" />
-                                    </span>
-                                    <a class="concert-item-button" href="#" target="_blank">
-                                        <img src="assets/icons/logos/drive.svg" />
-                                    </a>
-                                </div>
-                            </li>
-                            <li class="concert-item">
-                                <hgroup>
-                                    <h4>Title
-                                        <span class="concert-item-title-number">// 03</span>
-                                    </h4>
-                                    <p><span>by</span> Someone</p>
-                                    <p><span>from</span> Dunno</p>
-                                </hgroup>
-                                <div>
-                                    <span class="concert-item-group-name">Name</span>
-                                    <span class="concert-item-button">
-                                        <img src="assets/icons/users.svg" />
-                                    </span>
-                                    <a class="concert-item-button" href="#" target="_blank">
-                                        <img src="assets/icons/logos/drive.svg" />
-                                    </a>
-                                </div>
-                            </li>
-                            <li class="concert-item">
-                                <hgroup>
-                                    <h4>Title Again
-                                        <span class="concert-item-title-number">// 04</span>
-                                    </h4>
-                                    <p><span>by</span> Song</p>
-                                    <p><span>from</span> Dunno</p>
-                                </hgroup>
-                                <div>
-                                    <span class="concert-item-group-name">Name</span>
-                                    <span class="concert-item-button">
-                                        <img src="assets/icons/users.svg" />
-                                    </span>
-                                    <a class="concert-item-button" href="#" target="_blank">
-                                        <img src="assets/icons/logos/drive.svg" />
-                                    </a>
-                                </div>
-                            </li>
-                            <li class="concert-item">
-                                <hgroup>
-                                    <h4>Song with an extremely long title
-                                        <span class="concert-item-title-bracket">(Alexa play despacito)</span>
-                                        <span class="concert-item-title-number">// 05</span>
-                                    </h4>
-                                    <p><span>by</span> Composer with a long name</p>
-                                    <p><span>arranged by</span> Arranger with an even long name</p>
-                                    <p><span>from</span> Some cool anime man</p>
-                                </hgroup>
-                                <div>
-                                    <span class="concert-item-group-name">Name</span>
-                                    <span class="concert-item-button">
-                                        <img src="assets/icons/users.svg" />
-                                    </span>
-                                    <a class="concert-item-button" href="#" target="_blank">
-                                        <img src="assets/icons/logos/drive.svg" />
-                                    </a>
-                                </div>
-                            </li>
+                            </li> -->
                         </ul>
                     </article>
                     <article id="tab-concert-video" class="tab-concert">
                         <div id="concert-video-embed"></div>
                         <ul id="concert-video-chapters">
-                            <li onclick="goToVideoChapter(this)" class="concert-video-chapter-active"><span>01 //</span> Something sdsad</li>
-                            <li onclick="goToVideoChapter(this)"><span>02 //</span> Something sdjfsdlkf;sd asdasdsadasdassfs</li>
-                            <li onclick="goToVideoChapter(this)"><span>03 //</span> Another song</li>
-                            <li onclick="goToVideoChapter(this)"><span>04 //</span> Cool</li>
-                            <li onclick="goToVideoChapter(this)"><span>05 //</span> Cool beans</li>
-                            <li onclick="goToVideoChapter(this)"><span>06 //</span> Cool</li>
-                            <li onclick="goToVideoChapter(this)"><span>07 //</span> Cool</li>
-                            <li onclick="goToVideoChapter(this)"><span>08 //</span> Cool</li>
-                            <li onclick="goToVideoChapter(this)"><span>09 //</span> Cool</li>
-                            <li onclick="goToVideoChapter(this)"><span>10 //</span> The song has a really long name</li>
-                            <li onclick="goToVideoChapter(this)"><span>11 //</span> The song has a really long name</li>
-                            <li onclick="goToVideoChapter(this)"><span>12 //</span> The song has a really long name</li>
-                            <li onclick="goToVideoChapter(this)"><span>13 //</span> The song has a really long name</li>
+                            <li onclick="goToVideoChapter(this, 100)" class="concert-video-chapter-active"><span>01 //</span> Something sdsad</li>
+                            <li onclick="goToVideoChapter(this, 100)"><span>02 //</span> Something sdjfsdlkf;sd asdasdsadasdassfs</li>
+                            <li onclick="goToVideoChapter(this, 100)"><span>03 //</span> Another song</li>
+                            <li onclick="goToVideoChapter(this, 100)"><span>04 //</span> Cool</li>
+                            <li onclick="goToVideoChapter(this, 100)"><span>05 //</span> Cool beans</li>
+                            <li onclick="goToVideoChapter(this, 100)"><span>06 //</span> Cool</li>
+                            <li onclick="goToVideoChapter(this, 100)"><span>07 //</span> Cool</li>
+                            <li onclick="goToVideoChapter(this, 100)"><span>08 //</span> Cool</li>
+                            <li onclick="goToVideoChapter(this, 100)"><span>09 //</span> Cool</li>
+                            <li onclick="goToVideoChapter(this, 100)"><span>10 //</span> The song has a really long name</li>
+                            <li onclick="goToVideoChapter(this, 100)"><span>11 //</span> The song has a really long name</li>
+                            <li onclick="goToVideoChapter(this, 100)"><span>12 //</span> The song has a really long name</li>
+                            <li onclick="goToVideoChapter(this, 100)"><span>13 //</span> The song has a really long name</li>
                         </ul>
                         <!-- <iframe class="embed-youtube" loading="lazy" src="https://www.youtube.com/embed/k1CZLnxSWDc?si=YTR2aZ5pTpb4E0Ft" title="YouTube video player" frameborder="0" allow="picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
                     </article>
