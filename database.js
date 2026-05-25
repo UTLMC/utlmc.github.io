@@ -558,3 +558,8 @@ async function parseData() {
     console.log(fullEventData);
     console.log(performancesData);
 }
+
+
+/*********************************************************************
+Tags tab
+*********************************************************************/

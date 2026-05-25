@@ -896,7 +896,6 @@ const changeFilterMusicians = debounce(() => {
 }, 300);
 
 function getTagColour(name) {
-    name = name.toLowerCase();
     if (name.includes(' (')) {
         name = name.slice(0, name.indexOf(' ('));
     }

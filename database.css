@@ -30,6 +30,10 @@ h1, h2, h3, h4, p, ul, menu {
 * {
     box-sizing: border-box;
 }
+table {
+    border-collapse: collapse;
+}
+
 
 /*******************************
 Special text formatting
@@ -221,24 +225,19 @@ main article {
     display: none;
 }
 main article h1 {
-    --text-size: 32px;
     font-family: 'Geologica';
-    font-weight: normal;
-    font-size: var(--text-size);
+    font-weight: 500;
+    font-size: 32px;
     position: relative;
-    margin-bottom: calc(0.3 * var(--text-size));
+    letter-spacing: -1px;
     text-wrap: nowrap;
 }
-main article h1:after {
-    position: absolute;
-    content: '';
-    display: 'inline-block';
-    width: 100%;
-    height: 2px;
-    background-color: #9c6644;
-    border-radius: 1px;
-    left: 0;
-    top: calc(1.3 * var(--text-size));
+main article h2 {
+    font-family: 'Geologica';
+    color: #9a8d65;
+    font-weight: 200;
+    font-size: 22px;
+    letter-spacing: -1px;
 }
 .tab-active {
     display: flex;
@@ -306,53 +305,6 @@ Input/output
 
 
 /*******************************
-FAQ table
-*******************************/
-.faq-table {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-height: calc(max(100vh, var(--min-height)) - 150px);
-    overflow-y: auto;
-    filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.1));
-}
-.faq-item {
-    --faq-item-padding: 10px;
-}
-.faq-question {
-    background-color: #f5f5ef;
-    transition: 0.2s;
-}
-.faq-question:hover {
-    background-color: white;
-}
-.faq-answer {
-    background-color: #f0e8d9;
-    color: #8a593a;
-    transition: 0.2s;
-}
-.faq-answer:hover {
-    background-color: #ffe9d5;
-}
-
-.editable-text {
-    /* padding: var(--faq-item-padding); */
-    flex-grow: 1;
-    word-break: break-word;
-}
-.editable-text p {
-    font-family: "Atkinson Hyperlegible";
-    font-size: 18px;
-    margin: 0;
-    padding: var(--faq-item-padding);
-    border: none;
-    outline: none;
-    width: 100%;
-    display: block;
-}
-
-
-/*******************************
 Checkbox
 *******************************/
 .checkbox {
@@ -382,70 +334,257 @@ Checkbox
     background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"><rect x="1.5" y="1.5" width="27" height="27" stroke="white" fill="none" stroke-width="3" rx="3" ry="3" /><line x1="8" y1="8" x2="22" y2="22" stroke="gray" stroke-width="3" stroke-linecap="round" /><line x1="8" y1="22" x2="22" y2="8" stroke="gray" stroke-width="3" stroke-linecap="round" /></svg>');
 }
 
-
-/*******************************
-Action bar
-*******************************/
-.actions-bar {
-    list-style-type: none;
-    padding: 0;
+/*********************************************************************
+Tags tab
+*********************************************************************/
+#section-tag-colour {
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
-    gap: 5px;
-    user-select: none;
-    flex-wrap: wrap;
+    gap: 25px;
 }
-.actions-bar li {
-    --text-size: 16px;
-    position: relative;
-    color: #5a393d;
-    border: 1.5px solid #5a393d;
-    padding: 3px 10px;
-    padding-left: calc(var(--text-size) + 10px);
-    border-radius: 3px;
-    transition: 0.2s;
+#section-tag-colour ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+#tag-colour-widget {
+    display: flex;
+    flex-direction: column;
+}
+#colour-widget-mode {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+#colour-widget-mode li {
+    flex-grow: 1;
+    text-align: center;
     font-family: 'DM Sans';
-    font-size: var(--text-size);
-    cursor: pointer;
-    text-wrap: nowrap;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 5px 0;
 }
-.actions-bar li:hover {
+.colour-widget-mode-active {
+    font-weight: bold;
+    background-color: white !important;
+    border-style: inset;
+    border: none;
+    border-bottom: 5px solid #ffd966ff;
+}
+#colour-widget-picker {
+    aspect-ratio: 1;
+    background: linear-gradient(transparent, black),
+                linear-gradient(to right, white, transparent),
+                rgb(255, 0, 0);
+}
+#colour-widget-picker-circle, #colour-widget-hue-circle {
+    --size: 10px;
+    border: 2px solid white;
+    border-radius: 50%;
+    width: var(--size);
+    aspect-ratio: 1;
+    margin-left: calc(-0.5 * var(--size));
+    margin-top: calc(-0.5 * var(--size));
+    mix-blend-mode: difference;
+}
+#colour-widget-hue {
+    width: 100%;
+    height: 10px;
+    background-image: linear-gradient(in hsl longer hue to right, red 0 100%);
+}
+#colour-widget-hue-circle {
+    margin-top: 0;
+}
+#colour-widget-text, #colour-widget-gradient-buttons {
+    padding: 0 15px;
+    background-color: rgba(255, 255, 255, 0.3);
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    justify-content: center;
+}
+#colour-widget-gradient-swap {
+    background-image: url('assets/icons/swap.svg');
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position: center;
+    aspect-ratio: 1;
+}
+#colour-widget-text {
+    padding-top: 15px;
+    padding-bottom: 5px;
+}
+#colour-widget-text input {
+    font-family: 'Atkinson Hyperlegible';
+    font-size: 16px;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    background-color: white;
+    padding: 3px 5px;
+}
+#colour-widget-rgb {
+    width: 150px;
+}
+#colour-widget-hex {
+    width: 90px;
+}
+#colour-widget-gradient-buttons {
+    padding-bottom: 15px;
+}
+#colour-widget-gradient-buttons button {
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    background-color: white;
+    font-size: 16px;
+    padding: 3px 10px;
+    font-family: 'DM Sans';
+}
+
+#tag-preview {
+    flex-grow: 1;
+    background-color: rgba(255, 255, 255, 0.3);
+    padding: 25px !important;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-content: flex-start;
+}
+#tag-preview li {
+    font-family: 'DM Sans';
+    background-color: white;
+    padding: 3px 12px;
+    border-radius: 15px;
+    letter-spacing: -0.5px;
+}
+
+
+/*********************************************************************
+Table
+*********************************************************************/
+.table {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.table-toolbar {
+    list-style: none;
+    padding-left: 0;
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+}
+.table-toolbar li {
+    background-color: white;
+    height: 25px;
+    aspect-ratio: 1;
+    border-radius: 5px;
+    background-size: 60%;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: 0.2s;
+    cursor: pointer;
+}
+.table-toolbar li:hover {
+    background-color: rgba(194, 166, 158, 0.7);
+}
+.table-toolbar li:active {
+    transition: 0s;
+    background-color: rgba(144, 87, 85, 0.7);
+}
+
+.table-toolbar-add { background-image: url('assets/icons/add.svg'); }
+.table-toolbar-remove { background-image: url('assets/icons/remove.svg'); }
+.table-toolbar-move-up, .table-toolbar-move-down { background-image: url('assets/icons/up.svg'); }
+.table-toolbar-move-down { transform: rotate(180deg); }
+
+.table thead tr, .table tr th:first-child, .table tr td:first-child {
     background-color: rgba(255, 255, 255, 0.3);
 }
-.actions-bar li:active {
+.table th {
+    font-family: 'DM Sans';
+    font-weight: normal;
+    color: rgb(153, 153, 153);
+    padding: 5px 10px;
+}
+.table td {
+    padding: 5px 10px;
+}
+.table table input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+.table table input[type="date"] {
+    margin: 0 5px;
+}
+.table tbody tr {
+    transition: 0.1s;
+}
+.table tbody tr:hover {
+    background-color: rgba(122, 95, 32, 0.1);
+}
+.table tbody tr:active {
     transition: 0s;
-    background-color: rgba(0, 0, 0, 0.1);
-    filter: invert(0.5) brightness(1.1) sepia(100%) saturate(200%) brightness(0.7) hue-rotate(180deg);
+    background-color: rgba(40, 22, 4, 0.1);
 }
-.actions-bar li:before {
-    content: '';
-    position: absolute;
-    display: 'inline-block';
-    left: 5px;
-    top: 5px;
-    width: var(--text-size);
-    height: var(--text-size);
-    background-size: contain;
-    background-position: 50% 50%;
-    background-repeat: no-repeat;
+
+.table table tbody tr { text-align: center; }
+
+.table table tbody tr td:first-child,
+.table table thead tr th:first-child {
+    width: 50px;
 }
-.actions-move-down:before, .actions-to-bottom:before { transform: scaleY(-1); }
-.actions-move-up:before, .actions-move-down:before { background-image: url('assets/icons/up.svg'); }
-.actions-to-top:before, .actions-to-bottom:before { background-image: url('assets/icons/up3.svg'); }
-.actions-add:before { background-image: url('assets/icons/add.png'); }  /* https://www.flaticon.com/free-icon/sheet_14096893 */
-.actions-delete:before { background-image: url('assets/icons/delete.png'); }  /* https://www.flaticon.com/free-icon/bin_484662 */
-.actions-delete-all:before { background-image: url('assets/icons/delete all.png'); }  /* https://www.flaticon.com/free-icon/broom_9742093 */
+#table-announcements tbody tr td:last-child,
+#table-announcements thead tr th:last-child,
+#table-upcoming-events tbody tr td:last-child,
+#table-upcoming-events thead tr th:last-child,
+#table-faq tbody tr td:last-child,
+#table-faq thead tr th:last-child {
+    text-align: left;
+}
+.table-announcements-icon {
+    height: 40px;
+    user-select: none;
+}
+.table-faq-q {
+    color: #3c78d8;
+    margin-bottom: 10px;
+}
 
 
+/*********************************************************************
+Bulletin page
+*********************************************************************/
+#tab-bulletin h2:not(:first-of-type) {
+    margin-top: 20px;
+}
+#current-event-datalist tr:nth-child(odd) {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+#current-event-datalist tr td {
+    padding: 5px 10px;
+}
+#current-event-datalist tr td:nth-child(odd) {
+    color: #999999;
+    font-family: 'DM Sans';
+}
+#current-event-datalist tr td:nth-child(2) {
+    border-right: 15px solid rgb(237, 224, 212);
+}
 
-.documents-table {
-    display: grid;
-    grid-template-columns: auto 1fr;
+#current-event-description-container {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
 }
-.documents-table dt {
-    /* background-color:  */
+.current-event-description {
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 15px;
 }
-.documents-table dd {
-    margin-inline-start: 0;
+.current-event-description h3 {
+    font-weight: normal;
+    font-family: 'DM Sans';
+    font-size: 18px;
+    color: #999999;
+    margin-bottom: 10px;
 }

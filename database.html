@@ -56,9 +56,200 @@
         </article>
         <article id="tab-tags">
             <h1>Tags</h1>
+            <p>Tags created in the members/music section will automatically show up here.</p>
+            <section id="section-tag-colour">
+                <aside id="tag-colour-widget">
+                    <ul id="colour-widget-mode">
+                        <li class="colour-widget-mode-active">Solid</li>
+                        <li>Gradient</li>
+                    </ul>
+                    <div id="colour-widget-picker">
+                        <div id="colour-widget-picker-circle"></div>
+                    </div>
+                    <div id="colour-widget-hue">
+                        <div id="colour-widget-hue-circle"></div>
+                    </div>
+                    <div id="colour-widget-text">
+                        <input id="colour-widget-rgb" type="text" value="rgb(255, 255, 255)" />
+                        <input id="colour-widget-hex" type="text" value="#ABCDEF" />
+                    </div>
+                    <div id="colour-widget-gradient-buttons">
+                        <button id="colour-widget-gradient-left">Left</button>
+                        <button id="colour-widget-gradient-right">Right</button>
+                        <button id="colour-widget-gradient-swap"></button>
+                    </div>
+                </aside>
+                <ul id="tag-preview">
+                    <li>Executive</li>
+                    <li>Assistant Executive</li>
+                    <li>Logistics</li>
+                    <li>Arranger</li>
+                    <li>Artist</li>
+                    <li>Website</li>
+                </ul>
+            </section>
         </article>
         <article id="tab-bulletin">
             <h1>Bulletin</h1>
+            
+            <h2>Announcements</h2>
+            <div class="table" id="table-announcements">
+                <ul class="table-toolbar">
+                    <li class="table-toolbar-add"></li>
+                    <li class="table-toolbar-remove"></li>
+                    <li class="table-toolbar-move-up"></li>
+                    <li class="table-toolbar-move-down"></li>
+                </ul>
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Type</th>
+                            <th>Visible</th>
+                            <th>Text</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="checkbox" />
+                            </td>
+                            <td>
+                                <img src="assets/icons/alert-triangle.svg" class="table-announcements-icon" />
+                            </td>
+                            <td>
+                                <p>From <input type="date"/></p>
+                                <p>Until <input type="date"/></p>
+                            </td>
+                            <td>
+                                <p>This website is under construction or whatever...</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="checkbox" />
+                            </td>
+                            <td>
+                                <img src="assets/icons/megaphone.svg" class="table-announcements-icon" />
+                            </td>
+                            <td>
+                                <p>After <input type="date"/></p>
+                                <p>Until <input type="date"/></p>
+                            </td>
+                            <td>
+                                <p>This website is under construction or whatever...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2>Upcoming Events</h2>
+            <div class="table" id="table-upcoming-events">
+                <ul class="table-toolbar">
+                    <li class="table-toolbar-add"></li>
+                    <li class="table-toolbar-remove"></li>
+                    <li class="table-toolbar-move-up"></li>
+                    <li class="table-toolbar-move-down"></li>
+                </ul>
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Date</th>
+                            <th>Location</th>
+                            <th>Asset Path</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="checkbox" />
+                            </td>
+                            <td>
+                                2026 End of Winter Concert
+                            </td>
+                            <td>
+                                <p>From <input type="datetime-local"/></p>
+                                <p>Until <input type="datetime-local"/></p>
+                            </td>
+                            <td>
+                                <p>OISE Something</p>
+                            </td>
+                            <td>
+                                <p>assets/images/images/locations/oise.webp</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="checkbox" />
+                            </td>
+                            <td>
+                                2026 End of Winter Concert
+                            </td>
+                            <td>
+                                <p>From <input type="datetime-local"/></p>
+                                <p>Until <input type="datetime-local"/></p>
+                            </td>
+                            <td>
+                                <p>OISE Something</p>
+                            </td>
+                            <td>
+                                <p>assets/images/images/locations/oise.webp</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <h2>Current Event</h2>
+            <table id="current-event-datalist">
+                <tbody>
+                    <tr>
+                        <td>Event</td>
+                        <td>
+                            <select>
+                                <option>Concert 1</option>
+                                <option>Concert 2</option>
+                                <option>Concert 3</option>
+                            </select>
+                        </td>
+                        <td>Visible From</td>
+                        <td><input type="datetime-local" /></td>
+                    </tr>
+                    <tr>
+                        <td>Location</td>
+                        <td>252 Bloor Street West (OISE C-162)</td>
+                        <td>Visible Until</td>
+                        <td><input type="datetime-local" /></td>
+                    </tr>
+                    <tr>
+                        <td>Tickets</td>
+                        <td>$5, pay in-person</td>
+                        <td>Poster</td>
+                        <td>assets/images/posters/poster 2026-04.webp</td>
+                    </tr>
+                    <tr>
+                        <td>Setlist</td>
+                        <td>https://lmc.moe/setlist</td>
+                        <td>RVSP</td>
+                        <td>#</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div id="current-event-description-container">
+                <hgroup id="preconcert-description" class="current-event-description">
+                    <h3>Pre-Concert Description</h3>
+                    <p>The LMC returns this April for its regularly-scheduled end of winter concert, featuring 3 hours of music, XX songs played by XX of our talented musicians!</p>
+                    <p>Here's another paragraph.</p>
+                </hgroup>
+                <hgroup id="postconcert-description" class="current-event-description">
+                    <h3>Post-Concert Description</h3>
+                    <p>Thank you to all performers and audience for a successful April concert! The next season of LMC operations will begin in September 2026.</p>
+                </hgroup>
+            </div>
         </article>
         <article id="tab-links">
             <h1>Links</h1>
@@ -99,40 +290,41 @@
         </article>
         <article id="tab-faq">
             <h1>Frequently Asked Questions</h1>
-            <ul class="actions-bar">
-                <li class="actions-move-up">Move Up</li>
-                <li class="actions-move-down">Move Down</li>
-                <li class="actions-to-top">To Top</li>
-                <li class="actions-to-bottom">To Bottom</li>
-                <li class="actions-add">Add</li>
-                <li class="actions-delete">Delete</li>
-                <li class="actions-delete-all">Delete All</li>
-            </ul>
-            <div class="faq-table">
-                <div class="faq-item">
-                    <div class="faq-question editable-text">
-                        <p contenteditable="plaintext-only">Question</p>
-                    </div>
-                    <div class="faq-answer editable-text">
-                        <p contenteditable="plaintext-only">Answer</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question editable-text">
-                        <p contenteditable="plaintext-only">Question</p>
-                    </div>
-                    <div class="faq-answer editable-text">
-                        <p contenteditable="plaintext-only">Answer</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question editable-text">
-                        <p contenteditable="plaintext-only">Question</p>
-                    </div>
-                    <div class="faq-answer editable-text">
-                        <p contenteditable="plaintext-only">Answer</p>
-                    </div>
-                </div>
+            <div class="table" id="table-faq">
+                <ul class="table-toolbar">
+                    <li class="table-toolbar-add"></li>
+                    <li class="table-toolbar-remove"></li>
+                    <li class="table-toolbar-move-up"></li>
+                    <li class="table-toolbar-move-down"></li>
+                </ul>
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>FAQ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="checkbox" />
+                            </td>
+                            <td>
+                                <p class="table-faq-q">This is a question.</p>
+                                <p class="table-faq-a">This is an answer to the question.</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="checkbox" />
+                            </td>
+                            <td>
+                                <p class="table-faq-q">This is a question.</p>
+                                <p class="table-faq-a">This is an answer to the question.</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </article>
     </main>
