@@ -2582,7 +2582,7 @@ details summary:active {
 details .summary-triangle {
     min-width: calc(20 * var(--px));
     min-height: calc(20 * var(--px));
-    background-image: url("assets/icons/up.svg");
+    background-image: url("assets/icons/chevron-up.svg");
     background-size: contain;
     background-repeat: no-repeat;
     transition: 0.3s;

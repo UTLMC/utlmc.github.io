@@ -60,8 +60,8 @@
             <section id="section-tag-colour">
                 <aside id="tag-colour-widget">
                     <ul id="colour-widget-mode">
-                        <li class="colour-widget-mode-active">Solid</li>
-                        <li>Gradient</li>
+                        <li onclick="toggleColourWidgetMode(this)" id='colour-widget-mode-solid' class="colour-widget-mode-active">Solid</li>
+                        <li onclick="toggleColourWidgetMode(this)" id='colour-widget-mode-gradient'>Gradient</li>
                     </ul>
                     <div id="colour-widget-picker">
                         <div id="colour-widget-picker-circle"></div>
@@ -79,7 +79,7 @@
                         <button id="colour-widget-gradient-swap"></button>
                     </div>
                 </aside>
-                <ul id="tag-preview">
+                <ul id="tag-previews">
                     <li>Executive</li>
                     <li>Assistant Executive</li>
                     <li>Logistics</li>
@@ -99,6 +99,9 @@
                     <li class="table-toolbar-remove"></li>
                     <li class="table-toolbar-move-up"></li>
                     <li class="table-toolbar-move-down"></li>
+                    <li class="table-toolbar-move-top"></li>
+                    <li class="table-toolbar-move-bottom"></li>
+                    <li class="table-toolbar-copy"></li>
                 </ul>
                 <table>
                     <thead>
@@ -151,6 +154,9 @@
                     <li class="table-toolbar-remove"></li>
                     <li class="table-toolbar-move-up"></li>
                     <li class="table-toolbar-move-down"></li>
+                    <li class="table-toolbar-move-top"></li>
+                    <li class="table-toolbar-move-bottom"></li>
+                    <li class="table-toolbar-copy"></li>
                 </ul>
                 <table>
                     <thead>
@@ -204,7 +210,7 @@
             </div>
             
             <h2>Current Event</h2>
-            <table id="current-event-datalist">
+            <table class="datalist" id="datalist-current-event">
                 <tbody>
                     <tr>
                         <td>Event</td>
@@ -278,15 +284,325 @@
         </article>
         <article id="tab-images">
             <h1>Images</h1>
+            <div class="checkbox" onclick="toggleCheckbox(event)"></div>
         </article>
         <article id="tab-members">
             <h1>Members</h1>
+            <p>For the purpose of privacy, when importing CSV data from Google sheets, only the Discord usernames of the current executives are imported. Discord info must be explicitly added to their personal links to import them.</p>
+            <p>The current academic year is deduced by the largest year number of any members with an executive tag.</p>
+
+            <div class="table" id="table-members">
+                <ul class="table-toolbar">
+                    <li class="table-toolbar-add"></li>
+                    <li class="table-toolbar-remove"></li>
+                    <li class="table-toolbar-move-up"></li>
+                    <li class="table-toolbar-move-down"></li>
+                    <li class="table-toolbar-move-top"></li>
+                    <li class="table-toolbar-move-bottom"></li>
+                    <li class="table-toolbar-copy"></li>
+                    <li class="table-toolbar-search-container">
+                        <div class="table-toolbar-search">
+                            <img src="assets/icons/search.svg" />
+                            <input type="text" placeholder="Search by name..." />
+                        </div>
+                    </li>
+                </ul>
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Joined</th>
+                            <th>Left</th>
+                            <th>Tags</th>
+                            <th>Links</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="checkbox" />
+                            </td>
+                            <td>John LMC</td>
+                            <td>Fall 2025</td>
+                            <td>Winter 2026</td>
+                            <td>
+                                <div class="cell-details">
+                                    <p>5</p>
+                                    <img class="cell-details-button" src="assets/icons/list.svg" onclick="toggleModalMemberTags()" />
+                                </div>
+                            </td>
+                            <td>
+                                <div class="cell-details">
+                                    <p>3</p>
+                                    <img class="cell-details-button" src="assets/icons/list.svg" onclick="toggleModalMemberLinks()" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="checkbox" />
+                            </td>
+                            <td>John LMC</td>
+                            <td>Fall 2025</td>
+                            <td>Winter 2026</td>
+                            <td>
+                                <div class="cell-details">
+                                    <p>5</p>
+                                    <img class="cell-details-button" src="assets/icons/list.svg" onclick="toggleModalMemberTags()" />
+                                </div>
+                            </td>
+                            <td>
+                                <div class="cell-details">
+                                    <p>3</p>
+                                    <img class="cell-details-button" src="assets/icons/list.svg" onclick="toggleModalMemberLinks()" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="checkbox" />
+                            </td>
+                            <td>John LMC</td>
+                            <td>Fall 2025</td>
+                            <td>Winter 2026</td>
+                            <td>
+                                <div class="cell-details">
+                                    <p>5</p>
+                                    <img class="cell-details-button" src="assets/icons/list.svg" onclick="toggleModalMemberTags()" />
+                                </div>
+                            </td>
+                            <td>
+                                <div class="cell-details">
+                                    <p>3</p>
+                                    <img class="cell-details-button" src="assets/icons/list.svg" onclick="toggleModalMemberLinks()" />
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </article>
         <article id="tab-music">
             <h1>Music</h1>
+            <div class="table" id="table-music">
+                <ul class="table-toolbar">
+                    <li class="table-toolbar-add"></li>
+                    <li class="table-toolbar-remove"></li>
+                    <li class="table-toolbar-move-up"></li>
+                    <li class="table-toolbar-move-down"></li>
+                    <li class="table-toolbar-move-top"></li>
+                    <li class="table-toolbar-move-bottom"></li>
+                    <li class="table-toolbar-copy"></li>
+                    <li class="table-toolbar-search-container">
+                        <div class="table-toolbar-search">
+                            <img src="assets/icons/search.svg" />
+                            <input type="text" placeholder="Search by name..." />
+                        </div>
+                    </li>
+                </ul>
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Composer</th>
+                            <th>From</th>
+                            <th>Media Origin</th>
+                            <th>Performances</th>
+                            <th>Reference</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="checkbox" />
+                            </td>
+                            <td>Zankyosanka</td>
+                            <td>Aimer</td>
+                            <td>Demon Slayer</td>
+                            <td>Anime</td>
+                            <td>
+                                <div class="cell-details">
+                                    <p>2</p>
+                                    <img class="cell-details-button" src="assets/icons/show.svg" onclick="toggleDetails(this)" />
+                                </div>
+                            </td>
+                            <td>https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
+                        </tr>
+                        <tr class="subtable-row">
+                            <td></td>
+                            <td colspan="6" class="subtable-container">
+                                <ul class="subtable">
+                                    <li>
+                                        <input type="checkbox" />
+                                        <table class="datalist" id="datalist-performance">
+                                            <tbody>
+                                                <tr>
+                                                    <td>Concerts</td>
+                                                    <td>
+                                                        <ul class="datalist-tags">
+                                                            <li>
+                                                                <span>2025 End of Fall Concert</span>
+                                                                <img src="assets/icons/add.svg" class="x-button" />
+                                                            </li>
+                                                            <li class="datalist-tag-add"></li>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Song Type</td>
+                                                    <td>
+                                                        <select>
+                                                            <option>Large</option>
+                                                            <option>Small</option>
+                                                            <option>External</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Sheet Music</td>
+                                                    <td>https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Arranger(s)</td>
+                                                    <td>
+                                                        <ul class="datalist-tags">
+                                                            <li>
+                                                                <span>Person 1</span>
+                                                                <img src="assets/icons/add.svg" class="x-button" />
+                                                            </li>
+                                                            <li>
+                                                                <span>Person 2</span>
+                                                                <img src="assets/icons/add.svg" class="x-button" />
+                                                            </li>
+                                                            <li class="datalist-tag-add"></li>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Performers</td>
+                                                    <td>
+                                                        <div class="cell-details">
+                                                            <p>2</p>
+                                                            <img class="cell-details-button" src="assets/icons/list.svg" onclick="toggleModalPerformancePerformers()" />
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <input type="checkbox" />
+                            </td>
+                            <td>Zankyosanka</td>
+                            <td>Aimer</td>
+                            <td>Demon Slayer</td>
+                            <td>Anime</td>
+                            <td>
+                                <div class="cell-details">
+                                    <p>2</p>
+                                    <img class="cell-details-button" src="assets/icons/hide.svg" onclick="toggleDetails(this)" />
+                                </div>
+                            </td>
+                            <td>https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="checkbox" />
+                            </td>
+                            <td>Zankyosanka</td>
+                            <td>Aimer</td>
+                            <td>Demon Slayer</td>
+                            <td>Anime</td>
+                            <td>
+                                <div class="cell-details">
+                                    <p>2</p>
+                                    <img class="cell-details-button" src="assets/icons/hide.svg" onclick="toggleDetails(this)" />
+                                </div>
+                            </td>
+                            <td>https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </article>
         <article id="tab-events">
             <h1>Events</h1>
+            <div class="table" id="table-events">
+                <ul class="table-toolbar">
+                    <li class="table-toolbar-add"></li>
+                    <li class="table-toolbar-remove"></li>
+                    <li class="table-toolbar-move-up"></li>
+                    <li class="table-toolbar-move-down"></li>
+                    <li class="table-toolbar-move-top"></li>
+                    <li class="table-toolbar-move-bottom"></li>
+                    <li class="table-toolbar-copy"></li>
+                    <li class="table-toolbar-search-container">
+                        <div class="table-toolbar-search">
+                            <img src="assets/icons/search.svg" />
+                            <input type="text" placeholder="Search by name..." />
+                        </div>
+                    </li>
+                </ul>
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Type</th>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Date</th>
+                            <th>Media</th>
+                            <th>Description</th>
+                            <th>Gallery</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="checkbox" />
+                            </td>
+                            <td>Concert</td>
+                            <td>End of Fall 2025 Concert</td>
+                            <td>OISE G-162</td>
+                            <td>
+                                <p>From <input type="datetime-local"/></p>
+                                <p>Until <input type="datetime-local"/></p>
+                            </td>
+                            <td>
+                                <div class="cell-details">
+                                    <img class="cell-details-button" src="assets/icons/list.svg" onclick="toggleModalConcertSetlist()" />
+                                </div>
+                            </td>
+                            <td>
+                                <div class="cell-details">
+                                    <img class="cell-details-button" src="assets/icons/show.svg" onclick="toggleDetails(this)" />
+                                </div>
+                            </td>
+                            <td>https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
+                        </tr>
+                        <tr class="subtable-row">
+                            <td></td>
+                            <td colspan="7" class="subtable-container">
+                                <ul class="subtable">
+                                    <li>
+                                        <p>asdasda sdadasdasds adasdsadasd sad sad sa dsa dsa dsadsadsa dsa dad a</p>
+                                        <p>asdasda sdadasdasds adasdsadasd sad sad sa dsa dsa dsadsadsa dsa dad a</p>
+                                        <p>asdasda sdadasdasds adasdsadasd sad sad sa dsa dsa dsadsadsa dsa dad a</p>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
         </article>
         <article id="tab-faq">
             <h1>Frequently Asked Questions</h1>
@@ -296,14 +612,11 @@
                     <li class="table-toolbar-remove"></li>
                     <li class="table-toolbar-move-up"></li>
                     <li class="table-toolbar-move-down"></li>
+                    <li class="table-toolbar-move-top"></li>
+                    <li class="table-toolbar-move-bottom"></li>
+                    <li class="table-toolbar-copy"></li>
                 </ul>
                 <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>FAQ</th>
-                        </tr>
-                    </thead>
                     <tbody>
                         <tr>
                             <td>
@@ -328,4 +641,181 @@
             </div>
         </article>
     </main>
+    <aside id="modal-container" onclick="toggleModal(event)">
+        <div id="modal-member-tags" class="modal">
+            <h2>Tags <span>for John LMC</span></h2>
+            <div class="modal-input">
+                <img src="assets/icons/add.svg" />
+                <input type="text" placeholder="Enter tag..." />
+            </div>
+            <ul class="datalist-tags">
+                <li>
+                    <span>Piano</span>
+                    <img src="assets/icons/add.svg" class="x-button" />
+                </li>
+                <li>
+                    <span>Voice</span>
+                    <img src="assets/icons/add.svg" class="x-button" />
+                </li>
+                <li>
+                    <span>Electric Guitar</span>
+                    <img src="assets/icons/add.svg" class="x-button" />
+                </li>
+                <li>
+                    <span>Drums</span>
+                    <img src="assets/icons/add.svg" class="x-button" />
+                </li>
+            </ul>
+        </div>
+
+        <div id="modal-member-links" class="modal">
+            <h2>Links <span>for John LMC</span></h2>
+            <table class="modal-datalist" id="datalist-modal-member-links">
+                <tbody>
+                    <tr>
+                        <td><img src="assets/icons/add.svg" class="x-button" /></td>
+                        <td>
+                            <select>
+                                <option>Bandcamp</option>
+                                <option>Discord</option>
+                                <option>Instagram</option>
+                                <option>LinkedIn</option>
+                                <option>Musescore</option>
+                                <option>Spotify</option>
+                                <option>Soundcloud</option>
+                                <option>Youtube</option>
+                            </select>
+                        </td>
+                        <td>User1</td>
+                        <td>https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
+                    </tr>
+                    <tr>
+                        <td><img src="assets/icons/add.svg" class="x-button" /></td>
+                        <td>
+                            <select>
+                                <option>Bandcamp</option>
+                                <option>Discord</option>
+                                <option>Instagram</option>
+                                <option>LinkedIn</option>
+                                <option>Musescore</option>
+                                <option>Spotify</option>
+                                <option>Soundcloud</option>
+                                <option>Youtube</option>
+                            </select>
+                        </td>
+                        <td>Really long username</td>
+                        <td>https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
+                    </tr>
+                    <tr class="modal-datalist-preview">
+                        <td></td>
+                        <td>
+                            <select>
+                                <option>Bandcamp</option>
+                                <option>Discord</option>
+                                <option>Instagram</option>
+                                <option>LinkedIn</option>
+                                <option>Musescore</option>
+                                <option>Spotify</option>
+                                <option>Soundcloud</option>
+                                <option>Youtube</option>
+                            </select>
+                        </td>
+                        <td>Username</td>
+                        <td>Link</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="modal-performance-performers" class="modal">
+            <h2>Performers <span>for Zankyosanka</span></h2>
+            <table class="modal-datalist">
+                <tbody>
+                    <tr>
+                        <td><img src="assets/icons/add.svg" class="x-button" /></td>
+                        <td>Piano</td>
+                        <td>
+                            <ul class="datalist-tags">
+                                <li>
+                                    <span>Person 1</span>
+                                    <img src="assets/icons/add.svg" class="x-button" />
+                                </li>
+                                <li class="tag-custom">
+                                    <span>Person 2</span>
+                                    <img src="assets/icons/add.svg" class="x-button" />
+                                </li>
+                                <li class="datalist-tag-add"></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><img src="assets/icons/add.svg" class="x-button" /></td>
+                        <td>Voice</td>
+                        <td>
+                            <ul class="datalist-tags">
+                                <li>
+                                    <span>Person 1</span>
+                                    <img src="assets/icons/add.svg" class="x-button" />
+                                </li>
+                                <li>
+                                    <span>Person 2</span>
+                                    <img src="assets/icons/add.svg" class="x-button" />
+                                </li>
+                                <li class="datalist-tag-add"></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr class="modal-datalist-preview">
+                        <td></td>
+                        <td>Instrument</td>
+                        <td>
+                            <ul class="datalist-tags">
+                                <li class="datalist-tag-add"></li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="modal-concert-setlist" class="modal">
+            <h2>Setlist <span>for End of Fall 2025 Concert</span></h2>
+            <ul id="concert-setlist-types">
+                <li class='concert-setlist-types-active'>No Video</li>
+                <li>Concert Video</li>
+            </ul>
+            <div class="modal-input">
+                <img src="assets/icons/logos/youtube.svg" />
+                <input type="text" placeholder="Enter youtube video URL" />
+            </div>
+            <table class="draggable-list">
+                <tbody>
+                    <tr>
+                        <td><img src="assets/icons/draggable.svg" /></td>
+                        <td>01</td>
+                        <td>Song 1</td>
+                        <td>??:??</td>
+                    </tr>
+                    <tr>
+                        <td><img src="assets/icons/draggable.svg" /></td>
+                        <td>02</td>
+                        <td>Song 2</td>
+                        <td>??:??</td>
+                    </tr>
+                    <tr>
+                        <td><img src="assets/icons/draggable.svg" /></td>
+                        <td>03</td>
+                        <td>Song 3</td>
+                        <td>??:??</td>
+                    </tr>
+                    <tr>
+                        <td><img src="assets/icons/draggable.svg" /></td>
+                        <td>04</td>
+                        <td>Song 4</td>
+                        <td>??:??</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </aside>
 </body>

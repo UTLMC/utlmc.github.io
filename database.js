@@ -78,6 +78,47 @@ function toggleCheckbox(event) {
         element.classList.add('checkbox-checked');
 }
 
+function toggleModal(event) {
+    if (event) {
+        const modals = cssGetClass('modal');
+        for (const element of modals) {
+            if (element.contains(event.target)) {
+                return;
+            }
+        }
+        for (const element of modals) {
+            element.style.setProperty('display', 'none');        
+        }
+    }
+    const modalContainer = cssGetId('modal-container');
+    const modalOn = modalContainer.style.display === 'flex';
+    modalContainer.style.setProperty('display', modalOn ? 'none' : 'flex');
+    return modalOn;
+}
+function toggleModalHelper(id) {
+    const modalOn = toggleModal();
+    cssGetId(id).style.setProperty('display', modalOn ? 'none' : 'flex');
+}
+function toggleModalMemberTags() { toggleModalHelper('modal-member-tags'); }
+function toggleModalMemberLinks() { toggleModalHelper('modal-member-links'); }
+function toggleModalPerformancePerformers() { toggleModalHelper('modal-performance-performers'); }
+function toggleModalConcertSetlist() { toggleModalHelper('modal-concert-setlist'); }
+
+function toggleDetails(element) {
+    const visible = element.src.endsWith('show.svg');
+    element.src = `${element.src.slice(0, element.src.lastIndexOf('/'))}/${visible ? 'hide.svg' : 'show.svg'}`;
+
+    let curr = element;
+    while (curr.nodeName !== 'TR') {
+        curr = curr.parentElement;
+    }
+    curr = curr.nextElementSibling;
+    while (curr?.classList.contains('subtable-row')) {
+        curr.style.setProperty('display', visible ? 'none' : 'table-row');
+        curr = curr.nextElementSibling;
+    }
+}
+
 function downloadData() {
     console.log("Download");
 }
@@ -560,6 +601,13 @@ async function parseData() {
 }
 
 
-/*********************************************************************
-Tags tab
-*********************************************************************/
+
+function toggleColourWidgetMode(element) {
+    const active = 'colour-widget-mode-active';
+    cssGetClass(active)[0].classList.remove(active);
+    element.classList.add(active);
+
+    const gradientMode = element.id === 'colour-widget-mode-gradient';
+    cssGetId('colour-widget-gradient-buttons').style.setProperty('display', gradientMode ? 'flex' : 'none');
+    cssGetId('colour-widget-text').style.setProperty('padding-bottom', gradientMode ? '5px' : '15px');
+}
