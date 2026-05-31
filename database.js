@@ -52,6 +52,66 @@ function timestampToSeconds(timestamp) {
         throw new Error(timestamp);
     }
 }
+function rgbToHex(r, g, b) {
+    return "#" + [r, g, b].map(value => value.toString(16).padStart(2, "0")).join("").toUpperCase();
+}
+function hexToRgb(hex) {
+    hex = hex.replace(/^#/, "");
+    return [parseInt(hex.slice(0, 2), 16), parseInt(hex.slice(2, 4), 16), parseInt(hex.slice(4, 6), 16)];
+}
+function hsvToRgb(h, s = 1, v = 1) {
+    h = (h % 1 + 1) % 1; // ensure wrap-around 0..1
+
+    const i = Math.floor(h * 6);
+    const f = h * 6 - i;
+
+    const p = v * (1 - s);
+    const q = v * (1 - f * s);
+    const t = v * (1 - (1 - f) * s);
+
+    let r, g, b;
+
+    switch (i % 6) {
+        case 0: [r, g, b] = [v, t, p]; break;
+        case 1: [r, g, b] = [q, v, p]; break;
+        case 2: [r, g, b] = [p, v, t]; break;
+        case 3: [r, g, b] = [p, q, v]; break;
+        case 4: [r, g, b] = [t, p, v]; break;
+        case 5: [r, g, b] = [v, p, q]; break;
+    }
+
+    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+}
+function rgbToHue(r, g, b) {
+    // Normalize to 0–1
+    r /= 255;
+    g /= 255;
+    b /= 255;
+
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const diff = max - min;
+
+    // Achromatic case (no color)
+    if (diff === 0) return 0;
+
+    let hue;
+    if (max === r) {
+        hue = ((g - b) / diff) % 6;
+    } else if (max === g) {
+        hue = (b - r) / diff + 2;
+    } else {
+        hue = (r - g) / diff + 4;
+    }
+
+    hue *= 60; // convert to degrees
+    if (hue < 0) {
+        hue += 360;
+    }
+
+    // Normalize to [0, 1]
+    return hue / 360;
+}
 
 
 /*********************************************************************
@@ -67,15 +127,6 @@ function toggle(id, activeClass) {
     const active = cssGetClass(activeClass)[0];
     active.classList.remove(activeClass);
     cssGetId(id).classList.add(activeClass);
-}
-
-function toggleCheckbox(event) {
-    const element = event.srcElement;
-    const className = 'checkbox-checked';
-    if (element.classList.contains(className))
-        element.classList.remove('checkbox-checked');
-    else
-        element.classList.add('checkbox-checked');
 }
 
 function toggleModal(event) {
@@ -104,14 +155,21 @@ function toggleModalMemberLinks() { toggleModalHelper('modal-member-links'); }
 function toggleModalPerformancePerformers() { toggleModalHelper('modal-performance-performers'); }
 function toggleModalConcertSetlist() { toggleModalHelper('modal-concert-setlist'); }
 
-function toggleDetails(element) {
+function toggleColourWidgetMode(element) {
+    const active = 'colour-widget-mode-active';
+    cssGetClass(active)[0].classList.remove(active);
+    element.classList.add(active);
+
+    const gradientMode = element.id === 'colour-widget-mode-gradient';
+    cssGetId('colour-widget-gradient-buttons').style.setProperty('display', gradientMode ? 'flex' : 'none');
+    cssGetId('colour-widget-text').style.setProperty('padding-bottom', gradientMode ? '5px' : '15px');
+}
+
+function toggleCellDetails(element) {
     const visible = element.src.endsWith('show.svg');
     element.src = `${element.src.slice(0, element.src.lastIndexOf('/'))}/${visible ? 'hide.svg' : 'show.svg'}`;
 
-    let curr = element;
-    while (curr.nodeName !== 'TR') {
-        curr = curr.parentElement;
-    }
+    let curr = element.closest('tr');
     curr = curr.nextElementSibling;
     while (curr?.classList.contains('subtable-row')) {
         curr.style.setProperty('display', visible ? 'none' : 'table-row');
@@ -119,6 +177,369 @@ function toggleDetails(element) {
     }
 }
 
+function toggleConcertSetlistType(element) {
+    const active = 'concert-setlist-types-active';
+    cssGetClass(active)[0].classList.remove(active);
+    element.classList.add(active);
+    
+    const videoDisplay = element.id === 'concert-setlist-type-one-video' ? 'flex' : 'none';
+    cssGetId('concert-setlist-one-video').style.setProperty('display', videoDisplay);
+
+    const cellDisplay = element.id === 'concert-setlist-type-one-video' ? 'table-cell' : 'none';
+    for (const element of cssGetClass('concert-setlist-timestamp')) {
+        element.style.setProperty('display', cellDisplay);
+    }
+}
+
+function toggleAnnouncementType(element) {
+    if (element.src.endsWith("alert-triangle.svg")) {
+        element.src = 'assets/icons/megaphone.svg';
+    } else {
+        element.src = 'assets/icons/alert-triangle.svg';
+    }
+}
+
+function toggleRowSelect(event, element) {
+    if (event.target.nodeName === 'INPUT') {
+        return;
+    }
+    const button = element.children[0];
+    button.checked = !button.checked;
+    onRowSelect(element);
+}
+function toggleSubrowSelect(event, element) {
+    if (event.target.closest('.datalist') || event.target.nodeName === 'INPUT') {
+        return;
+    }
+    const button = element.children[0];
+    button.checked = !button.checked;
+    onRowSelect(element, button.checked);
+}
+function onRowSelect(element) {
+    // TODO: subtable checkboxes being selected should disable regular checkboxes
+    // TODO: regular checkboxes being selected should disable subtable checkboxes
+}
+
+
+/*********************************************************************
+Colour picker widget
+*********************************************************************/
+document.addEventListener('mousemove', onMouseMove);
+document.addEventListener('mousedown', () => onMouseDown(true));
+document.addEventListener('mouseup', () => onMouseDown(false));
+
+let MOUSE_X, MOUSE_Y, MOUSE_DOWN;
+function onMouseMove(event) {
+    const { clientX, clientY } = event;
+    MOUSE_X = clientX;
+    MOUSE_Y = clientY;
+
+    if (COLOUR_PICKER_ON) {
+        updateColourFromPicker();
+    }
+    if (HUE_PICKER_ON) {
+        updateHueFromPicker();
+    }
+}
+function onMouseDown(down) {
+    MOUSE_DOWN = down;
+    if (!down) {
+        COLOUR_PICKER_ON = down;
+        HUE_PICKER_ON = down;
+    }
+}
+
+let HUE_PICKER_ON = false;
+let COLOUR_PICKER_ON = false;
+let LAST_VALID_COLOUR = [255, 0, 0];
+let COLOUR_PICKER_PRIMARY = {
+    r: 255,
+    g: 0,
+    b: 0
+}
+function pickColourMouseDown(event) {
+    event.preventDefault();
+    COLOUR_PICKER_ON = true;
+    updateColourFromPicker();
+}
+function pickHueMouseDown(event) {
+    event.preventDefault();
+    HUE_PICKER_ON = true;
+    updateHueFromPicker();
+}
+function xyToRgb(x, y) {
+    const r = Math.round((1 - y) * ((1 - x) * 255 + x * COLOUR_PICKER_PRIMARY.r));
+    const g = Math.round((1 - y) * ((1 - x) * 255 + x * COLOUR_PICKER_PRIMARY.g));
+    const b = Math.round((1 - y) * ((1 - x) * 255 + x * COLOUR_PICKER_PRIMARY.b));
+    return [r, g, b];
+}
+function rgbToXy(r, g, b) {
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+
+    const value = max / 255;
+    const saturation = max === 0 ? 0 : (max - min) / max;
+
+    return [saturation, 1 - value];
+}
+function getCurrentPickerXY() {
+    const container = cssGetId('colour-widget-picker');
+    const rect = container.getBoundingClientRect();
+    const circle = cssGetId('colour-widget-picker-circle');
+    
+    let left = parseFloat(circle.style.left);
+    if (isNaN(left)) {
+        left = rect.left;
+    }
+    let top = parseFloat(circle.style.top);
+    if (isNaN(top)) {
+        top = rect.top;
+    }
+
+    return [(left - rect.left) / rect.width, (top - rect.top) / rect.height];
+}
+
+function moveHuePicker(x) {
+    // Update hue picker circle
+    const container = cssGetId('colour-widget-hue');
+    const rect = container.getBoundingClientRect();
+    const circle = cssGetId('colour-widget-hue-circle');
+    circle.style.setProperty('left', `${x * rect.width + rect.left}px`);
+
+    // Update primary colour
+    const [primaryR, primaryG, primaryB] = hsvToRgb(x, 1, 1);
+    COLOUR_PICKER_PRIMARY.r = primaryR;
+    COLOUR_PICKER_PRIMARY.g = primaryG;
+    COLOUR_PICKER_PRIMARY.b = primaryB;
+
+    // Update gradient
+    const box = cssGetId('colour-widget-picker');
+    box.style.setProperty(
+        'background',
+        `linear-gradient(transparent, black), linear-gradient(to right, white, transparent), rgb(${primaryR}, ${primaryG}, ${primaryB})`
+    );
+}
+function moveColourPicker(x, y) {
+    const container = cssGetId('colour-widget-picker');
+    const rect = container.getBoundingClientRect();
+    const circle = cssGetId('colour-widget-picker-circle');
+    circle.style.setProperty('left', `${x * rect.width + rect.left}px`);
+    circle.style.setProperty('top', `${y * rect.height + rect.top}px`);
+}
+
+function updateHueFromPicker() {
+    const container = cssGetId('colour-widget-hue');
+    const rect = container.getBoundingClientRect();
+    const x = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+    
+    moveHuePicker(x);
+    const [r, g, b] = xyToRgb(...getCurrentPickerXY());
+    
+    LAST_VALID_COLOUR = [r, g, b];
+    cssGetId('colour-widget-rgb').value = `rgb(${r}, ${g}, ${b})`;
+    cssGetId('colour-widget-hex').value = rgbToHex(r, g, b);
+}
+function updateColourFromPicker() {
+    const container = cssGetId('colour-widget-picker');
+    const rect = container.getBoundingClientRect();
+    const x = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+    const y = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
+
+    moveColourPicker(x, y);
+    const [r, g, b] = xyToRgb(x, y);
+    
+    LAST_VALID_COLOUR = [r, g, b];
+    cssGetId('colour-widget-rgb').value = `rgb(${r}, ${g}, ${b})`;
+    cssGetId('colour-widget-hex').value = rgbToHex(r, g, b);
+}
+const updateColourFromRgb = (() => {
+    const input = cssGetId('colour-widget-rgb');
+    const rgbRegex = /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/i;
+
+    return () => {
+        const value = input.value.trim();
+        const match = value.match(rgbRegex);
+        if (!match) {
+            const [r, g, b] = LAST_VALID_COLOUR;
+            input.value = `rgb(${r}, ${g}, ${b})`;
+            return;
+        }
+
+        let r = Number(match[1]);
+        let g = Number(match[2]);
+        let b = Number(match[3]);
+        r = Math.min(255, Math.max(0, r));
+        g = Math.min(255, Math.max(0, g));
+        b = Math.min(255, Math.max(0, b));
+        const normalized = `rgb(${r}, ${g}, ${b})`;
+        input.value = normalized;
+        LAST_VALID_COLOUR = [r, g, b];
+        
+        // Update other inputs
+        moveHuePicker(rgbToHue(r, g, b));
+        moveColourPicker(...rgbToXy(r, g, b));
+        cssGetId('colour-widget-hex').value = rgbToHex(r, g, b);
+    };
+})();
+const updateColourFromHex = (() => {
+    const input = cssGetId('colour-widget-hex');
+    const hexRegex = /^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+
+    return () => {
+        let value = input.value.trim();
+        if (!hexRegex.test(value)) {
+            const [r, g, b] = LAST_VALID_COLOUR;
+            input.value = rgbToHex(r, g, b);
+            return;
+        }
+
+        value = value.replace("#", "");
+        
+        // Expand shorthand #abc -> #aabbcc
+        if (value.length === 3) {
+            value = value.split("").map(c => c + c).join("");
+        }
+        value = "#" + value.toUpperCase();
+        input.value = value;
+
+        // Update other inputs
+        const [r, g, b] = hexToRgb(value);
+        LAST_VALID_COLOUR = [r, g, b];
+        
+        moveHuePicker(rgbToHue(r, g, b));
+        moveColourPicker(...rgbToXy(r, g, b));
+        cssGetId('colour-widget-rgb').value = `rgb(${r}, ${g}, ${b})`;
+    }
+})();
+
+
+/*********************************************************************
+Draggable setlist
+*********************************************************************/
+let CURR_DRAGGING;
+function onDragStart(element) {
+    CURR_DRAGGING = element.parentElement;
+    element.parentElement.classList.add('draggable-list-active');
+}
+function onDragEnd(element) {
+    element.parentElement.classList.remove('draggable-list-active');
+    for (const element of cssGetClass('draggable-list-destination')) {
+        element.classList.remove('draggable-list-destination');
+    }
+    CURR_DRAGGING = undefined;
+}
+function onDragEnter(element) {
+    if (element !== CURR_DRAGGING) {
+        element.parentElement.classList.add('draggable-list-destination');
+    }
+}
+function onDragLeave(element) {
+    element.parentElement.classList.remove('draggable-list-destination');
+}
+function onDragOver(event) {
+    // Default behaviour: mouse UI treats the element as an un-droppable destination
+    event.preventDefault();
+}
+function onDrop(element) {
+    if (element !== CURR_DRAGGING) {
+        const tbody = element.parentElement.parentElement;
+        const rows = [...tbody.children];
+        const draggedIndex = rows.indexOf(CURR_DRAGGING);
+        const targetIndex = rows.indexOf(element.parentElement);
+
+        if (draggedIndex < targetIndex) {
+            element.parentElement.after(CURR_DRAGGING);
+        } else {
+            element.parentElement.before(CURR_DRAGGING);
+        }
+
+        // Refresh setlist numbers
+        const n = Math.max(2, String(tbody.children.length).length);
+        for (let i = 0; i < tbody.children.length; i++) {
+            tbody.children[i].children[1].innerText = String(i + 1).padStart(n, '0');
+        }
+    }
+}
+
+
+/*********************************************************************
+Inputs
+*********************************************************************/
+function setFocusInput(element, focus) {
+    element.parentElement.nextElementSibling.style.setProperty('display', focus ? 'flex' : 'none');
+}
+function focusInput(element) {
+    setFocusInput(element, true);
+}
+function blurInput(element) {
+    setFocusInput(element, false);
+
+    const parent = element.parentElement?.parentElement;
+    const clicked = 'datalist-tag-add-clicked'
+    if (parent?.classList.contains(clicked) && !element.value) {
+        parent?.classList.remove(clicked);
+    }
+}
+function keyDownInput(event) {
+    if (event.key !== 'Enter') {
+        return;
+    }
+    console.log('enter!');
+}
+
+function newDatalistTag(element) {
+    const name = 'datalist-tag-add-clicked';
+    if (!element.classList.contains(name)) {
+        element.classList.add(name);
+        element.children[0].children[1].focus();
+    }
+}
+
+
+/*********************************************************************
+Input validation
+*********************************************************************/
+function validateInput(element) {
+    let value = element.innerText;
+    value = value.replace(/[\r\n]+/g, '').trim();
+    element.innerText = value;
+}
+function validateInputAsset(element) {
+    let value = element.innerText;
+    value = value.replace(/[\r\n]+/g, '').trim();
+    element.innerText = value;
+
+    const validation = (element.closest('.table') || element.closest('.datalist')).nextElementSibling;
+    if (!value) {
+        validation.style.setProperty('display', 'none');
+        return;
+    }
+    validation.style.setProperty('display', 'block');
+    if (value.includes('://')) {
+        validation.innerText = `'${value}' is an external link. Please use a locally-downloaded asset instead.`;
+    } else if (!/^.+\.[a-zA-Z]+$/.test(value)) {
+        validation.innerText = `'${value}' is not a proper path to a file.`;
+    } else if (!value.endsWith('.webp')) {
+        validation.innerText = `'${value}' is not a WEBP file. Please convert it to a WEBP to optimize for size and loading time.`;
+    } else if (!value.startsWith('assets/images')) {
+        validation.innerText = `'${value}' should be moved inside assets/images.`;
+    } else {
+        validation.style.setProperty('display', 'none');
+    }
+}
+function validateInputTimestamp(element) {
+    let value = element.innerText;
+    value = value.replace(/[\r\n]+/g, '').trim();
+
+    const timestampRegex = /^(?:\?\?:\?\?|\d+:[0-5]\d:[0-5]\d|(?:[0-5]?\d):[0-5]\d)$/;
+    value = timestampRegex.test(value) ? value : '??:??';
+    element.innerText = value;
+}
+
+
+/*********************************************************************
+Parsing CSV data
+*********************************************************************/
 function downloadData() {
     console.log("Download");
 }
@@ -598,16 +1019,4 @@ async function parseData() {
     console.log(memberData);
     console.log(fullEventData);
     console.log(performancesData);
-}
-
-
-
-function toggleColourWidgetMode(element) {
-    const active = 'colour-widget-mode-active';
-    cssGetClass(active)[0].classList.remove(active);
-    element.classList.add(active);
-
-    const gradientMode = element.id === 'colour-widget-mode-gradient';
-    cssGetId('colour-widget-gradient-buttons').style.setProperty('display', gradientMode ? 'flex' : 'none');
-    cssGetId('colour-widget-text').style.setProperty('padding-bottom', gradientMode ? '5px' : '15px');
 }

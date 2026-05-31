@@ -33,6 +33,26 @@ h1, h2, h3, h4, p, ul, menu {
 table {
     border-collapse: collapse;
 }
+select {
+    font-family: 'Atkinson Hyperlegible';
+    font-size: 16px;
+    border: none;
+    padding: 0 5px;
+    border-radius: 20px;
+    transition: 0.1s;
+    background: white;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+}
+select:hover {
+    filter: drop-shadow(0px 3px 3px rgba(71, 45, 48, 0.2));
+}
+select:active {
+    opacity: 0.5;
+    transition: 0s;
+}
+br {
+    margin: 5px 0;
+}
 
 
 /*******************************
@@ -67,6 +87,16 @@ a:hover:before {
 a:active:before {
     transition: 0s;
     background-color: rgba(207, 119, 97, 0.75);
+}
+.validation-text {
+    font-style: italic;
+    font-family: 'DM Sans';
+    font-size: 16px;
+    color: rgb(255, 84, 72);
+    padding: 5px 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    display: none;
 }
 
 
@@ -303,37 +333,6 @@ Input/output
 #upload-button:before { background-image: url('assets/icons/upload.png'); }
 
 
-/*******************************
-Checkbox
-*******************************/
-.checkbox {
-    display: inline-block;
-    margin: var(--faq-item-padding);
-    margin-top: calc(var(--faq-item-padding) * 1.1);
-    margin-right: 0;
-    width: 18px;
-    height: 18px;
-    min-width: 18px;
-    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"><rect x="1.5" y="1.5" width="27" height="27" stroke="white" fill="none" stroke-width="3" rx="3" ry="3" /></svg>');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    filter: invert(0.75);
-    transition: 0.15s;
-    cursor: pointer;
-}
-.checkbox:hover {
-    filter: invert(0.5);
-}
-.checkbox:active {
-    transition: 0s;
-    filter: invert(0.3);
-}
-.checkbox-checked {
-    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"><rect x="1.5" y="1.5" width="27" height="27" stroke="white" fill="none" stroke-width="3" rx="3" ry="3" /><line x1="8" y1="8" x2="22" y2="22" stroke="gray" stroke-width="3" stroke-linecap="round" /><line x1="8" y1="22" x2="22" y2="8" stroke="gray" stroke-width="3" stroke-linecap="round" /></svg>');
-}
-
-
 /*********************************************************************
 Tags tab
 *********************************************************************/
@@ -383,6 +382,7 @@ Tags tab
     border-bottom: 5px solid #ffd966ff;
 }
 #colour-widget-picker {
+    cursor: crosshair;
     aspect-ratio: 1;
     background: linear-gradient(transparent, black),
                 linear-gradient(to right, white, transparent),
@@ -397,8 +397,11 @@ Tags tab
     margin-left: calc(-0.5 * var(--size));
     margin-top: calc(-0.5 * var(--size));
     mix-blend-mode: difference;
+    position: absolute;
 }
 #colour-widget-hue {
+    z-index: 2;
+    cursor: crosshair;
     width: 100%;
     height: 10px;
     background-image: linear-gradient(in hsl longer hue to right, red 0 100%);
@@ -537,40 +540,20 @@ Table
 .table-toolbar-move-top, .table-toolbar-move-bottom { background-image: url('assets/icons/arrow-top.svg'); }
 .table-toolbar-move-bottom { transform: rotate(180deg); }
 
-.table-toolbar-search-container {
-    flex-grow: 1;
-    background-color: unset !important;
-    cursor: auto !important;
-    display: flex;
-    justify-content: flex-end;
-}
-.table-toolbar-search, .modal-input {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 2px;
-    border: 2px solid rgba(0, 0, 0, 0.5);
-    border-radius: 5px;
-    padding: 2px;
-}
-.table-toolbar-search img, .modal-input img {
-    opacity: 0.5;
-    height: 100%;
-}
-.table-toolbar-search input, .modal-input input {
-    font-family: 'Atkinson Hyperlegible';
-    border: none;
-    background-color: transparent;
-    color: rgba(0, 0, 0, 0.5);
-    font-size: 16px;
-}
-
 .cell-details {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 5px;
+    gap: 10px;
+}
+.cell-details p {
+    font-size: 14px;
+    text-align: right;
+    width: fit-content
+}
+.cell-details span {
+    color: rgb(138, 109, 243);
 }
 .cell-details-button {
     height: 18px;
@@ -611,16 +594,18 @@ Table
 }
 .table tbody tr {
     transition: 0.1s;
+    text-align: center;
 }
 .table > table > tbody > tr:hover {
     background-color: rgba(122, 95, 32, 0.1);
 }
-.table > table > tbody > tr:active {
+.table > table > tbody > tr:active:is(
+  :not(:has(td:not(:first-child):active)),  /* First TD inside the TR */
+  :has(.subtable:active):not(:has(.datalist:active))  /* Anything in .subtable but not in .datalist - for subtables */
+) {
     transition: 0s;
     background-color: rgba(40, 22, 4, 0.1);
 }
-
-.table table tbody tr { text-align: center; }
 
 .table table tbody tr td:first-child,
 .table table thead tr th:first-child {
@@ -642,7 +627,6 @@ Table
     border: 2px solid rgba(0, 0, 0, 0.3);
     border-radius: 15px;
     padding-left: 5px;
-    overflow: hidden;
 }
 .subtable li {
     display: flex;
@@ -661,6 +645,107 @@ Table
 
 
 /*********************************************************************
+Inputs
+*********************************************************************/
+.table-toolbar-search-container {
+    flex-grow: 1;
+    background-color: unset !important;
+    cursor: auto !important;
+    display: flex;
+    justify-content: flex-end;
+}
+.input {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2px;
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    padding: 2px !important;
+    height: 25px;
+    position: relative;
+}
+.input img {
+    opacity: 0.5;
+    height: 100%;
+    height: 15px;
+    margin-left: 2px;
+}
+.input input {
+    font-family: 'Atkinson Hyperlegible';
+    border: none;
+    background-color: transparent;
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 16px;
+    flex-grow: 1;
+    outline: none;
+}
+.input div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    gap: 3px;
+}
+
+.input-suggestions {
+    top: 25px;
+    left: 0;
+    list-style: none;
+    padding-left: 0;
+    display: none;  /* toggles to flex */
+    flex-direction: column;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    position: absolute;
+    background-color: white;
+    width: 100%;
+    filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.1));
+    z-index: 2;
+}
+.input-suggestions li {
+    display: flex;
+    flex-direction: row;
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.6);
+    background-color: unset !important;
+    cursor: pointer;
+    transition: 0.1s;
+    padding: 3px 6px;
+    justify-content: space-between;
+    user-select: none;
+    border-radius: 0 !important;
+}
+.input-suggestions li span:last-child {
+    color: rgba(0, 0, 0, 0.3);
+}
+.input-suggestions li:hover {
+    color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.1) !important;
+}
+.input-suggestions li:active {
+    color: rgba(0, 0, 0, 1);
+    background-color: rgba(92, 87, 26, 0.2) !important;
+    transition: 0s;
+}
+
+input[type="date"], input[type="datetime-local"] {
+    font-family: 'Atkinson Hyperlegible';
+    border-radius: 5px;
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    color: rgba(0, 0, 0, 0.5);
+    padding: 0px 5px;
+    background-color: transparent;
+}
+input[type="date"] {
+    width: 115px;
+}
+input[type="datetime-local"] {
+    width: 185px;
+}
+
+
+/*********************************************************************
 Datalist tags
 *********************************************************************/
 .datalist-tags {
@@ -670,32 +755,57 @@ Datalist tags
     flex-direction: row;
     flex-wrap: wrap;
     gap: 5px;
+    align-items: center;
 }
 .datalist-tags li {
     background-color: rgb(251, 109, 109);
-    padding: 2px 12px;
+    padding: 2px 10px;
     border-radius: 15px;
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 5px;
+    font-size: 16px;
 }
 .datalist-tag-add {
-    height: 26px;
-    width: 26px;
-    border-radius: 50%;
-    padding: 0 !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    border-radius: 12px;
+    transition: 0.1s;
+    opacity: 0.8;
+    background-color: unset !important;
     cursor: pointer;
-    background-image: url('assets/icons/add.svg');
-    background-size: 14px;
-    background-position: center;
-    background-repeat: no-repeat;
+    aspect-ratio: 1;
 }
+.datalist-tag-add:not(.datalist-tag-add-clicked):hover {
+    opacity: 0.5;
+}
+.datalist-tag-add:not(.datalist-tag-add-clicked):active {
+    transition: 0s;
+    opacity: 0.2;
+}
+
+.datalist-tag-add-clicked {
+    cursor: auto;
+    opacity: 1;
+}
+
+.datalist-tag-add input {
+    display: none;
+}
+.datalist-tag-add-clicked input {
+    display: unset;
+}
+
+.datalist-tag-add img {
+    margin-left: 1px !important;
+}
+.datalist-tag-add-clicked img {
+    margin-left: 2px !important;
+}
+
 .tag-custom {
     background-color: unset !important;
+    border-style: inset;
+    height: 24px;
     border: 2px solid black;
 }
 
@@ -703,24 +813,66 @@ Datalist tags
 /*********************************************************************
 Table customization
 *********************************************************************/
+th {
+    text-wrap: nowrap;
+}
 #table-announcements tbody tr td:last-child,
 #table-announcements thead tr th:last-child,
 #table-upcoming-events tbody tr td:last-child,
 #table-upcoming-events thead tr th:last-child,
+#table-music tbody tr td:last-child,
+#table-music thead tr th:last-child,
 #table-events tbody tr td:last-child,
 #table-events thead tr th:last-child,
 #table-faq tbody tr td:last-child,
 #table-faq thead tr th:last-child {
     text-align: left;
 }
+
+#table-members tbody tr td:nth-child(5) .cell-details,
+#table-members tbody tr td:nth-child(6) .cell-details,
+#table-music tbody tr td:nth-child(6) .cell-details {
+    justify-content: flex-end;
+}
+
+
 .table-announcements-icon {
     height: 40px;
+    cursor: pointer;
     user-select: none;
+    transition: 0.1s;
+}
+.table-announcements-icon:hover {
+    opacity: 0.6;
+}
+.table-announcements-icon:active {
+    opacity: 0.2;
+    transition: 0s;
 }
 .table-faq-q {
     color: #3c78d8;
     margin-bottom: 10px;
 }
+#table-announcements thead tr th:nth-child(3) { min-width: 200px; }
+
+#table-upcoming-events thead tr th:nth-child(2),
+#table-upcoming-events thead tr th:nth-child(4) { min-width: 150px; }
+#table-upcoming-events thead tr th:nth-child(3) { min-width: 260px; }
+
+#table-members thead tr th:nth-child(2),
+#table-members thead tr th:nth-child(6) { min-width: 150px; }
+#table-members thead tr th:nth-child(3),
+#table-members thead tr th:nth-child(4) { min-width: 125px; }
+#table-members thead tr th:nth-child(5) { min-width: 300px; }
+
+#table-music thead tr th:nth-child(2),
+#table-music thead tr th:nth-child(3),
+#table-music thead tr th:nth-child(4),
+#table-music thead tr th:nth-child(6) { min-width: 150px; }
+
+#table-events thead tr th:nth-child(3),
+#table-events thead tr th:nth-child(4) { min-width: 150px; }
+#table-events thead tr th:nth-child(5) { min-width: 260px; }
 
 
 /*********************************************************************
@@ -735,6 +887,12 @@ Datalist
 .datalist tr td {
     padding: 5px 10px;
     text-align: left;
+}
+.datalist tr:first-child td:last-child {
+    border-radius: 0 15px 0 0;
+}
+.datalist tr:last-child td:last-child {
+    border-radius: 0 0 15px 0;
 }
 .datalist tr td:nth-child(odd) {
     color: #999999;
@@ -823,7 +981,7 @@ Modals
 }
 
 .x-button {
-    height: 15px;
+    height: 13px;
     transform: rotate(45deg);
     user-select: none;
     cursor: pointer;
@@ -836,17 +994,6 @@ Modals
 .x-button:active {
     opacity: 0.2;
     transition: 0s;
-}
-
-.modal-input {
-    height: 25px;
-}
-.modal-input img {
-    height: 15px;
-    margin-left: 2px;
-}
-.modal-input input {
-    flex-grow: 1;
 }
 
 
@@ -881,6 +1028,24 @@ Modal setlist
     width: 50%;
     text-align: center;
     font-family: 'DM Sans';
+    transition: 0.1s;
+    user-select: none;
+}
+#concert-setlist-types li:not(.concert-setlist-types-active) {
+    cursor: pointer;
+}
+#concert-setlist-types li:not(.concert-setlist-types-active):hover {
+    opacity: 0.5;
+}
+#concert-setlist-types li:not(.concert-setlist-types-active):active {
+    opacity: 0.2;
+    transition: 0s;
+}
+#concert-setlist-one-video {
+    display: none;  /* toggles to flex */
+}
+.concert-setlist-timestamp {
+    display: none;
 }
 .concert-setlist-types-active {
     font-weight: bold;
@@ -889,18 +1054,39 @@ Modal setlist
     border-bottom: 5px solid #ffd966ff;
 }
 
+.draggable-list tr td:nth-child(1) img {
+    pointer-events: none;
+}
 .draggable-list tr:nth-child(odd) {
     background-color: rgb(243, 243, 243);
 }
 .draggable-list tr td:nth-child(1) {
     width: 30px;
+    cursor: grab;
+    user-select: none;
+    transition: 0.1s;
+}
+.draggable-list tr td:nth-child(1):hover {
+    opacity: 0.5;
+}
+.draggable-list tr td:nth-child(1):active {
+    opacity: 0.2;
+    cursor: grabbing;
 }
 .draggable-list tr td:nth-child(2) {
     width: 40px;
+    color: rgb(177, 177, 177);
 }
 .draggable-list td {
     padding: 5px;
 }
 .draggable-list img {
     height: 14px;
+}
+.draggable-list-active {
+    opacity: 0.5;
+}
+.draggable-list-destination {
+    border-style: inset;
+    border: 1px solid black;
 }
