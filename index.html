@@ -525,26 +525,26 @@
                 </ul>
             </section>
             
-            <section id="section-musicians">
-                <h1>Musicians 🎵</h1>
+            <section id="section-members">
+                <h1>Members 🎵</h1>
                 <ul class="toolbar">
-                    <li class="toolbar-filter" onclick="toggleMenuFilterMusician()"></li>
+                    <li class="toolbar-filter" onclick="toggleDropdownFilterMember()"></li>
                     <li class="toolbar-button" onclick="toggleButtonMemberType(this)">Current Members</li>
                     <li class="toolbar-button" onclick="toggleButtonMemberTagType(this)">All Tags</li>
-                    <li class="toolbar-filter-menu toolbar-filter-menu-hidden" id="musicians-filter-menu">
-                        <label for="musician-filter-name">Name</label>
-                        <input id="musician-filter-name" type="text" placeholder="e.g. Mike" oninput="changeFilterMusicians()" />
-                        <label for="musician-filter-joined-before">Joined Before</label>
-                        <input id="musician-filter-joined-before" type="text" placeholder="e.g. Winter 2024" oninput="changeFilterMusicians()" />
-                        <label for="musician-filter-joined-after">Joined After</label>
-                        <input id="musician-filter-joined-after" type="text" placeholder="e.g. Fall 2025" oninput="changeFilterMusicians()" />
-                        <label for="musician-filter-include-tags">(+) Tags</label>
-                        <input id="musician-filter-include-tags" type="text" placeholder="e.g. Piano, Artist, ..." oninput="changeFilterMusicians()" />
-                        <label for="musician-filter-exclude-tags">(−) Tags</label>
-                        <input id="musician-filter-exclude-tags" type="text" placeholder="e.g. Piano, Artist, ..." oninput="changeFilterMusicians()" />
+                    <li class="toolbar-filter-dropdown toolbar-filter-dropdown-hidden" id="members-filter-dropdown">
+                        <label for="member-filter-name">Name</label>
+                        <input id="member-filter-name" type="text" placeholder="e.g. Mike" oninput="changeFilterMembers()" />
+                        <label for="member-filter-joined-before">Joined Before</label>
+                        <input id="member-filter-joined-before" type="text" placeholder="e.g. Winter 2024" oninput="changeFilterMembers()" />
+                        <label for="member-filter-joined-after">Joined After</label>
+                        <input id="member-filter-joined-after" type="text" placeholder="e.g. Fall 2025" oninput="changeFilterMembers()" />
+                        <label for="member-filter-include-tags">(+) Tags</label>
+                        <input id="member-filter-include-tags" type="text" placeholder="e.g. Piano, Artist, ..." oninput="changeFilterMembers()" />
+                        <label for="member-filter-exclude-tags">(−) Tags</label>
+                        <input id="member-filter-exclude-tags" type="text" placeholder="e.g. Piano, Artist, ..." oninput="changeFilterMembers()" />
                     </li>
                 </ul>
-                <div id="table-musicians" class="table">
+                <div id="table-members" class="table">
                     <table>
                         <thead>
                             <tr>
@@ -555,8 +555,8 @@
                                     <span>Links</span>
                                     <div class="pagination">
                                         <span id="table-page-count">1-2 of 2</span>
-                                        <div onclick="musiciansPageChange(-1)" class="paginate-arrow paginate-left"></div>
-                                        <div onclick="musiciansPageChange(1)" class="paginate-arrow paginate-right"></div>
+                                        <div onclick="membersTablePageChange(-1)" class="paginate-arrow paginate-left"></div>
+                                        <div onclick="membersTablePageChange(1)" class="paginate-arrow paginate-right"></div>
                                     </div>
                                 </th>
                             </tr>
@@ -613,11 +613,11 @@
             <section id="section-music-archive">
                 <h1>Music Archive</h1>
                 <ul class="toolbar">
-                    <li class="toolbar-filter" onclick="toggleMenuFilterMusic()"></li>
+                    <li class="toolbar-filter" onclick="toggleDropdownFilterMusic()"></li>
                     <li class="toolbar-button" onclick="toggleButtonMusicPerformances(this)">All Performances</li>
                     <li class="toolbar-button" onclick="toggleButtonMusicMediaOrigin(this)">All Media Origins</li>
                     <li class="toolbar-button" onclick="toggleButtonMusicLinkType(this)">All Link Types</li>
-                    <li class="toolbar-filter-menu toolbar-filter-menu-hidden" id="music-filter-menu">
+                    <li class="toolbar-filter-dropdown toolbar-filter-dropdown-hidden" id="music-filter-dropdown">
                         <label for="music-filter-title">Title</label>
                         <input id="music-filter-title" type="text" placeholder="e.g. Zankyosanka" oninput="changeFilterMusic()" />
                         <label for="music-filter-composer">Composer</label>
@@ -831,9 +831,9 @@
                 <nav id="nav-events-sidebar">
                     <div id="events-sidebar-toolbar-container">
                         <ul class="toolbar">
-                            <li class="toolbar-filter" onclick="toggleMenuFilterEvent()"></li>
+                            <li class="toolbar-filter" onclick="toggleDropdownFilterEvent()"></li>
                             <li class="toolbar-button" onclick="toggleButtonEventType(this)">All Event Types</li>
-                            <li class="toolbar-filter-menu toolbar-filter-menu-hidden" id="events-filter-menu">
+                            <li class="toolbar-filter-dropdown toolbar-filter-dropdown-hidden" id="events-filter-dropdown">
                                 <label for="event-filter-name">Name</label>
                                 <input id="event-filter-name" type="text" placeholder="e.g. End of Fall 2025" oninput="changeFilterEvents()" />
                                 <label for="event-filter-before">Before</label>

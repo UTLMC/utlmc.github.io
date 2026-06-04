@@ -2330,9 +2330,9 @@ Exec team
 
 
 /*******************************
-Musicians table
+Members table
 *******************************/
-#section-musicians {
+#section-members {
     width: var(--section-fullscreen-width);
     padding: var(--section-spacing) 0;
     position: relative;
@@ -2341,7 +2341,7 @@ Musicians table
     gap: calc(15 * var(--px));
     z-index: 0;
 }
-#section-musicians:before, #section-personnel:before, #section-personnel:after {
+#section-members:before, #section-personnel:before, #section-personnel:after {
     content: '';
     position: absolute;
     left: calc(-0.5 * (100vw - var(--section-vast-width)));
@@ -2349,7 +2349,7 @@ Musicians table
     width: 100vw;
     height: 100%;
 }
-#section-musicians:before {
+#section-members:before {
     left: calc(-0.5 * (100vw - var(--section-fullscreen-width)));
     background-image: linear-gradient(to bottom in oklab, #1f125a, #351c75);
     z-index: -1;
@@ -2366,7 +2366,7 @@ Musicians table
     background-image: linear-gradient(to right, rgba(66, 37, 137, 0), rgba(53, 28, 117, 0.8) 20%, rgba(53, 28, 117, 0.8) 80%, rgba(66, 37, 137, 0));
     z-index: -1;
 }
-#table-musicians {
+#table-members {
     margin-top: calc(-5 * var(--px));
 }
 .toolbar {
@@ -2378,7 +2378,7 @@ Musicians table
     gap: calc(8 * var(--px));
     position: relative;
 }
-.toolbar li:not(.toolbar-filter-menu) {
+.toolbar li:not(.toolbar-filter-dropdown) {
     color: black;
     font-family: 'DM Sans';
     font-size: calc(16 * var(--px));
@@ -2390,11 +2390,11 @@ Musicians table
     transition: 0.2s;
     border-radius: calc(8 * var(--px));
 }
-.toolbar li:not(.toolbar-filter-menu):hover {
+.toolbar li:not(.toolbar-filter-dropdown):hover {
     background-color: rgba(200, 200, 200, 0.9);
     filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.2));
 }
-.toolbar li:not(.toolbar-filter-menu):active {
+.toolbar li:not(.toolbar-filter-dropdown):active {
     background-color: rgba(150, 150, 150, 0.9);
     filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.5));
     transition: 0s;
@@ -2411,7 +2411,7 @@ Musicians table
     align-items: center;
     padding: 0 calc(8 * var(--px));
 }
-.toolbar-filter-menu {
+.toolbar-filter-dropdown {
     font-family: 'Atkinson Hyperlegible';
     display: grid;
     grid-template-columns: auto auto;
@@ -2427,11 +2427,11 @@ Musicians table
     filter: drop-shadow(0px 0px 5px rgba(0, 0, 20, 0.5));
     z-index: 1;
 }
-.toolbar-filter-menu label {
+.toolbar-filter-dropdown label {
     text-wrap: nowrap;
     font-size: calc(18 * var(--px));
 }
-.toolbar-filter-menu input {
+.toolbar-filter-dropdown input {
     font-family: 'Atkinson Hyperlegible';
     border: none;
     background-color: rgba(28, 20, 58, 0.8);
@@ -2439,10 +2439,10 @@ Musicians table
     color: rgb(206, 210, 255);
     font-size: calc(16 * var(--px));
 }
-.toolbar-filter-menu input::placeholder {
+.toolbar-filter-dropdown input::placeholder {
     color: rgb(118, 119, 192);
 }
-.toolbar-filter-menu-hidden {
+.toolbar-filter-dropdown-hidden {
     display: none;
 }
 
@@ -2936,11 +2936,11 @@ Paginated Table
 /*******************************
 Paginated table column width adjustment
 *******************************/
-#table-musicians tr td:nth-child(4n + 3), #table-musicians tr th:nth-child(3) {
+#table-members tr td:nth-child(4n + 3), #table-members tr th:nth-child(3) {
     text-align: center;
     min-width: calc(150 * var(--px));
 }
-#table-musicians tr td:nth-child(4n + 4), #table-musicians tr th:nth-child(4) {
+#table-members tr td:nth-child(4n + 4), #table-members tr th:nth-child(4) {
     min-width: calc(230 * var(--px));
 }
 

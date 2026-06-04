@@ -30,6 +30,7 @@ function cssGetAll(query) {
         throw new Error(`Invalid query ${query}`);
     return result;
 }
+// Convert HH:MM:SS, MM:SS, or SS into time in seconds.
 function timestampToSeconds(timestamp) {
     const parts = timestamp.split(':').map(x => parseInt(x, 10));
 
@@ -117,16 +118,15 @@ function rgbToHue(r, g, b) {
 /*********************************************************************
 Toggleables
 *********************************************************************/
-function toggleTab(event) {
-    const id = `${event.srcElement.id.substring(4)}`;
-
-    toggle(`tab-${id}`, 'tab-active');
-    toggle(`nav-${id}`, 'nav-active');
-}
 function toggle(id, activeClass) {
     const active = cssGetClass(activeClass)[0];
     active.classList.remove(activeClass);
     cssGetId(id).classList.add(activeClass);
+}
+function toggleTab(event) {
+    const id = `${event.srcElement.id.substring(4)}`;
+    toggle(`tab-${id}`, 'tab-active');
+    toggle(`nav-${id}`, 'nav-active');
 }
 
 function toggleModal(event) {
@@ -267,12 +267,16 @@ function pickHueMouseDown(event) {
     HUE_PICKER_ON = true;
     updateHueFromPicker();
 }
+
+// Convert colourpicker position (0-1) to RGB value (0-255)
 function xyToRgb(x, y) {
     const r = Math.round((1 - y) * ((1 - x) * 255 + x * COLOUR_PICKER_PRIMARY.r));
     const g = Math.round((1 - y) * ((1 - x) * 255 + x * COLOUR_PICKER_PRIMARY.g));
     const b = Math.round((1 - y) * ((1 - x) * 255 + x * COLOUR_PICKER_PRIMARY.b));
     return [r, g, b];
 }
+
+// Convert RGB value (0-255) to colourpicker position (0-1)
 function rgbToXy(r, g, b) {
     const max = Math.max(r, g, b);
     const min = Math.min(r, g, b);
@@ -282,6 +286,8 @@ function rgbToXy(r, g, b) {
 
     return [saturation, 1 - value];
 }
+
+// Get colourpicker position (0-1)
 function getCurrentPickerXY() {
     const container = cssGetId('colour-widget-picker');
     const rect = container.getBoundingClientRect();
@@ -299,6 +305,7 @@ function getCurrentPickerXY() {
     return [(left - rect.left) / rect.width, (top - rect.top) / rect.height];
 }
 
+// Move the hue picker based on the given hue (0-1)
 function moveHuePicker(x) {
     // Update hue picker circle
     const container = cssGetId('colour-widget-hue');
@@ -319,6 +326,8 @@ function moveHuePicker(x) {
         `linear-gradient(transparent, black), linear-gradient(to right, white, transparent), rgb(${primaryR}, ${primaryG}, ${primaryB})`
     );
 }
+
+// Move the colour picker bsed on the given position (0-1)
 function moveColourPicker(x, y) {
     const container = cssGetId('colour-widget-picker');
     const rect = container.getBoundingClientRect();
@@ -327,6 +336,7 @@ function moveColourPicker(x, y) {
     circle.style.setProperty('top', `${y * rect.height + rect.top}px`);
 }
 
+// Update colour after moving hue picker
 function updateHueFromPicker() {
     const container = cssGetId('colour-widget-hue');
     const rect = container.getBoundingClientRect();
@@ -339,6 +349,8 @@ function updateHueFromPicker() {
     cssGetId('colour-widget-rgb').value = `rgb(${r}, ${g}, ${b})`;
     cssGetId('colour-widget-hex').value = rgbToHex(r, g, b);
 }
+
+// Update colour after moving colour picker
 function updateColourFromPicker() {
     const container = cssGetId('colour-widget-picker');
     const rect = container.getBoundingClientRect();
@@ -352,6 +364,8 @@ function updateColourFromPicker() {
     cssGetId('colour-widget-rgb').value = `rgb(${r}, ${g}, ${b})`;
     cssGetId('colour-widget-hex').value = rgbToHex(r, g, b);
 }
+
+// Update colour after changing RGB input
 const updateColourFromRgb = (() => {
     const input = cssGetId('colour-widget-rgb');
     const rgbRegex = /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/i;
@@ -381,6 +395,8 @@ const updateColourFromRgb = (() => {
         cssGetId('colour-widget-hex').value = rgbToHex(r, g, b);
     };
 })();
+
+// Update colour after changing hex input
 const updateColourFromHex = (() => {
     const input = cssGetId('colour-widget-hex');
     const hexRegex = /^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
@@ -441,23 +457,24 @@ function onDragOver(event) {
     event.preventDefault();
 }
 function onDrop(element) {
-    if (element !== CURR_DRAGGING) {
-        const tbody = element.parentElement.parentElement;
-        const rows = [...tbody.children];
-        const draggedIndex = rows.indexOf(CURR_DRAGGING);
-        const targetIndex = rows.indexOf(element.parentElement);
+    if (element === CURR_DRAGGING) {
+        return;
+    }
+    const tbody = element.parentElement.parentElement;
+    const rows = [...tbody.children];
+    const draggedIndex = rows.indexOf(CURR_DRAGGING);
+    const targetIndex = rows.indexOf(element.parentElement);
 
-        if (draggedIndex < targetIndex) {
-            element.parentElement.after(CURR_DRAGGING);
-        } else {
-            element.parentElement.before(CURR_DRAGGING);
-        }
+    if (draggedIndex < targetIndex) {
+        element.parentElement.after(CURR_DRAGGING);
+    } else {
+        element.parentElement.before(CURR_DRAGGING);
+    }
 
-        // Refresh setlist numbers
-        const n = Math.max(2, String(tbody.children.length).length);
-        for (let i = 0; i < tbody.children.length; i++) {
-            tbody.children[i].children[1].innerText = String(i + 1).padStart(n, '0');
-        }
+    // Refresh setlist numbers
+    const n = Math.max(2, String(tbody.children.length).length);
+    for (let i = 0; i < tbody.children.length; i++) {
+        tbody.children[i].children[1].innerText = String(i + 1).padStart(n, '0');
     }
 }
 
@@ -487,7 +504,7 @@ function keyDownInput(event) {
     console.log('enter!');
 }
 
-function newDatalistTag(element) {
+function addNewTagToDatalist(element) {
     const name = 'datalist-tag-add-clicked';
     if (!element.classList.contains(name)) {
         element.classList.add(name);
@@ -596,7 +613,6 @@ function parseCSV(csv) {
 
     return rows.map(x => x.map(y => y.trim()));
 }
-
 
 function parseSeason(season) {
     const [name, year] = season.split(' ');
@@ -963,7 +979,7 @@ async function uploadEvents(element) {
     }
 
     // Map column to row index 
-    const rows = new Set(['Name', 'Type', 'Date', 'Time', 'Location', 'Description', 'Gallery', 'Video']);
+    const rows = new Set(['Name', 'Type', 'Start', 'End', 'Location', 'Description', 'Gallery', 'Video']);
     const indices = {};
     for (let i = 0; i < header.length; i++) {
         if (rows.has(header[i])) {
@@ -978,10 +994,9 @@ async function uploadEvents(element) {
             name: row[indices['Name']],
             location: row[indices['Location']],
             description: row[indices['Description']],
-            date: row[indices['Date']]
+            start: row[indices['Start']].replace(', ', '|'),
+            end: row[indices['End']].replace(', ', '|'),
         };
-        const time = row[indices['Time']];
-        if (time) result.time = time;
         const gallery = row[indices['Gallery']];
         if (gallery) result.gallery = gallery;
         const video = row[indices['Video']];
@@ -1007,6 +1022,13 @@ function enrichEventData(events, setlists) {
     return events;
 }
 
+function enrichMemberData(members, instruments) {
+    const indexer = Object.fromEntries(instruments.map((x, i) => [x, i]));
+    for (let i = 0; i < members.length; i++) {
+        members[i].instruments = members[i].instruments.map(x => indexer[x]);
+    }
+}
+
 async function parseData() {
     const [memberData, discords] = await uploadMembers(cssGetId('upload-members'));
     const musicData = await uploadMusic(cssGetId('upload-music'));
@@ -1014,6 +1036,7 @@ async function parseData() {
 
     const [performancesData, setlists, instruments] = await uploadPerformances(cssGetId('upload-performances'), memberData, discords, musicData, eventData);
     const fullEventData = enrichEventData(eventData, setlists);
+    enrichMemberData(memberData, instruments);
 
     console.log(instruments);
     console.log(memberData);

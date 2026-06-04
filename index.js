@@ -26,6 +26,9 @@ function runOnce(func) {
         return output;
     };
 }
+/**
+ * Find all rgb(x, x, x) in a string and return a list of [r, g, b] tuples
+ */
 function extractRGB(str) {
     const regex = /rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)/gi;
     const results = [];
@@ -37,29 +40,7 @@ function extractRGB(str) {
         results.push([r, g, b]);
         match = regex.exec(str);
     }
-
     return results;
-}
-function dateToString(date = new Date(), delimiter = '-') {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-
-    return [year, month, day].join(delimiter);
-}
-function parseDate(str) {
-    let date;
-    for (const delimiter of ['-', '/', '\\', ' ', '.']) {
-        date = str.split(delimiter);
-        if (date.length === 3) {
-            break;
-        }
-    }
-    if (date.length !== 3) { return ''; }
-    let [year, month, day] = date.map(x => parseInt(x, 10));
-    if (isNaN(year) || isNaN(month) || isNaN(day)) { return ''; }
-
-    return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
 function assert(condition, errorMessage) {
     if (!condition) {
@@ -96,6 +77,10 @@ function cssSetId(id, properties) {
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
+/**
+ * Convert a date (new Date()) into a formatted HH:MM string
+ * includePeriod controls whether am/pm shows
+ */
 function formatTime(date, includePeriod = true) {
   let hours = date.getHours();
   const minutes = date.getMinutes();
@@ -109,6 +94,10 @@ function formatTime(date, includePeriod = true) {
     : `${hours}:${minuteStr}`;
 }
 
+/**
+ * Convert two dates (new Date()) into a formatted "X to Y" string
+ * The formatted string includes times
+ */
 function parseTimeRange(start, end) {
   const startPeriod = start.getHours() >= 12 ? "pm" : "am";
   const endPeriod = end.getHours() >= 12 ? "pm" : "am";
@@ -122,6 +111,10 @@ function parseTimeRange(start, end) {
   return `${formatTime(start, true)} - ${formatTime(end, true)}`;
 }
 
+/**
+ * Convert two dates (new Date()) into a formatted "X to Y" string
+ * The formatted string includes dates + times
+ */
 function parseFromTo(start, end) {
   const sameMonth = start.getMonth() === end.getMonth();
   const sameDay = start.getDate() === end.getDate();
@@ -139,6 +132,32 @@ function parseFromTo(start, end) {
   return `${formatMonthDay(start)}, ${formatTime(start, true)} - ${formatMonthDay(end)}, ${formatTime(end, true)}`;
 }
 
+/**
+ * Convert any "YYYY-MM-DD" with a [-/\ .] delimiter into "YYYY-MM-DD"
+ */
+function normalizeDateString(str) {
+    let date;
+    for (const delimiter of ['-', '/', '\\', ' ', '.']) {
+        date = str.split(delimiter);
+        if (date.length === 3) { break; }
+    }
+    if (date.length !== 3) { return ''; }
+    let [year, month, day] = date.map(x => parseInt(x, 10));
+    if (isNaN(year) || isNaN(month) || isNaN(day)) { return ''; }
+
+    return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+}
+
+/**
+ * Convert "YYYY-MM-DD|HH:MM" into a datetime object
+ */
+function parseDate(datetime) {
+    const [date, time] = datetime.split('|');
+    const [year, month, day] = date.split('-').map(x => parseInt(x, 10));
+    const [hour, minute] = time.split(':').map(x => parseInt(x, 10));
+    return new Date(year, month - 1, day, hour, minute);
+}
+
 function parseMarkdown(text) {
     // Links
     text = text.replace(
@@ -146,6 +165,10 @@ function parseMarkdown(text) {
         '<a href="$2" target="_blank">$1</a>'
     );
     return text;
+}
+
+function isSubstring(parent, child) {
+    return parent.toLowerCase().includes(child.toLowerCase());
 }
 
 
@@ -289,9 +312,6 @@ function toggleConcertTab(element) {
         document.head.appendChild(tag);
     }
 }
-// function toggleSongTab(element) {
-//     return genericToggleTab(element, 'song');
-// }
 function toggleCarousel(next) {
     CURR_CAROUSEL = (CURR_CAROUSEL + (next ? 1 : -1) + CAROUSEL.length) % CAROUSEL.length;
     cssGetClass('carousel-active')[0].classList.remove('carousel-active');
@@ -302,6 +322,7 @@ function toggleCarousel(next) {
 }
 
 // Fix sizing issue on Firefox
+// There's a glitch where it doesn't resize properly as screen width changes
 function fixTablePersonnelWidth() {
     const tablePersonnel = cssGetId('table-personnel');
     if (window.innerWidth > 1200) {
@@ -424,24 +445,24 @@ function scrollHorizontally(event) {
  * Ensures that clicks outside of a filter menu will close it
  */
 const handleClick = (() => {
-    const button1 = cssGetFirst('#section-musicians .toolbar .toolbar-filter');
-    const window1 = cssGetId('musicians-filter-menu');
+    const button1 = cssGetFirst('#section-members .toolbar .toolbar-filter');
+    const window1 = cssGetId('members-filter-dropdown');
 
     const button2 = cssGetFirst('#section-music-archive .toolbar .toolbar-filter');
-    const window2 = cssGetId('music-filter-menu');
+    const window2 = cssGetId('music-filter-dropdown');
 
     const button3 = cssGetFirst('#section-events .toolbar .toolbar-filter');
-    const window3 = cssGetId('events-filter-menu');
+    const window3 = cssGetId('events-filter-dropdown');
 
     return (event) => {
         if (!button1.contains(event.target) && !window1.contains(event.target)) {
-            window1.classList.add('toolbar-filter-menu-hidden');
+            window1.classList.add('toolbar-filter-dropdown-hidden');
         }
         if (!button2.contains(event.target) && !window2.contains(event.target)) {
-            window2.classList.add('toolbar-filter-menu-hidden');
+            window2.classList.add('toolbar-filter-dropdown-hidden');
         }
         if (!button3.contains(event.target) && !window3.contains(event.target)) {
-            window3.classList.add('toolbar-filter-menu-hidden');
+            window3.classList.add('toolbar-filter-dropdown-hidden');
         }
         const container = cssGetClass('concert-performers-caption-active')[0];
         if (container && !container.contains(event.target)) {
@@ -574,859 +595,6 @@ function construct(json) {
     return element;
 }
 
-async function injectHomeEvent() {
-    const now = new Date();
-
-    if (!CURRENT_EVENT || !CURRENT_EVENT.type || now > CURRENT_EVENT.hideAfter) {
-        cssGetId('section-home-event').style.setProperty('display', 'none');
-    } else if (CURRENT_EVENT.type === 'concert') {
-        const {
-            links: { poster, rvsp, setlist, recording },
-            title,
-            dateStart,
-            dateEnd,
-            location,
-            tickets,
-            preConcertDescription,
-            postConcertDescription
-        } = CURRENT_EVENT;
-        cssGetFirst('#home-event-poster img').src = poster;
-        cssGetFirst('#home-event-text hgroup h3').innerText = title;
-        cssGetId('home-event-date').innerText = parseFromTo(dateStart, dateEnd);
-        cssGetId('home-event-location').innerText = location;
-        cssGetId('home-event-tickets').innerText = tickets;
-
-        const text = now > dateEnd ? postConcertDescription : preConcertDescription;
-        const paragraphs = text.map(x => construct({ element: 'p', innerText: x }));
-
-        const buttons = construct({ element: 'div', id: 'home-event-buttons' });
-        if (rvsp && now < dateStart) {
-            buttons.appendChild(construct({
-                element: 'a',
-                classes: ['home-event-button'],
-                innerText: 'RVSP',
-                attributes: { href: rvsp, target: '_blank' }
-            }));
-        }
-        if (setlist) {
-            buttons.appendChild(construct({
-                element: 'a',
-                classes: ['home-event-button'],
-                innerText: 'See the setlist',
-                attributes: { href: setlist, target: '_blank' }
-            }));
-        }
-        if (recording) {
-            buttons.appendChild(construct({
-                element: 'a',
-                classes: ['home-event-button'],
-                innerText: 'Watch the recording',
-                attributes: { href: recording, target: '_blank' }
-            }));
-        }
-
-        const container = cssGetId('home-event-text');
-        paragraphs.forEach(x => container.appendChild(x));
-        container.appendChild(buttons);
-    } else {
-        throw new Error(CURRENT_EVENT.type);
-    }
-}
-async function injectHomeBulletin() {
-    const sectionAnnouncements = cssGetId('section-announcements');
-    const sectionUpcoming = cssGetId('section-upcoming-events');
-    const containerAnnouncements = cssGetId('announcement-container');
-    const containerUpcoming = cssGetId('upcoming-events-container');
-
-    if (ANNOUNCEMENTS.length > 0) {
-        ANNOUNCEMENTS.forEach(({ type, text }) => {
-            containerAnnouncements.appendChild(construct({
-                element: 'aside',
-                classes: ['announcement'],
-                children: [{
-                    element: 'div',
-                    classes: [type === 'alert' ? 'icon-alert' : 'icon-announcement']
-                }, {
-                    element: 'p',
-                    innerHTML: parseMarkdown(text)
-                }]
-            }));
-        });
-    }
-    if (UPCOMING_EVENTS.length > 0) {
-        UPCOMING_EVENTS.forEach(({ dateStart, dateEnd, location, title, image }) => {
-            containerUpcoming.appendChild(construct({
-                element: 'li',
-                style: {
-                    'background-image': `url('${image}')`
-                },
-                children: [{
-                    element: 'hgroup',
-                    children: [{
-                        element: 'h4',
-                        classes: ['upcoming-event-date'],
-                        innerHTML: `<span>${dateStart.getDate()}</span> ${MONTHS[dateStart.getMonth()].slice(0, 3)}`
-                    }, {
-                        element: 'p',
-                        classes: ['upcoming-event-location'],
-                        innerText: location
-                    }, {
-                        element: 'p',
-                        classes: ['upcoming-event-time'],
-                        innerText: parseTimeRange(dateStart, dateEnd)
-                    }]
-                }, {
-                    element: 'h4',
-                    classes: ['upcoming-event-name'],
-                    innerText: title
-                }]
-            }))
-        })
-    }
-    
-    if (ANNOUNCEMENTS.length === 0 && UPCOMING_EVENTS.length === 0) {
-        sectionAnnouncements.style.setProperty('display', 'none');
-        sectionUpcoming.style.setProperty('display', 'none');
-    } else if (ANNOUNCEMENTS.length === 0) {
-        sectionAnnouncements.style.setProperty('display', 'none');
-        sectionUpcoming.style.setProperty('width', '100%');
-    } else if (UPCOMING_EVENTS.length === 0) {
-        sectionAnnouncements.style.setProperty('width', '100%');
-        sectionAnnouncements.classList.add('section-announcements-full');
-        sectionUpcoming.style.setProperty('display', 'none');
-    }
-}
-
-const TABLE_MUSICIANS = {
-    pageSize: 10,
-    tags: 'all',
-    filters: {
-        memberType: 'current',
-        page: 0,
-        name: '',
-        joinedBefore: '',
-        joinedAfter: '',
-        includeTags: '',
-        excludeTags: ''
-    }
-}
-function filterMusician(x) {
-    const { filters: { memberType, name, joinedBefore, joinedAfter, includeTags, excludeTags } } = TABLE_MUSICIANS;
-    if (memberType === 'current' && x.left) return false;
-    if (memberType === 'past' && !x.left) return false;
-    if (name && !x.name.toLowerCase().includes(name.toLowerCase())) return false;
-    
-    if (joinedBefore || joinedAfter) {
-        const [month, year] = x.joined.split(' ');
-        const joined = new Date(parseInt(year, 10), month === 'Fall' ? 9 : 0);
-        if (joinedBefore) {
-            const before = joinedBefore.split(' ');
-            if (before.length !== 2) return false;
-
-            const yearBefore = parseInt(before[1], 10);
-            if (!yearBefore) return false;
-            
-            const monthBefore = before[0].toLowerCase();
-            if (monthBefore !== 'fall' && monthBefore !== 'winter') return false;
-
-            if (new Date(yearBefore, monthBefore === 'fall' ? 9 : 0) < joined) return false;
-        }
-        if (joinedAfter) {
-            const after = joinedAfter.split(' ');
-            if (after.length !== 2) return false;
-
-            const yearAfter = parseInt(after[1], 10);
-            if (!yearAfter) return false;
-            
-            const monthAfter = after[0].toLowerCase();
-            if (monthAfter !== 'fall' && monthAfter !== 'winter') return false;
-
-            if (new Date(yearAfter, monthAfter === 'fall' ? 9 : 0) > joined) return false;
-        }
-    }
-    if (includeTags || excludeTags) {
-        const tags = new Set([...x.roles.map(x => x.slice(0, x.includes(" (") ? x.indexOf(' (') : undefined)), ...x.instruments].map(x => x.toLowerCase()));
-        if (includeTags && includeTags.split(',').map(x => x.toLowerCase().trim()).some(x => !tags.has(x))) return false;
-        if (excludeTags && excludeTags.split(',').map(x => x.toLowerCase().trim()).some(x => tags.has(x))) return false;
-    }
-
-    return true;
-}
-function constructMusicianRow(member) {
-    return construct({
-        element: 'tr',
-        id: `section-musician-${member.id}`,
-        children: [{
-            element: 'td',
-            innerText: member.name
-        }, {
-            element: 'td',
-            children: [{
-                element: 'p',
-                classes: ['tag-container'],
-                children: [
-                    ...member.instruments.map(x => ({ text: x, type: 'instrument' })),
-                    ...member.roles.map(x => ({ text: x, type: 'role' }))
-                ].map(x => ({
-                    element: 'span',
-                    classes: [`li-${x.type}`],
-                    innerText: x.text,
-                    style: getTagColour(x.text)
-                }))
-            }]
-        }, {
-            element: 'td',
-            innerText: member.joined
-        }, {
-            element: 'td',
-            children: [{
-                element: 'ul',
-                classes: ['list-social-media'],
-                children: Object.entries(member.links).map(([site, info]) => ({
-                    element: 'li',
-                    classes: [`li-${site}`],
-                    innerText: Array.isArray(info) ? '' : info,
-                    children: Array.isArray(info) ? [{
-                        element: 'a',
-                        innerText: info[0],
-                        attributes: {
-                            href: info[1],
-                            target: '_blank'
-                        }
-                    }] : []
-                }))
-            }]
-        }]
-    });
-}
-const updateMusiciansTable = (() => {
-    const idToRow = {};
-    const table = cssGetFirst('#table-musicians tbody');
-    const pageCount = cssGetId('table-page-count');
-    let prevMembers = undefined;
-
-    return async (reFilter=true) => {
-        const members = (reFilter || !prevMembers) ? MEMBERS.filter(filterMusician) : prevMembers;
-        prevMembers = members;
-
-        // Update pagination display
-        let start = 0;
-        let end = 0;
-        if (members.length === 0) {
-            pageCount.innerHTML = `0-0 of 0`
-        } else {
-            const n = Math.ceil(members.length / TABLE_MUSICIANS.pageSize);
-            TABLE_MUSICIANS.filters.page = (TABLE_MUSICIANS.filters.page + n) % n;
-            start = TABLE_MUSICIANS.filters.page * TABLE_MUSICIANS.pageSize;
-            end = Math.min(members.length, (TABLE_MUSICIANS.filters.page + 1) * TABLE_MUSICIANS.pageSize);
-            pageCount.innerHTML = `${start + 1}-${end} of ${members.length}`
-        }
-
-        // Re-generate rows
-        const fragment = document.createDocumentFragment();
-        const nextIdToRow = {};
-        for (const member of members.slice(start, end)) {
-            let row = idToRow[member.id];
-            if (!row) {
-                row = constructMusicianRow(member);
-            }
-            fragment.appendChild(row);
-            nextIdToRow[member.id] = row;
-        }
-        for (const id in idToRow) {
-            if (!nextIdToRow[id]) {
-                idToRow[id].remove();
-            }
-            delete idToRow[id];
-        }
-
-        Object.assign(idToRow, nextIdToRow);
-        table.appendChild(fragment);
-    } 
-})();
-
-function toggleMenuFilterMusician() {
-    cssGetId('musicians-filter-menu').classList.toggle('toolbar-filter-menu-hidden');
-}
-function toggleButtonMemberType(element) {
-    if (TABLE_MUSICIANS.filters.memberType === 'current') {
-        TABLE_MUSICIANS.filters.memberType = 'past';
-        element.innerText = 'Past Members';
-    } else if (TABLE_MUSICIANS.filters.memberType === 'past') {
-        TABLE_MUSICIANS.filters.memberType = 'all';
-        element.innerText = 'All Members';
-    } else {
-        TABLE_MUSICIANS.filters.memberType = 'current';
-        element.innerText = 'Current Members';
-    }
-    TABLE_MUSICIANS.filters.page = 0;
-    updateMusiciansTable();
-}
-const toggleButtonMemberTagType = (() => {
-    const style = document.createElement('style');
-    document.head.appendChild(style);
-
-    return (element) => {
-        if (TABLE_MUSICIANS.tags === 'all') {
-            TABLE_MUSICIANS.tags = 'instruments';
-            element.innerText = 'Instrument Tags';
-            style.textContent = '.li-role { display: none }';
-        } else if (TABLE_MUSICIANS.tags === 'instruments') {
-            TABLE_MUSICIANS.tags = 'roles';
-            element.innerText = 'Role Tags';
-            style.textContent = '.li-instrument { display: none }';
-        } else {
-            TABLE_MUSICIANS.tags = 'all';
-            element.innerText = 'All Tags';
-            style.textContent = '';
-        }
-    }
-})();
-function musiciansPageChange(delta) {
-    TABLE_MUSICIANS.filters.page += delta;
-    updateMusiciansTable(false);
-}
-const changeFilterMusicians = debounce(() => {
-    TABLE_MUSICIANS.filters.name = cssGetId('musician-filter-name').value;
-    TABLE_MUSICIANS.filters.joinedBefore = cssGetId('musician-filter-joined-before').value;
-    TABLE_MUSICIANS.filters.joinedAfter = cssGetId('musician-filter-joined-after').value;
-    TABLE_MUSICIANS.filters.includeTags = cssGetId('musician-filter-include-tags').value;
-    TABLE_MUSICIANS.filters.excludeTags = cssGetId('musician-filter-exclude-tags').value;
-    updateMusiciansTable();
-}, 300);
-
-function getTagColour(name) {
-    if (name.includes(' (')) {
-        name = name.slice(0, name.indexOf(' ('));
-    }
-    const background = TAGS[name];
-    if (background) {
-        const rgbs = extractRGB(background);
-        const color = rgbs.flat().reduce((a, b) => a + b) / (rgbs.length * 3) > 128 ? 'black' : 'white';
-        if (background.startsWith('linear-gradient')) {
-            return { color, 'background-image': background }
-        } else if (background.startsWith('rgb')) {
-            return { color, 'background-color': background }
-        } else {
-            throw new Error(background);
-        }
-    }
-    return {};
-}
-
-async function injectMembers() {
-    // Get personnel - instruments + specific roles
-    const instruments = MEMBERS.filter(x => !x.left).map(x => x.instruments).flat();
-    let total = 0;
-    const personnel = {};
-    for (const instrument of instruments) {
-        if (!personnel[instrument]) {
-            personnel[instrument] = 0;
-        }
-        personnel[instrument] += 1;
-    }
-    const personnelRoles = new Set(['Arranger', 'Artist', 'Video Editor']);
-    for (const role of personnelRoles) {
-        for (const member of MEMBERS) {
-            if (member.roles.includes(role)) {
-                if (!personnel[role]) {
-                    personnel[role] = 0;
-                }
-                personnel[role] += 1;
-            }
-        }
-    }
-    personnel.Total = MEMBERS.filter(x => !x.left).length;
-    personnelRoles.add('Total');
-
-    // Render personnel
-    const nameSubstitutions = {
-        'Alto Saxophone': 'Alto Sax',
-        'Tenor Saxophone': 'Tenor Sax',
-        'Baritone Saxophone': 'Baritone Sax',
-    }
-    const tablePersonnel = cssGetId('table-personnel');
-    Object.entries(personnel).sort((a, b) => {
-        const [nameA, countA] = a;
-        const [nameB, countB] = b;
-
-        // Put total at end
-        if (nameA === 'Total') { return 1; }
-        else if (nameB === 'Total') { return -1; }
-        
-        if (countA === countB) {
-            return nameA.localeCompare(nameB);
-        }
-        return countB - countA;
-    }).forEach(([name, count]) => {
-        const cardClasses = [
-            'personnel-card',
-            `personnel-${name.toLowerCase().replace(' ', '-')}`,
-        ];
-        if (personnelRoles.has(name)) {
-            cardClasses.push('personnel-notinstrument');
-        }
-        const displayName = nameSubstitutions[name] ? nameSubstitutions[name] : name;
-
-        tablePersonnel.appendChild(construct({
-            element: 'li',
-            children: [{
-                element: 'div',
-                classes: cardClasses,
-                children: [{
-                    element: 'span',
-                    classes: ['personnel-title'],
-                    innerText: displayName
-                }, {
-                    element: 'span',
-                    classes: ['personnel-count'],
-                    innerText: `×${count}`
-                }]
-            }]
-        }));
-    });
-    
-    // Update executive team to the latest year at August (if it doesn't exist, stick to last year)
-    const now = new Date();
-    let year = now.getMonth() >= 7 ? now.getFullYear() : now.getFullYear() - 1;
-    let execTeam = MEMBERS.filter(x => x.roles.some(role => role.includes(String(year).slice(2))));
-    while (execTeam.length === 0) {
-        year -= 1;
-        execTeam = MEMBERS.filter(x => x.roles.some(role => role.includes(String(year).slice(2))));
-        if (year === 2022) {
-            throw new Error("WTF");
-        }
-    }
-    cssGetId('exec-team-year').innerText = `${year}-${year + 1}`;
-
-    // Inject executive team
-    const digit = String(year).slice(2);
-    const execTeamProfile = cssGetId('exec-team-profile');
-    execTeam.sort((a, b) => {
-        // Order of display: executives, then alphabetically by role, then by real name
-        let roleA = a.roles.find(role => role.includes(digit));
-        let roleB = b.roles.find(role => role.includes(digit));
-        roleA = roleA.slice(0, roleA.indexOf(' ('));
-        roleB = roleB.slice(0, roleB.indexOf(' ('));
-
-        const execA = roleA === 'Executive';
-        const execB = roleB === 'Executive';
-        if (execA && !execB) {
-            return -1;
-        } else if (!execA && execB) {
-            return 1;
-        }
-        if (roleA === roleB) {
-            return a.name.localeCompare(b.name);
-        }        
-        return roleA.localeCompare(roleB);
-    }).forEach(x => {
-        const execRole = x.roles.find(role => role.includes(digit));
-        const nonExecRoles = [...x.instruments, ...x.roles.filter(role => !role.includes(" ("))];
-
-        execTeamProfile.appendChild(construct({
-            element: 'li',
-            classes: ['exec-team-card'],
-            children: [{
-                element: 'img',
-                attributes: { src: 'assets/images/asanoha.webp' }
-            }, {
-                element: 'div',
-                children: [{
-                    element: 'hgroup',
-                    children: [{
-                        element: 'h4',
-                        innerText: x.name
-                    }, {
-                        element: 'p',
-                        innerText: execRole.slice(0, execRole.indexOf(" ("))
-                    }]
-                }, {
-                    element: 'p',
-                    classes: ['tag-container'],
-                    children: nonExecRoles.map(x => ({
-                        element: 'span',
-                        innerText: x,
-                        style: getTagColour(x)
-                    }))
-                }, {
-                    element: 'ul',
-                    classes: ['list-social-media'],
-                    children: Object.entries(x.links).map(([site, info]) => {
-                        let url, username;
-                        if (Array.isArray(info)) {
-                            [username, url] = info;
-                        } else {
-                            username = info;
-                        }
-                        return {
-                            element: 'li',
-                            classes: [`li-${site}`],
-                            innerText: url ? '' : username,
-                            children: url ? [{
-                                element: 'a',
-                                attributes: { target: '_blank', href: url },
-                                innerText: username
-                            }] : []
-                        };
-                    })
-                }]
-            }]
-        }));
-    });
-
-    const outreachOptions = new Set(['discord', 'instagram']);
-    const homeOutreach = cssGetId('home-outreach');
-    execTeam
-        .filter(x => x.roles.some(role => role.startsWith('Executive')))
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .forEach(x => {
-            homeOutreach.appendChild(construct({
-                element: 'h4',
-                innerText: x.name
-            }))
-            homeOutreach.appendChild(construct({
-                element: 'ul',
-                classes: ['list-social-media'],
-                children: Object.entries(x.links).filter(([site]) => outreachOptions.has(site)).map(([site, info]) => ({
-                    element: 'li',
-                    classes: [`li-${site}`],
-                    innerHTML: info
-                }))
-            }))
-        });
-
-    updateMusiciansTable();
-}
-
-const TABLE_MUSIC = {
-    filters: {
-        performance: 'all',
-        mediaOrigin: 'all',
-        filterSheetMusic: false,
-        title: '',
-        composer: '',
-        arranger: '',
-        from: '',
-        performed: '',
-        includeInstruments: '',
-        excludeInstruments: ''
-    }
-}
-function toggleButtonMusicPerformances(element) {
-    if (TABLE_MUSIC.filters.performance === 'all') {
-        TABLE_MUSIC.filters.performance = 'large';
-        element.innerText = 'Large Ensembles';
-    } else if (TABLE_MUSIC.filters.performance === 'large') {
-        TABLE_MUSIC.filters.performance = 'small';
-        element.innerText = 'Small Ensembles';
-    } else if (TABLE_MUSIC.filters.performance === 'small') {
-        TABLE_MUSIC.filters.performance = 'recording';
-        element.innerText = 'Recording Projects';
-    } else if (TABLE_MUSIC.filters.performance === 'recording') {
-        TABLE_MUSIC.filters.performance = 'external';
-        element.innerText = 'External Groups';
-    } else {
-        TABLE_MUSIC.filters.performance = 'all';
-        element.innerText = 'All Performances';
-    }
-    updateMusicTable();
-};
-function toggleButtonMusicMediaOrigin(element) {
-    if (TABLE_MUSIC.filters.mediaOrigin === 'all') {
-        TABLE_MUSIC.filters.mediaOrigin = 'anime';
-        element.innerText = 'Anime Music';
-    } else if (TABLE_MUSIC.filters.mediaOrigin === 'anime') {
-        TABLE_MUSIC.filters.mediaOrigin = 'vg';
-        element.innerText = 'Video Game Music';
-    } else if (TABLE_MUSIC.filters.mediaOrigin === 'vg') {
-        TABLE_MUSIC.filters.mediaOrigin = 'vocaloid';
-        element.innerText = 'Vocaloid Music';
-    } else {
-        TABLE_MUSIC.filters.mediaOrigin = 'all';
-        element.innerText = 'All Media Origins';
-    }
-    updateMusicTable();
-}
-function toggleButtonMusicLinkType(element) {
-    element.innerText = TABLE_MUSIC.filters.filterSheetMusic ? 'All Link Types' : 'Has Sheet Music';
-    TABLE_MUSIC.filters.filterSheetMusic = !TABLE_MUSIC.filters.filterSheetMusic;
-    updateMusicTable();
-}
-function getInstrumentationFromPerformers(performers) {
-    return Object.entries(performers).map(([instrument, players]) => (
-        players.length > 1 ? `${instrument} (${players.length})` : instrument
-    ));
-}
-function initMusicTable() {
-    const table = cssGetFirst('#table-music-archive tbody');
-    const rows = [];
-    let j = 0;
-    const originalRow = {};
-
-    MUSIC.forEach((x, i) => {
-        // Create multiple versions of the same song if the song has multiple arrangements, as judged by
-        // - Different sheet music links
-        // - Different instrumentation or arranger (if applicable)
-
-        let versions = {};
-        const first = x.performances[0];
-        if (!first) {
-            throw new Error(`No performances found: ${x}`);
-        }
-        const firstData = {
-            instrumentation: getInstrumentationFromPerformers(first.performers),
-            concerts: first.concerts,
-            songType: first.songType
-        };
-        if (first.arranger) {
-            firstData.arranger = first.arranger.map(y => typeof(y) === 'number' ? MEMBERS[y].name : y).join(', ');
-        }
-        if (first.sheetMusic) { firstData.sheetMusic = first.sheetMusic }
-        if (first.link) {
-            firstData.link = [first.link];
-            firstData.concerts.push('Recording');
-        }
-
-        // Index performances by sheet music/instrumentation
-        if (first.sheetMusic) {
-            versions[first.sheetMusic] = firstData
-        } else {
-            versions[getInstrumentationFromPerformers(first.performers).join('|')] = firstData;
-        }
-
-        // If performances match a pre-existing one, append the concert
-        for (const performance of x.performances.slice(1)) {
-            const i1 = versions[performance.sheetMusic]?.instrumentation.join('|');
-            const i2 = getInstrumentationFromPerformers(performance.performers).join('|');
-            const a1 = versions[performance.sheetMusic]?.arranger.join('|');
-            const a2 = performance.arranger.join('|');
-
-            if (performance.sheetMusic && versions[performance.sheetMusic]) {
-                if (i1 !== i2) { throw new Error(`[${x.name}] Expected performances with same sheet music to have same instrumentation`); }
-                if (a1 !== a2) { throw new Error(`[${x.name}] Expected performances with same sheet music to have same arranger`); }
-                versions[performance.sheetMusic].concerts.push(...performance.concerts);
-                if (performance.link) {
-                    if (!version[performance.sheetMusic].link) {
-                        version[performance.sheetMusic].link = [];
-                    }
-                    version[performance.sheetMusic].link.push(performance.link);
-                    version[performance.sheetMusic].concerts.push('Recording');
-                }
-
-            } else if (i1 === i2 && a1 === a2) {
-                versions[i1].concerts.push(...performance.concerts);
-                if (performance.link) {
-                    if (!version[i1].link) {
-                        version[i1].link = [];
-                    }
-                    version[i1].link.push(performance.link);
-                    version[i1].concerts.push('Recording');
-                }
-            } else {
-                const indexer = performance.sheetMusic || i2;
-                const newData = {
-                    instrumentation: getInstrumentationFromPerformers(performance.performers),
-                    concerts: performance.concerts,
-                    songType: performance.songType
-                };
-                if (performance.arranger) {
-                    newData.arranger = performance.arranger.map(y => typeof(y) === 'number' ? MEMBERS[y].name : y).join(', ');
-                }
-                if (performance.sheetMusic) { newData.sheetMusic = performance.sheetMusic; }
-                if (performance.link) {
-                    newData.link = [performance.link];
-                    newData.concerts.push('Recording');
-                }
-                versions[indexer] = newData;
-            }
-        }
-        versions = Object.values(versions);
-        for (let k = 0; k < versions.length; k++) {
-            originalRow[k + j] = i;
-        }
-        j += versions.length;
-        rows.push(...versions);
-    });
-
-    return [table, rows, originalRow];
-}
-function constructMusicTableRow(version, x) {
-    const links = [
-        ['table-music-archive-reference', x.reference],
-        ...version.link?.map(x => ['table-music-archive-recording',  x]) ?? [],
-        ['table-music-archive-sheet-music', version.sheetMusic]
-    ].filter(link => !!link[1]);
-
-    return construct({
-        element: 'tr',
-        children: [{
-            element: 'td',
-            innerText: x.name,
-        }, {
-            element: 'td',
-            innerText: x.composer
-        }, {
-            element: 'td',
-            innerText: version.arranger
-        }, {
-            element: 'td',
-            innerText: x.from
-        }, {
-            element: 'td',
-            children: [{
-                element: 'div',
-                classes: ['table-music-archive-links'],
-                children: links.map(([className, link]) => ({
-                    element: 'a',
-                    classes: [className],
-                    attributes: {
-                        href: link,
-                        target: '_blank'
-                    }
-                }))
-            }]
-        }, {
-            element: 'td',
-            children: [{
-                element: 'p',
-                classes: ['tag-container'],
-                children: version.concerts.map(concert => {
-                    let name = parseInt(concert, 10);
-                    name = !isNaN(name) ? EVENTS[name].name : concert;
-                    return {
-                        element: 'span',
-                        innerText: name
-                    };
-                })
-            }]
-        }, {
-            element: 'td',
-            children: [{
-                element: 'p',
-                classes: ['tag-container'],
-                children: version.instrumentation.map(instrument => {
-                    let name = parseInt(instrument, 10);
-                    name = !isNaN(name) ? INSTRUMENTS[name] : instrument;
-                    let innerHTML = name;
-                    if (instrument.includes('(')) {
-                        name = instrument.slice(0, instrument.lastIndexOf('(')).trim();
-                        name = !isNaN(parseInt(name, 10)) ? INSTRUMENTS[parseInt(name, 10)] : name;
-                        const count = instrument.slice(instrument.lastIndexOf('(') + 1, instrument.lastIndexOf(')'));
-                        innerHTML = `${name} <em>×${count}</em>`
-                    }
-
-                    return {
-                        element: 'span',
-                        innerHTML,
-                        style: getTagColour(name)
-                    }
-                })
-            }]
-        }]
-    });
-}
-function toggleMenuFilterMusic() {
-    cssGetId('music-filter-menu').classList.toggle('toolbar-filter-menu-hidden');
-}
-const changeFilterMusic = debounce(() => {
-    TABLE_MUSIC.filters.title = cssGetId('music-filter-title').value;
-    TABLE_MUSIC.filters.composer = cssGetId('music-filter-composer').value;
-    TABLE_MUSIC.filters.arranger = cssGetId('music-filter-arranger').value;
-    TABLE_MUSIC.filters.from = cssGetId('music-filter-from').value;
-    TABLE_MUSIC.filters.performed = cssGetId('music-filter-performed').value;
-    TABLE_MUSIC.filters.includeInstruments = cssGetId('music-filter-include-instruments').value;
-    TABLE_MUSIC.filters.excludeInstruments = cssGetId('music-filter-exclude-instruments').value;
-    updateMusicTable();
-}, 300);
-function filterMusic(version, x) {
-    if (TABLE_MUSIC.filters.performance !== 'all') {
-        if (TABLE_MUSIC.filters.performance === 'large' && version.songType !== 'Large') return true;
-        if (TABLE_MUSIC.filters.performance === 'small' && version.songType !== 'Small') return true;
-        if (TABLE_MUSIC.filters.performance === 'external' && version.songType !== 'External') return true;
-        if (TABLE_MUSIC.filters.performance === 'recording' && ! version.concerts.includes('Recording')) return true;
-    }
-    if (TABLE_MUSIC.filters.mediaOrigin !== 'all') {
-        if (TABLE_MUSIC.filters.mediaOrigin === 'anime' && x.mediaOrigin !== 'Anime') return true;
-        if (TABLE_MUSIC.filters.mediaOrigin === 'vg' && x.mediaOrigin !== 'Video Game') return true;
-        if (TABLE_MUSIC.filters.mediaOrigin === 'vocaloid' && x.mediaOrigin !== 'Vocaloid') return true;
-    }
-    if (TABLE_MUSIC.filters.filterSheetMusic && !version.sheetMusic) return true;
-
-    if (TABLE_MUSIC.filters.title && !x.name.toLowerCase().includes(TABLE_MUSIC.filters.title.toLowerCase())) return true;
-    if (TABLE_MUSIC.filters.composer && !x.composer.toLowerCase().includes(TABLE_MUSIC.filters.composer.toLowerCase())) return true;
-    if (TABLE_MUSIC.filters.arranger && (!version.arranger || !version.arranger.toLowerCase().includes(TABLE_MUSIC.filters.arranger.toLowerCase()))) return true;
-    if (TABLE_MUSIC.filters.from && (!x.from || !x.from.toLowerCase().includes(TABLE_MUSIC.filters.from.toLowerCase()))) return true;
-    
-    if (TABLE_MUSIC.filters.performed && !version.concerts.some(y => (
-        y.toLowerCase().includes(TABLE_MUSIC.filters.performed.toLowerCase())
-    ))) {
-        return true;
-    }
-
-    if (TABLE_MUSIC.filters.includeInstruments || TABLE_MUSIC.filters.excludeInstruments) {
-        const instruments = new Set(version.instrumentation.map(i => INSTRUMENTS[parseInt(i, 10)].toLowerCase()));
-        if (TABLE_MUSIC.filters.includeInstruments) {
-            const filter = TABLE_MUSIC.filters.includeInstruments.split(',').map(x => x.trim().toLowerCase());
-            if (filter.some(y => !instruments.has(y))) return true;
-        }
-        if (TABLE_MUSIC.filters.excludeInstruments) {
-            const filter = TABLE_MUSIC.filters.excludeInstruments.split(',').map(x => x.trim().toLowerCase());
-            if (filter.some(y => instruments.has(y))) return true;
-        }
-    }
-    return false;
-}
-const updateMusicTable = (() => {
-    const [table, rows, originalRow] = initMusicTable();   
-    const elements = {};
-
-    return async () => {
-        const fragment = document.createDocumentFragment();
-        for (let i = 0; i < rows.length; i++) {
-            const version = rows[i];
-            const x = MUSIC[originalRow[i]];
-
-            if (filterMusic(version, x)) {
-                continue;
-            }
-
-            if (!elements[i]) {
-                elements[i] = constructMusicTableRow(version, x);
-            }
-            fragment.appendChild(elements[i]);
-        }
-        table.replaceChildren(fragment);
-    }
-})();
-
-async function injectFAQ() {
-    const container = cssGetId('faq-container');
-    for (const faq of FAQ) {
-        const paragraphs = faq.a.map(x => ({ element: 'p', innerHTML: parseMarkdown(x) }));
-        const json = {
-            element: 'details',
-            attributes: { 'open': true },
-            classes: ['details-hidden'],
-            children: [{
-                element: 'summary',
-                attributes: { 'onclick': 'toggleDetailsSummary(event)' },
-                children: [{
-                    element: 'h4',
-                    innerText: faq.q
-                }, {
-                    element: 'div',
-                    classes: ['summary-triangle']
-                }]
-            }, {
-                element: 'div',
-                classes: ['summary-body'],
-                children: paragraphs.length > 0 ? paragraphs : { element: 'p', innerText: '???' }
-            }]
-        };
-        container.appendChild(construct(json));
-    }
-}
 
 async function injectFormLinks() {
     for (const [id, link] of Object.entries(FORM_LINKS)) {
@@ -1434,6 +602,10 @@ async function injectFormLinks() {
     }
 }
 
+
+/*********************************************************************
+Home tab - image carousel
+*********************************************************************/
 let CURR_CAROUSEL = 0;
 async function injectCarousel() {
     const carouselContainer = cssGetId('section-carousel');
@@ -1521,8 +693,943 @@ function updateCarousel() {
     }
 }
 
+
+/*********************************************************************
+Home tab - current event promotion
+*********************************************************************/
+function injectHomeConcert(now) {
+    const {
+        links: { poster, rvsp, setlist, recording },
+        title,
+        dateStart,
+        dateEnd,
+        location,
+        tickets,
+        preConcertDescription,
+        postConcertDescription
+    } = CURRENT_EVENT;
+
+    cssGetFirst('#home-event-poster img').src = poster;
+    cssGetFirst('#home-event-text hgroup h3').innerText = title;
+    cssGetId('home-event-date').innerText = parseFromTo(dateStart, dateEnd);
+    cssGetId('home-event-location').innerText = location;
+    cssGetId('home-event-tickets').innerText = tickets;
+
+    const text = now > dateEnd ? postConcertDescription : preConcertDescription;
+    const paragraphs = text.map(x => construct({ element: 'p', innerText: x }));
+
+    // Render call-to-action buttons
+    const buttons = construct({ element: 'div', id: 'home-event-buttons' });
+    if (rvsp && now < dateStart) {
+        buttons.appendChild(construct({
+            element: 'a',
+            classes: ['home-event-button'],
+            innerText: 'RVSP',
+            attributes: { href: rvsp, target: '_blank' }
+        }));
+    }
+    if (setlist) {
+        buttons.appendChild(construct({
+            element: 'a',
+            classes: ['home-event-button'],
+            innerText: 'See the setlist',
+            attributes: { href: setlist, target: '_blank' }
+        }));
+    }
+    if (recording) {
+        buttons.appendChild(construct({
+            element: 'a',
+            classes: ['home-event-button'],
+            innerText: 'Watch the recording',
+            attributes: { href: recording, target: '_blank' }
+        }));
+    }
+
+    const container = cssGetId('home-event-text');
+    paragraphs.forEach(x => container.appendChild(x));
+    container.appendChild(buttons);
+}
+async function injectHomeEvent() {
+    const now = new Date();
+
+    // Only concerts are supported right now
+    if (!CURRENT_EVENT || !CURRENT_EVENT.type || now > CURRENT_EVENT.hideAfter) {
+        cssGetId('section-home-event').style.setProperty('display', 'none');
+    } else if (CURRENT_EVENT.type === 'concert') {
+        injectHomeConcert();
+    } else {
+        throw new Error(CURRENT_EVENT.type);
+    }
+}
+
+
+/*********************************************************************
+Home tab - announcements + upcoming events
+*********************************************************************/
+async function injectHomeBulletin() {
+    const sectionAnnouncements = cssGetId('section-announcements');
+    const sectionUpcoming = cssGetId('section-upcoming-events');
+    const containerAnnouncements = cssGetId('announcement-container');
+    const containerUpcoming = cssGetId('upcoming-events-container');
+
+    ANNOUNCEMENTS?.forEach(({ type, text }) => {
+        containerAnnouncements.appendChild(construct({
+            element: 'aside',
+            classes: ['announcement'],
+            children: [{
+                element: 'div',
+                classes: [type === 'alert' ? 'icon-alert' : 'icon-announcement']
+            }, {
+                element: 'p',
+                innerHTML: parseMarkdown(text)
+            }]
+        }));
+    });
+    UPCOMING_EVENTS?.forEach(({ dateStart, dateEnd, location, title, image }) => {
+        containerUpcoming.appendChild(construct({
+            element: 'li',
+            style: {
+                'background-image': `url('${image}')`
+            },
+            children: [{
+                element: 'hgroup',
+                children: [{
+                    element: 'h4',
+                    classes: ['upcoming-event-date'],
+                    innerHTML: `<span>${dateStart.getDate()}</span> ${MONTHS[dateStart.getMonth()].slice(0, 3)}`
+                }, {
+                    element: 'p',
+                    classes: ['upcoming-event-location'],
+                    innerText: location
+                }, {
+                    element: 'p',
+                    classes: ['upcoming-event-time'],
+                    innerText: parseTimeRange(dateStart, dateEnd)
+                }]
+            }, {
+                element: 'h4',
+                classes: ['upcoming-event-name'],
+                innerText: title
+            }]
+        }))
+    });
+    
+    // Formatting for edge cases (i.e. at least one of the two sections is blank)
+    if (ANNOUNCEMENTS.length === 0 && UPCOMING_EVENTS.length === 0) {
+        sectionAnnouncements.style.setProperty('display', 'none');
+        sectionUpcoming.style.setProperty('display', 'none');
+    } else if (ANNOUNCEMENTS.length === 0) {
+        sectionAnnouncements.style.setProperty('display', 'none');
+        sectionUpcoming.style.setProperty('width', '100%');
+    } else if (UPCOMING_EVENTS.length === 0) {
+        sectionAnnouncements.style.setProperty('width', '100%');
+        sectionAnnouncements.classList.add('section-announcements-full');
+        sectionUpcoming.style.setProperty('display', 'none');
+    }
+}
+
+
+/*********************************************************************
+About tab - members table
+*********************************************************************/
+function getTagColourStyle(name) {
+    if (name.includes(' (')) {
+        name = name.slice(0, name.indexOf(' ('));
+    }
+    const background = TAGS[name];
+    if (background) {
+        const rgbs = extractRGB(background);
+        const color = rgbs.flat().reduce((a, b) => a + b) / (rgbs.length * 3) > 128 ? 'black' : 'white';
+        if (background.startsWith('linear-gradient')) {
+            return { color, 'background-image': background }
+        } else if (background.startsWith('rgb')) {
+            return { color, 'background-color': background }
+        } else {
+            throw new Error(background);
+        }
+    }
+    return {};
+}
+
+const TABLE_MEMBERS = {
+    pageSize: 10,
+    tags: 'all',
+    filters: {
+        memberType: 'current',
+        page: 0,
+        name: '',
+        joinedBefore: '',
+        joinedAfter: '',
+        includeTags: '',
+        excludeTags: ''
+    }
+}
+
+/**
+ * Return true iff member x passes the filters in TABLE_MEMBERS 
+ */
+function filterMember(x) {
+    const { filters: { memberType, name, joinedBefore, joinedAfter, includeTags, excludeTags } } = TABLE_MEMBERS;
+    if (memberType === 'current' && x.left) return false;
+    if (memberType === 'past' && !x.left) return false;
+    if (name && !x.name.toLowerCase().includes(name.toLowerCase())) return false;
+    
+    if (joinedBefore || joinedAfter) {
+        const [month, year] = x.joined.split(' ');
+        const joined = new Date(parseInt(year, 10), month === 'Fall' ? 9 : 0);
+        if (joinedBefore) {
+            const before = joinedBefore.split(' ');
+            if (before.length !== 2) return false;
+
+            const yearBefore = parseInt(before[1], 10);
+            if (!yearBefore) return false;
+            
+            const monthBefore = before[0].toLowerCase();
+            if (monthBefore !== 'fall' && monthBefore !== 'winter') return false;
+
+            if (new Date(yearBefore, monthBefore === 'fall' ? 9 : 0) < joined) return false;
+        }
+        if (joinedAfter) {
+            const after = joinedAfter.split(' ');
+            if (after.length !== 2) return false;
+
+            const yearAfter = parseInt(after[1], 10);
+            if (!yearAfter) return false;
+            
+            const monthAfter = after[0].toLowerCase();
+            if (monthAfter !== 'fall' && monthAfter !== 'winter') return false;
+
+            if (new Date(yearAfter, monthAfter === 'fall' ? 9 : 0) > joined) return false;
+        }
+    }
+    if (includeTags || excludeTags) {
+        const tags = new Set([...x.roles.map(x => x.slice(0, x.includes(" (") ? x.indexOf(' (') : undefined)), ...x.instruments.map(x => INSTRUMENTS[x].toLowerCase())]);
+        if (includeTags && includeTags.split(',').map(x => x.toLowerCase().trim()).some(x => !tags.has(x))) return false;
+        if (excludeTags && excludeTags.split(',').map(x => x.toLowerCase().trim()).some(x => tags.has(x))) return false;
+    }
+
+    return true;
+}
+function constructMemberRow(member) {
+    return construct({
+        element: 'tr',
+        id: `section-member-${member.id}`,
+        children: [{
+            element: 'td',
+            innerText: member.name
+        }, {
+            element: 'td',
+            children: [{
+                element: 'p',
+                classes: ['tag-container'],
+                children: [
+                    ...member.instruments.map(x => ({ text: INSTRUMENTS[x], type: 'instrument' })),
+                    ...member.roles.map(x => ({ text: x, type: 'role' }))
+                ].map(x => ({
+                    element: 'span',
+                    classes: [`li-${x.type}`],
+                    innerText: x.text,
+                    style: getTagColourStyle(x.text)
+                }))
+            }]
+        }, {
+            element: 'td',
+            innerText: member.joined
+        }, {
+            element: 'td',
+            children: [{
+                element: 'ul',
+                classes: ['list-social-media'],
+                children: Object.entries(member.links).map(([site, info]) => ({
+                    element: 'li',
+                    classes: [`li-${site}`],
+                    innerText: Array.isArray(info) ? '' : info,
+                    children: Array.isArray(info) ? [{
+                        element: 'a',
+                        innerText: info[0],
+                        attributes: {
+                            href: info[1],
+                            target: '_blank'
+                        }
+                    }] : []
+                }))
+            }]
+        }]
+    });
+}
+const updateMembersTable = (() => {
+    const idToRow = {};
+    const table = cssGetFirst('#table-members tbody');
+    const pageCount = cssGetId('table-page-count');
+    let prevMembers = undefined;
+
+    return async (reFilter=true) => {
+        const members = (reFilter || !prevMembers) ? MEMBERS.filter(filterMember) : prevMembers;
+        prevMembers = members;
+
+        // Update pagination display
+        let start = 0;
+        let end = 0;
+        if (members.length === 0) {
+            pageCount.innerHTML = `0-0 of 0`
+        } else {
+            const n = Math.ceil(members.length / TABLE_MEMBERS.pageSize);
+            TABLE_MEMBERS.filters.page = (TABLE_MEMBERS.filters.page + n) % n;
+            start = TABLE_MEMBERS.filters.page * TABLE_MEMBERS.pageSize;
+            end = Math.min(members.length, (TABLE_MEMBERS.filters.page + 1) * TABLE_MEMBERS.pageSize);
+            pageCount.innerHTML = `${start + 1}-${end} of ${members.length}`
+        }
+
+        // Re-generate rows
+        const fragment = document.createDocumentFragment();
+        const nextIdToRow = {};
+        for (const member of members.slice(start, end)) {
+            let row = idToRow[member.id];
+            if (!row) {
+                row = constructMemberRow(member);
+            }
+            fragment.appendChild(row);
+            nextIdToRow[member.id] = row;
+        }
+        for (const id in idToRow) {
+            if (!nextIdToRow[id]) {
+                idToRow[id].remove();
+            }
+            delete idToRow[id];
+        }
+
+        Object.assign(idToRow, nextIdToRow);
+        table.appendChild(fragment);
+    } 
+})();
+function toggleDropdownFilterMember() {
+    cssGetId('members-filter-dropdown').classList.toggle('toolbar-filter-dropdown-hidden');
+}
+function toggleButtonMemberType(element) {
+    if (TABLE_MEMBERS.filters.memberType === 'current') {
+        TABLE_MEMBERS.filters.memberType = 'past';
+        element.innerText = 'Past Members';
+    } else if (TABLE_MEMBERS.filters.memberType === 'past') {
+        TABLE_MEMBERS.filters.memberType = 'all';
+        element.innerText = 'All Members';
+    } else {
+        TABLE_MEMBERS.filters.memberType = 'current';
+        element.innerText = 'Current Members';
+    }
+    TABLE_MEMBERS.filters.page = 0;
+    updateMembersTable();
+}
+const toggleButtonMemberTagType = (() => {
+    const style = document.createElement('style');
+    document.head.appendChild(style);
+
+    return (element) => {
+        if (TABLE_MEMBERS.tags === 'all') {
+            TABLE_MEMBERS.tags = 'instruments';
+            element.innerText = 'Instrument Tags';
+            style.textContent = '.li-role { display: none }';
+        } else if (TABLE_MEMBERS.tags === 'instruments') {
+            TABLE_MEMBERS.tags = 'roles';
+            element.innerText = 'Role Tags';
+            style.textContent = '.li-instrument { display: none }';
+        } else {
+            TABLE_MEMBERS.tags = 'all';
+            element.innerText = 'All Tags';
+            style.textContent = '';
+        }
+    }
+})();
+function membersTablePageChange(delta) {
+    TABLE_MEMBERS.filters.page += delta;
+    updateMembersTable(false);
+}
+const changeFilterMembers = debounce(() => {
+    TABLE_MEMBERS.filters.name = cssGetId('member-filter-name').value;
+    TABLE_MEMBERS.filters.joinedBefore = cssGetId('member-filter-joined-before').value;
+    TABLE_MEMBERS.filters.joinedAfter = cssGetId('member-filter-joined-after').value;
+    TABLE_MEMBERS.filters.includeTags = cssGetId('member-filter-include-tags').value;
+    TABLE_MEMBERS.filters.excludeTags = cssGetId('member-filter-exclude-tags').value;
+    updateMembersTable();
+}, 300);
+
+function getPersonnel() {
+    const instruments = MEMBERS.filter(x => !x.left).map(x => x.instruments.map(y => INSTRUMENTS[y])).flat();
+    let total = 0;
+    const personnel = {};  // { instrument1: count1, ... }
+    for (const instrument of instruments) {
+        if (!personnel[instrument]) {
+            personnel[instrument] = 0;
+        }
+        personnel[instrument] += 1;
+    }
+    const personnelRoles = new Set(['Arranger', 'Artist', 'Video Editor']);
+    for (const role of personnelRoles) {
+        for (const member of MEMBERS) {
+            if (member.roles.includes(role)) {
+                if (!personnel[role]) {
+                    personnel[role] = 0;
+                }
+                personnel[role] += 1;
+            }
+        }
+    }
+    personnel.Total = MEMBERS.filter(x => !x.left).length;
+    personnelRoles.add('Total');
+    return [personnel, personnelRoles]
+}
+
+function injectPersonnel(personnel, personnelRoles) {
+    function personnelSorter(a, b) {
+        const [nameA, countA] = a;
+        const [nameB, countB] = b;
+
+        // Put total at end
+        if (nameA === 'Total') { return 1; }
+        else if (nameB === 'Total') { return -1; }
+        
+        if (countA === countB) {
+            return nameA.localeCompare(nameB);
+        }
+        return countB - countA;
+    }
+
+    const nameSubstitutions = {
+        'Alto Saxophone': 'Alto Sax',
+        'Tenor Saxophone': 'Tenor Sax',
+        'Baritone Saxophone': 'Baritone Sax',
+    }
+    const tablePersonnel = cssGetId('table-personnel');
+
+    Object.entries(personnel).sort(personnelSorter).forEach(([name, count]) => {
+        const cardClasses = [
+            'personnel-card',
+            `personnel-${name.toLowerCase().replace(' ', '-')}`,
+        ];
+        if (personnelRoles.has(name)) {
+            cardClasses.push('personnel-notinstrument');
+        }
+        const displayName = nameSubstitutions[name] ? nameSubstitutions[name] : name;
+
+        tablePersonnel.appendChild(construct({
+            element: 'li',
+            children: [{
+                element: 'div',
+                classes: cardClasses,
+                children: [{
+                    element: 'span',
+                    classes: ['personnel-title'],
+                    innerText: displayName
+                }, {
+                    element: 'span',
+                    classes: ['personnel-count'],
+                    innerText: `×${count}`
+                }]
+            }]
+        }));
+    });
+}
+
+function getExecTeam() {
+    // Before August 20XX, use executive team from 20XX - 1
+    // After August 20XX, update executive team to 20XX
+    // If execs for 20XX don't exist, use the largest existing year 
+    const now = new Date();
+    let currYear = now.getMonth() >= 7 ? now.getFullYear() : now.getFullYear() - 1;
+
+    const isExecForYear = (x, year) => x.roles.some(role => role.includes(String(year).slice(2)));
+    let execTeam = MEMBERS.filter(x => isExecForYear(x, currYear));
+    while (execTeam.length === 0) {
+        currYear -= 1;
+        execTeam = MEMBERS.filter(x => isExecForYear(x, currYear));
+        if (currYear === 2022) {
+            throw new Error("WTF");
+        }
+    }
+    return [execTeam, currYear];
+}
+
+function injectExecTeam(execTeam, year) {
+    function execTeamSorter(a, b) {
+        // Order of display: executives, then alphabetically by role, then by real name
+        let roleA = a.roles.find(role => role.includes(digit));
+        let roleB = b.roles.find(role => role.includes(digit));
+        roleA = roleA.slice(0, roleA.indexOf(' ('));
+        roleB = roleB.slice(0, roleB.indexOf(' ('));
+
+        const execA = roleA === 'Executive';
+        const execB = roleB === 'Executive';
+        if (execA && !execB) {
+            return -1;
+        } else if (!execA && execB) {
+            return 1;
+        }
+        if (roleA === roleB) {
+            return a.name.localeCompare(b.name);
+        }        
+        return roleA.localeCompare(roleB);
+    }
+
+    cssGetId('exec-team-year').innerText = `${year}-${year + 1}`;
+    
+    const digit = String(year).slice(2);
+    const execTeamProfile = cssGetId('exec-team-profile');
+    execTeam.sort(execTeamSorter).forEach(x => {
+        const execRole = x.roles.find(role => role.includes(digit));
+        const nonExecRoles = [
+            ...x.instruments.map(y => INSTRUMENTS[y]),
+            ...x.roles.filter(role => !role.includes(" ("))
+        ];
+
+        execTeamProfile.appendChild(construct({
+            element: 'li',
+            classes: ['exec-team-card'],
+            children: [{
+                element: 'img',
+                attributes: { src: 'assets/images/asanoha.webp' }
+            }, {
+                element: 'div',
+                children: [{
+                    element: 'hgroup',
+                    children: [{
+                        element: 'h4',
+                        innerText: x.name
+                    }, {
+                        element: 'p',
+                        innerText: execRole.slice(0, execRole.indexOf(" ("))
+                    }]
+                }, {
+                    element: 'p',
+                    classes: ['tag-container'],
+                    children: nonExecRoles.map(x => ({
+                        element: 'span',
+                        innerText: x,
+                        style: getTagColourStyle(x)
+                    }))
+                }, {
+                    element: 'ul',
+                    classes: ['list-social-media'],
+                    children: Object.entries(x.links).map(([site, info]) => {
+                        let url, username;
+                        if (Array.isArray(info)) {
+                            [username, url] = info;
+                        } else {
+                            username = info;
+                        }
+                        return {
+                            element: 'li',
+                            classes: [`li-${site}`],
+                            innerText: url ? '' : username,
+                            children: url ? [{
+                                element: 'a',
+                                attributes: { target: '_blank', href: url },
+                                innerText: username
+                            }] : []
+                        };
+                    })
+                }]
+            }]
+        }));
+    });
+}
+
+function injectHomeOutreach(execTeam) {
+    const outreachOptions = new Set(['discord', 'instagram']);
+    const homeOutreach = cssGetId('home-outreach');
+    execTeam
+        .filter(x => x.roles.some(role => role.startsWith('Executive')))
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .forEach(x => {
+            homeOutreach.appendChild(construct({
+                element: 'h4',
+                innerText: x.name
+            }))
+            homeOutreach.appendChild(construct({
+                element: 'ul',
+                classes: ['list-social-media'],
+                children: Object.entries(x.links).filter(([site]) => outreachOptions.has(site)).map(([site, info]) => ({
+                    element: 'li',
+                    classes: [`li-${site}`],
+                    innerHTML: info
+                }))
+            }))
+        });
+}
+
+async function injectMembers() {
+    const [personnel, personnelRoles] = getPersonnel();
+    injectPersonnel(personnel, personnelRoles);
+    const [execTeam, year] = getExecTeam();
+    injectExecTeam(execTeam, year);
+    injectHomeOutreach(execTeam);
+    updateMembersTable();
+}
+
+
+/*********************************************************************
+Music archive tab/table
+*********************************************************************/
+const TABLE_MUSIC = {
+    filters: {
+        performance: 'all',
+        mediaOrigin: 'all',
+        filterSheetMusic: false,
+        title: '',
+        composer: '',
+        arranger: '',
+        from: '',
+        performed: '',
+        includeInstruments: '',
+        excludeInstruments: ''
+    }
+}
+function toggleButtonMusicPerformances(element) {
+    if (TABLE_MUSIC.filters.performance === 'all') {
+        TABLE_MUSIC.filters.performance = 'large';
+        element.innerText = 'Large Ensembles';
+    } else if (TABLE_MUSIC.filters.performance === 'large') {
+        TABLE_MUSIC.filters.performance = 'small';
+        element.innerText = 'Small Ensembles';
+    } else if (TABLE_MUSIC.filters.performance === 'small') {
+        TABLE_MUSIC.filters.performance = 'recording';
+        element.innerText = 'Recording Projects';
+    } else if (TABLE_MUSIC.filters.performance === 'recording') {
+        TABLE_MUSIC.filters.performance = 'external';
+        element.innerText = 'External Groups';
+    } else {
+        TABLE_MUSIC.filters.performance = 'all';
+        element.innerText = 'All Performances';
+    }
+    updateMusicTable();
+};
+function toggleButtonMusicMediaOrigin(element) {
+    if (TABLE_MUSIC.filters.mediaOrigin === 'all') {
+        TABLE_MUSIC.filters.mediaOrigin = 'anime';
+        element.innerText = 'Anime Music';
+    } else if (TABLE_MUSIC.filters.mediaOrigin === 'anime') {
+        TABLE_MUSIC.filters.mediaOrigin = 'vg';
+        element.innerText = 'Video Game Music';
+    } else if (TABLE_MUSIC.filters.mediaOrigin === 'vg') {
+        TABLE_MUSIC.filters.mediaOrigin = 'vocaloid';
+        element.innerText = 'Vocaloid Music';
+    } else {
+        TABLE_MUSIC.filters.mediaOrigin = 'all';
+        element.innerText = 'All Media Origins';
+    }
+    updateMusicTable();
+}
+function toggleButtonMusicLinkType(element) {
+    element.innerText = TABLE_MUSIC.filters.filterSheetMusic ? 'All Link Types' : 'Has Sheet Music';
+    TABLE_MUSIC.filters.filterSheetMusic = !TABLE_MUSIC.filters.filterSheetMusic;
+    updateMusicTable();
+}
+
+/**
+ * Given a performer list ({instrument1: [performer1, ...], ...}), return a list of
+ * strings summarizing the instrumentation
+ */
+function getInstrumentationFromPerformers(performers) {
+    return Object.entries(performers).map(([instrument, players]) => (
+        players.length > 1 ? `${instrument} (${players.length})` : instrument
+    ));
+}
+
+/**
+ * Given an arranger list (list of indices or names), format them into a single string
+ */
+function parseArrangers(arrangers) {
+    return arrangers.map(y => MEMBERS[y]?.name ?? y).join(', ');
+}
+
+/**
+ * Given a performance, extract & parse the fields inside.
+ * Also return a key that identifies it as unique in the music table
+ */
+function extractPerformanceInfo(p) {
+    const data = {
+        instrumentation: getInstrumentationFromPerformers(p.performers),
+        concerts: p.concerts,
+        songType: p.songType
+    };
+    if (p.arranger) {
+        data.arranger = parseArrangers(p.arranger);
+    }
+    if (p.link) {
+        data.link = [p.link];
+        data.concerts.push('Recording');
+    }
+
+    let key;
+    if (p.sheetMusic) {
+        data.sheetMusic = p.sheetMusic;
+        key = data.sheetMusic;
+    } else {
+        key = `${data.instrumentation.join('|')}|${data.arranger}`;
+    }
+    return [key, data];
+}
+
+function initMusicTable() {
+    const rows = [];
+    let rowIdx = 0;
+    const rowToMUSIC = {};  // Map `rows` indices to `MUSIC` indices
+
+    MUSIC.forEach((x, i) => {
+        // Collapse multiple performances of the "same arrangement" of a song, as defined by:
+        // - IF same sheet music link, THEN SAME
+        // - ELSE IF same instrumentation & arranger (or they both lack arrangers), THEN SAME
+        // - OTHERWISE DIFFERENT
+
+        let songVersions = {};  // { sheetMusic or instrumentation/arranger: { ...songInfo }, ... }
+        const firstPerformance = x.performances[0];
+        if (!firstPerformance) {
+            throw new Error(`No performances found: ${x}`);
+        }
+        const [key, firstData] = extractPerformanceInfo(firstPerformance);
+        songVersions[key] = firstData;
+        
+        // Append performance info to a value of songVersions
+        const appendToSongVersion = (existingSong, p) => {
+            existingSong.concerts.push(...p.concerts);
+            if (p.link) {
+                if (!existingSong.link) {
+                    existingSong.concerts.push('Recording');
+                    existingSong.link = [];
+                }
+                existingSong.link.push(p.link);
+            }
+        }
+
+        // If performance matches a pre-existing one, append to songVersion
+        for (const p of x.performances.slice(1)) {
+            let existingSong = songVersions[p.sheetMusic];
+            const existingInstrumentation = existingSong?.instrumentation.join('|');
+            const existingArranger = existingSong?.arranger;
+
+            const instrumentation = getInstrumentationFromPerformers(p.performers).join('|');
+            const arranger = parseArrangers(p.arranger);
+            
+            if (p.sheetMusic && existingSong) {
+                if (existingInstrumentation !== instrumentation) {
+                    throw new Error(`[${x.name}] Expected performances with same sheet music to have same instrumentation`);
+                }
+                if (existingArranger !== arranger) {
+                    throw new Error(`[${x.name}] Expected performances with same sheet music to have same arranger`);
+                }
+                appendToSongVersion(existingSong, p);
+            } else if (existingInstrumentation === instrumentation && existingArranger === arranger) {
+                existingSong = songVersions[`${instrumentation}|${arranger}`];
+                appendToSongVersion(existingSong, p);
+            } else {
+                const [key, performanceInfo] = extractPerformanceInfo(p);
+                songVersions[key] = performanceInfo;
+            }
+        }
+
+        // Different song versions get separate rows
+        songVersions = Object.values(songVersions);
+        for (let k = 0; k < songVersions.length; k++) {
+            rowToMUSIC[k + rowIdx] = i;
+        }
+        rowIdx += songVersions.length;
+        rows.push(...songVersions);
+    });
+
+    return [rows, rowToMUSIC];
+}
+
+/**
+ * Construct the HTML for a music table row given the
+ * specific songVersion info (version) and generic song info (x)
+ */
+function constructMusicTableRow(version, x) {
+    const links = [
+        ['table-music-archive-reference', x.reference],
+        ...version.link?.map(x => ['table-music-archive-recording',  x]) ?? [],
+        ['table-music-archive-sheet-music', version.sheetMusic]
+    ].filter(link => !!link[1]);
+
+    return construct({
+        element: 'tr',
+        children: [{
+            element: 'td',
+            innerText: x.name,
+        }, {
+            element: 'td',
+            innerText: x.composer
+        }, {
+            element: 'td',
+            innerText: version.arranger
+        }, {
+            element: 'td',
+            innerText: x.from
+        }, {
+            element: 'td',
+            children: [{
+                element: 'div',
+                classes: ['table-music-archive-links'],
+                children: links.map(([className, link]) => ({
+                    element: 'a',
+                    classes: [className],
+                    attributes: {
+                        href: link,
+                        target: '_blank'
+                    }
+                }))
+            }]
+        }, {
+            element: 'td',
+            children: [{
+                element: 'p',
+                classes: ['tag-container'],
+                children: version.concerts.map(concert => ({
+                    element: 'span',
+                    innerText: EVENTS[parseInt(concert, 10)]?.name ?? concert
+                }))
+            }]
+        }, {
+            element: 'td',
+            children: [{
+                element: 'p',
+                classes: ['tag-container'],
+                children: version.instrumentation.map(instrument => {
+                    // name format can be "instrumentName", "instrumentName (123)", "1234", "123 (456)"
+                    let name = INSTRUMENTS[parseInt(instrument, 10)] ?? instrument;
+                    let innerHTML = name;
+                    if (instrument.includes('(')) {
+                        name = instrument.slice(0, instrument.lastIndexOf('(')).trim();
+                        name = INSTRUMENTS[parseInt(name, 10)] ?? name;
+                        const count = instrument.slice(instrument.lastIndexOf('(') + 1, instrument.lastIndexOf(')'));
+                        innerHTML = `${name} <em>×${count}</em>`
+                    }
+
+                    return {
+                        element: 'span',
+                        innerHTML,
+                        style: getTagColourStyle(name)
+                    }
+                })
+            }]
+        }]
+    });
+}
+function toggleDropdownFilterMusic() {
+    cssGetId('music-filter-dropdown').classList.toggle('toolbar-filter-dropdown-hidden');
+}
+const changeFilterMusic = debounce(() => {
+    TABLE_MUSIC.filters.title = cssGetId('music-filter-title').value;
+    TABLE_MUSIC.filters.composer = cssGetId('music-filter-composer').value;
+    TABLE_MUSIC.filters.arranger = cssGetId('music-filter-arranger').value;
+    TABLE_MUSIC.filters.from = cssGetId('music-filter-from').value;
+    TABLE_MUSIC.filters.performed = cssGetId('music-filter-performed').value;
+    TABLE_MUSIC.filters.includeInstruments = cssGetId('music-filter-include-instruments').value;
+    TABLE_MUSIC.filters.excludeInstruments = cssGetId('music-filter-exclude-instruments').value;
+    updateMusicTable();
+}, 300);
+
+/**
+ * Given the specific songVersion info (version) and generic song info (x),
+ * return whether the song should be filtered out of the music table
+ */
+function filterOutMusicRow(version, x) {
+    if (TABLE_MUSIC.filters.performance !== 'all') {
+        if (TABLE_MUSIC.filters.performance === 'large' && version.songType !== 'Large') return true;
+        if (TABLE_MUSIC.filters.performance === 'small' && version.songType !== 'Small') return true;
+        if (TABLE_MUSIC.filters.performance === 'external' && version.songType !== 'External') return true;
+        if (TABLE_MUSIC.filters.performance === 'recording' && ! version.concerts.includes('Recording')) return true;
+    }
+    if (TABLE_MUSIC.filters.mediaOrigin !== 'all') {
+        if (TABLE_MUSIC.filters.mediaOrigin === 'anime' && x.mediaOrigin !== 'Anime') return true;
+        if (TABLE_MUSIC.filters.mediaOrigin === 'vg' && x.mediaOrigin !== 'Video Game') return true;
+        if (TABLE_MUSIC.filters.mediaOrigin === 'vocaloid' && x.mediaOrigin !== 'Vocaloid') return true;
+    }
+    if (TABLE_MUSIC.filters.filterSheetMusic && !version.sheetMusic) return true;
+
+    if (TABLE_MUSIC.filters.title    && !isSubstring(x.name, TABLE_MUSIC.filters.title)) return true;
+    if (TABLE_MUSIC.filters.composer && !isSubstring(x.composer, TABLE_MUSIC.filters.composer)) return true;
+    if (TABLE_MUSIC.filters.arranger && (!version.arranger || !isSubstring(version.arranger, TABLE_MUSIC.filters.arranger))) return true;
+    if (TABLE_MUSIC.filters.from     && (!x.from || !isSubstring(x.from, TABLE_MUSIC.filters.from))) return true;
+    
+    if (TABLE_MUSIC.filters.performed && !version.concerts.some(id => (
+        isSubstring(EVENTS[id]?.name ?? id, TABLE_MUSIC.filters.performed)
+    ))) {
+        return true;
+    }
+
+    if (TABLE_MUSIC.filters.includeInstruments || TABLE_MUSIC.filters.excludeInstruments) {
+        const instruments = new Set(version.instrumentation.map(i => INSTRUMENTS[parseInt(i, 10)].toLowerCase()));
+        if (TABLE_MUSIC.filters.includeInstruments) {
+            const filter = TABLE_MUSIC.filters.includeInstruments.split(',').map(x => x.trim().toLowerCase());
+            if (filter.some(y => !instruments.has(y))) return true;
+        }
+        if (TABLE_MUSIC.filters.excludeInstruments) {
+            const filter = TABLE_MUSIC.filters.excludeInstruments.split(',').map(x => x.trim().toLowerCase());
+            if (filter.some(y => instruments.has(y))) return true;
+        }
+    }
+    return false;
+}
+const updateMusicTable = (() => {
+    const table = cssGetFirst('#table-music-archive tbody');
+    const [rows, originalRow] = initMusicTable();   
+    const elements = {};
+
+    return async () => {
+        const fragment = document.createDocumentFragment();
+        for (let i = 0; i < rows.length; i++) {
+            const version = rows[i];
+            const x = MUSIC[originalRow[i]];
+
+            if (filterOutMusicRow(version, x)) {
+                continue;
+            }
+
+            if (!elements[i]) {
+                elements[i] = constructMusicTableRow(version, x);
+            }
+            fragment.appendChild(elements[i]);
+        }
+        table.replaceChildren(fragment);
+    }
+})();
+
+
+/*********************************************************************
+Get involved tab - FAQ list
+*********************************************************************/
+async function injectFAQ() {
+    const container = cssGetId('faq-container');
+    for (const faq of FAQ) {
+        const paragraphs = faq.a.map(x => ({ element: 'p', innerHTML: parseMarkdown(x) }));
+        const json = {
+            element: 'details',
+            attributes: { 'open': true },
+            classes: ['details-hidden'],
+            children: [{
+                element: 'summary',
+                attributes: { 'onclick': 'toggleDetailsSummary(event)' },
+                children: [{
+                    element: 'h4',
+                    innerText: faq.q
+                }, {
+                    element: 'div',
+                    classes: ['summary-triangle']
+                }]
+            }, {
+                element: 'div',
+                classes: ['summary-body'],
+                children: paragraphs.length > 0 ? paragraphs : { element: 'p', innerText: '???' }
+            }]
+        };
+        container.appendChild(construct(json));
+    }
+}
+
+
+/*********************************************************************
+Events tab - event widget
+*********************************************************************/
 const TABLE_EVENTS = {
-    active: EVENTS[EVENTS.length - 1].id,
+    active: EVENTS.length - 1,
     filters: {
         type: 'All',
         name: '',
@@ -1550,8 +1657,8 @@ function toggleButtonEventType(element) {
     }
     updateEventsSidebar();
 }
-function toggleMenuFilterEvent() {
-    cssGetId('events-filter-menu').classList.toggle('toolbar-filter-menu-hidden');
+function toggleDropdownFilterEvent() {
+    cssGetId('events-filter-dropdown').classList.toggle('toolbar-filter-dropdown-hidden');
 }
 const changeFilterEvents = debounce(() => {
     TABLE_EVENTS.filters.name = cssGetId('event-filter-name').value;
@@ -1560,29 +1667,33 @@ const changeFilterEvents = debounce(() => {
     TABLE_EVENTS.filters.location = cssGetId('event-filter-location').value;
     updateEventsSidebar();
 }, 300);
-function filterEvent(event) {
+function filterOutEventRow(event) {
     if (TABLE_EVENTS.filters.type && TABLE_EVENTS.filters.type !== 'All' && TABLE_EVENTS.filters.type !== event.type) return true; 
-    if (TABLE_EVENTS.filters.name && !event.name.toLowerCase().includes(TABLE_EVENTS.filters.name.toLowerCase())) return true;
+    if (TABLE_EVENTS.filters.name && !isSubstring(event.name, TABLE_EVENTS.filters.name)) return true;
     if (TABLE_EVENTS.filters.before) {
-        const d = parseDate(TABLE_EVENTS.filters.before);
-        if (!d || d <= event.date) return true;
+        const d = normalizeDateString(TABLE_EVENTS.filters.before);
+        if (!d || d <= event.start.split('|')[0]) return true;
     }
     if (TABLE_EVENTS.filters.after) {
-        const d = parseDate(TABLE_EVENTS.filters.after);
-        if (!d || d >= event.date) return true;
+        const d = normalizeDateString(TABLE_EVENTS.filters.after);
+        if (!d || d >= event.start.split('|')[0]) return true;
     }
-    if (TABLE_EVENTS.filters.location && !event.location.toLowerCase().includes(TABLE_EVENTS.filters.location.toLowerCase())) return true;
+    if (TABLE_EVENTS.filters.location && !isSubstring(event.location, TABLE_EVENTS.filters.location)) return true;
     return false;
 }
-const updateEventsSidebar = (() => {
-    const sidebar = cssGetId('nav-events');
+
+/**
+ * CSS cannot force the event sidebar height to match the event body height
+ * So we match the height with JS
+ */
+function initEventSidebarHeightAdjuster() {
     const container = cssGetId('nav-events-sidebar');
     const body = cssGetId('event-body');
 
-    // Set sidebar height to match height event body content
-    const bodyStyle = getComputedStyle(cssGetId('event-body'));
+    const bodyStyle = getComputedStyle(body);
     const gap = parseInt(bodyStyle.gap, 10);
     const padding = parseInt(bodyStyle.padding, 10);
+
     const observer = new ResizeObserver(entries => {
         if (window.innerWidth < 900) {
             container.style.setProperty('height', ``);
@@ -1599,33 +1710,46 @@ const updateEventsSidebar = (() => {
         }
     });
     Array.from(cssGetClass('tab-concert')).forEach(x => observer.observe(x));
-    const sortedEvents = EVENTS.toSorted((a, b) => b.date.localeCompare(a.date));
+}
+
+function createEventRow(event) {
+    return construct({
+        element: 'li',
+        id: `nav-events-${event.id}`,
+        attributes: { onclick: 'toggleEventTab(this)'},
+        children: [{
+            element: 'span',
+            innerText: event.name
+        }, {
+            element: 'span',
+            innerText: event.start.split("|")[0]
+        }]
+    });
+}
+
+const updateEventsSidebar = (() => {
+    initEventSidebarHeightAdjuster();
+
+    const sidebar = cssGetId('nav-events');
+    const sortedEvents = EVENTS.toSorted((a, b) => b.end.localeCompare(a.end));
 
     const elements = {};
     return async () => {
+        let now = new Date();
+
         const fragment = document.createDocumentFragment();
         sortedEvents.forEach(row => {
-            if (filterEvent(row)) {
+            if (filterOutEventRow(row)) {
                 return;
             }
-            const classes = [];
-            if (dateToString() <= row.date) { classes.push('nav-events-upcoming'); }
-
             if (!elements[row.id]) {
-                elements[row.id] = construct({
-                    element: 'li',
-                    id: `nav-events-${row.id}`,
-                    attributes: { onclick: 'toggleEventTab(this)'},
-                    classes,
-                    children: [{
-                        element: 'span',
-                        innerText: row.name
-                    }, {
-                        element: 'span',
-                        innerText: row.date
-                    }]
-                });
+                elements[row.id] = createEventRow(row);
             }
+            
+            if (now <= parseDate(row.end)) {
+                elements[row.id].classList.add('nav-events-upcoming');
+            }
+
             if (row.id === TABLE_EVENTS.active) {
                 elements[row.id].classList.add('nav-events-active');
             } else {
@@ -1645,116 +1769,107 @@ function toggleSongPerformersCaption(element) {
         element.classList.add(className);
     }
 }
-const constructSetlistItem = (() => {
+
+function constructSetlistTabSongItem(performanceInfo, song, i) {
+    let name = song.name;
+    let bracket = '';
+    if (name.includes('(') && name.includes(')')) {
+        const ind = name.lastIndexOf('(');
+        bracket = name.slice(ind, name.lastIndexOf(')') + 1);
+        name = name.slice(0, ind);
+
+        bracket = `<span class="concert-item-title-bracket">${bracket}</span> `
+    }
+    const number = `<span class="concert-item-title-number">// ${String(i + 1).padStart(2, '0')}</span>`
+
+    const performanceBlocks = [{
+        element: 'h4',
+        innerHTML: `${name} ${bracket}${number}`
+    }, {
+        element: 'p',
+        innerHTML: `<span>by</span> ${song.composer}`
+    }, performanceInfo.arranger ? {
+        element: 'p',
+        innerHTML: `<span>arranged by</span> ${performanceInfo.arranger.map(x => MEMBERS[x]?.name ?? x).join(', ')}`
+    } : undefined, song.from ? {
+        element: 'p',
+        innerHTML: `<span>from</span> ${song.from}`
+    } : undefined];
+
+    return construct({
+        element: 'li',
+        classes: ['concert-item'],
+        children: [{
+            element: 'hgroup',
+            children: performanceBlocks
+        }, {
+            element: 'div',
+            children: [performanceInfo.group ? {
+                element: 'span',
+                classes: ['concert-item-group-name'],
+                innerText: performanceInfo.group
+            } : undefined, {
+                element: 'span',
+                classes: ['concert-item-button', 'concert-performers-button'],
+                attributes: {
+                    onclick: 'toggleSongPerformersCaption(this)'
+                },
+                children: [{
+                    element: 'img',
+                    attributes: {
+                        src: 'assets/icons/users.svg'
+                    }
+                }, {
+                    element: 'dl',
+                    children: Object.entries(performanceInfo.performers).map(([instrumentId, performersId]) => (
+                        performersId
+                            .map(performerId => MEMBERS[performerId]?.name ?? performerId)
+                            .toSorted()
+                            .map(performerId => [{
+                                element: 'dt',
+                                innerText: INSTRUMENTS[instrumentId]
+                            }, {
+                                element: 'dd',
+                                innerText: MEMBERS[performerId]?.name ?? performerId 
+                            }])
+                    )).flat(2)
+                }]
+            }, performanceInfo.sheetMusic ? {
+                element: 'a',
+                classes: ['concert-item-button'],
+                attributes: {
+                    href: performanceInfo.sheetMusic,
+                    target: '_blank'
+                },
+                children: [{
+                    element: 'img',
+                    attributes: {
+                        src: 'assets/icons/logos/drive.svg'
+                    }
+                }]
+            } : undefined]
+        }]
+    });
+}
+
+const constructSetlistTabSong = (() => {
     const cache = {};
 
-    // (song info, setlist number, event id)
-    return (song, i, id) => {
-        const key = `${song.id}|${i}`;
-
-        let performanceInfo;
-        for (const performance of song.performances) {
-            if (performance.concerts.includes(id)) {
-                performanceInfo = performance;
-                break;
-            }
-        }
+    // (song info, setlist index, event id)
+    return (song, i, eventId) => {
+        const performanceInfo = song.performances.find(x => x.concerts.includes(eventId));
         if (!performanceInfo) {
-            throw new Error(`Setlist for '${EVENTS[id].name}' includes '${song.name}' which has no performance info for that concert`)
+            throw new Error(`Setlist for '${EVENTS[eventId].name}' includes '${song.name}' which has no performance info for that concert`)
         }
-
+        const key = `${song.id}|${i}`;
         if (!cache[key]) {
-            let name = song.name;
-            let bracket = '';
-            if (name.includes('(') && name.includes(')')) {
-                const ind = name.lastIndexOf('(');
-                bracket = name.slice(ind, name.lastIndexOf(')') + 1);
-                name = name.slice(0, ind);
-
-                bracket = `<span class="concert-item-title-bracket">${bracket}</span> `
-            }
-            const number = `<span class="concert-item-title-number">// ${String(i + 1).padStart(2, '0')}</span>`
-
-            const performanceBlocks = [{
-                element: 'h4',
-                innerHTML: `${name} ${bracket}${number}`
-            }, {
-                element: 'p',
-                innerHTML: `<span>by</span> ${song.composer}`
-            }, performanceInfo.arranger ? {
-                element: 'p',
-                innerHTML: `<span>arranged by</span> ${performanceInfo.arranger.map(x => MEMBERS[x]?.name ?? x).join(', ')}`
-            } : undefined, song.from ? {
-                element: 'p',
-                innerHTML: `<span>from</span> ${song.from}`
-            } : undefined];
-
-            cache[key] = construct({
-                element: 'li',
-                classes: ['concert-item'],
-                children: [{
-                    element: 'hgroup',
-                    children: performanceBlocks
-                }, {
-                    element: 'div',
-                    children: [performanceInfo.group ? {
-                        element: 'span',
-                        classes: ['concert-item-group-name'],
-                        innerText: performanceInfo.group
-                    } : undefined, {
-                        element: 'span',
-                        classes: ['concert-item-button', 'concert-performers-button'],
-                        attributes: {
-                            onclick: 'toggleSongPerformersCaption(this)'
-                        },
-                        children: [{
-                            element: 'img',
-                            attributes: {
-                                src: 'assets/icons/users.svg'
-                            }
-                        }, {
-                            element: 'dl',
-                            children: Object.entries(performanceInfo.performers).map(([instrumentId, performersId]) => (
-                                performersId
-                                    .map(performerId => MEMBERS[performerId]?.name ?? performerId)
-                                    .toSorted()
-                                    .map(performerId => [{
-                                        element: 'dt',
-                                        innerText: INSTRUMENTS[instrumentId]
-                                    }, {
-                                        element: 'dd',
-                                        innerText: MEMBERS[performerId]?.name ?? performerId 
-                                    }])
-                            )).flat(2)
-                        }]
-                    }, performanceInfo.sheetMusic ? {
-                        element: 'a',
-                        classes: ['concert-item-button'],
-                        attributes: {
-                            href: performanceInfo.sheetMusic,
-                            target: '_blank'
-                        },
-                        children: [{
-                            element: 'img',
-                            attributes: {
-                                src: 'assets/icons/logos/drive.svg'
-                            }
-                        }]
-                    } : undefined]
-                }]
-            })
+            cache[key] = constructSetlistTabSongItem(performanceInfo, song, i);
         }
         return cache[key];
     }
 })()
-function getPerformances(setlist) {
-    return setlist.map(info => {
-        // Filter out timestamps
-        const id = Array.isArray(info) ? info[0] : info;
-        return MUSIC[id].performances.map(x => x.performers)
-    }).flat();
-}
-function constructPerformers(performances) {
+
+function constructPerformersTab(performances) {
     // Map instruments to unique performers
     const performers = {};
     for (const performance of performances) {
@@ -1774,109 +1889,116 @@ function constructPerformers(performances) {
             innerText: INSTRUMENTS[instrumentId]
         }, ...Array.from(performerIds).map(id => ({
             element: 'p',
-            innerText: MEMBERS[id]?.name ?? "???"
+            innerText: MEMBERS[id]?.name ?? id
         }))]
     }))
 }
-function injectEventBody() {
-    const { id, name, type, location, description, date, time, setlist, video, gallery } = EVENTS[TABLE_EVENTS.active];
 
-    // Parse event time
-    let from, to;
-    if (time) {
-        [from, to] = time?.split('-');
+function getPerformances(setlist) {
+    return setlist.map(info => {
+        // Filter out timestamps
+        const id = Array.isArray(info) ? info[0] : info;
+        return MUSIC[id].performances.map(x => x.performers)
+    }).flat();
+}
 
-        let [h1, m1] = to.split(':');
-        h1 = parseInt(h1, 10);
-        if (h1 > 12) { to = `${h1 - 12}:${m1} pm`; }
-        else if (h1 === 0) { to = `12:${m1} am`; }
-        else { to = `${h1}:${m1} am`; }
-        
-        let [h0, m0] = from.split(':');
-        h0 = parseInt(h0, 10);
-        if ((h0 > 12) === (h1 > 12)) { from = `${h0 - 12}:${m0}`; }
-        else if (h0 > 12) { from = `${h0 - 12}:${m0} pm`; }
-        else if (h0 === 0) { from = `12:${m0} am`; }
-        else { from = `${h0}:${m0} am`; }
+function constructVideoTimestamps(setlist) {
+    const concertVideoChapters = cssGetId('concert-video-chapters');
+    const timestamps = setlist.map((x, i) => [x, i + 1]).filter(x => Array.isArray(x[0]));
+
+    if (timestamps?.length === 0) {
+        concertVideoChapters.style.setProperty('display', 'none');
+        return;
     }
+    concertVideoChapters.style.setProperty('display', '');
+    
+    fragment = document.createDocumentFragment();
+    timestamps.forEach(([[songId, seconds], i]) => {
+        fragment.appendChild(construct({
+            element: 'li',
+            attributes: {
+                onclick: `goToVideoChapter(this, ${seconds})`
+            },
+            innerHTML: `<span>${String(i).padStart(2, '0')} //</span> ${MUSIC[songId].name}`
+        }))
+    });
+    concertVideoChapters.replaceChildren(fragment);      
+}
+
+function injectEventBodyConcert(id, setlist, video, gallery) {
+    const navConcert = cssGetFirst('#event-body nav');
+    const tabConcert = Array.from(cssGetClass('tab-concert'));
+
+    navConcert.style.setProperty('display', '');
+    tabConcert.forEach(x => x.style.setProperty('display', ''));
+
+    // Setlist inner tab
+    let fragment = document.createDocumentFragment();
+    setlist.forEach((info, i) => {
+        const setlistId = Array.isArray(info) ? info[0] : info;
+        fragment.appendChild(constructSetlistTabSong(MUSIC[setlistId], i, id));
+    })
+    cssGetId('concert-items').replaceChildren(fragment);
+
+    // Performers inner tab
+    fragment = document.createDocumentFragment();
+    const performances = getPerformances(setlist);
+    constructPerformersTab(performances).forEach(x => {
+        fragment.appendChild(x);
+    });
+    cssGetId('concert-performers').replaceChildren(fragment);
+
+    // Video inner tab
+    const navConcertVideo = cssGetId('nav-concert-video');
+    if (video) {
+        navConcertVideo.style.setProperty('display', '');
+        loadYoutubeVideo(video);
+        constructVideoTimestamps(setlist);
+    } else {
+        navConcertVideo.style.setProperty('display', 'none');
+        
+        // If video tab is focused & switched to a videoless concert, switch to setlist inner tab 
+        if (navConcertVideo.classList.contains('nav-concert-active')) {
+            toggleConcertTab(cssGetId('nav-concert-setlist'));
+        }
+    }
+
+    // Gallery inner tab
+    const navConcertGallery = cssGetId('nav-concert-gallery');
+    if (gallery) {
+        navConcertGallery.href = gallery;
+        navConcertGallery.style.setProperty('display', '');
+    } else {
+        navConcertGallery.style.setProperty('display', 'none');
+    }
+}
+
+function injectEventBody() {
+    const { id, name, type, location, description, start, end, setlist, video, gallery } = EVENTS[TABLE_EVENTS.active];
+
+    const [startDate] = start.split('|');
+    const [endDate] = end.split('|');
+    const sameDayEvent = startDate === endDate;
+    const fromToFull = parseFromTo(parseDate(start), parseDate(end));
+    const fromTo = sameDayEvent ? fromToFull.split(', ')[1] : fromToFull;
 
     const navConcert = cssGetFirst('#event-body nav');
     const tabConcert = Array.from(cssGetClass('tab-concert'));
     VIDEO?.pauseVideo();
 
-    // Show/hide concert widget
+    // Concert widget
     if (type === 'Concert' && setlist) {
-        navConcert.style.setProperty('display', '');
-        tabConcert.forEach(x => x.style.setProperty('display', ''));
-
-        // Setlist inner tab
-        let fragment = document.createDocumentFragment();
-        setlist.forEach((info, i) => {
-            const setlistId = Array.isArray(info) ? info[0] : info;
-            fragment.appendChild(constructSetlistItem(MUSIC[setlistId], i, id));
-        })
-        cssGetId('concert-items').replaceChildren(fragment);
-
-        // Performers inner tab
-        fragment = document.createDocumentFragment();
-        const performances = getPerformances(setlist);
-        constructPerformers(performances).forEach(x => {
-            fragment.appendChild(x);
-        });
-        cssGetId('concert-performers').replaceChildren(fragment);
-
-        // Video inner tab
-        const navConcertVideo = cssGetId('nav-concert-video');
-        if (video) {
-            navConcertVideo.style.setProperty('display', '');
-            loadYoutubeVideo(video);
-            
-            // Video timestamps
-            const concertVideoChapters = cssGetId('concert-video-chapters');
-            const timestamps = setlist.map((x, i) => [x, i + 1]).filter(x => Array.isArray(x[0]));
-            if (timestamps?.length > 0) {
-                concertVideoChapters.style.setProperty('display', '');
-                
-                fragment = document.createDocumentFragment();
-                timestamps.forEach(([[songId, seconds], i]) => {
-                    fragment.appendChild(construct({
-                        element: 'li',
-                        attributes: {
-                            onclick: `goToVideoChapter(this, ${seconds})`
-                        },
-                        innerHTML: `<span>${String(i).padStart(2, '0')} //</span> ${MUSIC[songId].name}`
-                    }))
-                });
-                concertVideoChapters.replaceChildren(fragment);                
-            } else {
-                concertVideoChapters.style.setProperty('display', 'none');
-            }
-        } else {
-            navConcertVideo.style.setProperty('display', 'none');
-            
-            // If video tab is focused + clicked video-less concert, switch to setlist inner tab 
-            if (navConcertVideo.classList.contains('nav-concert-active')) {
-                toggleConcertTab(cssGetId('nav-concert-setlist'));
-            }
-        }
-
-        // Gallery inner tab
-        const navConcertGallery = cssGetId('nav-concert-gallery');
-        if (gallery) {
-            navConcertGallery.href = gallery;
-            navConcertGallery.style.setProperty('display', '');
-        } else {
-            navConcertGallery.style.setProperty('display', 'none');
-        }
+        injectEventBodyConcert(id, setlist, video, gallery);
     } else {
         navConcert.style.setProperty('display', 'none');
         tabConcert.forEach(x => x.style.setProperty('display', 'none'));
     }
 
-    cssGetFirst('#event-title h3').innerHTML = `${name} <span>// ${date}</span>`;
-    cssGetFirst('#event-title p').innerText = `${from || '???'} − ${to || '???'} @ ${location || '???'}`;
+    // Event title
+    cssGetFirst('#event-title h3').innerHTML = `${name} <span>// ${startDate}</span>`;
+    cssGetFirst('#event-title p').innerText = `${fromTo} @ ${location || '???'}`;
     
-    // Show/hide event description
+    // Event description
     const eventDescription = cssGetId('event-description');
     if (description) {
         eventDescription.style.setProperty('display', '');
@@ -1885,15 +2007,6 @@ function injectEventBody() {
         eventDescription.style.setProperty('display', 'none');
     }
 }
-
-// Github pages CORS test
-async function corsTest(link) {
-    const response = await fetch(link);
-    console.log(response);
-    const body = await response.text();
-    console.log(body);
-}
-// corsTest('index.html');
 
 
 /*********************************************************************

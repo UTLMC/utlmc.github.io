@@ -888,6 +888,9 @@ Datalist
     padding: 5px 10px;
     text-align: left;
 }
+.datalist tr td:first-child {
+    text-wrap: nowrap;
+}
 .datalist tr:first-child td:last-child {
     border-radius: 0 15px 0 0;
 }
@@ -1076,6 +1079,11 @@ Modal setlist
 .draggable-list tr td:nth-child(2) {
     width: 40px;
     color: rgb(177, 177, 177);
+}
+.draggable-list tr td:last-child {
+    width: 60px;
+    text-align: right;
+    padding: 5px 10px;
 }
 .draggable-list td {
     padding: 5px;

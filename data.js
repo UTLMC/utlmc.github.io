@@ -102,11 +102,11 @@ const MEMBERS = [
         "joined": "Fall 2023",
         "left": "Fall 2024",
         "instruments": [
-            "Piano",
-            "Drums",
-            "Electric Guitar",
-            "Bass Guitar",
-            "Double Bass"
+            5,
+            7,
+            13,
+            14,
+            19
         ],
         "roles": [
             "Executive (23)",
@@ -120,11 +120,11 @@ const MEMBERS = [
         "joined": "Fall 2023",
         "left": "",
         "instruments": [
-            "Voice",
-            "Piano",
-            "Acoustic Guitar",
-            "Bass Guitar",
-            "Trombone"
+            4,
+            5,
+            8,
+            14,
+            36
         ],
         "roles": [
             "Executive (23/24)",
@@ -139,8 +139,8 @@ const MEMBERS = [
         "joined": "Fall 2023",
         "left": "",
         "instruments": [
-            "Piano",
-            "Violin"
+            5,
+            17
         ],
         "roles": [
             "Executive (23/25)",
@@ -161,10 +161,10 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "",
         "instruments": [
-            "Voice",
-            "Piano",
-            "Acoustic Guitar",
-            "Violin"
+            4,
+            5,
+            8,
+            17
         ],
         "roles": [
             "Executive (25)",
@@ -182,9 +182,9 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "Fall 2024",
         "instruments": [
-            "Voice",
-            "Piano",
-            "Acoustic Guitar"
+            4,
+            5,
+            8
         ],
         "roles": [
             "OG"
@@ -197,7 +197,7 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "Winter 2025",
         "instruments": [
-            "Voice"
+            4
         ],
         "roles": [
             "Executive (24)",
@@ -216,8 +216,8 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "Winter 2025",
         "instruments": [
-            "Voice",
-            "Drums"
+            4,
+            7
         ],
         "roles": [
             "OG"
@@ -235,7 +235,7 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "Winter 2025",
         "instruments": [
-            "Bass Guitar"
+            14
         ],
         "roles": [
             "OG"
@@ -248,11 +248,11 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "",
         "instruments": [
-            "Voice",
-            "Piano",
-            "Acoustic Guitar",
-            "Electric Guitar",
-            "Bass Guitar"
+            4,
+            5,
+            8,
+            13,
+            14
         ],
         "roles": [
             "OG"
@@ -265,8 +265,8 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "",
         "instruments": [
-            "Piano",
-            "Flute"
+            5,
+            21
         ],
         "roles": [
             "Arranger",
@@ -281,9 +281,9 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "",
         "instruments": [
-            "Voice",
-            "Trumpet",
-            "Trombone"
+            4,
+            35,
+            36
         ],
         "roles": [
             "Artist",
@@ -297,13 +297,13 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "",
         "instruments": [
-            "Voice",
-            "Piano",
-            "Ukulele",
-            "Clarinet",
-            "Alto Saxophone",
-            "Tenor Saxophone",
-            "Baritone Saxophone"
+            4,
+            5,
+            12,
+            25,
+            27,
+            28,
+            29
         ],
         "roles": [
             "Artist",
@@ -317,7 +317,7 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "",
         "instruments": [
-            "Violin"
+            17
         ],
         "roles": [
             "OG"
@@ -330,10 +330,10 @@ const MEMBERS = [
         "joined": "Winter 2024",
         "left": "",
         "instruments": [
-            "Voice",
-            "Piano",
-            "Electric Guitar",
-            "Violin"
+            4,
+            5,
+            13,
+            17
         ],
         "roles": [
             "Arranger"
@@ -355,7 +355,7 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "Fall 2024",
         "instruments": [
-            "Clarinet"
+            25
         ],
         "roles": [],
         "links": {}
@@ -366,7 +366,7 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "Winter 2025",
         "instruments": [
-            "Violin"
+            17
         ],
         "roles": [],
         "links": {}
@@ -377,8 +377,8 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "Winter 2025",
         "instruments": [
-            "Voice",
-            "Alto Saxophone"
+            4,
+            27
         ],
         "roles": [],
         "links": {}
@@ -389,8 +389,8 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "Winter 2025",
         "instruments": [
-            "Piano",
-            "Violin"
+            5,
+            17
         ],
         "roles": [],
         "links": {}
@@ -401,7 +401,7 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "Winter 2025",
         "instruments": [
-            "Drums"
+            7
         ],
         "roles": [],
         "links": {}
@@ -412,7 +412,7 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "Winter 2025",
         "instruments": [
-            "Oboe"
+            24
         ],
         "roles": [],
         "links": {}
@@ -423,10 +423,10 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "",
         "instruments": [
-            "Voice",
-            "Piano",
-            "Drums",
-            "Electric Guitar"
+            4,
+            5,
+            7,
+            13
         ],
         "roles": [],
         "links": {}
@@ -437,7 +437,7 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "",
         "instruments": [
-            "Bass Guitar"
+            14
         ],
         "roles": [],
         "links": {}
@@ -448,7 +448,7 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "",
         "instruments": [
-            "Electric Guitar"
+            13
         ],
         "roles": [],
         "links": {}
@@ -459,8 +459,8 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "",
         "instruments": [
-            "Acoustic Guitar",
-            "Electric Guitar"
+            8,
+            13
         ],
         "roles": [],
         "links": {}
@@ -471,9 +471,9 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "",
         "instruments": [
-            "Voice",
-            "Ukulele",
-            "Trumpet"
+            4,
+            12,
+            35
         ],
         "roles": [
             "Artist"
@@ -486,9 +486,9 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "",
         "instruments": [
-            "Electric Guitar",
-            "Bass Guitar",
-            "Cello"
+            13,
+            14,
+            18
         ],
         "roles": [],
         "links": {}
@@ -499,8 +499,8 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "",
         "instruments": [
-            "Acoustic Guitar",
-            "Electric Guitar"
+            8,
+            13
         ],
         "roles": [
             "Assistant Executive (25)",
@@ -516,10 +516,10 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "",
         "instruments": [
-            "Acoustic Guitar",
-            "Ukulele",
-            "Clarinet",
-            "Alto Saxophone"
+            8,
+            12,
+            25,
+            27
         ],
         "roles": [
             "Arranger"
@@ -537,7 +537,7 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "",
         "instruments": [
-            "Piano"
+            5
         ],
         "roles": [],
         "links": {}
@@ -548,8 +548,8 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "",
         "instruments": [
-            "Voice",
-            "Piano"
+            4,
+            5
         ],
         "roles": [],
         "links": {}
@@ -560,7 +560,7 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "",
         "instruments": [
-            "Piano"
+            5
         ],
         "roles": [],
         "links": {}
@@ -571,8 +571,8 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "Winter 2025",
         "instruments": [
-            "Voice",
-            "Violin"
+            4,
+            17
         ],
         "roles": [],
         "links": {}
@@ -583,8 +583,8 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "Fall 2024",
         "instruments": [
-            "Piano",
-            "Clarinet"
+            5,
+            25
         ],
         "roles": [],
         "links": {}
@@ -595,10 +595,10 @@ const MEMBERS = [
         "joined": "Fall 2024",
         "left": "",
         "instruments": [
-            "Voice",
-            "Acoustic Guitar",
-            "Electric Guitar",
-            "Bass Guitar"
+            4,
+            8,
+            13,
+            14
         ],
         "roles": [],
         "links": {}
@@ -609,8 +609,8 @@ const MEMBERS = [
         "joined": "Winter 2025",
         "left": "",
         "instruments": [
-            "Voice",
-            "Ukulele"
+            4,
+            12
         ],
         "roles": [
             "Artist"
@@ -623,7 +623,7 @@ const MEMBERS = [
         "joined": "Winter 2025",
         "left": "",
         "instruments": [
-            "Trumpet"
+            35
         ],
         "roles": [],
         "links": {}
@@ -634,7 +634,7 @@ const MEMBERS = [
         "joined": "Winter 2025",
         "left": "",
         "instruments": [
-            "Piano"
+            5
         ],
         "roles": [],
         "links": {}
@@ -645,9 +645,9 @@ const MEMBERS = [
         "joined": "Winter 2025",
         "left": "",
         "instruments": [
-            "Voice",
-            "Electric Guitar",
-            "Bass Guitar"
+            4,
+            13,
+            14
         ],
         "roles": [],
         "links": {}
@@ -658,7 +658,7 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Piano"
+            5
         ],
         "roles": [],
         "links": {}
@@ -669,8 +669,8 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Voice",
-            "Bass Guitar"
+            4,
+            14
         ],
         "roles": [
             "Assistant Executive (25)"
@@ -685,8 +685,8 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Voice",
-            "Piano"
+            4,
+            5
         ],
         "roles": [
             "Assistant Executive (25)"
@@ -701,7 +701,7 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Voice"
+            4
         ],
         "roles": [],
         "links": {}
@@ -712,9 +712,9 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Voice",
-            "Acoustic Guitar",
-            "Ukulele"
+            4,
+            8,
+            12
         ],
         "roles": [],
         "links": {}
@@ -725,7 +725,7 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Voice"
+            4
         ],
         "roles": [],
         "links": {}
@@ -736,9 +736,9 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Voice",
-            "Piano",
-            "Electric Guitar"
+            4,
+            5,
+            13
         ],
         "roles": [],
         "links": {}
@@ -749,9 +749,9 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Voice",
-            "Piano",
-            "Bass Guitar"
+            4,
+            5,
+            14
         ],
         "roles": [],
         "links": {}
@@ -762,9 +762,9 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Voice",
-            "Piano",
-            "Electric Guitar"
+            4,
+            5,
+            13
         ],
         "roles": [],
         "links": {}
@@ -775,12 +775,12 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Voice",
-            "Piano",
-            "Drums",
-            "Electric Guitar",
-            "Bass Guitar",
-            "Violin"
+            4,
+            5,
+            7,
+            13,
+            14,
+            17
         ],
         "roles": [],
         "links": {}
@@ -791,8 +791,8 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Violin",
-            "Alto Saxophone"
+            17,
+            27
         ],
         "roles": [],
         "links": {}
@@ -803,8 +803,8 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "Fall 2025",
         "instruments": [
-            "Violin",
-            "Flute"
+            17,
+            21
         ],
         "roles": [],
         "links": {}
@@ -815,8 +815,8 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "Fall 2025",
         "instruments": [
-            "Piano",
-            "Violin"
+            5,
+            17
         ],
         "roles": [],
         "links": {}
@@ -827,7 +827,7 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Clarinet"
+            25
         ],
         "roles": [],
         "links": {}
@@ -838,10 +838,10 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Voice",
-            "Piano",
-            "Alto Saxophone",
-            "Tenor Saxophone"
+            4,
+            5,
+            27,
+            28
         ],
         "roles": [],
         "links": {}
@@ -852,8 +852,8 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Piano",
-            "Trombone"
+            5,
+            36
         ],
         "roles": [
             "Logistics"
@@ -866,8 +866,8 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Voice",
-            "Electric Guitar"
+            4,
+            13
         ],
         "roles": [],
         "links": {}
@@ -878,8 +878,8 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Voice",
-            "Acoustic Guitar"
+            4,
+            8
         ],
         "roles": [],
         "links": {}
@@ -890,7 +890,7 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Electric Guitar"
+            13
         ],
         "roles": [],
         "links": {}
@@ -901,8 +901,8 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Acoustic Guitar",
-            "Electric Guitar"
+            8,
+            13
         ],
         "roles": [],
         "links": {}
@@ -913,11 +913,11 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Voice",
-            "Piano",
-            "Electric Guitar",
-            "Bass Guitar",
-            "Bass Clarinet"
+            4,
+            5,
+            13,
+            14,
+            26
         ],
         "roles": [],
         "links": {}
@@ -928,10 +928,10 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Voice",
-            "Piano",
-            "Electric Guitar",
-            "Bass Guitar"
+            4,
+            5,
+            13,
+            14
         ],
         "roles": [],
         "links": {}
@@ -942,7 +942,7 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Bass Guitar"
+            14
         ],
         "roles": [
             "Logistics"
@@ -955,11 +955,11 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Voice",
-            "Piano",
-            "Electric Guitar",
-            "Bass Guitar",
-            "Flute"
+            4,
+            5,
+            13,
+            14,
+            21
         ],
         "roles": [],
         "links": {}
@@ -970,8 +970,8 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Piano",
-            "Clarinet"
+            5,
+            25
         ],
         "roles": [],
         "links": {}
@@ -982,9 +982,9 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Harmonica",
-            "Voice",
-            "Piano"
+            30,
+            4,
+            5
         ],
         "roles": [],
         "links": {}
@@ -995,9 +995,9 @@ const MEMBERS = [
         "joined": "Fall 2025",
         "left": "",
         "instruments": [
-            "Voice",
-            "Piano",
-            "Drums"
+            4,
+            5,
+            7
         ],
         "roles": [],
         "links": {}
@@ -1008,7 +1008,7 @@ const MEMBERS = [
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Piano"
+            5
         ],
         "roles": [],
         "links": {}
@@ -1019,11 +1019,11 @@ const MEMBERS = [
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Piano",
-            "Drums",
-            "Electric Guitar",
-            "Bass Guitar",
-            "Alto Saxophone"
+            5,
+            7,
+            13,
+            14,
+            27
         ],
         "roles": [],
         "links": {}
@@ -1034,7 +1034,7 @@ const MEMBERS = [
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Violin"
+            17
         ],
         "roles": [],
         "links": {}
@@ -1045,7 +1045,7 @@ const MEMBERS = [
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Drums"
+            7
         ],
         "roles": [],
         "links": {}
@@ -1056,12 +1056,12 @@ const MEMBERS = [
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Voice",
-            "Piccolo",
-            "Flute",
-            "Recorder",
-            "Alto Saxophone",
-            "Tenor Saxophone"
+            4,
+            20,
+            21,
+            23,
+            27,
+            28
         ],
         "roles": [],
         "links": {}
@@ -1072,7 +1072,7 @@ const MEMBERS = [
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Drums"
+            7
         ],
         "roles": [],
         "links": {}
@@ -1083,7 +1083,7 @@ const MEMBERS = [
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Drums"
+            7
         ],
         "roles": [],
         "links": {}
@@ -1094,8 +1094,8 @@ const MEMBERS = [
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Bagpipes",
-            "Voice"
+            2,
+            4
         ],
         "roles": [],
         "links": {}
@@ -1106,7 +1106,7 @@ const MEMBERS = [
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Voice"
+            4
         ],
         "roles": [],
         "links": {}
@@ -1117,9 +1117,9 @@ const MEMBERS = [
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Voice",
-            "Piano",
-            "Electric Guitar"
+            4,
+            5,
+            13
         ],
         "roles": [],
         "links": {}
@@ -1130,8 +1130,8 @@ const MEMBERS = [
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Piano",
-            "Bass Guitar"
+            5,
+            14
         ],
         "roles": [],
         "links": {}
@@ -1142,8 +1142,8 @@ const MEMBERS = [
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Accordion",
-            "Acoustic Guitar"
+            0,
+            8
         ],
         "roles": [],
         "links": {}
@@ -1154,7 +1154,7 @@ const MEMBERS = [
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Voice"
+            4
         ],
         "roles": [],
         "links": {}
@@ -1165,7 +1165,7 @@ const MEMBERS = [
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Electric Guitar"
+            13
         ],
         "roles": [],
         "links": {}
@@ -1176,11 +1176,11 @@ const MEMBERS = [
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Piano",
-            "Bass Guitar",
-            "Clarinet",
-            "Trumpet",
-            "Trombone"
+            5,
+            14,
+            25,
+            35,
+            36
         ],
         "roles": [],
         "links": {}
@@ -1191,7 +1191,7 @@ const MEMBERS = [
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Theremin"
+            33
         ],
         "roles": [],
         "links": {}
@@ -1202,7 +1202,7 @@ const MEMBERS = [
         "joined": "Winter 2026",
         "left": "",
         "instruments": [
-            "Electric Guitar"
+            13
         ],
         "roles": [],
         "links": {}
@@ -5789,7 +5789,8 @@ const EVENTS = [
         "name": "Genshiken Festival 2024",
         "location": "",
         "description": "A one-day anime convention organized by students from a variety of Ontario University Anime Clubs",
-        "date": "2024-03-23",
+        "start": "2024-03-23|00:00",
+        "end": "2024-03-23|23:59",
         "setlist": [
             3,
             4,
@@ -5802,8 +5803,9 @@ const EVENTS = [
         "name": "UT-SAMA 20th Anniversary Event",
         "location": "UTSU Student Commons",
         "description": "",
-        "date": "2024-04-04",
-        "video": "https://youtu.be/ob0COvRRvDI?si=C6Ghd22rm7d2FAtY",
+        "start": "2024-04-04|00:00",
+        "end": "2024-04-04|23:59",
+        "video": "https://youtu.be/ob0COvRRvDI",
         "setlist": [
             0,
             3,
@@ -5822,11 +5824,11 @@ const EVENTS = [
         "id": 2,
         "type": "Concert",
         "name": "October 2024 Concert",
-        "location": "Cat's Eye",
+        "location": "The Cat's Eye",
         "description": "",
-        "date": "2024-10-04",
-        "time": "19:30-20:30",
-        "video": "https://youtu.be/JtuPSpsSQYk?si=frbInyV_qx6DIKQc",
+        "start": "2024-10-04|19:30",
+        "end": "2024-10-04|20:30",
+        "video": "https://youtu.be/JtuPSpsSQYk",
         "setlist": [
             3,
             9,
@@ -5845,11 +5847,11 @@ const EVENTS = [
         "id": 3,
         "type": "Concert",
         "name": "End of Fall 2024 Concert",
-        "location": "Cat's Eye",
+        "location": "The Cat's Eye",
         "description": "",
-        "date": "2025-01-24",
-        "time": "19:00-20:30",
-        "video": "https://youtu.be/TiStCNPn10s?si=oCxHak2aO2owo2Fh",
+        "start": "2025-01-24|19:00",
+        "end": "2025-01-24|20:30",
+        "video": "https://youtu.be/TiStCNPn10s",
         "setlist": [
             13,
             21,
@@ -5877,7 +5879,8 @@ const EVENTS = [
         "name": "Chord Theory Workshop 2025",
         "location": "",
         "description": "???",
-        "date": "2025-02-13"
+        "start": "2025-02-13|00:00",
+        "end": "2025-02-13|23:59"
     },
     {
         "id": 5,
@@ -5885,7 +5888,8 @@ const EVENTS = [
         "name": "Music Production Workshop 2025",
         "location": "OISE 2279",
         "description": "???",
-        "date": "2025-02-27"
+        "start": "2025-02-27|00:00",
+        "end": "2025-02-27|23:59"
     },
     {
         "id": 6,
@@ -5893,7 +5897,8 @@ const EVENTS = [
         "name": "Blind Test 2025",
         "location": "OISE C-154",
         "description": "???",
-        "date": "2025-03-08",
+        "start": "2025-03-08|00:00",
+        "end": "2025-03-08|23:59",
         "video": "https://www.youtube.com/watch?v=0CJ_9BmtAXY"
     },
     {
@@ -5902,9 +5907,9 @@ const EVENTS = [
         "name": "End of Winter 2025 Concert",
         "location": "OISE G-162",
         "description": "???",
-        "date": "2025-04-07",
-        "time": "19:00-20:30",
-        "video": "https://youtu.be/k1CZLnxSWDc?si=bs4sXQO-8NfzL65J",
+        "start": "2025-04-07|19:00",
+        "end": "2025-04-07|20:30",
+        "video": "https://youtu.be/k1CZLnxSWDc",
         "setlist": [
             [
                 30,
@@ -5990,7 +5995,8 @@ const EVENTS = [
         "name": "Arranging Workshop 2025",
         "location": "OISE C-154",
         "description": "???",
-        "date": "2025-11-09"
+        "start": "2025-11-09|00:00",
+        "end": "2025-11-09|23:59"
     },
     {
         "id": 9,
@@ -5998,7 +6004,8 @@ const EVENTS = [
         "name": "RCAG Studio Night 2025",
         "location": "",
         "description": "???",
-        "date": "2025-11-13",
+        "start": "2025-11-13|00:00",
+        "end": "2025-11-13|23:59",
         "setlist": [
             50,
             51
@@ -6010,9 +6017,9 @@ const EVENTS = [
         "name": "End of Fall 2025 Concert",
         "location": "OISE G-162",
         "description": "???",
-        "date": "2025-11-29",
-        "time": "18:00-21:00",
-        "video": "https://youtu.be/wuObU4_nbtI?si=Mzomwl0pLPOMRzA-",
+        "start": "2025-11-29|18:00",
+        "end": "2025-11-29|21:00",
+        "video": "https://youtu.be/wuObU4_nbtI",
         "setlist": [
             [
                 51,
@@ -6118,8 +6125,8 @@ const EVENTS = [
         "name": "Hemoglobal Connect Benefit Concert 2026",
         "location": "Trinity-St. Paul's United Church",
         "description": "???",
-        "date": "2026-01-23",
-        "time": "18:00-20:00"
+        "start": "2026-01-23|18:00",
+        "end": "2026-01-23|20:00"
     },
     {
         "id": 12,
@@ -6127,8 +6134,8 @@ const EVENTS = [
         "name": "Sound Equipment Workshop 2026",
         "location": "OISE 5240",
         "description": "???",
-        "date": "2026-01-30",
-        "time": "16:30-??:??",
+        "start": "2026-01-30|16:30",
+        "end": "2026-01-30|??:??",
         "gallery": "https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv"
     },
     {
@@ -6137,8 +6144,8 @@ const EVENTS = [
         "name": "Tunes & Treats 2026 Concert",
         "location": "OISE C-154",
         "description": "???",
-        "date": "2026-03-06",
-        "time": "18:00-21:00",
+        "start": "2026-03-06|18:00",
+        "end": "2026-03-06|21:00",
         "setlist": [
             74,
             75,
@@ -6170,8 +6177,8 @@ const EVENTS = [
         "name": "Succession 2026 Concert",
         "location": "OISE G-162",
         "description": "???",
-        "date": "2026-04-05",
-        "time": "13:00-20:00",
+        "start": "2026-04-05|17:00",
+        "end": "2026-04-05|20:00",
         "setlist": [
             95,
             96,
@@ -6211,7 +6218,7 @@ const FAQ = [
     {
         q: 'Is LMC only for University of Toronto students?',
         a: [
-            'No. While most LMC members are UofT St. George students, individuals of any background are free to join as long as they can physically play with us. Members unable to commute to campus are encouraged to participate online through online events and recording projects, which we upload to our YouTube channel.'
+            'No. While most LMC members are UofT St. George students, individuals of any background are free to join as long as they can physically play with us. Members unable to commute to campus are encouraged to participate online through online events and  projects, which we upload to our YouTube channel.'
         ]
     },
     {
