@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="assets/favicon.ico">
     <link rel="stylesheet" href="database.css">
+    <script src="data.js"></script>
     <script src="database.js" defer></script>
     <title>UTLMC Database</title>
 </head>
@@ -124,7 +125,7 @@
                                 <p>From <input type="date"/></p>
                                 <p>Until <input type="date"/></p>
                             </td>
-                            <td contenteditable="true">This website is under construction or whatever...</td>
+                            <td contenteditable="true" onblur="validateMultilineInput(this)">This website is under construction or whatever...</td>
                         </tr>
                         <tr>
                             <td onclick="toggleRowSelect(event, this)">
@@ -137,7 +138,7 @@
                                 <p>After <input type="date"/></p>
                                 <p>Until <input type="date"/></p>
                             </td>
-                            <td contenteditable="true">This website is under construction or whatever...</td>
+                            <td contenteditable="true" onblur="validateMultilineInput(this)">This website is under construction or whatever...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -158,9 +159,8 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Name</th>
-                            <th>Date</th>
-                            <th>Location</th>
+                            <th>Event</th>
+                            <th>Visible</th>
                             <th>Asset Path</th>
                         </tr>
                     </thead>
@@ -169,24 +169,64 @@
                             <td onclick="toggleRowSelect(event, this)">
                                 <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
                             </td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">2026 End of Winter Concert</td>
                             <td>
-                                <p>From <input type="datetime-local"/></p>
-                                <p>Until <input type="datetime-local"/></p>
+                                <div class="input">
+                                    <div>
+                                        <img src="assets/icons/events-filled.svg" />
+                                        <input type="text" placeholder="Select by name..." onfocus="focusInput(this)" onblur="blurInput(this)" />
+                                    </div>
+                                    <ul class="input-suggestions">
+                                        <li>
+                                            <span>Suggestion 1</span>
+                                            <span>More info</span>
+                                        </li>
+                                        <li>
+                                            <span>Suggestion 2</span>
+                                            <span>More info</span>
+                                        </li>
+                                        <li>
+                                            <span>Suggestion 3</span>
+                                            <span>More info</span>
+                                        </li>
+                                    </ul>
+                                </div>
                             </td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">OISE Something</td>
+                            <td>
+                                <p>From <input type="date" /></p>
+                                <p>Until <input type="date" /></p>
+                            </td>
                             <td contenteditable="plaintext-only" onblur="validateInputAsset(this)">assets/images/locations/oise.webp</td>
                         </tr>
                         <tr>
                             <td onclick="toggleRowSelect(event, this)">
                                 <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
                             </td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">2026 End of Winter Concert</td>
                             <td>
-                                <p>From <input type="datetime-local"/></p>
-                                <p>Until <input type="datetime-local"/></p>
+                                <div class="input">
+                                    <div>
+                                        <img src="assets/icons/events-filled.svg" />
+                                        <input type="text" placeholder="Select by name..." onfocus="focusInput(this)" onblur="blurInput(this)" />
+                                    </div>
+                                    <ul class="input-suggestions">
+                                        <li>
+                                            <span>Suggestion 1</span>
+                                            <span>More info</span>
+                                        </li>
+                                        <li>
+                                            <span>Suggestion 2</span>
+                                            <span>More info</span>
+                                        </li>
+                                        <li>
+                                            <span>Suggestion 3</span>
+                                            <span>More info</span>
+                                        </li>
+                                    </ul>
+                                </div>
                             </td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">OISE Something</td>
+                            <td>
+                                <p>From <input type="date" /></p>
+                                <p>Until <input type="date" /></p>
+                            </td>
                             <td contenteditable="plaintext-only" onblur="validateInputAsset(this)">assets/images/locations/oise.webp</td>
                         </tr>
                     </tbody>
@@ -200,7 +240,7 @@
                     <tr>
                         <td>Event</td>
                         <td>
-                            <div class="input">
+                            <div class="input" id="current-event-id">
                                 <div>
                                     <img src="assets/icons/events-filled.svg" />
                                     <input type="text" placeholder="Select by name..." onfocus="focusInput(this)" onblur="blurInput(this)" />
@@ -222,25 +262,25 @@
                             </div>
                         </td>
                         <td>Visible From</td>
-                        <td><input type="datetime-local" /></td>
+                        <td><input type="datetime-local" id="current-event-visible-from" /></td>
                     </tr>
                     <tr>
                         <td>Location</td>
-                        <td contenteditable="plaintext-only" onblur="validateInput(this)">252 Bloor Street West (OISE C-162)</td>
+                        <td contenteditable="plaintext-only" onblur="validateInput(this)" id="current-event-location">252 Bloor Street West (OISE C-162)</td>
                         <td>Visible Until</td>
-                        <td><input type="datetime-local" /></td>
+                        <td><input type="datetime-local" id="current-event-visible-until" /></td>
                     </tr>
                     <tr>
                         <td>Tickets</td>
-                        <td contenteditable="plaintext-only" onblur="validateInput(this)">$5, pay in-person</td>
+                        <td contenteditable="plaintext-only" onblur="validateInput(this)" id="current-event-tickets">$5, pay in-person</td>
                         <td>Poster</td>
-                        <td contenteditable="plaintext-only" onblur="validateInputAsset(this)">assets/images/posters/poster 2026-04.webp</td>
+                        <td contenteditable="plaintext-only" onblur="validateInputAsset(this)" id="current-event-poster">assets/images/posters/poster 2026-04.webp</td>
                     </tr>
                     <tr>
                         <td>Setlist</td>
-                        <td contenteditable="plaintext-only" onblur="validateInput(this)">https://lmc.moe/setlist</td>
+                        <td contenteditable="plaintext-only" onblur="validateInput(this)" id="current-event-setlist">https://lmc.moe/setlist</td>
                         <td>RVSP</td>
-                        <td contenteditable="plaintext-only" onblur="validateInput(this)">#</td>
+                        <td contenteditable="plaintext-only" onblur="validateInput(this)" id="current-event-rvsp">#</td>
                     </tr>
                 </tbody>
             </table>
@@ -249,11 +289,11 @@
             <div id="current-event-description-container">
                 <hgroup id="preconcert-description" class="current-event-description">
                     <h3>Pre-Concert Description</h3>
-                    <div contenteditable="true">The LMC returns this April for its regularly-scheduled end of winter concert, featuring 3 hours of music, XX songs played by XX of our talented musicians!</div>
+                    <div contenteditable="true" onblur="validateMultilineInput(this)">The LMC returns this April for its regularly-scheduled end of winter concert, featuring 3 hours of music, XX songs played by XX of our talented musicians!</div>
                 </hgroup>
                 <hgroup id="postconcert-description" class="current-event-description">
                     <h3>Post-Concert Description</h3>
-                    <div contenteditable="true">Thank you to all performers and audience for a successful April concert! The next season of LMC operations will begin in September 2026.</div>
+                    <div contenteditable="true" onblur="validateMultilineInput(this)">Thank you to all performers and audience for a successful April concert! The next season of LMC operations will begin in September 2026.</div>
                 </hgroup>
             </div>
         </article>
@@ -437,7 +477,7 @@
                         <tr>
                             <th></th>
                             <th>Name</th>
-                            <th>Composer</th>
+                            <th>Composer(s)</th>
                             <th>From</th>
                             <th>Media Origin</th>
                             <th>Performances</th>
@@ -474,7 +514,7 @@
                                 <ul class="subtable">
                                     <li onclick="toggleSubrowSelect(event, this)">
                                         <input type="checkbox" class="subtable-checkbox" oninput="onRowSelect(this)" />
-                                        <table class="datalist" id="datalist-performance">
+                                        <table class="datalist">
                                             <tbody>
                                                 <tr>
                                                     <td>Concerts</td>
@@ -664,7 +704,7 @@
                             <th>Name</th>
                             <th>Location</th>
                             <th>Date</th>
-                            <th>Media</th>
+                            <th>Setlist</th>
                             <th>Description</th>
                             <th>Gallery</th>
                         </tr>
@@ -705,7 +745,7 @@
                             <td colspan="7" class="subtable-container">
                                 <ul class="subtable">
                                     <li>
-                                        <div contenteditable="true">asdasda sdadasdasds adasdsadasd sad sad sa dsa dsa dsadsadsa dsa dad a</div>
+                                        <div contenteditable="true" onblur="validateMultilineInput(this)">asdasda sdadasdasds adasdsadasd sad sad sa dsa dsa dsadsadsa dsa dad a</div>
                                     </li>
                                 </ul>
                             </td>
@@ -719,13 +759,13 @@
             <h1>Frequently Asked Questions</h1>
             <div class="table" id="table-faq">
                 <ul class="table-toolbar">
-                    <li class="table-toolbar-add"></li>
-                    <li class="table-toolbar-remove"></li>
-                    <li class="table-toolbar-move-up"></li>
-                    <li class="table-toolbar-move-down"></li>
-                    <li class="table-toolbar-move-top"></li>
-                    <li class="table-toolbar-move-bottom"></li>
-                    <li class="table-toolbar-copy"></li>
+                    <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>
+                    <li class="table-toolbar-remove" onclick="tableToolbarRemove(this)"></li>
+                    <li class="table-toolbar-move-up" onclick="tableToolbarMoveUp(this)"></li>
+                    <li class="table-toolbar-move-down" onclick="tableToolbarMoveDown(this)"></li>
+                    <li class="table-toolbar-move-top" onclick="tableToolbarMoveTop(this)"></li>
+                    <li class="table-toolbar-move-bottom" onclick="tableToolbarMoveBottom(this)"></li>
+                    <li class="table-toolbar-copy" onclick="tableToolbarCopy(this)"></li>
                 </ul>
                 <table>
                     <tbody>
@@ -734,8 +774,8 @@
                                 <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
                             </td>
                             <td>
-                                <div class="table-faq-q" contenteditable="true" onblur="validateInput(this)">This is a question.</div>
-                                <div class="table-faq-a" contenteditable="true">This is an answer to the question.</div>
+                                <div class="table-faq-q" contenteditable="plaintext-only" onblur="validateInput(this)">This is a question.</div>
+                                <div class="table-faq-a" contenteditable="true" onblur="validateMultilineInput(this)">This is an answer to the question.</div>
                             </td>
                         </tr>
                         <tr>
@@ -743,8 +783,8 @@
                                 <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
                             </td>
                             <td>
-                                <div class="table-faq-q" contenteditable="true" onblur="validateInput(this)">This is a question.</div>
-                                <div class="table-faq-a" contenteditable="true">This is an answer to the question.</div>
+                                <div class="table-faq-q" contenteditable="plaintext-only" onblur="validateInput(this)">This is a question.</div>
+                                <div class="table-faq-a" contenteditable="true" onblur="validateMultilineInput(this)">This is an answer to the question.</div>
                             </td>
                         </tr>
                     </tbody>

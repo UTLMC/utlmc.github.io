@@ -149,12 +149,12 @@ function normalizeDateString(str) {
 }
 
 /**
- * Convert "YYYY-MM-DD|HH:MM" into a datetime object
+ * Convert "YYYY-MM-DD|HH:MM" or "YYYY-MM-DD" into a datetime object
  */
 function parseDate(datetime) {
     const [date, time] = datetime.split('|');
     const [year, month, day] = date.split('-').map(x => parseInt(x, 10));
-    const [hour, minute] = time.split(':').map(x => parseInt(x, 10));
+    const [hour, minute] = time?.split(':').map(x => parseInt(x, 10)) ?? [0, 0];
     return new Date(year, month - 1, day, hour, minute);
 }
 
@@ -699,15 +699,17 @@ Home tab - current event promotion
 *********************************************************************/
 function injectHomeConcert(now) {
     const {
-        links: { poster, rvsp, setlist, recording },
-        title,
-        dateStart,
-        dateEnd,
+        id,
+        links: { poster, rvsp, setlist },
         location,
         tickets,
         preConcertDescription,
-        postConcertDescription
+        postConcertDescription,
     } = CURRENT_EVENT;
+
+    const { name: title, start, end, video } = EVENTS[id];
+    const dateStart = parseDate(start);
+    const dateEnd = parseDate(end);
 
     cssGetFirst('#home-event-poster img').src = poster;
     cssGetFirst('#home-event-text hgroup h3').innerText = title;
@@ -736,12 +738,12 @@ function injectHomeConcert(now) {
             attributes: { href: setlist, target: '_blank' }
         }));
     }
-    if (recording) {
+    if (video) {
         buttons.appendChild(construct({
             element: 'a',
             classes: ['home-event-button'],
             innerText: 'Watch the recording',
-            attributes: { href: recording, target: '_blank' }
+            attributes: { href: video, target: '_blank' }
         }));
     }
 
@@ -753,12 +755,12 @@ async function injectHomeEvent() {
     const now = new Date();
 
     // Only concerts are supported right now
-    if (!CURRENT_EVENT || !CURRENT_EVENT.type || now > CURRENT_EVENT.hideAfter) {
+    if (!CURRENT_EVENT || now > parseDate(CURRENT_EVENT.hideAfter) || now < parseDate(CURRENT_EVENT.hideBefore)) {
         cssGetId('section-home-event').style.setProperty('display', 'none');
-    } else if (CURRENT_EVENT.type === 'concert') {
-        injectHomeConcert();
+    } else if (EVENTS[CURRENT_EVENT.id].type === 'Concert') {
+        injectHomeConcert(now);
     } else {
-        throw new Error(CURRENT_EVENT.type);
+        throw new Error(EVENTS[CURRENT_EVENT.id].type);
     }
 }
 
@@ -772,7 +774,17 @@ async function injectHomeBulletin() {
     const containerAnnouncements = cssGetId('announcement-container');
     const containerUpcoming = cssGetId('upcoming-events-container');
 
-    ANNOUNCEMENTS?.forEach(({ type, text }) => {
+    const now = new Date();
+    const visibilityCheck = ({ from, until }) => {
+        if (from && now < parseDate(from)) { return false; }
+        if (until && now > parseDate(until)) { return false }
+        return true;
+    }
+
+    const announcements = ANNOUNCEMENTS.filter(visibilityCheck);
+    const upcomingEvents = UPCOMING_EVENTS.filter(visibilityCheck);
+
+    for (const { type, text } of ANNOUNCEMENTS) {
         containerAnnouncements.appendChild(construct({
             element: 'aside',
             classes: ['announcement'],
@@ -784,8 +796,13 @@ async function injectHomeBulletin() {
                 innerHTML: parseMarkdown(text)
             }]
         }));
-    });
-    UPCOMING_EVENTS?.forEach(({ dateStart, dateEnd, location, title, image }) => {
+    }
+
+    for (const { id, image } of UPCOMING_EVENTS) {
+        const { name: title, start, end, location } = EVENTS[id];
+        const dateStart = parseDate(start);
+        const dateEnd = parseDate(end);
+
         containerUpcoming.appendChild(construct({
             element: 'li',
             style: {
@@ -811,17 +828,17 @@ async function injectHomeBulletin() {
                 classes: ['upcoming-event-name'],
                 innerText: title
             }]
-        }))
-    });
+        }));
+    }
     
     // Formatting for edge cases (i.e. at least one of the two sections is blank)
-    if (ANNOUNCEMENTS.length === 0 && UPCOMING_EVENTS.length === 0) {
+    if (announcements.length === 0 && upcomingEvents.length === 0) {
         sectionAnnouncements.style.setProperty('display', 'none');
         sectionUpcoming.style.setProperty('display', 'none');
-    } else if (ANNOUNCEMENTS.length === 0) {
+    } else if (announcements.length === 0) {
         sectionAnnouncements.style.setProperty('display', 'none');
         sectionUpcoming.style.setProperty('width', '100%');
-    } else if (UPCOMING_EVENTS.length === 0) {
+    } else if (upcomingEvents.length === 0) {
         sectionAnnouncements.style.setProperty('width', '100%');
         sectionAnnouncements.classList.add('section-announcements-full');
         sectionUpcoming.style.setProperty('display', 'none');
@@ -1867,7 +1884,7 @@ const constructSetlistTabSong = (() => {
         }
         return cache[key];
     }
-})()
+})();
 
 function constructPerformersTab(performances) {
     // Map instruments to unique performers
@@ -1894,7 +1911,7 @@ function constructPerformersTab(performances) {
     }))
 }
 
-function getPerformances(setlist) {
+function getPerformers(setlist) {
     return setlist.map(info => {
         // Filter out timestamps
         const id = Array.isArray(info) ? info[0] : info;
@@ -1942,8 +1959,8 @@ function injectEventBodyConcert(id, setlist, video, gallery) {
 
     // Performers inner tab
     fragment = document.createDocumentFragment();
-    const performances = getPerformances(setlist);
-    constructPerformersTab(performances).forEach(x => {
+    const performers = getPerformers(setlist);
+    constructPerformersTab(performers).forEach(x => {
         fragment.appendChild(x);
     });
     cssGetId('concert-performers').replaceChildren(fragment);

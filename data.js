@@ -36,17 +36,14 @@ const TAGS = {
 };
 
 const CURRENT_EVENT = {
-    type: 'concert',
+    id: 1,
     links: {
         poster: 'assets/images/posters/poster 2026-04.webp',
         rvsp: '#',
         setlist: 'https://lmc.moe/setlist',
-        recording: '#'
     },
-    title: '2026 End of Winter Concert',
-    dateStart: new Date(2026, 3, 5, 17, 0, 0),
-    dateEnd: new Date(2026, 3, 5, 20, 0, 0),
-    hideAfter: new Date(2026, 7, 1, 0, 0, 0),
+    hideBefore: '2025-01-01|12:24',
+    hideAfter: '2026-08-01|00:00',
     location: '252 Bloor Street West (OISE C-162)',
     tickets: '$5, pay in-person',
     preConcertDescription: [
@@ -59,38 +56,43 @@ const CURRENT_EVENT = {
 const ANNOUNCEMENTS = [
     {
         type: 'alert',
-        text: 'This website is currently under construction — some pages are unfinished and there may be bugs.'
+        text: 'This website is currently under construction — some pages are unfinished and there may be bugs.',
+        from: '2025-01-01',
+        until: '2027-01-01',
     },
     {
         type: 'announcement',
-        text: 'We’re looking for people with experience in drawing, graphic design, audio mixing, or video editing to help us with recording projects! If you have experience, please consider reaching out to XX on XXX!'
+        text: 'We’re looking for people with experience in drawing, graphic design, audio mixing, or video editing to help us with recording projects! If you have experience, please consider reaching out to XX on XXX!',
+        from: '2025-01-01',
+        until: '2027-01-01',
     },
     {
         type: 'announcement',
-        text: 'The LMC is opening for its 3rd year this 2025-2026 Fall-Winter term! Our first meeting is at XX:XX pm at XXXX on Sept. XX. Come get a better idea of our club. No instruments needed. Click [this link](https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform) to become a member!'
+        text: 'The LMC is opening for its 3rd year this 2025-2026 Fall-Winter term! Our first meeting is at XX:XX pm at XXXX on Sept. XX. Come get a better idea of our club. No instruments needed. Click [this link](https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform) to become a member!',
+        from: '2025-01-01',
     }
 ];
 
 const UPCOMING_EVENTS = [
     {   
-        dateStart: new Date(2026, 9, 20, 20, 0, 0),
-        dateEnd: new Date(2026, 9, 21, 1, 0, 0),
+        id: 0,
         location: 'OISE C-154',
-        title: '2026 End of Winter Concert',
+        from: '2025-01-01',
+        until: '2029-01-22',
         image: 'assets/images/locations/oise.webp'
     },
     {
-        dateStart: new Date(2026, 11, 2, 8, 0, 0),
-        dateEnd: new Date(2026, 11, 2, 10, 0, 0),
+        id: 1,
         location: "Cat's Eye",
-        title: 'Cool Workshop',
+        from: '2025-01-01',
+        until: '2029-01-22',
         image: 'assets/images/locations/oise.webp'
     },
     {
-        dateStart: new Date(2026, 4, 13, 17, 0, 0),
-        dateEnd: new Date(2026, 4, 13, 20, 0, 0),
+        id: 2,
         location: "OISE Something",
-        title: 'Some event IDK',
+        from: '2025-01-01',
+        until: '2029-01-22',
         image: 'assets/images/locations/oise.webp'
     },
 ];

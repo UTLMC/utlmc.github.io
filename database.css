@@ -513,6 +513,10 @@ Table
     flex-direction: row;
     gap: 6px;
 }
+.table > table {
+    max-height: calc(100vh - 140px);
+    overflow: auto;
+}
 .table-toolbar li {
     background-color: white;
     height: 25px;
@@ -553,6 +557,9 @@ Table
     width: fit-content
 }
 .cell-details span {
+    text-wrap: nowrap;
+}
+.cell-details .count {
     color: rgb(138, 109, 243);
 }
 .cell-details-button {
@@ -711,13 +718,17 @@ Inputs
     background-color: unset !important;
     cursor: pointer;
     transition: 0.1s;
-    padding: 3px 6px;
+    padding: 4px 6px !important;
     justify-content: space-between;
     user-select: none;
     border-radius: 0 !important;
+    text-align: left;
+    letter-spacing: -0.5px;
+    line-height: 1;
 }
 .input-suggestions li span:last-child {
     color: rgba(0, 0, 0, 0.3);
+    text-align: right;
 }
 .input-suggestions li:hover {
     color: rgba(0, 0, 0, 0.8);
@@ -835,6 +846,12 @@ th {
     justify-content: flex-end;
 }
 
+#table-music tbody tr td:last-child,
+#table-events tbody tr td:last-child {
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 0px;
+}
 
 .table-announcements-icon {
     height: 40px;
@@ -857,7 +874,7 @@ th {
 
 #table-upcoming-events thead tr th:nth-child(2),
 #table-upcoming-events thead tr th:nth-child(4) { min-width: 150px; }
-#table-upcoming-events thead tr th:nth-child(3) { min-width: 260px; }
+#table-upcoming-events thead tr th:nth-child(3) { min-width: 200px; }
 
 #table-members thead tr th:nth-child(2),
 #table-members thead tr th:nth-child(6) { min-width: 150px; }
@@ -867,13 +884,13 @@ th {
 
 #table-music thead tr th:nth-child(2),
 #table-music thead tr th:nth-child(3),
-#table-music thead tr th:nth-child(4),
-#table-music thead tr th:nth-child(6) { min-width: 150px; }
+#table-music thead tr th:nth-child(4) { min-width: 150px; }
+#table-music thead tr th:nth-child(6),
+#table-music tbody tr td:nth-child(6) { max-width: 200px; }
 
 #table-events thead tr th:nth-child(3),
 #table-events thead tr th:nth-child(4) { min-width: 150px; }
 #table-events thead tr th:nth-child(5) { min-width: 260px; }
-
 
 /*********************************************************************
 Datalist
@@ -900,6 +917,9 @@ Datalist
 .datalist tr td:nth-child(odd) {
     color: #999999;
     font-family: 'DM Sans';
+}
+.subtable .datalist tr td:first-child {
+    width: 125px;
 }
 
 

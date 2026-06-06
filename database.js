@@ -53,6 +53,25 @@ function timestampToSeconds(timestamp) {
         throw new Error(timestamp);
     }
 }
+function capitalize(str) {
+    return str.split(' ').map(x => x[0].toUpperCase() + x.slice(1)).join(' ');
+}
+/**
+ * Find all rgb(x, x, x) in a string and return a list of [r, g, b] tuples
+ */
+function extractRGB(str) {
+    const regex = /rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)/gi;
+    const results = [];
+    let match = regex.exec(str);
+    while (match) {
+        const r = parseInt(match[1], 10);
+        const g = parseInt(match[2], 10);
+        const b = parseInt(match[3], 10);
+        results.push([r, g, b]);
+        match = regex.exec(str);
+    }
+    return results;
+}
 function rgbToHex(r, g, b) {
     return "#" + [r, g, b].map(value => value.toString(16).padStart(2, "0")).join("").toUpperCase();
 }
@@ -112,6 +131,9 @@ function rgbToHue(r, g, b) {
 
     // Normalize to [0, 1]
     return hue / 360;
+}
+function getPerformerNames(performance) {
+    return Array.from(new Set(Object.values(performance.performers).flat())).map(x => MEMBERS[x]?.name ?? x);
 }
 
 
@@ -516,10 +538,24 @@ function addNewTagToDatalist(element) {
 /*********************************************************************
 Input validation
 *********************************************************************/
+function parseMarkdown(text) {
+    // Links
+    text = text.replace(
+        /\[([^\]]+)\]\(([^)]+)\)/g,
+        '<a href="$2" target="_blank">$1</a>'
+    );
+    return text;
+}
 function validateInput(element) {
     let value = element.innerText;
     value = value.replace(/[\r\n]+/g, '').trim();
     element.innerText = value;
+}
+function validateMultilineInput(element) {
+    let value = element.innerHTML;
+    value = value.replace(/[\r\n]+/g, '').trim();
+    value = parseMarkdown(value);
+    element.innerHTML = value;
 }
 function validateInputAsset(element) {
     let value = element.innerText;
@@ -533,7 +569,7 @@ function validateInputAsset(element) {
     }
     validation.style.setProperty('display', 'block');
     if (value.includes('://')) {
-        validation.innerText = `'${value}' is an external link. Please use a locally-downloaded asset instead.`;
+        validation.innerText = `'${value}' is an external link. If this asset will be reused often in the future, please download it and use it as a local asset instead.`;
     } else if (!/^.+\.[a-zA-Z]+$/.test(value)) {
         validation.innerText = `'${value}' is not a proper path to a file.`;
     } else if (!value.endsWith('.webp')) {
@@ -1043,3 +1079,773 @@ async function parseData() {
     console.log(fullEventData);
     console.log(performancesData);
 }
+
+
+/*********************************************************************
+Table toolbar buttons
+*********************************************************************/
+function tableToolbarAdd(element) {
+
+}
+function tableToolbarRemove(element) {
+
+}
+function tableToolbarMoveUp(element) {
+
+}
+function tableToolbarMoveDown(element) {
+
+}
+function tableToolbarMoveTop(element) {
+
+}
+function tableToolbarMoveBottom(element) {
+
+}
+function tableToolbarCopy(element) {
+
+}
+
+
+/*********************************************************************
+Dynamic Content Injection
+- This is performed to shield execs as much as possible from having to edit the HTML/CSS/JS
+- Functions are asynchronous to prevent lag on initial visit
+*********************************************************************/
+function construct(json) {
+    const element = document.createElement(json.element);
+    if (json.children) {
+        for (const child of json.children) {
+            if (!child) continue;
+            element.appendChild(construct(child));
+        }
+    }
+    if (json.attributes) {
+        for (const key in json.attributes) {
+            element.setAttribute(key, json.attributes[key]);
+        }
+    }
+    if (json.style) {
+        for (const key in json.style) {
+            element.style.setProperty(key, json.style[key]);
+        }
+    }
+    if (json.classes) {
+        for (const name of json.classes) {
+            element.classList.add(name);
+        }
+    }
+    if (json.value) {
+        element.value = json.value;
+    }
+    if (json.id) {
+        element.id = json.id;
+    }
+    if (json.innerText) {
+        element.innerText = json.innerText;
+    }
+    if (json.innerHTML) {
+        element.innerHTML = json.innerHTML;
+    }
+    return element;
+}
+
+/**
+ * Helper function for constructing a table row. Auto-constructs a checkbox in the first column.
+ * - `tableID` (string): CSS id of the table
+ * - `list (T[])`: Each row of data
+ * - `rowConstructor` ((T) => ...): Function that takes in your list item and outputs `construct` syntax.
+ * 
+ *   If the table has no subrows, rowConstructor should output data for 1 row,
+ *      e.g. [column1, column2, ...]
+ * 
+ *   If the table has subrows, rowConstructor should additionally output all subrows for the row,
+ *      e.g. [[column1, column2, ...], [subrow1, subrow2, ...]]
+ */
+function constructTable(tableId, list, rowContructor) {
+    const table = cssGetFirst(`#${tableId} tbody`);
+    const fragment = document.createDocumentFragment();
+    
+    function constructRow(id, row) {
+        fragment.appendChild(construct({
+            element: 'tr',
+            id: typeof(id) === 'number' ? [`${tableId}-${id}`] : undefined,
+            children: [{
+                element: 'td',
+                attributes: {
+                    onclick: 'toggleRowSelect(event, this)'
+                },
+                children: [{
+                    element: 'input',
+                    classes: ['checkbox'],
+                    attributes: {
+                        oninput: 'onRowSelect(this)',
+                        type: 'checkbox'
+                    }
+                }]
+            }, ...row]
+        }));
+    }
+    function constructSubrow(subrow, colspan, noSubtableCheckbox) {
+        fragment.appendChild(construct({
+            element: 'tr',
+            style: { display: 'none' },
+            classes: ['subtable-row'],
+            children: [{
+                element: 'td'
+            }, {
+                element: 'td',
+                classes: ['subtable-container'],
+                attributes: { colspan },
+                children: [{
+                    element: 'ul',
+                    classes: ['subtable'],
+                    children: noSubtableCheckbox ? [subrow] : [{
+                        element: 'li',
+                        attributes: { onclick: 'toggleSubrowSelect(event, this)' },
+                        children: [{
+                            element: 'input',
+                            classes: ['checkbox'],
+                            attributes: {
+                                oninput: 'onRowSelect(this)',
+                                type: 'checkbox'
+                            }
+                        }, ...subrow]
+                    }]
+                }]
+            }]
+        }))
+    }
+
+    list.forEach((data) => {
+        let subrows;
+        let row = rowContructor(data);
+
+        // [[col1, col2, ...], [subrow1, subrow2, ...]] -> subtable rows
+        if (row.length >= 2 && Array.isArray(row[0]) && Array.isArray(row[1])) {
+            [row, subrows, ...extra] = row;
+            const noSubtableCheckbox = extra.length > 0;
+
+            constructRow(data.id, row);
+            for (const subrow of subrows) {
+                constructSubrow(subrow, row.length, noSubtableCheckbox);
+            }
+        
+        // [col1, col2, ...] -> table row
+        } else {
+            constructRow(data.id, row);
+        }
+    })
+    table.replaceChildren(fragment);
+}
+
+
+/*********************************************************************
+Data injection - Bulletin
+*********************************************************************/
+function constructAnnouncements(announcements) {
+    return constructTable('table-announcements', announcements, (x) => [{
+        element: 'td',
+        children: [{
+            element: 'img',
+            attributes: {
+                src: `assets/icons/${x.type === 'alert' ? 'alert-triangle.svg' : 'megaphone.svg'}`,
+                onclick: 'toggleAnnouncementType(this)'
+            },
+            classes: ['table-announcements-icon'],
+        }]
+    }, {
+        element: 'td',
+        children: [{
+            element: 'p',
+            innerHTML: `From <input type="date" ${x.from ? `value=${x.from}` : ''} />`
+        }, {
+            element: 'p',
+            innerHTML: `Until <input type="date" ${x.until ? `value=${x.until}` : ''} />`
+        }]
+    }, {
+        element: 'td',
+        attributes: {
+            contenteditable: 'true',
+            onblur: 'validateMultilineInput(this)',
+        },
+        innerHTML: parseMarkdown(x.text)
+    }]);
+}
+function constructUpcomingEvents(events, upcomingEvents) {
+    return constructTable('table-upcoming-events', upcomingEvents, (x) => [{
+        element: 'td',
+        children: [{
+            element: 'div',
+            classes: ['input'],
+            children: [{
+                element: 'div',
+                children: [{
+                    element: 'img',
+                    attributes: { src: 'assets/icons/events-filled.svg' }
+                }, {
+                    element: 'input',
+                    attributes: {
+                        type: 'text',
+                        placeholder: 'Select by name...',
+                        onfocus: 'focusInput(this)',
+                        onblur: 'blurInput(this)',
+                        value: events[x.id].name
+                    }
+                }]
+            }, {
+                element: 'ul',
+                classes: ['input-suggestions'],
+                children: events.filter(x => x.type === 'Concert').map(y => ({
+                    element: 'li',
+                    children: [{
+                        element: 'span',
+                        innerText: y.name
+                    }, {
+                        element: 'span',
+                        innerText: `${y.start.split('|')[0]}`
+                    }]
+                }))
+            }]
+        }]
+    }, {
+        element: 'td',
+        children: [{
+            element: 'p',
+            innerHTML: `From <input type="date" ${x.from ? `value="${x.from}"` : ''} />`
+        }, {
+            element: 'p',
+            innerHTML: `Until <input type="date" ${x.to ? `value="${x.to}"` : ''} />`
+        }]
+    }, {
+        element: 'td',
+        attributes: {
+            contenteditable: 'plaintext-only',
+            onblur: 'validateInputAsset(this)'
+        },
+        innerText: x.image
+    }])
+}
+function constructCurrentEvent(events, currentEvent) {
+    const { name } = events[currentEvent.id];
+    const { links: { poster, rvsp, setlist }, tickets, hideBefore, hideAfter, location, preConcertDescription, postConcertDescription } = currentEvent;
+
+    const container = cssGetId('current-event-id');
+    const input = container.children[0].children[1];
+    input.value = name;
+    
+    const suggestions = container.children[1];
+    const fragment = document.createDocumentFragment();
+    events.filter(x => x.type === 'Concert').forEach(y => fragment.appendChild(construct({
+        element: 'li',
+        children: [{
+            element: 'span',
+            innerText: y.name
+        }, {
+            element: 'span',
+            innerText: `${y.start.split('|')[0]}`
+        }]
+    })));
+    suggestions.replaceChildren(fragment);
+
+    if (hideBefore) { cssGetId('current-event-visible-from').value = hideBefore.replace('|', 'T'); }
+    if (hideAfter) { cssGetId('current-event-visible-until').value = hideAfter.replace('|', 'T'); }
+    cssGetId('current-event-location').innerText = location;
+    cssGetId('current-event-tickets').innerText = tickets;
+    cssGetId('current-event-poster').innerText = poster;
+    cssGetId('current-event-rvsp').innerText = rvsp;
+    cssGetId('current-event-setlist').innerText = setlist;
+}
+constructAnnouncements(ANNOUNCEMENTS);
+constructUpcomingEvents(EVENTS, UPCOMING_EVENTS);
+constructCurrentEvent(EVENTS, CURRENT_EVENT);
+
+
+/*********************************************************************
+Data injection - FAQ table
+*********************************************************************/
+function constructFaq(faq) {
+    return constructTable('table-faq', faq, ({q, a}) => [{
+        element: 'td',
+        children: [{
+            element: 'div',
+            classes: ['table-faq-q'],
+            attributes: {
+                contenteditable: 'plaintext-only',
+                onblur: 'validateInput(this)',
+            },
+            innerText: q
+        }, {
+            element: 'div',
+            classes: ['table-faq-a'],
+            attributes: {
+                contenteditable: 'true',
+                onblur: 'validateMultilineInput(this)'
+            },
+            innerHTML: parseMarkdown(a[0]),
+            children: a.slice(1).map(x => ({
+                element: 'div',
+                innerHTML: parseMarkdown(x)
+            }))
+        }]
+    }]);
+};
+constructFaq(FAQ);
+
+
+/*********************************************************************
+Data injection - Members table
+*********************************************************************/
+function constructMembers(members, instruments) {
+    return constructTable('table-members', members, (x) => {
+        const tags = [...x.instruments.map(i => instruments[i]), ...x.roles];
+        const links = Object.keys(x.links).map(capitalize);
+        return [{
+            element: 'td',
+            attributes: {
+                contenteditable: 'plaintext-only',
+                onblur: 'validateInput(this)'
+            },
+            innerText: x.name
+        }, {
+            element: 'td',
+            attributes: {
+                contenteditable: 'plaintext-only',
+                onblur: 'validateInput(this)'
+            },
+            innerText: x.joined
+        }, {
+            element: 'td',
+            attributes: {
+                contenteditable: 'plaintext-only',
+                onblur: 'validateInput(this)'
+            },
+            innerText: x.left
+        }, {
+            element: 'td',
+            children: [{
+                element: 'div',
+                classes: ['cell-details'],
+                children: [{
+                    element: 'p',
+                    innerHTML: `${tags.map(x => `<span>${x}</span>`).join(' · ')} <span class="count">(${tags.length})</span>`
+                }, {
+                    element: 'img',
+                    classes: ['cell-details-button'],
+                    attributes: {
+                        src: 'assets/icons/edit.svg',
+                        onclick: 'toggleModalMemberTags(this)'
+                    }
+                }]
+            }]
+        }, {
+            element: 'td',
+            children: [{
+                element: 'div',
+                classes: ['cell-details'],
+                children: [{
+                    element: 'p',
+                    innerHTML: `${links.map(x => `<span>${x}</span>`).join(' · ')} <span class="count">(${links.length})</span>`
+                }, {
+                    element: 'img',
+                    classes: ['cell-details-button'],
+                    attributes: {
+                        src: 'assets/icons/edit.svg',
+                        onclick: 'toggleModalMemberTags(this)'
+                    }
+                }]
+            }]
+        }]
+    })
+}
+constructMembers(MEMBERS, INSTRUMENTS);
+
+
+/*********************************************************************
+Data injection - Music table
+*********************************************************************/
+function constructMusicTable(music, events, members) {
+    const mediaOrigins = ['', 'Anime', 'Video Game', 'Vocaloid'].map(x => ({
+        element: 'option',
+        innerText: x
+    }));
+    const songTypes = ['Large Ensemble', 'Small Ensemble', 'External Group'].map(x => ({
+        element: 'option',
+        innerText: x
+    }))
+    return constructTable('table-music', music, (x) => {
+        const performances = x.performances.map(p => p.concerts.map(c => EVENTS[c]?.start.slice(0, 7) ?? c)).flat();
+        const row = [{
+            element: 'td',
+            attributes: {
+                contenteditable: 'plaintext-only',
+                onblur: 'validateInput(this)',
+            },
+            innerText: x.name
+        }, {
+            element: 'td',
+            attributes: {
+                contenteditable: 'plaintext-only',
+                onblur: 'validateInput(this)',
+            },
+            innerText: x.composer
+        }, {
+            element: 'td',
+            attributes: {
+                contenteditable: 'plaintext-only',
+                onblur: 'validateInput(this)',
+            },
+            innerText: x.from
+        }, {
+            element: 'td',
+            children: [{
+                element: 'select',
+                value: x.mediaOrigin || '',
+                children: mediaOrigins
+            }]
+        }, {
+            element: 'td',
+            children: [{
+                element: 'div',
+                classes: ['cell-details'],
+                children: [{
+                    element: 'p',
+                    innerHTML: `${performances.map(p => `<span>${p}</span>`).join(' · ')} <span class="count">(${performances.length})</span>`
+                }, {
+                    element: 'img',
+                    classes: ['cell-details-button'],
+                    attributes: {
+                        src: 'assets/icons/hide.svg',
+                        onclick: 'toggleCellDetails(this)'
+                    }
+                }]
+            }]
+        }, {
+            element: 'td',
+            attributes: {
+                contenteditable: 'plaintext-only',
+                onblur: 'validateInput(this)',
+            },
+            innerText: x.reference
+        }];
+
+        const subrows = x.performances.map(p => {
+            const arranger = p.arranger?.map(a => members[a]?.name ?? a) ?? [];
+            const performerNames = getPerformerNames(p);
+            return [{
+                element: 'table',
+                classes: ['datalist'],
+                children: [{
+                    element: 'tbody',
+                    children: [{
+                        element: 'tr',
+                        children: [{
+                            element: 'td',
+                            innerText: 'Concerts'
+                        }, {
+                            element: 'td',
+                            children: [{
+                                element: 'ul',
+                                classes: ['datalist-tags'],
+                                children: [...p.concerts.map(c => EVENTS[c]?.name ?? c).map(name => ({
+                                    element: 'li',
+                                    children: [{
+                                        element: 'span',
+                                        innerText: name
+                                    }, {
+                                        element: 'img',
+                                        classes: ['x-button'],
+                                        attributes: { src: 'assets/icons/add.svg' }
+                                    }]
+                                })), {
+                                    element: 'div',
+                                    classes: ['input', 'datalist-tag-add'],
+                                    attributes: { onclick: 'addNewTagToDatalist(this)' },
+                                    children: [{
+                                        element: 'div',
+                                        children: [{
+                                            element: 'img',
+                                            attributes: { src: 'assets/icons/add.svg' }
+                                        }, {
+                                            element: 'input',
+                                            attributes: {
+                                                type: 'text',
+                                                placeholder: 'Enter concert...',
+                                                onfocus: 'focusInput(this)',
+                                                onblur: 'blurInput(this)',
+                                                onkeydown: 'keyDownInput(this)'
+                                            }
+                                        }]
+                                    }, {
+                                        element: 'ul',
+                                        classes: ['input-suggestions'],
+                                        children: events.filter(x => x.type === 'Concert').map(y => ({
+                                            element: 'li',
+                                            children: [{
+                                                element: 'span',
+                                                innerText: y.name
+                                            }, {
+                                                element: 'span',
+                                                innerText: `${y.start.split('|')[0]}`
+                                            }]
+                                        }))
+                                    }]
+                                }]
+                            }]
+                        }]
+                    }, {
+                        element: 'tr',
+                        children: [{
+                            element: 'td',
+                            innerText: 'Song Type'
+                        }, {
+                            element: 'td',
+                            children: [{
+                                element: 'select',
+                                value: p.songType === 'Large' ? 'Large Ensemble' : p.songType === 'Small' ? 'Small Ensemble' : 'External Group',
+                                children: songTypes
+                            }]
+                        }]
+                    }, {
+                        element: 'tr',
+                        children: [{
+                            element: 'td',
+                            innerText: 'Sheet Music'
+                        }, {
+                            element: 'td',
+                            attributes: {
+                                contenteditable: 'plaintext-only',
+                                onblur: 'validateInput(this)'
+                            },
+                            innerText: p.sheetMusic
+                        }]
+                    }, {
+                        element: 'tr',
+                        children: [{
+                            element: 'td',
+                            innerText: 'Arranger(s)'
+                        }, {
+                            element: 'td',
+                            children: [{
+                                element: 'ul',
+                                classes: ['datalist-tags'],
+                                children: [...arranger.map(name => ({
+                                    element: 'li',
+                                    children: [{
+                                        element: 'span',
+                                        innerText: name
+                                    }, {
+                                        element: 'img',
+                                        classes: ['x-button'],
+                                        attributes: { src: 'assets/icons/add.svg' }
+                                    }]
+                                })), {
+                                    element: 'div',
+                                    classes: ['input', 'datalist-tag-add'],
+                                    attributes: { onclick: 'addNewTagToDatalist(this)' },
+                                    children: [{
+                                        element: 'div',
+                                        children: [{
+                                            element: 'img',
+                                            attributes: { src: 'assets/icons/add.svg' }
+                                        }, {
+                                            element: 'input',
+                                            attributes: {
+                                                type: 'text',
+                                                placeholder: 'Enter concert...',
+                                                onfocus: 'focusInput(this)',
+                                                onblur: 'blurInput(this)',
+                                                onkeydown: 'keyDownInput(this)'
+                                            }
+                                        }]
+                                    }, {
+                                        element: 'ul',
+                                        classes: ['input-suggestions'],
+                                        children: members.slice(0, 10).map(y => ({
+                                            element: 'li',
+                                            children: [{
+                                                element: 'span',
+                                                innerText: y.name
+                                            }, {
+                                                element: 'span',
+                                                innerText: `${y.joined}`
+                                            }]
+                                        }))
+                                    }]
+                                }]
+                            }]
+                        }]
+                    }, {
+                        element: 'tr',
+                        children: [{
+                            element: 'td',
+                            innerText: 'Performers'
+                        }, {
+                            element: 'td',
+                            children: [{
+                                element: 'div',
+                                classes: ['cell-details'],
+                                children: [{
+                                    element: 'p',
+                                    innerHTML: `${performerNames.map(x => `<span>${x}</span>`).join(' · ')} <span class="count">(${performerNames.length})</span>`
+                                }, {
+                                    element: 'img',
+                                    classes: ['cell-details-button'],
+                                    attributes: {
+                                        src: 'assets/icons/edit.svg',
+                                        onclick: 'toggleModalPerformancePerformers(this)'
+                                    }
+                                }]
+                            }]
+                        }]
+                    }]
+                }]
+            }];
+        });
+        return [row, subrows];
+    })
+}
+constructMusicTable(MUSIC, EVENTS, MEMBERS);
+
+
+/*********************************************************************
+Data injection - Event table
+*********************************************************************/
+function constructEventTable(events) {
+    return constructTable('table-events', events, (x) => {
+        const eventTypes = ['Concert', 'Workshop', 'Other', 'External'].map(x => ({
+            element: 'option',
+            innerText: x
+        }))
+
+        const row = [{
+            element: 'td',
+            children: [{
+                element: 'select',
+                value: x.type,
+                children: eventTypes
+            }]
+        }, {
+            element: 'td',
+            attributes: {
+                contenteditable: 'plaintext-only',
+                onblur: 'validateInput(this)'
+            },
+            innerText: x.name
+        }, {
+            element: 'td',
+            attributes: {
+                contenteditable: 'plaintext-only',
+                onblur: 'validateInput(this)'
+            },
+            innerText: x.location
+        }, {
+            element: 'td',
+            children: [{
+                element: 'p',
+                innerHTML: `From <input type="datetime-local" ${x.start ? `value=${x.start.replace("|", 'T')}` : ''} />`
+            }, {
+                element: 'p',
+                innerHTML: `Until <input type="datetime-local" ${x.end ? `value=${x.end.replace("|", 'T')}` : ''} />`
+            }]
+        }, {
+            element: 'td',
+            children: [{
+                element: 'div',
+                classes: ['cell-details'],
+                children: [{
+                    element: 'img',
+                    classes: ['cell-details-button'],
+                    attributes: {
+                        src: 'assets/icons/edit.svg',
+                        onclick: 'toggleModalConcertSetlist(this)'
+                    }
+                }]
+            }]
+        }, {
+            element: 'td',
+            children: [{
+                element: 'div',
+                classes: ['cell-details'],
+                children: [{
+                    element: 'img',
+                    classes: ['cell-details-button'],
+                    attributes: {
+                        src: 'assets/icons/hide.svg',
+                        onclick: 'toggleCellDetails(this)'
+                    }
+                }]
+            }]
+        }, {
+            element: 'td',
+            attributes: {
+                contenteditable: 'plaintext-only',
+                onblur: 'validateInput(this)'
+            },
+            innerText: x.gallery
+        }];
+        
+        const subrows = [{
+            element: 'li',
+            children: [{
+                element: 'div',
+                attributes: {
+                    contenteditable: 'true',
+                    onblur: 'validateMultilineInput(this)'
+                },
+                innerHTML: x.description
+            }]
+        }];
+
+        return [row, subrows, true];
+    })
+}
+constructEventTable(EVENTS);
+
+
+/*********************************************************************
+Data injection - Tags tab
+*********************************************************************/
+function getTagColourStyle(name) {
+    if (name.includes(' (')) {
+        name = name.slice(0, name.indexOf(' ('));
+    }
+    const background = TAGS[name];
+    if (background) {
+        const rgbs = extractRGB(background);
+        const color = rgbs.flat().reduce((a, b) => a + b) / (rgbs.length * 3) > 128 ? 'black' : 'white';
+        if (background.startsWith('linear-gradient')) {
+            return { color, 'background-image': background }
+        } else if (background.startsWith('rgb')) {
+            return { color, 'background-color': background }
+        } else {
+            throw new Error(background);
+        }
+    }
+    return {};
+}
+
+function constructTagTab(members, instruments) {
+    const parseRole = (role) => {
+        const i = role.lastIndexOf('(');
+        if (i === -1) {
+            return role;
+        }
+        return role.slice(0, i).trim();
+    }
+    const tags = [
+        ...instruments.sort(instrumentSorter),
+        ...Array.from(new Set(members.map(x => x.roles.map(parseRole)).flat())).sort(roleSorter)
+    ];
+    const tagPreviews = cssGetId('tag-previews');
+    const fragment = document.createDocumentFragment();
+    for (const tag of tags) {
+        fragment.appendChild(construct({
+            element: 'li',
+            innerText: tag,
+            style: getTagColourStyle(tag)
+        }))
+    }
+    tagPreviews.replaceChildren(fragment);
+}
+constructTagTab(MEMBERS, INSTRUMENTS);
