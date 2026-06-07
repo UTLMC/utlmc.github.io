@@ -53,6 +53,17 @@ function timestampToSeconds(timestamp) {
         throw new Error(timestamp);
     }
 }
+function secondsToTimestamp(seconds) {
+    if (seconds < 60 * 60) {
+        const m = String(Math.floor(seconds / 60));
+        const s = String(seconds % 60);
+        return `${m.padStart(2, '0')}:${s.padStart(2, '0')}`;
+    }
+    const h = String(Math.floor(seconds / 3600));
+    const m = String(Math.floor((seconds % 3600) / 60));
+    const s = String(seconds % 60);
+    return `${h}:${m.padStart(2, '0')}:${s.padStart(2, '0')}`;
+}
 function capitalize(str) {
     return str.split(' ').map(x => x[0].toUpperCase() + x.slice(1)).join(' ');
 }
@@ -138,6 +149,38 @@ function getPerformerNames(performance) {
 
 
 /*********************************************************************
+Data
+*********************************************************************/
+function getMembers() {
+    return MEMBERS;
+}
+function getMusic() {
+    return MUSIC;
+}
+function getInstruments() {
+    return INSTRUMENTS;
+}
+function getEvents() {
+    return EVENTS;
+}
+function getTags() {
+    return TAGS;
+}
+function getCurrentEvent() {
+    return CURRENT_EVENT;
+}
+function getAnnouncements() {
+    return ANNOUNCEMENTS;
+}
+function getUpcomingEvents() {
+    return UPCOMING_EVENTS;
+}
+function getFaq() {
+    return FAQ;
+}
+
+
+/*********************************************************************
 Toggleables
 *********************************************************************/
 function toggle(id, activeClass) {
@@ -151,6 +194,7 @@ function toggleTab(event) {
     toggle(`nav-${id}`, 'nav-active');
 }
 
+// If event is given, it is being turned off; otherwise, turn on
 function toggleModal(event) {
     if (event) {
         const modals = cssGetClass('modal');
@@ -168,14 +212,10 @@ function toggleModal(event) {
     modalContainer.style.setProperty('display', modalOn ? 'none' : 'flex');
     return modalOn;
 }
-function toggleModalHelper(id) {
-    const modalOn = toggleModal();
-    cssGetId(id).style.setProperty('display', modalOn ? 'none' : 'flex');
+function openModalHelper(id) {
+    toggleModal();
+    cssGetId(id).style.setProperty('display', 'flex');
 }
-function toggleModalMemberTags() { toggleModalHelper('modal-member-tags'); }
-function toggleModalMemberLinks() { toggleModalHelper('modal-member-links'); }
-function toggleModalPerformancePerformers() { toggleModalHelper('modal-performance-performers'); }
-function toggleModalConcertSetlist() { toggleModalHelper('modal-concert-setlist'); }
 
 function toggleColourWidgetMode(element) {
     const active = 'colour-widget-mode-active';
@@ -907,7 +947,7 @@ async function uploadPerformances(element, memberData, discords, musicData, even
     const eventToIdMap = Object.fromEntries(eventData.map(x => [x.name, x.id]));
     const eventToId = x => eventToIdMap[x] ?? x;
 
-    data.forEach(row => {
+    for (const row of data) {
         const name = row[indices['Name']];
         if (!musicData[name]) {
             throw new Error(`Performance found for non-existent song "${name}".`);
@@ -990,7 +1030,7 @@ async function uploadPerformances(element, memberData, discords, musicData, even
         if (recordingUrl) { newData.link = recordingUrl };
 
         musicData[name].performances.push(newData);
-    });
+    };
 
     musicData = Object.values(musicData);
 
@@ -1150,6 +1190,189 @@ function construct(json) {
     return element;
 }
 
+const X_BUTTON = {
+    element: 'img',
+    classes: ['x-button'],
+    attributes: { src: 'assets/icons/add.svg' }
+}
+const ROW_CHECKBOX = {
+    element: 'input',
+    classes: ['checkbox'],
+    attributes: {
+        oninput: 'onRowSelect(this)',
+        type: 'checkbox'
+    }
+}
+const INPUT_ATTRIBUTES = {
+    default: {
+        contenteditable: 'plaintext-only',
+        onblur: 'validateInput(this)',
+    },
+    multiline: {
+        contenteditable: 'true',
+        onblur: 'validateMultilineInput(this)',
+    },
+    asset: {
+        contenteditable: 'plaintext-only',
+        onblur: 'validateInputAsset(this)'
+    },
+    timestamp: {
+        contenteditable: 'plaintext-only',
+        onblur: 'validateInputTimestamp(this)'
+    }
+}
+function getInputsStartEnd(data, type, from, until) {
+    let parser = x => x;
+    if (type === 'datetime-local') {
+        parser = x => x.replace('|', 'T')
+    }
+    return [{
+        element: 'p',
+        innerHTML: `From <input type="${type}" ${data[from] ? `value=${parser(data[from])}` : ''} />`
+    }, {
+        element: 'p',
+        innerHTML: `Until <input type="${type}" ${data[until] ? `value=${parser(data[until])}` : ''} />`
+    }]
+}
+function getInputSuggestion(x, getSuggestionName, getSuggestionInfo) {
+    return {
+        element: 'li',
+        children: [{
+            element: 'span',
+            innerText: getSuggestionName ? getSuggestionName(x) : x
+        }, getSuggestionInfo ? {
+            element: 'span',
+            innerText: getSuggestionInfo(x)
+        } : undefined]
+    }
+}
+function getInputText(iconPath, placeholder, value, suggestions, getSuggestionName, getSuggestionInfo) {
+    const icon = iconPath ? {
+        element: 'img',
+        attributes: { src: iconPath }
+    } : undefined;
+
+    const input = {
+        element: 'input',
+        attributes: {
+            type: 'text',
+            placeholder,
+            onfocus: 'focusInput(this)',
+            onblur: 'blurInput(this)',
+            value
+        }
+    };
+
+    const suggestionsList = suggestions.map(x => getInputSuggestion(x, getSuggestionName, getSuggestionInfo));
+
+    return {
+        element: 'div',
+        classes: ['input'],
+        children: [{
+            element: 'div',
+            children: [icon, input]
+        }, {
+            element: 'ul',
+            classes: ['input-suggestions'],
+            children: suggestionsList
+        }]
+    }
+}
+function getInputTags(tags, placeholder, suggestions, getSuggestionName, getSuggestionInfo, useOutline) {
+    const tagList = tags.map((name, i) => ({
+        element: 'li',
+        classes: useOutline?.[i] ? ['tag-custom'] : [],
+        children: [{
+            element: 'span',
+            innerText: name
+        }, X_BUTTON]
+    }));
+
+    const addInput = {
+        element: 'div',
+        children: [{
+            element: 'img',
+            attributes: { src: 'assets/icons/add.svg' }
+        }, {
+            element: 'input',
+            attributes: {
+                type: 'text',
+                placeholder,
+                onfocus: 'focusInput(this)',
+                onblur: 'blurInput(this)',
+                onkeydown: 'keyDownInput(this)'
+            }
+        }]
+    };
+
+    const addInputSuggestions = {
+        element: 'ul',
+        classes: ['input-suggestions'],
+        children: suggestions.map(x => getInputSuggestion(x, getSuggestionName, getSuggestionInfo))
+    }
+
+    return {
+        element: 'ul',
+        classes: ['datalist-tags'],
+        children: [...tagList, {
+            element: 'div',
+            classes: ['input', 'datalist-tag-add'],
+            attributes: { onclick: 'addNewTagToDatalist(this)' },
+            children: [addInput, addInputSuggestions]
+        }]
+    }
+}
+function getInputModalOpener(onclick, items) {
+    return {
+        element: 'div',
+        classes: ['cell-details'],
+        children: [items ? {
+            element: 'p',
+            innerHTML: `${items.map(x => `<span>${x}</span>`).join(' · ')} <span class="count">(${items.length})</span>`
+        } : undefined, {
+            element: 'img',
+            classes: ['cell-details-button'],
+            attributes: {
+                src: `assets/icons/edit.svg`,
+                onclick
+            }
+        }]
+    }
+}
+function getInputSubrowOpener(items) {
+    return {
+        element: 'div',
+        classes: ['cell-details'],
+        children: [items ? {
+            element: 'p',
+            innerHTML: `${items.map(x => `<span>${x}</span>`).join(' · ')} <span class="count">(${items.length})</span>`
+        } : undefined, {
+            element: 'img',
+            classes: ['cell-details-button'],
+            attributes: {
+                src: 'assets/icons/hide.svg',
+                onclick: 'toggleCellDetails(this)'
+            }
+        }]
+    }
+}
+function getDatalist(mappings) {
+    return {
+        element: 'table',
+        classes: ['datalist'],
+        children: [{
+            element: 'tbody',
+            children: mappings.map(([title, content]) => ({
+                element: 'tr',
+                children: [{
+                    element: 'td',
+                    innerText: title
+                }, content]
+            }))
+        }]
+    }
+}
+
 /**
  * Helper function for constructing a table row. Auto-constructs a checkbox in the first column.
  * - `tableID` (string): CSS id of the table
@@ -1169,26 +1392,20 @@ function constructTable(tableId, list, rowContructor) {
     function constructRow(id, row) {
         fragment.appendChild(construct({
             element: 'tr',
-            id: typeof(id) === 'number' ? [`${tableId}-${id}`] : undefined,
+            id: `${tableId}-${id}`,
             children: [{
                 element: 'td',
                 attributes: {
                     onclick: 'toggleRowSelect(event, this)'
                 },
-                children: [{
-                    element: 'input',
-                    classes: ['checkbox'],
-                    attributes: {
-                        oninput: 'onRowSelect(this)',
-                        type: 'checkbox'
-                    }
-                }]
+                children: [ROW_CHECKBOX]
             }, ...row]
         }));
     }
-    function constructSubrow(subrow, colspan, noSubtableCheckbox) {
+    function constructSubrow(id, subrow, colspan, noSubtableCheckbox) {
         fragment.appendChild(construct({
             element: 'tr',
+            id: `${tableId}-${id}`,
             style: { display: 'none' },
             classes: ['subtable-row'],
             children: [{
@@ -1203,21 +1420,14 @@ function constructTable(tableId, list, rowContructor) {
                     children: noSubtableCheckbox ? [subrow] : [{
                         element: 'li',
                         attributes: { onclick: 'toggleSubrowSelect(event, this)' },
-                        children: [{
-                            element: 'input',
-                            classes: ['checkbox'],
-                            attributes: {
-                                oninput: 'onRowSelect(this)',
-                                type: 'checkbox'
-                            }
-                        }, ...subrow]
+                        children: [ROW_CHECKBOX, ...subrow]
                     }]
                 }]
             }]
         }))
     }
 
-    list.forEach((data) => {
+    for (const data of list) {
         let subrows;
         let row = rowContructor(data);
 
@@ -1227,15 +1437,13 @@ function constructTable(tableId, list, rowContructor) {
             const noSubtableCheckbox = extra.length > 0;
 
             constructRow(data.id, row);
-            for (const subrow of subrows) {
-                constructSubrow(subrow, row.length, noSubtableCheckbox);
-            }
+            subrows.forEach((subrow, i) => constructSubrow(`${data.id}-${i}`, subrow, row.length, noSubtableCheckbox));
         
         // [col1, col2, ...] -> table row
         } else {
             constructRow(data.id, row);
         }
-    })
+    }
     table.replaceChildren(fragment);
 }
 
@@ -1243,7 +1451,9 @@ function constructTable(tableId, list, rowContructor) {
 /*********************************************************************
 Data injection - Bulletin
 *********************************************************************/
-function constructAnnouncements(announcements) {
+function constructAnnouncements() {
+    const announcements = getAnnouncements();
+    
     return constructTable('table-announcements', announcements, (x) => [{
         element: 'td',
         children: [{
@@ -1256,77 +1466,40 @@ function constructAnnouncements(announcements) {
         }]
     }, {
         element: 'td',
-        children: [{
-            element: 'p',
-            innerHTML: `From <input type="date" ${x.from ? `value=${x.from}` : ''} />`
-        }, {
-            element: 'p',
-            innerHTML: `Until <input type="date" ${x.until ? `value=${x.until}` : ''} />`
-        }]
+        children: getInputsStartEnd(x, 'date', 'from', 'until')
     }, {
         element: 'td',
-        attributes: {
-            contenteditable: 'true',
-            onblur: 'validateMultilineInput(this)',
-        },
+        attributes: INPUT_ATTRIBUTES.multiline,
         innerHTML: parseMarkdown(x.text)
     }]);
 }
-function constructUpcomingEvents(events, upcomingEvents) {
+function constructUpcomingEvents() {
+    const events = getEvents();
+    const upcomingEvents = getUpcomingEvents();
+
     return constructTable('table-upcoming-events', upcomingEvents, (x) => [{
         element: 'td',
-        children: [{
-            element: 'div',
-            classes: ['input'],
-            children: [{
-                element: 'div',
-                children: [{
-                    element: 'img',
-                    attributes: { src: 'assets/icons/events-filled.svg' }
-                }, {
-                    element: 'input',
-                    attributes: {
-                        type: 'text',
-                        placeholder: 'Select by name...',
-                        onfocus: 'focusInput(this)',
-                        onblur: 'blurInput(this)',
-                        value: events[x.id].name
-                    }
-                }]
-            }, {
-                element: 'ul',
-                classes: ['input-suggestions'],
-                children: events.filter(x => x.type === 'Concert').map(y => ({
-                    element: 'li',
-                    children: [{
-                        element: 'span',
-                        innerText: y.name
-                    }, {
-                        element: 'span',
-                        innerText: `${y.start.split('|')[0]}`
-                    }]
-                }))
-            }]
-        }]
+        children: [getInputText(
+            'assets/icons/events-filled.svg',
+            'Select by name...',
+            events[x.id].name,
+            events.filter(x => x.type === 'Concert'),
+            event => event.name,
+            event => `${event.start.split('|')[0]}`
+        )]
     }, {
         element: 'td',
-        children: [{
-            element: 'p',
-            innerHTML: `From <input type="date" ${x.from ? `value="${x.from}"` : ''} />`
-        }, {
-            element: 'p',
-            innerHTML: `Until <input type="date" ${x.to ? `value="${x.to}"` : ''} />`
-        }]
+        children: getInputsStartEnd(x, 'date', 'from', 'to')
     }, {
         element: 'td',
-        attributes: {
-            contenteditable: 'plaintext-only',
-            onblur: 'validateInputAsset(this)'
-        },
+        attributes: INPUT_ATTRIBUTES.asset,
         innerText: x.image
     }])
 }
-function constructCurrentEvent(events, currentEvent) {
+function constructCurrentEvent() {
+    const events = getEvents();
+    const currentEvent = getCurrentEvent();
+
     const { name } = events[currentEvent.id];
     const { links: { poster, rvsp, setlist }, tickets, hideBefore, hideAfter, location, preConcertDescription, postConcertDescription } = currentEvent;
 
@@ -1336,16 +1509,12 @@ function constructCurrentEvent(events, currentEvent) {
     
     const suggestions = container.children[1];
     const fragment = document.createDocumentFragment();
-    events.filter(x => x.type === 'Concert').forEach(y => fragment.appendChild(construct({
-        element: 'li',
-        children: [{
-            element: 'span',
-            innerText: y.name
-        }, {
-            element: 'span',
-            innerText: `${y.start.split('|')[0]}`
-        }]
-    })));
+    for (const event of events) {
+        if (event.type !== 'Concert') {
+            continue;
+        }
+        fragment.appendChild(construct(getInputSuggestion(event, x => x.name, x => `${x.start.split('|')[0]}`)));
+    }
     suggestions.replaceChildren(fragment);
 
     if (hideBefore) { cssGetId('current-event-visible-from').value = hideBefore.replace('|', 'T'); }
@@ -1356,32 +1525,25 @@ function constructCurrentEvent(events, currentEvent) {
     cssGetId('current-event-rvsp').innerText = rvsp;
     cssGetId('current-event-setlist').innerText = setlist;
 }
-constructAnnouncements(ANNOUNCEMENTS);
-constructUpcomingEvents(EVENTS, UPCOMING_EVENTS);
-constructCurrentEvent(EVENTS, CURRENT_EVENT);
 
 
 /*********************************************************************
 Data injection - FAQ table
 *********************************************************************/
-function constructFaq(faq) {
+function constructFaq() {
+    const faq = getFaq();
+    
     return constructTable('table-faq', faq, ({q, a}) => [{
         element: 'td',
         children: [{
             element: 'div',
             classes: ['table-faq-q'],
-            attributes: {
-                contenteditable: 'plaintext-only',
-                onblur: 'validateInput(this)',
-            },
+            attributes: INPUT_ATTRIBUTES.default,
             innerText: q
         }, {
             element: 'div',
             classes: ['table-faq-a'],
-            attributes: {
-                contenteditable: 'true',
-                onblur: 'validateMultilineInput(this)'
-            },
+            attributes: INPUT_ATTRIBUTES.multiline,
             innerHTML: parseMarkdown(a[0]),
             children: a.slice(1).map(x => ({
                 element: 'div',
@@ -1390,81 +1552,49 @@ function constructFaq(faq) {
         }]
     }]);
 };
-constructFaq(FAQ);
 
 
 /*********************************************************************
 Data injection - Members table
 *********************************************************************/
-function constructMembers(members, instruments) {
+function constructMembers() {
+    const members = getMembers();
+    const instruments = getInstruments();
+
     return constructTable('table-members', members, (x) => {
         const tags = [...x.instruments.map(i => instruments[i]), ...x.roles];
         const links = Object.keys(x.links).map(capitalize);
         return [{
             element: 'td',
-            attributes: {
-                contenteditable: 'plaintext-only',
-                onblur: 'validateInput(this)'
-            },
+            attributes: INPUT_ATTRIBUTES.default,
             innerText: x.name
         }, {
             element: 'td',
-            attributes: {
-                contenteditable: 'plaintext-only',
-                onblur: 'validateInput(this)'
-            },
+            attributes: INPUT_ATTRIBUTES.default,
             innerText: x.joined
         }, {
             element: 'td',
-            attributes: {
-                contenteditable: 'plaintext-only',
-                onblur: 'validateInput(this)'
-            },
+            attributes: INPUT_ATTRIBUTES.default,
             innerText: x.left
         }, {
             element: 'td',
-            children: [{
-                element: 'div',
-                classes: ['cell-details'],
-                children: [{
-                    element: 'p',
-                    innerHTML: `${tags.map(x => `<span>${x}</span>`).join(' · ')} <span class="count">(${tags.length})</span>`
-                }, {
-                    element: 'img',
-                    classes: ['cell-details-button'],
-                    attributes: {
-                        src: 'assets/icons/edit.svg',
-                        onclick: 'toggleModalMemberTags(this)'
-                    }
-                }]
-            }]
+            children: [getInputModalOpener('openModalMemberTags(this)', tags)]
         }, {
             element: 'td',
-            children: [{
-                element: 'div',
-                classes: ['cell-details'],
-                children: [{
-                    element: 'p',
-                    innerHTML: `${links.map(x => `<span>${x}</span>`).join(' · ')} <span class="count">(${links.length})</span>`
-                }, {
-                    element: 'img',
-                    classes: ['cell-details-button'],
-                    attributes: {
-                        src: 'assets/icons/edit.svg',
-                        onclick: 'toggleModalMemberTags(this)'
-                    }
-                }]
-            }]
+            children: [getInputModalOpener('openModalMemberLinks(this)', links)]
         }]
     })
 }
-constructMembers(MEMBERS, INSTRUMENTS);
 
 
 /*********************************************************************
 Data injection - Music table
 *********************************************************************/
-function constructMusicTable(music, events, members) {
+function constructMusicTable() {
+    const music = getMusic();
+    const events = getEvents();
+    const members = getMembers();
+
     const mediaOrigins = ['', 'Anime', 'Video Game', 'Vocaloid'].map(x => ({
         element: 'option',
         innerText: x
@@ -1477,24 +1607,15 @@ function constructMusicTable(music, events, members) {
         const performances = x.performances.map(p => p.concerts.map(c => EVENTS[c]?.start.slice(0, 7) ?? c)).flat();
         const row = [{
             element: 'td',
-            attributes: {
-                contenteditable: 'plaintext-only',
-                onblur: 'validateInput(this)',
-            },
+            attributes: INPUT_ATTRIBUTES.default,
             innerText: x.name
         }, {
             element: 'td',
-            attributes: {
-                contenteditable: 'plaintext-only',
-                onblur: 'validateInput(this)',
-            },
+            attributes: INPUT_ATTRIBUTES.default,
             innerText: x.composer
         }, {
             element: 'td',
-            attributes: {
-                contenteditable: 'plaintext-only',
-                onblur: 'validateInput(this)',
-            },
+            attributes: INPUT_ATTRIBUTES.default,
             innerText: x.from
         }, {
             element: 'td',
@@ -1505,213 +1626,72 @@ function constructMusicTable(music, events, members) {
             }]
         }, {
             element: 'td',
-            children: [{
-                element: 'div',
-                classes: ['cell-details'],
-                children: [{
-                    element: 'p',
-                    innerHTML: `${performances.map(p => `<span>${p}</span>`).join(' · ')} <span class="count">(${performances.length})</span>`
-                }, {
-                    element: 'img',
-                    classes: ['cell-details-button'],
-                    attributes: {
-                        src: 'assets/icons/hide.svg',
-                        onclick: 'toggleCellDetails(this)'
-                    }
-                }]
-            }]
+            children: [getInputSubrowOpener(performances)]
         }, {
             element: 'td',
-            attributes: {
-                contenteditable: 'plaintext-only',
-                onblur: 'validateInput(this)',
-            },
+            attributes: INPUT_ATTRIBUTES.default,
             innerText: x.reference
         }];
 
         const subrows = x.performances.map(p => {
             const arranger = p.arranger?.map(a => members[a]?.name ?? a) ?? [];
             const performerNames = getPerformerNames(p);
-            return [{
-                element: 'table',
-                classes: ['datalist'],
-                children: [{
-                    element: 'tbody',
+            return [getDatalist([
+                ['Concerts', {
+                    element: 'td',
+                    children: [getInputTags(
+                        p.concerts.map(c => EVENTS[c]?.name ?? c),  // temporary until data is fixed
+                        'Enter concert...',
+                        events.filter(x => x.type === 'Concert'),
+                        event => event.name,
+                        event => `${event.start.split('|')[0]}`,
+                    )]
+                }],
+                ['Song Type', {
+                    element: 'td',
                     children: [{
-                        element: 'tr',
-                        children: [{
-                            element: 'td',
-                            innerText: 'Concerts'
-                        }, {
-                            element: 'td',
-                            children: [{
-                                element: 'ul',
-                                classes: ['datalist-tags'],
-                                children: [...p.concerts.map(c => EVENTS[c]?.name ?? c).map(name => ({
-                                    element: 'li',
-                                    children: [{
-                                        element: 'span',
-                                        innerText: name
-                                    }, {
-                                        element: 'img',
-                                        classes: ['x-button'],
-                                        attributes: { src: 'assets/icons/add.svg' }
-                                    }]
-                                })), {
-                                    element: 'div',
-                                    classes: ['input', 'datalist-tag-add'],
-                                    attributes: { onclick: 'addNewTagToDatalist(this)' },
-                                    children: [{
-                                        element: 'div',
-                                        children: [{
-                                            element: 'img',
-                                            attributes: { src: 'assets/icons/add.svg' }
-                                        }, {
-                                            element: 'input',
-                                            attributes: {
-                                                type: 'text',
-                                                placeholder: 'Enter concert...',
-                                                onfocus: 'focusInput(this)',
-                                                onblur: 'blurInput(this)',
-                                                onkeydown: 'keyDownInput(this)'
-                                            }
-                                        }]
-                                    }, {
-                                        element: 'ul',
-                                        classes: ['input-suggestions'],
-                                        children: events.filter(x => x.type === 'Concert').map(y => ({
-                                            element: 'li',
-                                            children: [{
-                                                element: 'span',
-                                                innerText: y.name
-                                            }, {
-                                                element: 'span',
-                                                innerText: `${y.start.split('|')[0]}`
-                                            }]
-                                        }))
-                                    }]
-                                }]
-                            }]
-                        }]
-                    }, {
-                        element: 'tr',
-                        children: [{
-                            element: 'td',
-                            innerText: 'Song Type'
-                        }, {
-                            element: 'td',
-                            children: [{
-                                element: 'select',
-                                value: p.songType === 'Large' ? 'Large Ensemble' : p.songType === 'Small' ? 'Small Ensemble' : 'External Group',
-                                children: songTypes
-                            }]
-                        }]
-                    }, {
-                        element: 'tr',
-                        children: [{
-                            element: 'td',
-                            innerText: 'Sheet Music'
-                        }, {
-                            element: 'td',
-                            attributes: {
-                                contenteditable: 'plaintext-only',
-                                onblur: 'validateInput(this)'
-                            },
-                            innerText: p.sheetMusic
-                        }]
-                    }, {
-                        element: 'tr',
-                        children: [{
-                            element: 'td',
-                            innerText: 'Arranger(s)'
-                        }, {
-                            element: 'td',
-                            children: [{
-                                element: 'ul',
-                                classes: ['datalist-tags'],
-                                children: [...arranger.map(name => ({
-                                    element: 'li',
-                                    children: [{
-                                        element: 'span',
-                                        innerText: name
-                                    }, {
-                                        element: 'img',
-                                        classes: ['x-button'],
-                                        attributes: { src: 'assets/icons/add.svg' }
-                                    }]
-                                })), {
-                                    element: 'div',
-                                    classes: ['input', 'datalist-tag-add'],
-                                    attributes: { onclick: 'addNewTagToDatalist(this)' },
-                                    children: [{
-                                        element: 'div',
-                                        children: [{
-                                            element: 'img',
-                                            attributes: { src: 'assets/icons/add.svg' }
-                                        }, {
-                                            element: 'input',
-                                            attributes: {
-                                                type: 'text',
-                                                placeholder: 'Enter concert...',
-                                                onfocus: 'focusInput(this)',
-                                                onblur: 'blurInput(this)',
-                                                onkeydown: 'keyDownInput(this)'
-                                            }
-                                        }]
-                                    }, {
-                                        element: 'ul',
-                                        classes: ['input-suggestions'],
-                                        children: members.slice(0, 10).map(y => ({
-                                            element: 'li',
-                                            children: [{
-                                                element: 'span',
-                                                innerText: y.name
-                                            }, {
-                                                element: 'span',
-                                                innerText: `${y.joined}`
-                                            }]
-                                        }))
-                                    }]
-                                }]
-                            }]
-                        }]
-                    }, {
-                        element: 'tr',
-                        children: [{
-                            element: 'td',
-                            innerText: 'Performers'
-                        }, {
-                            element: 'td',
-                            children: [{
-                                element: 'div',
-                                classes: ['cell-details'],
-                                children: [{
-                                    element: 'p',
-                                    innerHTML: `${performerNames.map(x => `<span>${x}</span>`).join(' · ')} <span class="count">(${performerNames.length})</span>`
-                                }, {
-                                    element: 'img',
-                                    classes: ['cell-details-button'],
-                                    attributes: {
-                                        src: 'assets/icons/edit.svg',
-                                        onclick: 'toggleModalPerformancePerformers(this)'
-                                    }
-                                }]
-                            }]
-                        }]
+                        element: 'select',
+                        value: p.songType === 'Large' ? 'Large Ensemble' : p.songType === 'Small' ? 'Small Ensemble' : 'External Group',
+                        children: songTypes
                     }]
+                }],
+                ['Sheet Music', {
+                    element: 'td',
+                    attributes: INPUT_ATTRIBUTES.default,
+                    innerText: p.sheetMusic
+                }],
+                ['Arranger(s)', {
+                    element: 'td',
+                    children: [getInputTags(
+                        arranger,
+                        'Enter arranger...',
+                        members.slice(0, 10),
+                        member => member.name,
+                        member => member.joined
+                    )]
+                }],
+                ['Group', {
+                    element: 'td',
+                    attributes: INPUT_ATTRIBUTES.default,
+                    innerText: p.group
+                }],
+                ['Performer(s)', {
+                    element: 'td',
+                    children: [getInputModalOpener('openModalPerformancePerformers(this)', performerNames)]
                 }]
-            }];
+            ])];
         });
         return [row, subrows];
     })
 }
-constructMusicTable(MUSIC, EVENTS, MEMBERS);
 
 
 /*********************************************************************
 Data injection - Event table
 *********************************************************************/
-function constructEventTable(events) {
+function constructEventTable() {
+    const events = getEvents();
+
     return constructTable('table-events', events, (x) => {
         const eventTypes = ['Concert', 'Workshop', 'Other', 'External'].map(x => ({
             element: 'option',
@@ -1727,61 +1707,24 @@ function constructEventTable(events) {
             }]
         }, {
             element: 'td',
-            attributes: {
-                contenteditable: 'plaintext-only',
-                onblur: 'validateInput(this)'
-            },
+            attributes: INPUT_ATTRIBUTES.default,
             innerText: x.name
         }, {
             element: 'td',
-            attributes: {
-                contenteditable: 'plaintext-only',
-                onblur: 'validateInput(this)'
-            },
+            attributes: INPUT_ATTRIBUTES.default,
             innerText: x.location
         }, {
             element: 'td',
-            children: [{
-                element: 'p',
-                innerHTML: `From <input type="datetime-local" ${x.start ? `value=${x.start.replace("|", 'T')}` : ''} />`
-            }, {
-                element: 'p',
-                innerHTML: `Until <input type="datetime-local" ${x.end ? `value=${x.end.replace("|", 'T')}` : ''} />`
-            }]
+            children: getInputsStartEnd(x, 'datetime-local', 'start', 'end')
         }, {
             element: 'td',
-            children: [{
-                element: 'div',
-                classes: ['cell-details'],
-                children: [{
-                    element: 'img',
-                    classes: ['cell-details-button'],
-                    attributes: {
-                        src: 'assets/icons/edit.svg',
-                        onclick: 'toggleModalConcertSetlist(this)'
-                    }
-                }]
-            }]
+            children: [getInputModalOpener('openModalConcertSetlist(this)')]
         }, {
             element: 'td',
-            children: [{
-                element: 'div',
-                classes: ['cell-details'],
-                children: [{
-                    element: 'img',
-                    classes: ['cell-details-button'],
-                    attributes: {
-                        src: 'assets/icons/hide.svg',
-                        onclick: 'toggleCellDetails(this)'
-                    }
-                }]
-            }]
+            children: [getInputSubrowOpener()]
         }, {
             element: 'td',
-            attributes: {
-                contenteditable: 'plaintext-only',
-                onblur: 'validateInput(this)'
-            },
+            attributes: INPUT_ATTRIBUTES.default,
             innerText: x.gallery
         }];
         
@@ -1789,18 +1732,14 @@ function constructEventTable(events) {
             element: 'li',
             children: [{
                 element: 'div',
-                attributes: {
-                    contenteditable: 'true',
-                    onblur: 'validateMultilineInput(this)'
-                },
-                innerHTML: x.description
+                attributes: INPUT_ATTRIBUTES.multiline,
+                innerHTML: parseMarkdown(x.description)
             }]
         }];
 
         return [row, subrows, true];
     })
 }
-constructEventTable(EVENTS);
 
 
 /*********************************************************************
@@ -1825,7 +1764,10 @@ function getTagColourStyle(name) {
     return {};
 }
 
-function constructTagTab(members, instruments) {
+function constructTagTab() {
+    const members = getMembers();
+    const instruments = getInstruments();
+
     const parseRole = (role) => {
         const i = role.lastIndexOf('(');
         if (i === -1) {
@@ -1848,4 +1790,274 @@ function constructTagTab(members, instruments) {
     }
     tagPreviews.replaceChildren(fragment);
 }
-constructTagTab(MEMBERS, INSTRUMENTS);
+
+constructAnnouncements();
+constructUpcomingEvents();
+constructCurrentEvent();
+constructFaq();
+constructMembers();
+constructMusicTable();
+constructTagTab();
+constructEventTable();
+
+
+/*********************************************************************
+Data injection - Modals
+*********************************************************************/
+function getRowId(element) {
+    const id = element.closest('.subtable-row')?.id || element.closest('tr')?.id;
+    const indices = id.split('-');
+    if (indices.length === 4) {
+        return indices.slice(2).map(x => parseInt(x, 10));
+    }
+    return parseInt(indices[indices.length - 1], 10);
+}
+function openModalMemberTags(element) {
+    openModalHelper('modal-member-tags');
+
+    const id = getRowId(element);
+    const member = getMembers()[id];
+    const instruments = getInstruments();
+
+    // Title
+    cssGetFirst('#modal-member-tags h2 span').innerText = `for ${member.name}`;
+
+    // Instruments
+    let container = cssGetId('datalist-member-instruments');
+    let fragment = document.createDocumentFragment();
+    for (const instrument of member.instruments) {
+        fragment.appendChild(construct({
+            element: 'li',
+            children: [{
+                element: 'span',
+                innerText: instruments[instrument]
+            }, X_BUTTON]
+        }));
+    }
+    container.replaceChildren(fragment);
+
+    // Roles
+    container = cssGetId('datalist-member-roles');
+    fragment = document.createDocumentFragment();
+    for (const role of member.roles) {
+        fragment.appendChild(construct({
+            element: 'li',
+            children: [{
+                element: 'span',
+                innerText: role
+            }, X_BUTTON]
+        }))
+    }
+    container.replaceChildren(fragment);
+}
+function openModalMemberLinks(element) {
+    openModalHelper('modal-member-links');
+
+    const id = getRowId(element);
+    const member = getMembers()[id];
+    const instruments = getInstruments();
+    const socialMediaOptions = ['Bandcamp', 'Discord', 'Instagram', 'LinkedIn', 'Musescore', 'Spotify', 'Soundcloud', 'Youtube'].map(x => ({
+        element: 'option',
+        innerText: x
+    }))
+
+    // Title
+    cssGetFirst('#modal-member-links h2 span').innerText = `for ${member.name}`;
+
+    // Links
+    const datalist = cssGetFirst('#datalist-modal-member-links tbody');
+    const fragment = document.createDocumentFragment();
+    for (const [socialMedia, info] of Object.entries(member.links)) {
+        let username = info;
+        let link = '';
+        if (Array.isArray(info)) {
+            [username, link] = info;
+        }
+
+        fragment.appendChild(construct({
+            element: 'tr',
+            children: [{
+                element: 'td',
+                children: [X_BUTTON]
+            }, {
+                element: 'td',
+                children: [{
+                    element: 'select',
+                    value: capitalize(socialMedia),
+                    children: socialMediaOptions
+                }]
+            }, {
+                element: 'td',
+                attributes: INPUT_ATTRIBUTES.default,
+                innerText: username
+            }, {
+                element: 'td',
+                attributes: INPUT_ATTRIBUTES.default,
+                innerText: link
+            }]
+        }))
+    }
+
+    // Placeholder new row
+    fragment.appendChild(construct({
+        element: 'tr',
+        classes: ['modal-datalist-preview'],
+        children: [{
+            element: 'td',
+        }, {
+            element: 'td',
+            children: [{
+                element: 'select',
+                children: socialMediaOptions
+            }]
+        }, {
+            element: 'td',
+            attributes: INPUT_ATTRIBUTES.default,
+            innerText: 'Enter username...'
+        }, {
+            element: 'td',
+            attributes: INPUT_ATTRIBUTES.default,
+            innerText: 'Enter link...'
+        }]
+    }));
+    datalist.replaceChildren(fragment);
+}
+function openModalPerformancePerformers(element) {
+    openModalHelper('modal-performance-performers');
+
+    const instruments = getInstruments();
+    const members = getMembers();
+    const [id, subId] = getRowId(element);
+    const song = getMusic()[id];
+    const performers = song.performances[subId].performers;
+    const nameSuggestions = members.slice(0, 10).map(x => ({
+        element: 'li',
+        children: [{
+            element: 'span',
+            innerText: x.name
+        }, {
+            element: 'span',
+            innerText: x.joined
+        }]
+    }))
+    
+    // Title
+    cssGetFirst('#modal-performance-performers h2 span').innerText = `for ${song.name}`;
+
+    // Performer
+    const table = cssGetFirst('#modal-performance-performers tbody');
+    const fragment = document.createDocumentFragment();
+    for (const [instrumentId, names] of Object.entries(performers)) {
+        fragment.appendChild(construct({
+            element: 'tr',
+            children: [{
+                element: 'td',
+                children: [X_BUTTON]
+            }, {
+                element: 'td',
+                children: [getInputText(
+                    'assets/icons/music-note.svg',
+                    'Enter instrument...',
+                    instruments[instrumentId],
+                    instruments.slice(0, 10)
+                )]
+            }, {
+                element: 'td',
+                children: [getInputTags(
+                    names.map(x => members[x]?.name ?? x),
+                    'Enter performer...',
+                    members.filter(x => typeof(x.name) === 'number').slice(0, 10),
+                    member => member.name,
+                    member => member.joined,
+                    names.map(x => !members[x])
+                )]
+            }]
+        }));
+    }
+
+    // Placeholder new row
+    fragment.appendChild(construct({
+        element: 'tr',
+        classes: ['modal-datalist-preview'],
+        children: [{
+            element: 'td',
+        }, {
+            element: 'td',
+            children: [getInputText(
+                'assets/icons/music-note.svg',
+                'Enter instrument...',
+                '',
+                instruments.slice(0, 10)
+            )]
+        }, {
+            element: 'td',
+            children: [getInputTags(
+                [],
+                'Enter performer...',
+                members.filter(x => typeof(x.name) === 'number').slice(0, 10),
+                member => member.name,
+                member => member.joined,
+                members.map(x => !members[x])
+            )]
+        }]
+    }));
+    table.replaceChildren(fragment);
+}
+function openModalConcertSetlist(element) {
+    openModalHelper('modal-concert-setlist');
+
+    const id = getRowId(element);
+    const { name, setlist, video } = getEvents()[id];
+    const music = getMusic();
+
+    // Title
+    cssGetFirst('#modal-concert-setlist h2 span').innerText = `for ${name}`;
+
+    // Setlist
+    const table = cssGetFirst('#concert-setlist tbody');
+    const fragment = document.createDocumentFragment();
+    setlist?.forEach((info, i) => {
+        let songId = info;
+        let timestamp;
+        if (Array.isArray(info)) {
+            [songId, timestamp] = info;
+        }
+        const index = String(i + 1).padStart(String(setlist.length).length, '0');
+
+        fragment.appendChild(construct({
+            element: 'tr',
+            children: [{
+                element: 'td',
+                attributes: {
+                    draggable: 'true',
+                    ondragstart: 'onDragStart(this)',
+                    ondragend: 'onDragEnd(this)',
+                    ondragenter: 'onDragEnter(this)',
+                    ondragleave: 'onDragLeave(this)',
+                    ondragover: 'onDragOver(event)',
+                    ondrop: 'onDrop(this)'
+                },
+                children: [{
+                    element: 'img',
+                    attributes: { src: 'assets/icons/draggable.svg' }
+                }]
+            }, {
+                element: 'td',
+                innerText: index
+            }, {
+                element: 'td',
+                innerText: music[songId].name
+            }, {
+                element: 'td',
+                classes: ['concert-setlist-timestamp'],
+                attributes: INPUT_ATTRIBUTES.timestamp,
+                innerText: typeof(timestamp) === 'number' ? secondsToTimestamp(timestamp) : '??:??'
+            }]
+        }))
+    });
+    table.replaceChildren(fragment);
+
+    // Video
+    cssGetId(`concert-setlist-type-${video ? 'one' : 'no'}-video`).onclick();
+    cssGetFirst('#concert-setlist-one-video input').value = video || '';
+}

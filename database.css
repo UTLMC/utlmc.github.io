@@ -32,6 +32,7 @@ h1, h2, h3, h4, p, ul, menu {
 }
 table {
     border-collapse: collapse;
+    width: 100%;
 }
 select {
     font-family: 'Atkinson Hyperlegible';
@@ -52,6 +53,9 @@ select:active {
 }
 br {
     margin: 5px 0;
+}
+th {
+    text-wrap: nowrap;
 }
 
 
@@ -513,8 +517,7 @@ Table
     flex-direction: row;
     gap: 6px;
 }
-.table > table {
-    max-height: calc(100vh - 140px);
+.table > div {
     overflow: auto;
 }
 .table-toolbar li {
@@ -603,10 +606,10 @@ Table
     transition: 0.1s;
     text-align: center;
 }
-.table > table > tbody > tr:hover {
+.table > div > table > tbody > tr:hover {
     background-color: rgba(122, 95, 32, 0.1);
 }
-.table > table > tbody > tr:active:is(
+.table > div > table > tbody > tr:active:is(
   :not(:has(td:not(:first-child):active)),  /* First TD inside the TR */
   :has(.subtable:active):not(:has(.datalist:active))  /* Anything in .subtable but not in .datalist - for subtables */
 ) {
@@ -643,11 +646,6 @@ Table
 }
 .subtable .cell-details {
     justify-content: normal;
-}
-#table-events .subtable li {
-    padding: 10px;
-    flex-direction: column;
-    align-items: normal;
 }
 
 
@@ -824,9 +822,20 @@ Datalist tags
 /*********************************************************************
 Table customization
 *********************************************************************/
-th {
-    text-wrap: nowrap;
+#table-events > div,
+#table-music > div {
+    max-height: calc(100vh - 140px);
 }
+#table-members > div {
+    max-height: calc(100vh - 230px);
+}
+
+#table-events .subtable li {
+    padding: 10px;
+    flex-direction: column;
+    align-items: normal;
+}
+
 #table-announcements tbody tr td:last-child,
 #table-announcements thead tr th:last-child,
 #table-upcoming-events tbody tr td:last-child,
@@ -891,6 +900,7 @@ th {
 #table-events thead tr th:nth-child(3),
 #table-events thead tr th:nth-child(4) { min-width: 150px; }
 #table-events thead tr th:nth-child(5) { min-width: 260px; }
+
 
 /*********************************************************************
 Datalist
@@ -995,6 +1005,7 @@ Modals
     gap: 10px;
     min-height: 200px;
     max-width: calc(100% - 100px);
+    max-height: calc(100% - 100px);
 }
 .modal h2 {
     font-family: 'DM Sans';
@@ -1023,6 +1034,10 @@ Modals
 /*********************************************************************
 Modal datalist
 *********************************************************************/
+.modal-datalist-container {
+    width: 100%;
+    overflow-y: auto;
+}
 .modal-datalist-preview {
     opacity: 0.5;
 }
@@ -1077,6 +1092,10 @@ Modal setlist
     border-bottom: 5px solid #ffd966ff;
 }
 
+.draggable-list-container {
+    width: 100%;
+    overflow-y: auto;
+}
 .draggable-list tr td:nth-child(1) img {
     pointer-events: none;
 }
@@ -1099,6 +1118,7 @@ Modal setlist
 .draggable-list tr td:nth-child(2) {
     width: 40px;
     color: rgb(177, 177, 177);
+    text-align: center;
 }
 .draggable-list tr td:last-child {
     width: 60px;
