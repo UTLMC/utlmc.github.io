@@ -274,6 +274,9 @@ function toggleEventTab(element) {
     oldActiveElement?.classList.remove(navActiveClass);
     element.classList.add(navActiveClass);
     TABLE_EVENTS.active = parseInt(element.id.substring(element.id.lastIndexOf('-') + 1), 10);
+
+    window.location.hash = `events/${TABLE_EVENTS.active}`
+
     injectEventBody();
     // setTimeout(() => {
     //     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -503,7 +506,7 @@ window.addEventListener('DOMContentLoaded', () => {
     updateMusicTable();
 
     // Navigate to tab in hash
-    const page = window.location.hash.substring(1);
+    const [page, id] = window.location.hash.substring(1).split("/");
     if (page.length > 0) {
         toggleTab(`nav-${page}`);
     }
@@ -532,6 +535,12 @@ window.addEventListener('resize', () => {
     }
 })
 window.addEventListener('click', handleClick);
+window.addEventListener('hashchange', () => {
+    const [page, id] = window.location.hash.substring(1).split("/");
+
+    toggleTab(`nav-${page}`);
+    TABLE_EVENTS.active = Number(id);
+});
 
 
 /*********************************************************************
