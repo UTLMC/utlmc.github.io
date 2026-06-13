@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="assets/favicon.ico">
     <link rel="stylesheet" href="database.css">
+    <script src="data.js"></script>
     <script src="database.js" defer></script>
     <title>UTLMC Database</title>
 </head>
@@ -73,19 +74,19 @@
                         <input id="colour-widget-rgb" type="text" value="rgb(255, 255, 255)" onblur="updateColourFromRgb()"/>
                         <input id="colour-widget-hex" type="text" value="#FFFFFF" onblur="updateColourFromHex()"/>
                     </div>
-                    <div id="colour-widget-gradient-buttons">
-                        <button id="colour-widget-gradient-left">Left</button>
-                        <button id="colour-widget-gradient-right">Right</button>
-                        <button id="colour-widget-gradient-swap"></button>
+                    <div id="colour-widget-gradient-button">
+                        <button id="colour-widget-gradient-left" onclick="selectGradientColour(this)" class="colour-widget-gradient-button-active">Left</button>
+                        <button id="colour-widget-gradient-right" onclick="selectGradientColour(this)">Right</button>
+                        <button id="colour-widget-gradient-swap" onclick="swapGradientColour()"></button>
                     </div>
                 </aside>
                 <ul id="tag-previews">
-                    <li>Executive</li>
-                    <li>Assistant Executive</li>
-                    <li>Logistics</li>
-                    <li>Arranger</li>
-                    <li>Artist</li>
-                    <li>Website</li>
+                    <li onclick="selectTag(this)" class="tag-preview-active">Executive</li>
+                    <li onclick="selectTag(this)">Assistant Executive</li>
+                    <li onclick="selectTag(this)">Logistics</li>
+                    <li onclick="selectTag(this)">Arranger</li>
+                    <li onclick="selectTag(this)">Artist</li>
+                    <li onclick="selectTag(this)">Website</li>
                 </ul>
             </section>
         </article>
@@ -95,102 +96,145 @@
             <h2>Announcements</h2>
             <div class="table" id="table-announcements">
                 <ul class="table-toolbar">
-                    <li class="table-toolbar-add"></li>
-                    <li class="table-toolbar-remove"></li>
-                    <li class="table-toolbar-move-up"></li>
-                    <li class="table-toolbar-move-down"></li>
-                    <li class="table-toolbar-move-top"></li>
-                    <li class="table-toolbar-move-bottom"></li>
-                    <li class="table-toolbar-copy"></li>
+                    <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>
+                    <li class="table-toolbar-remove" onclick="tableToolbarRemove(this)"></li>
+                    <li class="table-toolbar-move-up" onclick="tableToolbarMoveUp(this)"></li>
+                    <li class="table-toolbar-move-down" onclick="tableToolbarMoveDown(this)"></li>
+                    <li class="table-toolbar-move-top" onclick="tableToolbarMoveTop(this)"></li>
+                    <li class="table-toolbar-move-bottom" onclick="tableToolbarMoveBottom(this)"></li>
+                    <li class="table-toolbar-copy" onclick="tableToolbarCopy(this)"></li>
                 </ul>
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Type</th>
-                            <th>Visible</th>
-                            <th>Text</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td onclick="toggleRowSelect(event, this)">
-                                <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
-                            </td>
-                            <td>
-                                <img src="assets/icons/alert-triangle.svg" class="table-announcements-icon" onclick="toggleAnnouncementType(this)" />
-                            </td>
-                            <td>
-                                <p>From <input type="date"/></p>
-                                <p>Until <input type="date"/></p>
-                            </td>
-                            <td contenteditable="true">This website is under construction or whatever...</td>
-                        </tr>
-                        <tr>
-                            <td onclick="toggleRowSelect(event, this)">
-                                <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
-                            </td>
-                            <td>
-                                <img src="assets/icons/megaphone.svg" class="table-announcements-icon" onclick="toggleAnnouncementType(this)" />
-                            </td>
-                            <td>
-                                <p>After <input type="date"/></p>
-                                <p>Until <input type="date"/></p>
-                            </td>
-                            <td contenteditable="true">This website is under construction or whatever...</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Type</th>
+                                <th>Visible</th>
+                                <th>Text</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="0">
+                                <td onclick="toggleRowSelect(event, this)">
+                                    <input type="checkbox" class="checkbox" />
+                                </td>
+                                <td>
+                                    <img src="assets/icons/alert-triangle.svg" class="table-announcements-icon" onclick="toggleAnnouncementType(this)" />
+                                </td>
+                                <td>
+                                    <p>From <input type="date"/></p>
+                                    <p>Until <input type="date"/></p>
+                                </td>
+                                <td contenteditable="true" onblur="validateMultilineInput(this)">This website is under construction or whatever...</td>
+                            </tr>
+                            <tr class="1">
+                                <td onclick="toggleRowSelect(event, this)">
+                                    <input type="checkbox" class="checkbox" />
+                                </td>
+                                <td>
+                                    <img src="assets/icons/megaphone.svg" class="table-announcements-icon" onclick="toggleAnnouncementType(this)" />
+                                </td>
+                                <td>
+                                    <p>After <input type="date"/></p>
+                                    <p>Until <input type="date"/></p>
+                                </td>
+                                <td contenteditable="true" onblur="validateMultilineInput(this)">This website is under construction or whatever...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <h2>Upcoming Events</h2>
             <div class="table" id="table-upcoming-events">
                 <ul class="table-toolbar">
-                    <li class="table-toolbar-add"></li>
-                    <li class="table-toolbar-remove"></li>
-                    <li class="table-toolbar-move-up"></li>
-                    <li class="table-toolbar-move-down"></li>
-                    <li class="table-toolbar-move-top"></li>
-                    <li class="table-toolbar-move-bottom"></li>
-                    <li class="table-toolbar-copy"></li>
+                    <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>
+                    <li class="table-toolbar-remove" onclick="tableToolbarRemove(this)"></li>
+                    <li class="table-toolbar-move-up" onclick="tableToolbarMoveUp(this)"></li>
+                    <li class="table-toolbar-move-down" onclick="tableToolbarMoveDown(this)"></li>
+                    <li class="table-toolbar-move-top" onclick="tableToolbarMoveTop(this)"></li>
+                    <li class="table-toolbar-move-bottom" onclick="tableToolbarMoveBottom(this)"></li>
+                    <li class="table-toolbar-copy" onclick="tableToolbarCopy(this)"></li>
                 </ul>
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Name</th>
-                            <th>Date</th>
-                            <th>Location</th>
-                            <th>Asset Path</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td onclick="toggleRowSelect(event, this)">
-                                <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
-                            </td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">2026 End of Winter Concert</td>
-                            <td>
-                                <p>From <input type="datetime-local"/></p>
-                                <p>Until <input type="datetime-local"/></p>
-                            </td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">OISE Something</td>
-                            <td contenteditable="plaintext-only" onblur="validateInputAsset(this)">assets/images/locations/oise.webp</td>
-                        </tr>
-                        <tr>
-                            <td onclick="toggleRowSelect(event, this)">
-                                <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
-                            </td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">2026 End of Winter Concert</td>
-                            <td>
-                                <p>From <input type="datetime-local"/></p>
-                                <p>Until <input type="datetime-local"/></p>
-                            </td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">OISE Something</td>
-                            <td contenteditable="plaintext-only" onblur="validateInputAsset(this)">assets/images/locations/oise.webp</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Event</th>
+                                <th>Visible</th>
+                                <th>Asset Path</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="0">
+                                <td onclick="toggleRowSelect(event, this)">
+                                    <input type="checkbox" class="checkbox" />
+                                </td>
+                                <td>
+                                    <div class="input">
+                                        <div>
+                                            <img src="assets/icons/events-filled.svg" />
+                                            <input type="text" class="input-event" placeholder="Select by name..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
+                                        </div>
+                                        <ul class="input-suggestions" tabindex="0">
+                                            <li onclick="clickSuggestion(this)">
+                                                <span>Suggestion 1</span>
+                                                <span>More info</span>
+                                            </li>
+                                            <li onclick="clickSuggestion(this)">
+                                                <span>Suggestion 2</span>
+                                                <span>More info</span>
+                                            </li>
+                                            <li onclick="clickSuggestion(this)">
+                                                <span>Suggestion 3</span>
+                                                <span>More info</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td>
+                                    <p>From <input type="date" /></p>
+                                    <p>Until <input type="date" /></p>
+                                </td>
+                                <td contenteditable="plaintext-only" onblur="validateInputAsset(this)">assets/images/locations/oise.webp</td>
+                            </tr>
+                            <tr class="1">
+                                <td onclick="toggleRowSelect(event, this)">
+                                    <input type="checkbox" class="checkbox" />
+                                </td>
+                                <td>
+                                    <div class="input">
+                                        <div>
+                                            <img src="assets/icons/events-filled.svg" />
+                                            <input type="text" class="input-event" placeholder="Select by name..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
+                                        </div>
+                                        <ul class="input-suggestions" tabindex="0">
+                                            <li onclick="clickSuggestion(this)">
+                                                <span>Suggestion 1</span>
+                                                <span>More info</span>
+                                            </li>
+                                            <li onclick="clickSuggestion(this)">
+                                                <span>Suggestion 2</span>
+                                                <span>More info</span>
+                                            </li>
+                                            <li onclick="clickSuggestion(this)">
+                                                <span>Suggestion 3</span>
+                                                <span>More info</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td>
+                                    <p>From <input type="date" /></p>
+                                    <p>Until <input type="date" /></p>
+                                </td>
+                                <td contenteditable="plaintext-only" onblur="validateInputAsset(this)">assets/images/locations/oise.webp</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <p class="validation-text"></p>
             
@@ -200,47 +244,47 @@
                     <tr>
                         <td>Event</td>
                         <td>
-                            <div class="input">
+                            <div class="input" id="current-event-id">
                                 <div>
                                     <img src="assets/icons/events-filled.svg" />
-                                    <input type="text" placeholder="Select by name..." onfocus="focusInput(this)" onblur="blurInput(this)" />
+                                    <input type="text" class="input-concert" placeholder="Select by name..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
                                 </div>
-                                <ul class="input-suggestions">
-                                    <li>
-                                        <span>Suggestion 1</span>
-                                        <span>More info</span>
-                                    </li>
-                                    <li>
-                                        <span>Suggestion 2</span>
-                                        <span>More info</span>
-                                    </li>
-                                    <li>
-                                        <span>Suggestion 3</span>
-                                        <span>More info</span>
-                                    </li>
+                                <ul class="input-suggestions" tabindex="0">
+                                    <li onclick="clickSuggestion(this)">
+                                            <span>Suggestion 1</span>
+                                            <span>More info</span>
+                                        </li>
+                                        <li onclick="clickSuggestion(this)">
+                                            <span>Suggestion 2</span>
+                                            <span>More info</span>
+                                        </li>
+                                        <li onclick="clickSuggestion(this)">
+                                            <span>Suggestion 3</span>
+                                            <span>More info</span>
+                                        </li>
                                 </ul>
                             </div>
                         </td>
                         <td>Visible From</td>
-                        <td><input type="datetime-local" /></td>
+                        <td><input type="datetime-local" id="current-event-visible-from" /></td>
                     </tr>
                     <tr>
                         <td>Location</td>
-                        <td contenteditable="plaintext-only" onblur="validateInput(this)">252 Bloor Street West (OISE C-162)</td>
+                        <td contenteditable="plaintext-only" onblur="validateInput(this)" id="current-event-location">252 Bloor Street West (OISE C-162)</td>
                         <td>Visible Until</td>
-                        <td><input type="datetime-local" /></td>
+                        <td><input type="datetime-local" id="current-event-visible-until" /></td>
                     </tr>
                     <tr>
                         <td>Tickets</td>
-                        <td contenteditable="plaintext-only" onblur="validateInput(this)">$5, pay in-person</td>
+                        <td contenteditable="plaintext-only" onblur="validateInput(this)" id="current-event-tickets">$5, pay in-person</td>
                         <td>Poster</td>
-                        <td contenteditable="plaintext-only" onblur="validateInputAsset(this)">assets/images/posters/poster 2026-04.webp</td>
+                        <td contenteditable="plaintext-only" onblur="validateInputAsset(this)" id="current-event-poster">assets/images/posters/poster 2026-04.webp</td>
                     </tr>
                     <tr>
                         <td>Setlist</td>
-                        <td contenteditable="plaintext-only" onblur="validateInput(this)">https://lmc.moe/setlist</td>
+                        <td contenteditable="plaintext-only" onblur="validateInput(this)" id="current-event-setlist">https://lmc.moe/setlist</td>
                         <td>RVSP</td>
-                        <td contenteditable="plaintext-only" onblur="validateInput(this)">#</td>
+                        <td contenteditable="plaintext-only" onblur="validateInput(this)" id="current-event-rvsp">#</td>
                     </tr>
                 </tbody>
             </table>
@@ -249,11 +293,11 @@
             <div id="current-event-description-container">
                 <hgroup id="preconcert-description" class="current-event-description">
                     <h3>Pre-Concert Description</h3>
-                    <div contenteditable="true">The LMC returns this April for its regularly-scheduled end of winter concert, featuring 3 hours of music, XX songs played by XX of our talented musicians!</div>
+                    <div contenteditable="true" onblur="validateMultilineInput(this)">The LMC returns this April for its regularly-scheduled end of winter concert, featuring 3 hours of music, XX songs played by XX of our talented musicians!</div>
                 </hgroup>
                 <hgroup id="postconcert-description" class="current-event-description">
                     <h3>Post-Concert Description</h3>
-                    <div contenteditable="true">Thank you to all performers and audience for a successful April concert! The next season of LMC operations will begin in September 2026.</div>
+                    <div contenteditable="true" onblur="validateMultilineInput(this)">Thank you to all performers and audience for a successful April concert! The next season of LMC operations will begin in September 2026.</div>
                 </hgroup>
             </div>
         </article>
@@ -292,463 +336,505 @@
 
             <div class="table" id="table-members">
                 <ul class="table-toolbar">
-                    <li class="table-toolbar-add"></li>
-                    <li class="table-toolbar-remove"></li>
-                    <li class="table-toolbar-move-up"></li>
-                    <li class="table-toolbar-move-down"></li>
-                    <li class="table-toolbar-move-top"></li>
-                    <li class="table-toolbar-move-bottom"></li>
-                    <li class="table-toolbar-copy"></li>
+                    <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>
+                    <li class="table-toolbar-remove" onclick="tableToolbarRemove(this)"></li>
+                    <li class="table-toolbar-move-up" onclick="tableToolbarMoveUp(this)"></li>
+                    <li class="table-toolbar-move-down" onclick="tableToolbarMoveDown(this)"></li>
+                    <li class="table-toolbar-move-top" onclick="tableToolbarMoveTop(this)"></li>
+                    <li class="table-toolbar-move-bottom" onclick="tableToolbarMoveBottom(this)"></li>
+                    <li class="table-toolbar-copy" onclick="tableToolbarCopy(this)"></li>
                     <li class="table-toolbar-search-container">
                         <div class="input">
                             <div>
                                 <img src="assets/icons/search.svg" />
-                                <input type="text" placeholder="Filter by name..." onfocus="focusInput(this)" onblur="blurInput(this)" />
+                                <input type="text" placeholder="Filter by name..." oninput="filterInput(event)" />
                             </div>
-                            <ul class="input-suggestions">
-                                <li>
-                                    <span>Suggestion 1</span>
-                                    <span>More info</span>
-                                </li>
-                                <li>
-                                    <span>Suggestion 2</span>
-                                    <span>More info</span>
-                                </li>
-                                <li>
-                                    <span>Suggestion 3</span>
-                                    <span>More info</span>
-                                </li>
-                            </ul>
                         </div>
                     </li>
                 </ul>
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Name</th>
-                            <th>Joined</th>
-                            <th>Left</th>
-                            <th>Tags</th>
-                            <th>Links</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td onclick="toggleRowSelect(event, this)">
-                                <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
-                            </td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">John LMC</td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">Fall 2025</td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">Winter 2026</td>
-                            <td>
-                                <div class="cell-details">
-                                    <p>Piano · Violin · Voice · Bass Guitar · Whatever · Arranger · Role <span>(7)</span></p>
-                                    <img class="cell-details-button" src="assets/icons/edit.svg" onclick="toggleModalMemberTags()" />
-                                </div>
-                            </td>
-                            <td>
-                                <div class="cell-details">
-                                    <p>Discord · Bandcamp <span>(2)</span></p>
-                                    <img class="cell-details-button" src="assets/icons/edit.svg" onclick="toggleModalMemberLinks()" />
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td onclick="toggleRowSelect(event, this)">
-                                <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
-                            </td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">John LMC</td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">Fall 2025</td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">Winter 2026</td>
-                            <td>
-                                <div class="cell-details">
-                                    <p>Piano · Violin · Voice · Bass Guitar · Whatever · Arranger · Role <span>(7)</span></p>
-                                    <img class="cell-details-button" src="assets/icons/edit.svg" onclick="toggleModalMemberTags()" />
-                                </div>
-                            </td>
-                            <td>
-                                <div class="cell-details">
-                                    <p>Discord · Bandcamp <span>(2)</span></p>
-                                    <img class="cell-details-button" src="assets/icons/edit.svg" onclick="toggleModalMemberLinks()" />
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td onclick="toggleRowSelect(event, this)">
-                                <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
-                            </td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">John LMC</td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">Fall 2025</td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">Winter 2026</td>
-                            <td>
-                                <div class="cell-details">
-                                    <p>Piano · Violin · Voice · Bass Guitar <span>(4)</span></p>
-                                    <img class="cell-details-button" src="assets/icons/edit.svg" onclick="toggleModalMemberTags()" />
-                                </div>
-                            </td>
-                            <td>
-                                <div class="cell-details">
-                                    <p>Discord · Bandcamp <span>(2)</span></p>
-                                    <img class="cell-details-button" src="assets/icons/edit.svg" onclick="toggleModalMemberLinks()" />
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Name</th>
+                                <th>Joined</th>
+                                <th>Left</th>
+                                <th>Tags</th>
+                                <th>Links</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="0">
+                                <td onclick="toggleRowSelect(event, this)">
+                                    <input type="checkbox" class="checkbox" />
+                                </td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">John LMC</td>
+                                <td>
+                                    <div class="input-season">
+                                        <select>
+                                            <option>Fall</option>
+                                            <option>Winter</option>
+                                        </select>
+                                        <div class="input">
+                                            <div>
+                                                <input type="text" value="2025" class="input-year" oninput="validateInputYear(this)" onmousewheel="scrollInputYear(event)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="input-season">
+                                        <select>
+                                            <option>Fall</option>
+                                            <option>Winter</option>
+                                        </select>
+                                        <div class="input">
+                                            <div>
+                                                <input type="text" value="2025" class="input-year" oninput="validateInputYear(this)" onmousewheel="scrollInputYear(event)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-details">
+                                        <p>Piano · Violin · Voice · Bass Guitar · Whatever · Arranger · Role <span>(7)</span></p>
+                                        <img class="cell-details-button" src="assets/icons/edit.svg" onclick="openModalMemberTags(this)" />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-details">
+                                        <p>Discord · Bandcamp <span>(2)</span></p>
+                                        <img class="cell-details-button" src="assets/icons/edit.svg" onclick="openModalMemberLinks(this)" />
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="1">
+                                <td onclick="toggleRowSelect(event, this)">
+                                    <input type="checkbox" class="checkbox" />
+                                </td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">John LMC</td>
+                                <td>
+                                    <div class="input-season">
+                                        <select>
+                                            <option>Fall</option>
+                                            <option>Winter</option>
+                                        </select>
+                                        <div class="input">
+                                            <div>
+                                                <input type="text" value="2025" class="input-year" oninput="validateInputYear(this)" onmousewheel="scrollInputYear(event)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="input-season">
+                                        <select>
+                                            <option>Fall</option>
+                                            <option>Winter</option>
+                                        </select>
+                                        <div class="input">
+                                            <div>
+                                                <input type="text" value="2025" class="input-year" oninput="validateInputYear(this)" onmousewheel="scrollInputYear(event)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-details">
+                                        <p>Piano · Violin · Voice · Bass Guitar · Whatever · Arranger · Role <span>(7)</span></p>
+                                        <img class="cell-details-button" src="assets/icons/edit.svg" onclick="openModalMemberTags(this)" />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-details">
+                                        <p>Discord · Bandcamp <span>(2)</span></p>
+                                        <img class="cell-details-button" src="assets/icons/edit.svg" onclick="openModalMemberLinks(this)" />
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="2">
+                                <td onclick="toggleRowSelect(event, this)">
+                                    <input type="checkbox" class="checkbox" />
+                                </td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">John LMC</td>
+                                <td>
+                                    <div class="input-season">
+                                        <select>
+                                            <option>Fall</option>
+                                            <option>Winter</option>
+                                        </select>
+                                        <div class="input">
+                                            <div>
+                                                <input type="text" value="2025" class="input-year" oninput="validateInputYear(this)" onmousewheel="scrollInputYear(event)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="input-season">
+                                        <select>
+                                            <option>Fall</option>
+                                            <option>Winter</option>
+                                        </select>
+                                        <div class="input">
+                                            <div>
+                                                <input type="text" value="2025" class="input-year" oninput="validateInputYear(this)" onmousewheel="scrollInputYear(event)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-details">
+                                        <p>Piano · Violin · Voice · Bass Guitar <span>(4)</span></p>
+                                        <img class="cell-details-button" src="assets/icons/edit.svg" onclick="openModalMemberTags(this)" />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-details">
+                                        <p>Discord · Bandcamp <span>(2)</span></p>
+                                        <img class="cell-details-button" src="assets/icons/edit.svg" onclick="openModalMemberLinks(this)" />
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </article>
         <article id="tab-music">
             <h1>Music</h1>
             <div class="table" id="table-music">
                 <ul class="table-toolbar">
-                    <li class="table-toolbar-add"></li>
-                    <li class="table-toolbar-remove"></li>
-                    <li class="table-toolbar-move-up"></li>
-                    <li class="table-toolbar-move-down"></li>
-                    <li class="table-toolbar-move-top"></li>
-                    <li class="table-toolbar-move-bottom"></li>
-                    <li class="table-toolbar-copy"></li>
+                    <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>
+                    <li class="table-toolbar-remove" onclick="tableToolbarRemove(this)"></li>
+                    <li class="table-toolbar-move-up" onclick="tableToolbarMoveUp(this)"></li>
+                    <li class="table-toolbar-move-down" onclick="tableToolbarMoveDown(this)"></li>
+                    <li class="table-toolbar-move-top" onclick="tableToolbarMoveTop(this)"></li>
+                    <li class="table-toolbar-move-bottom" onclick="tableToolbarMoveBottom(this)"></li>
+                    <li class="table-toolbar-copy" onclick="tableToolbarCopy(this)"></li>
                     <li class="table-toolbar-search-container">
                         <div class="input">
                             <div>
                                 <img src="assets/icons/search.svg" />
-                                <input type="text" placeholder="Filter by name..." onfocus="focusInput(this)" onblur="blurInput(this)" />
+                                <input type="text" placeholder="Filter by name..." oninput="filterInput(event)" />
                             </div>
-                            <ul class="input-suggestions">
-                                <li>
-                                    <span>Suggestion 1</span>
-                                    <span>More info</span>
-                                </li>
-                                <li>
-                                    <span>Suggestion 2</span>
-                                    <span>More info</span>
-                                </li>
-                                <li>
-                                    <span>Suggestion 3</span>
-                                    <span>More info</span>
-                                </li>
-                            </ul>
                         </div>
                     </li>
                 </ul>
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Name</th>
-                            <th>Composer</th>
-                            <th>From</th>
-                            <th>Media Origin</th>
-                            <th>Performances</th>
-                            <th>Reference</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td onclick="toggleRowSelect(event, this)">
-                                <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
-                            </td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">Zankyosanka</td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">Aimer</td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">Demon Slayer</td>
-                            <td>
-                                <select>
-                                    <option></option>
-                                    <option>Anime</option>
-                                    <option>Video Game</option>
-                                    <option>Vocaloid</option>
-                                </select>
-                            </td>
-                            <td>
-                                <div class="cell-details">
-                                    <p>Winter 2024 <span>(1)</span></p>
-                                    <img class="cell-details-button" src="assets/icons/show.svg" onclick="toggleCellDetails(this)" />
-                                </div>
-                            </td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
-                        </tr>
-                        <tr class="subtable-row">
-                            <td></td>
-                            <td colspan="6" class="subtable-container">
-                                <ul class="subtable">
-                                    <li onclick="toggleSubrowSelect(event, this)">
-                                        <input type="checkbox" class="subtable-checkbox" oninput="onRowSelect(this)" />
-                                        <table class="datalist" id="datalist-performance">
-                                            <tbody>
-                                                <tr>
-                                                    <td>Concerts</td>
-                                                    <td>
-                                                        <ul class="datalist-tags">
-                                                            <li>
-                                                                <span>2025 End of Fall Concert</span>
-                                                                <img src="assets/icons/add.svg" class="x-button" />
-                                                            </li>
-                                                            <div class="input datalist-tag-add" onclick="newDatalistTag(this)">
-                                                                <div>
-                                                                    <img src="assets/icons/add.svg" />
-                                                                    <input type="text" placeholder="Enter concert..." onfocus="focusInput(this)" onblur="blurInput(this)" onkeydown="keyDownInput(event)" />
+                <div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Name</th>
+                                <th>Composer(s)</th>
+                                <th>From</th>
+                                <th>Media Origin</th>
+                                <th>Performances</th>
+                                <th>Reference</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="0">
+                                <td onclick="toggleRowSelect(event, this)">
+                                    <input type="checkbox" class="checkbox" />
+                                </td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">Zankyosanka</td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">Aimer</td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">Demon Slayer</td>
+                                <td>
+                                    <select>
+                                        <option></option>
+                                        <option>Anime</option>
+                                        <option>Video Game</option>
+                                        <option>Vocaloid</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <div class="cell-details">
+                                        <p>Winter 2024 <span>(1)</span></p>
+                                        <img class="cell-details-button" src="assets/icons/show.svg" onclick="toggleCellDetails(this)" />
+                                    </div>
+                                </td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
+                            </tr>
+                            <tr class="0-0 subtable-row">
+                                <td></td>
+                                <td colspan="6" class="subtable-container">
+                                    <ul class="subtable">
+                                        <li onclick="toggleSubrowSelect(event, this)">
+                                            <input type="checkbox" class="subtable-checkbox" />
+                                            <table class="datalist">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Concerts</td>
+                                                        <td>
+                                                            <ul class="datalist-tags">
+                                                                <li>
+                                                                    <span>2025 End of Fall Concert</span>
+                                                                    <img src="assets/icons/add.svg" class="x-button" />
+                                                                </li>
+                                                                <div class="input datalist-tag-add" onclick="addNewTagToDatalist(this)">
+                                                                    <div>
+                                                                        <img src="assets/icons/add.svg" />
+                                                                        <input class="input-event" type="text" placeholder="Enter event..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
+                                                                    </div>
+                                                                    <ul class="input-suggestions" tabindex="0">
+                                                                        <li onclick="clickSuggestion(this)">
+                                                                            <span>Suggestion 1</span>
+                                                                            <span>More info</span>
+                                                                        </li>
+                                                                        <li onclick="clickSuggestion(this)">
+                                                                            <span>Suggestion 2</span>
+                                                                            <span>More info</span>
+                                                                        </li>
+                                                                        <li onclick="clickSuggestion(this)">
+                                                                            <span>Suggestion 3</span>
+                                                                            <span>More info</span>
+                                                                        </li>
+                                                                    </ul>
                                                                 </div>
-                                                                <ul class="input-suggestions">
-                                                                    <li>
-                                                                        <span>Suggestion 1</span>
-                                                                        <span>More info</span>
-                                                                    </li>
-                                                                    <li>
-                                                                        <span>Suggestion 2</span>
-                                                                        <span>More info</span>
-                                                                    </li>
-                                                                    <li>
-                                                                        <span>Suggestion 3</span>
-                                                                        <span>More info</span>
-                                                                    </li>
-                                                                </ul>
-                                                            </div>
-                                                        </ul>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Song Type</td>
-                                                    <td>
-                                                        <select>
-                                                            <option>Large Ensemble</option>
-                                                            <option>Small Ensemble</option>
-                                                            <option>External Group</option>
-                                                        </select>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Sheet Music</td>
-                                                    <td contenteditable="plaintext-only" onblur="validateInput(this)">https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Arranger(s)</td>
-                                                    <td>
-                                                        <ul class="datalist-tags">
-                                                            <li>
-                                                                <span>Person 1</span>
-                                                                <img src="assets/icons/add.svg" class="x-button" />
-                                                            </li>
-                                                            <li>
-                                                                <span>Person 2</span>
-                                                                <img src="assets/icons/add.svg" class="x-button" />
-                                                            </li>
-                                                            <div class="input datalist-tag-add" onclick="newDatalistTag(this)">
-                                                                <div>
-                                                                    <img src="assets/icons/add.svg" />
-                                                                    <input type="text" placeholder="Enter arranger..." onfocus="focusInput(this)" onblur="blurInput(this)" onkeydown="keyDownInput(event)" />
+                                                            </ul>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Song Type</td>
+                                                        <td>
+                                                            <select>
+                                                                <option>Large Ensemble</option>
+                                                                <option>Small Ensemble</option>
+                                                                <option>External Group</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Sheet Music</td>
+                                                        <td contenteditable="plaintext-only" onblur="validateInput(this)">https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Arranger(s)</td>
+                                                        <td>
+                                                            <ul class="datalist-tags">
+                                                                <li>
+                                                                    <span>Person 1</span>
+                                                                    <img src="assets/icons/add.svg" class="x-button" />
+                                                                </li>
+                                                                <li>
+                                                                    <span>Person 2</span>
+                                                                    <img src="assets/icons/add.svg" class="x-button" />
+                                                                </li>
+                                                                <div class="input datalist-tag-add" onclick="addNewTagToDatalist(this)">
+                                                                    <div>
+                                                                        <img src="assets/icons/add.svg" />
+                                                                        <input type="text" class="input-member" placeholder="Enter arranger..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
+                                                                    </div>
+                                                                    <ul class="input-suggestions" tabindex="0">
+                                                                        <li onclick="clickSuggestion(this)">
+                                                                            <span>Suggestion 1</span>
+                                                                            <span>More info</span>
+                                                                        </li>
+                                                                        <li onclick="clickSuggestion(this)">
+                                                                            <span>Suggestion 2</span>
+                                                                            <span>More info</span>
+                                                                        </li>
+                                                                        <li onclick="clickSuggestion(this)">
+                                                                            <span>Suggestion 3</span>
+                                                                            <span>More info</span>
+                                                                        </li>
+                                                                    </ul>
                                                                 </div>
-                                                                <ul class="input-suggestions">
-                                                                    <li>
-                                                                        <span>Suggestion 1</span>
-                                                                        <span>More info</span>
-                                                                    </li>
-                                                                    <li>
-                                                                        <span>Suggestion 2</span>
-                                                                        <span>More info</span>
-                                                                    </li>
-                                                                    <li>
-                                                                        <span>Suggestion 3</span>
-                                                                        <span>More info</span>
-                                                                    </li>
-                                                                </ul>
+                                                            </ul>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Group</td>
+                                                        <td contenteditable="plaintext-only" onblur="validateInput(this)">https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Performer(s)</td>
+                                                        <td>
+                                                            <div class="cell-details">
+                                                                <p>Person 1 · Person 2 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 <span>(15)</span></p>
+                                                                <img class="cell-details-button" src="assets/icons/edit.svg" onclick="openModalPerformancePerformers(this)" />
                                                             </div>
-                                                        </ul>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Performers</td>
-                                                    <td>
-                                                        <div class="cell-details">
-                                                            <p>Person 1 · Person 2 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 <span>(15)</span></p>
-                                                            <img class="cell-details-button" src="assets/icons/edit.svg" onclick="toggleModalPerformancePerformers()" />
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </li>
-                                </ul>
-                            </td>
-                        </tr>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
 
-                        <tr>
-                            <td onclick="toggleRowSelect(event, this)">
-                                <input type="checkbox" oninput="onRowSelect(this)" />
-                            </td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">Zankyosanka</td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">Aimer</td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">Demon Slayer</td>
-                            <td>
-                                <select>
-                                    <option></option>
-                                    <option>Anime</option>
-                                    <option>Video Game</option>
-                                    <option>Vocaloid</option>
-                                </select>
-                            </td>
-                            <td>
-                                <div class="cell-details">
-                                    <p>Fall 2026 · Winter 2026 <span>(2)</span></p>
-                                    <img class="cell-details-button" src="assets/icons/hide.svg" onclick="toggleCellDetails(this)" />
-                                </div>
-                            </td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
-                        </tr>
-                        <tr>
-                            <td onclick="toggleRowSelect(event, this)">
-                                <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
-                            </td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">Zankyosanka</td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">Aimer</td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">Demon Slayer</td>
-                            <td>
-                                <select>
-                                    <option></option>
-                                    <option>Anime</option>
-                                    <option>Video Game</option>
-                                    <option>Vocaloid</option>
-                                </select>
-                            </td>
-                            <td>
-                                <div class="cell-details">
-                                    <p>Fall 2026 · Winter 2026 <span>(2)</span></p>
-                                    <img class="cell-details-button" src="assets/icons/hide.svg" onclick="toggleCellDetails(this)" />
-                                </div>
-                            </td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
-                        </tr>
-                    </tbody>
-                </table>
+                            <tr class="1">
+                                <td onclick="toggleRowSelect(event, this)">
+                                    <input type="checkbox" />
+                                </td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">Zankyosanka</td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">Aimer</td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">Demon Slayer</td>
+                                <td>
+                                    <select>
+                                        <option></option>
+                                        <option>Anime</option>
+                                        <option>Video Game</option>
+                                        <option>Vocaloid</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <div class="cell-details">
+                                        <p>Fall 2026 · Winter 2026 <span>(2)</span></p>
+                                        <img class="cell-details-button" src="assets/icons/hide.svg" onclick="toggleCellDetails(this)" />
+                                    </div>
+                                </td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
+                            </tr>
+                            <tr class="2">
+                                <td onclick="toggleRowSelect(event, this)">
+                                    <input type="checkbox" class="checkbox" />
+                                </td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">Zankyosanka</td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">Aimer</td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">Demon Slayer</td>
+                                <td>
+                                    <select>
+                                        <option></option>
+                                        <option>Anime</option>
+                                        <option>Video Game</option>
+                                        <option>Vocaloid</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <div class="cell-details">
+                                        <p>Fall 2026 · Winter 2026 <span>(2)</span></p>
+                                        <img class="cell-details-button" src="assets/icons/hide.svg" onclick="toggleCellDetails(this)" />
+                                    </div>
+                                </td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </article>
         <article id="tab-events">
             <h1>Events</h1>
             <div class="table" id="table-events">
                 <ul class="table-toolbar">
-                    <li class="table-toolbar-add"></li>
-                    <li class="table-toolbar-remove"></li>
-                    <li class="table-toolbar-move-up"></li>
-                    <li class="table-toolbar-move-down"></li>
-                    <li class="table-toolbar-move-top"></li>
-                    <li class="table-toolbar-move-bottom"></li>
-                    <li class="table-toolbar-copy"></li>
+                    <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>
+                    <li class="table-toolbar-remove" onclick="tableToolbarRemove(this)"></li>
+                    <li class="table-toolbar-move-up" onclick="tableToolbarMoveUp(this)"></li>
+                    <li class="table-toolbar-move-down" onclick="tableToolbarMoveDown(this)"></li>
+                    <li class="table-toolbar-move-top" onclick="tableToolbarMoveTop(this)"></li>
+                    <li class="table-toolbar-move-bottom" onclick="tableToolbarMoveBottom(this)"></li>
+                    <li class="table-toolbar-copy" onclick="tableToolbarCopy(this)"></li>
                     <li class="table-toolbar-search-container">
                         <div class="input">
                             <div>
                                 <img src="assets/icons/search.svg" />
-                                <input type="text" placeholder="Filter by name..." onfocus="focusInput(this)" onblur="blurInput(this)" />
+                                <input type="text" placeholder="Filter by name..." oninput="filterInput(event)" />
                             </div>
-                            <ul class="input-suggestions">
-                                <li>
-                                    <span>Suggestion 1</span>
-                                    <span>More info</span>
-                                </li>
-                                <li>
-                                    <span>Suggestion 2</span>
-                                    <span>More info</span>
-                                </li>
-                                <li>
-                                    <span>Suggestion 3</span>
-                                    <span>More info</span>
-                                </li>
-                            </ul>
                         </div>
                     </li>
                 </ul>
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Type</th>
-                            <th>Name</th>
-                            <th>Location</th>
-                            <th>Date</th>
-                            <th>Media</th>
-                            <th>Description</th>
-                            <th>Gallery</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td onclick="toggleRowSelect(event, this)">
-                                <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
-                            </td>
-                            <td>
-                                <select>
-                                    <option>Concert</option>
-                                    <option>Workshop</option>
-                                    <option>External</option>
-                                    <option>Other</option>
-                                </select>
-                            </td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">End of Fall 2025 Concert</td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">OISE G-162</td>
-                            <td>
-                                <p>From <input type="datetime-local"/></p>
-                                <p>Until <input type="datetime-local"/></p>
-                            </td>
-                            <td>
-                                <div class="cell-details">
-                                    <img class="cell-details-button" src="assets/icons/edit.svg" onclick="toggleModalConcertSetlist()" />
-                                </div>
-                            </td>
-                            <td>
-                                <div class="cell-details">
-                                    <img class="cell-details-button" src="assets/icons/show.svg" onclick="toggleCellDetails(this)" />
-                                </div>
-                            </td>
-                            <td contenteditable="plaintext-only" onblur="validateInput(this)">https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
-                        </tr>
-                        <tr class="subtable-row">
-                            <td></td>
-                            <td colspan="7" class="subtable-container">
-                                <ul class="subtable">
-                                    <li>
-                                        <div contenteditable="true">asdasda sdadasdasds adasdsadasd sad sad sa dsa dsa dsadsadsa dsa dad a</div>
-                                    </li>
-                                </ul>
-                            </td>
-                        </tr>
+                <div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Type</th>
+                                <th>Name</th>
+                                <th>Location</th>
+                                <th>Date</th>
+                                <th>Setlist</th>
+                                <th>Description</th>
+                                <th>Gallery</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="0">
+                                <td onclick="toggleRowSelect(event, this)">
+                                    <input type="checkbox" class="checkbox" />
+                                </td>
+                                <td>
+                                    <select>
+                                        <option>Concert</option>
+                                        <option>Workshop</option>
+                                        <option>External</option>
+                                        <option>Other</option>
+                                    </select>
+                                </td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">End of Fall 2025 Concert</td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">OISE G-162</td>
+                                <td>
+                                    <p>From <input type="datetime-local"/></p>
+                                    <p>Until <input type="datetime-local"/></p>
+                                </td>
+                                <td>
+                                    <div class="cell-details">
+                                        <img class="cell-details-button" src="assets/icons/edit.svg" onclick="openModalConcertSetlist(this)" />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-details">
+                                        <img class="cell-details-button" src="assets/icons/show.svg" onclick="toggleCellDetails(this)" />
+                                    </div>
+                                </td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
+                            </tr>
+                            <tr class="0-0 subtable-row">
+                                <td></td>
+                                <td colspan="7" class="subtable-container">
+                                    <ul class="subtable">
+                                        <li>
+                                            <div contenteditable="true" onblur="validateMultilineInput(this)">asdasda sdadasdasds adasdsadasd sad sad sa dsa dsa dsadsadsa dsa dad a</div>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
 
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </article>
         <article id="tab-faq">
             <h1>Frequently Asked Questions</h1>
             <div class="table" id="table-faq">
                 <ul class="table-toolbar">
-                    <li class="table-toolbar-add"></li>
-                    <li class="table-toolbar-remove"></li>
-                    <li class="table-toolbar-move-up"></li>
-                    <li class="table-toolbar-move-down"></li>
-                    <li class="table-toolbar-move-top"></li>
-                    <li class="table-toolbar-move-bottom"></li>
-                    <li class="table-toolbar-copy"></li>
+                    <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>
+                    <li class="table-toolbar-remove" onclick="tableToolbarRemove(this)"></li>
+                    <li class="table-toolbar-move-up" onclick="tableToolbarMoveUp(this)"></li>
+                    <li class="table-toolbar-move-down" onclick="tableToolbarMoveDown(this)"></li>
+                    <li class="table-toolbar-move-top" onclick="tableToolbarMoveTop(this)"></li>
+                    <li class="table-toolbar-move-bottom" onclick="tableToolbarMoveBottom(this)"></li>
+                    <li class="table-toolbar-copy" onclick="tableToolbarCopy(this)"></li>
                 </ul>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td onclick="toggleRowSelect(event, this)">
-                                <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
-                            </td>
-                            <td>
-                                <div class="table-faq-q" contenteditable="true" onblur="validateInput(this)">This is a question.</div>
-                                <div class="table-faq-a" contenteditable="true">This is an answer to the question.</div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td onclick="toggleRowSelect(event, this)">
-                                <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
-                            </td>
-                            <td>
-                                <div class="table-faq-q" contenteditable="true" onblur="validateInput(this)">This is a question.</div>
-                                <div class="table-faq-a" contenteditable="true">This is an answer to the question.</div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div>
+                    <table>
+                        <tbody>
+                            <tr class="0">
+                                <td onclick="toggleRowSelect(event, this)">
+                                    <input type="checkbox" class="checkbox" />
+                                </td>
+                                <td>
+                                    <div class="table-faq-q" contenteditable="plaintext-only" onblur="validateInput(this)">This is a question.</div>
+                                    <div class="table-faq-a" contenteditable="true" onblur="validateMultilineInput(this)">This is an answer to the question.</div>
+                                </td>
+                            </tr>
+                            <tr class="1">
+                                <td onclick="toggleRowSelect(event, this)">
+                                    <input type="checkbox" class="checkbox" />
+                                </td>
+                                <td>
+                                    <div class="table-faq-q" contenteditable="plaintext-only" onblur="validateInput(this)">This is a question.</div>
+                                    <div class="table-faq-a" contenteditable="true" onblur="validateMultilineInput(this)">This is an answer to the question.</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </article>
     </main>
@@ -758,24 +844,24 @@
             <div class="input">
                 <div>
                     <img src="assets/icons/add.svg" />
-                    <input type="text" placeholder="Enter instrument..." onfocus="focusInput(this)" onblur="blurInput(this)" onkeydown="keyDownInput(event)" />
+                    <input type="text" class="input-instrument" placeholder="Enter instrument..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
                 </div>
-                <ul class="input-suggestions">
-                    <li>
+                <ul class="input-suggestions" tabindex="0">
+                    <li onclick="clickSuggestion(this)">
                         <span>Suggestion 1</span>
                         <span>More info</span>
                     </li>
-                    <li>
+                    <li onclick="clickSuggestion(this)">
                         <span>Suggestion 2</span>
                         <span>More info</span>
                     </li>
-                    <li>
+                    <li onclick="clickSuggestion(this)">
                         <span>Suggestion 3</span>
                         <span>More info</span>
                     </li>
                 </ul>
             </div>
-            <ul class="datalist-tags">
+            <ul class="datalist-tags" id="datalist-member-instruments">
                 <li>
                     <span>Piano</span>
                     <img src="assets/icons/add.svg" class="x-button" />
@@ -796,24 +882,24 @@
             <div class="input">
                 <div>
                     <img src="assets/icons/add.svg" />
-                    <input type="text" placeholder="Enter role..." onfocus="focusInput(this)" onblur="blurInput(this)" onkeydown="keyDownInput(event)" />
+                    <input type="text" class="input-role" placeholder="Enter role..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
                 </div>
-                <ul class="input-suggestions">
-                    <li>
+                <ul class="input-suggestions" tabindex="0">
+                    <li onclick="clickSuggestion(this)">
                         <span>Suggestion 1</span>
                         <span>More info</span>
                     </li>
-                    <li>
+                    <li onclick="clickSuggestion(this)">
                         <span>Suggestion 2</span>
                         <span>More info</span>
                     </li>
-                    <li>
+                    <li onclick="clickSuggestion(this)">
                         <span>Suggestion 3</span>
                         <span>More info</span>
                     </li>
                 </ul>
             </div>
-            <ul class="datalist-tags">
+            <ul class="datalist-tags" id="datalist-member-roles">
                 <li>
                     <span>Arranger</span>
                     <img src="assets/icons/add.svg" class="x-button" />
@@ -827,232 +913,236 @@
 
         <div id="modal-member-links" class="modal">
             <h2>Links <span>for John LMC</span></h2>
-            <table class="modal-datalist" id="datalist-modal-member-links">
-                <tbody>
-                    <tr>
-                        <td><img src="assets/icons/add.svg" class="x-button" /></td>
-                        <td>
-                            <select>
-                                <option>Bandcamp</option>
-                                <option>Discord</option>
-                                <option>Instagram</option>
-                                <option>LinkedIn</option>
-                                <option>Musescore</option>
-                                <option>Spotify</option>
-                                <option>Soundcloud</option>
-                                <option>Youtube</option>
-                            </select>
-                        </td>
-                        <td contenteditable="plaintext-only" onblur="validateInput(this)">User1</td>
-                        <td contenteditable="plaintext-only" onblur="validateInput(this)">https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
-                    </tr>
-                    <tr>
-                        <td><img src="assets/icons/add.svg" class="x-button" /></td>
-                        <td>
-                            <select>
-                                <option>Bandcamp</option>
-                                <option>Discord</option>
-                                <option>Instagram</option>
-                                <option>LinkedIn</option>
-                                <option>Musescore</option>
-                                <option>Spotify</option>
-                                <option>Soundcloud</option>
-                                <option>Youtube</option>
-                            </select>
-                        </td>
-                        <td contenteditable="plaintext-only" onblur="validateInput(this)">Really long username</td>
-                        <td contenteditable="plaintext-only" onblur="validateInput(this)">https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
-                    </tr>
-                    <tr class="modal-datalist-preview">
-                        <td></td>
-                        <td>
-                            <select>
-                                <option>Bandcamp</option>
-                                <option>Discord</option>
-                                <option>Instagram</option>
-                                <option>LinkedIn</option>
-                                <option>Musescore</option>
-                                <option>Spotify</option>
-                                <option>Soundcloud</option>
-                                <option>Youtube</option>
-                            </select>
-                        </td>
-                        <td contenteditable="plaintext-only" onblur="validateInput(this)">Enter username...</td>
-                        <td contenteditable="plaintext-only" onblur="validateInput(this)">Enter link...</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="modal-datalist-container">
+                <table class="modal-datalist" id="datalist-modal-member-links">
+                    <tbody>
+                        <tr>
+                            <td><img src="assets/icons/add.svg" class="x-button" /></td>
+                            <td>
+                                <select>
+                                    <option>Bandcamp</option>
+                                    <option>Discord</option>
+                                    <option>Instagram</option>
+                                    <option>LinkedIn</option>
+                                    <option>Musescore</option>
+                                    <option>Spotify</option>
+                                    <option>Soundcloud</option>
+                                    <option>Youtube</option>
+                                </select>
+                            </td>
+                            <td contenteditable="plaintext-only" onblur="validateInput(this)">User1</td>
+                            <td contenteditable="plaintext-only" onblur="validateInput(this)">https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
+                        </tr>
+                        <tr>
+                            <td><img src="assets/icons/add.svg" class="x-button" /></td>
+                            <td>
+                                <select>
+                                    <option>Bandcamp</option>
+                                    <option>Discord</option>
+                                    <option>Instagram</option>
+                                    <option>LinkedIn</option>
+                                    <option>Musescore</option>
+                                    <option>Spotify</option>
+                                    <option>Soundcloud</option>
+                                    <option>Youtube</option>
+                                </select>
+                            </td>
+                            <td contenteditable="plaintext-only" onblur="validateInput(this)">Really long username</td>
+                            <td contenteditable="plaintext-only" onblur="validateInput(this)">https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
+                        </tr>
+                        <tr class="modal-datalist-preview">
+                            <td></td>
+                            <td>
+                                <select>
+                                    <option>Bandcamp</option>
+                                    <option>Discord</option>
+                                    <option>Instagram</option>
+                                    <option>LinkedIn</option>
+                                    <option>Musescore</option>
+                                    <option>Spotify</option>
+                                    <option>Soundcloud</option>
+                                    <option>Youtube</option>
+                                </select>
+                            </td>
+                            <td contenteditable="plaintext-only" onblur="validateInput(this)">Enter username...</td>
+                            <td contenteditable="plaintext-only" onblur="validateInput(this)">Enter link...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div id="modal-performance-performers" class="modal">
             <h2>Performers <span>for Zankyosanka</span></h2>
-            <table class="modal-datalist">
-                <tbody>
-                    <tr>
-                        <td><img src="assets/icons/add.svg" class="x-button" /></td>
-                        <td>
-                            <div class="input">
-                                <div>
-                                    <img src="assets/icons/music-note.svg" />
-                                    <input type="text" placeholder="Enter instrument..." onfocus="focusInput(this)" onblur="blurInput(this)" onkeydown="keyDownInput(event)" />
-                                </div>
-                                <ul class="input-suggestions">
-                                    <li>
-                                        <span>Suggestion 1</span>
-                                        <span>More info</span>
-                                    </li>
-                                    <li>
-                                        <span>Suggestion 2</span>
-                                        <span>More info</span>
-                                    </li>
-                                    <li>
-                                        <span>Suggestion 3</span>
-                                        <span>More info</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                        <td>
-                            <ul class="datalist-tags">
-                                <li>
-                                    <span>Person 1</span>
-                                    <img src="assets/icons/add.svg" class="x-button" />
-                                </li>
-                                <li class="tag-custom">
-                                    <span>Person 2</span>
-                                    <img src="assets/icons/add.svg" class="x-button" />
-                                </li>
-                                <li class="input datalist-tag-add" onclick="newDatalistTag(this)">
+            <div class="modal-datalist-container">
+                <table class="modal-datalist">
+                    <tbody>
+                        <tr>
+                            <td><img src="assets/icons/add.svg" class="x-button" /></td>
+                            <td>
+                                <div class="input">
                                     <div>
-                                        <img src="assets/icons/add.svg" />
-                                        <input type="text" placeholder="Enter performer..." onfocus="focusInput(this)" onblur="blurInput(this)" onkeydown="keyDownInput(event)" />
+                                        <img src="assets/icons/music-note.svg" />
+                                        <input type="text" class="input-instrument" placeholder="Enter instrument..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
                                     </div>
-                                    <ul class="input-suggestions">
-                                        <li>
+                                    <ul class="input-suggestions" tabindex="0">
+                                        <li onclick="clickSuggestion(this)">
                                             <span>Suggestion 1</span>
                                             <span>More info</span>
                                         </li>
-                                        <li>
+                                        <li onclick="clickSuggestion(this)">
                                             <span>Suggestion 2</span>
                                             <span>More info</span>
                                         </li>
-                                        <li>
+                                        <li onclick="clickSuggestion(this)">
                                             <span>Suggestion 3</span>
                                             <span>More info</span>
                                         </li>
                                     </ul>
-                                </li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><img src="assets/icons/add.svg" class="x-button" /></td>
-                        <td>
-                            <div class="input">
-                                <div>
-                                    <img src="assets/icons/music-note.svg" />
-                                    <input type="text" placeholder="Enter instrument..." onfocus="focusInput(this)" onblur="blurInput(this)" onkeydown="keyDownInput(event)" />
                                 </div>
-                                <ul class="input-suggestions">
+                            </td>
+                            <td>
+                                <ul class="datalist-tags">
                                     <li>
-                                        <span>Suggestion 1</span>
-                                        <span>More info</span>
+                                        <span>Person 1</span>
+                                        <img src="assets/icons/add.svg" class="x-button" />
                                     </li>
-                                    <li>
-                                        <span>Suggestion 2</span>
-                                        <span>More info</span>
+                                    <li class="tag-custom">
+                                        <span>Person 2</span>
+                                        <img src="assets/icons/add.svg" class="x-button" />
                                     </li>
-                                    <li>
-                                        <span>Suggestion 3</span>
-                                        <span>More info</span>
+                                    <li class="input datalist-tag-add" onclick="addNewTagToDatalist(this)">
+                                        <div>
+                                            <img src="assets/icons/add.svg" />
+                                            <input type="text" class="input-member" placeholder="Enter performer..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
+                                        </div>
+                                        <ul class="input-suggestions" tabindex="0">
+                                            <li onclick="clickSuggestion(this)">
+                                                <span>Suggestion 1</span>
+                                                <span>More info</span>
+                                            </li>
+                                            <li onclick="clickSuggestion(this)">
+                                                <span>Suggestion 2</span>
+                                                <span>More info</span>
+                                            </li>
+                                            <li onclick="clickSuggestion(this)">
+                                                <span>Suggestion 3</span>
+                                                <span>More info</span>
+                                            </li>
+                                        </ul>
                                     </li>
                                 </ul>
-                            </div>
-                        </td>
-                        <td>
-                            <ul class="datalist-tags">
-                                <li>
-                                    <span>Person 1</span>
-                                    <img src="assets/icons/add.svg" class="x-button" />
-                                </li>
-                                <li>
-                                    <span>Person 2</span>
-                                    <img src="assets/icons/add.svg" class="x-button" />
-                                </li>
-                                <li class="input datalist-tag-add" onclick="newDatalistTag(this)">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><img src="assets/icons/add.svg" class="x-button" /></td>
+                            <td>
+                                <div class="input">
                                     <div>
-                                        <img src="assets/icons/add.svg" />
-                                        <input type="text" placeholder="Enter performer..." onfocus="focusInput(this)" onblur="blurInput(this)" onkeydown="keyDownInput(event)" />
+                                        <img src="assets/icons/music-note.svg" />
+                                        <input type="text" class="input-instrument" placeholder="Enter instrument..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
                                     </div>
-                                    <ul class="input-suggestions">
-                                        <li>
+                                    <ul class="input-suggestions" tabindex="0">
+                                        <li onclick="clickSuggestion(this)">
                                             <span>Suggestion 1</span>
                                             <span>More info</span>
                                         </li>
-                                        <li>
+                                        <li onclick="clickSuggestion(this)">
                                             <span>Suggestion 2</span>
                                             <span>More info</span>
                                         </li>
-                                        <li>
+                                        <li onclick="clickSuggestion(this)">
                                             <span>Suggestion 3</span>
                                             <span>More info</span>
                                         </li>
                                     </ul>
-                                </li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr class="modal-datalist-preview">
-                        <td></td>
-                        <td>
-                            <div class="input">
-                                <div>
-                                    <img src="assets/icons/music-note.svg" />
-                                    <input type="text" placeholder="Enter instrument..." onfocus="focusInput(this)" onblur="blurInput(this)" onkeydown="keyDownInput(event)" />
                                 </div>
-                                <ul class="input-suggestions">
+                            </td>
+                            <td>
+                                <ul class="datalist-tags">
                                     <li>
-                                        <span>Suggestion 1</span>
-                                        <span>More info</span>
+                                        <span>Person 1</span>
+                                        <img src="assets/icons/add.svg" class="x-button" />
                                     </li>
                                     <li>
-                                        <span>Suggestion 2</span>
-                                        <span>More info</span>
+                                        <span>Person 2</span>
+                                        <img src="assets/icons/add.svg" class="x-button" />
                                     </li>
-                                    <li>
-                                        <span>Suggestion 3</span>
-                                        <span>More info</span>
+                                    <li class="input datalist-tag-add" onclick="addNewTagToDatalist(this)">
+                                        <div>
+                                            <img src="assets/icons/add.svg" />
+                                            <input type="text" class="input-member" placeholder="Enter performer..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
+                                        </div>
+                                        <ul class="input-suggestions" tabindex="0">
+                                            <li onclick="clickSuggestion(this)">
+                                                <span>Suggestion 1</span>
+                                                <span>More info</span>
+                                            </li>
+                                            <li onclick="clickSuggestion(this)">
+                                                <span>Suggestion 2</span>
+                                                <span>More info</span>
+                                            </li>
+                                            <li onclick="clickSuggestion(this)">
+                                                <span>Suggestion 3</span>
+                                                <span>More info</span>
+                                            </li>
+                                        </ul>
                                     </li>
                                 </ul>
-                            </div>
-                        </td>
-                        <td>
-                            <ul class="datalist-tags">
-                                <li class="input datalist-tag-add" onclick="newDatalistTag(this)">
+                            </td>
+                        </tr>
+                        <tr class="modal-datalist-preview">
+                            <td></td>
+                            <td>
+                                <div class="input">
                                     <div>
-                                        <img src="assets/icons/add.svg" />
-                                        <input type="text" placeholder="Enter performer..." onfocus="focusInput(this)" onblur="blurInput(this)" onkeydown="keyDownInput(event)" />
+                                        <img src="assets/icons/music-note.svg" />
+                                        <input type="text" class="input-instrument" placeholder="Enter instrument..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
                                     </div>
-                                    <ul class="input-suggestions">
-                                        <li>
+                                    <ul class="input-suggestions" tabindex="0">
+                                        <li onclick="clickSuggestion(this)">
                                             <span>Suggestion 1</span>
                                             <span>More info</span>
                                         </li>
-                                        <li>
+                                        <li onclick="clickSuggestion(this)">
                                             <span>Suggestion 2</span>
                                             <span>More info</span>
                                         </li>
-                                        <li>
+                                        <li onclick="clickSuggestion(this)">
                                             <span>Suggestion 3</span>
                                             <span>More info</span>
                                         </li>
                                     </ul>
-                                </li>
-                            </ul>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                                </div>
+                            </td>
+                            <td>
+                                <ul class="datalist-tags">
+                                    <li class="input datalist-tag-add" onclick="addNewTagToDatalist(this)">
+                                        <div>
+                                            <img src="assets/icons/add.svg" />
+                                            <input type="text" class="input-member" placeholder="Enter performer..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
+                                        </div>
+                                        <ul class="input-suggestions" tabindex="0">
+                                            <li onclick="clickSuggestion(this)">
+                                                <span>Suggestion 1</span>
+                                                <span>More info</span>
+                                            </li>
+                                            <li onclick="clickSuggestion(this)">
+                                                <span>Suggestion 2</span>
+                                                <span>More info</span>
+                                            </li>
+                                            <li onclick="clickSuggestion(this)">
+                                                <span>Suggestion 3</span>
+                                                <span>More info</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div id="modal-concert-setlist" class="modal">
@@ -1065,42 +1155,44 @@
                 <img src="assets/icons/logos/youtube.svg" />
                 <input type="text" placeholder="Enter youtube video URL" />
             </div>
-            <table id='concert-setlist' class="draggable-list">
-                <tbody>
-                    <tr>
-                        <td draggable="true" ondragstart="onDragStart(this)" ondragend="onDragEnd(this)" ondragenter="onDragEnter(this)" ondragleave="onDragLeave(this)" ondragover="onDragOver(event)" ondrop="onDrop(this)">
-                            <img src="assets/icons/draggable.svg" />
-                        </td>
-                        <td>01</td>
-                        <td contenteditable="plaintext-only" onblur="validateInput(this)">Song 1</td>
-                        <td class="concert-setlist-timestamp" contenteditable="plaintext-only" onblur="validateInputTimestamp(this)">??:??</td>
-                    </tr>
-                    <tr>
-                        <td draggable="true" ondragstart="onDragStart(this)" ondragend="onDragEnd(this)" ondragenter="onDragEnter(this)" ondragleave="onDragLeave(this)" ondragover="onDragOver(event)" ondrop="onDrop(this)">
-                            <img src="assets/icons/draggable.svg" />
-                        </td>
-                        <td>02</td>
-                        <td contenteditable="plaintext-only" onblur="validateInput(this)">Song 2</td>
-                        <td class="concert-setlist-timestamp" contenteditable="plaintext-only" onblur="validateInputTimestamp(this)">??:??</td>
-                    </tr>
-                    <tr>
-                        <td draggable="true" ondragstart="onDragStart(this)" ondragend="onDragEnd(this)" ondragenter="onDragEnter(this)" ondragleave="onDragLeave(this)" ondragover="onDragOver(event)" ondrop="onDrop(this)">
-                            <img src="assets/icons/draggable.svg" />
-                        </td>
-                        <td>03</td>
-                        <td contenteditable="plaintext-only" onblur="validateInput(this)">Song 3</td>
-                        <td class="concert-setlist-timestamp" contenteditable="plaintext-only" onblur="validateInputTimestamp(this)">??:??</td>
-                    </tr>
-                    <tr>
-                        <td draggable="true" ondragstart="onDragStart(this)" ondragend="onDragEnd(this)" ondragenter="onDragEnter(this)" ondragleave="onDragLeave(this)" ondragover="onDragOver(event)" ondrop="onDrop(this)">
-                            <img src="assets/icons/draggable.svg" />
-                        </td>
-                        <td>04</td>
-                        <td contenteditable="plaintext-only" onblur="validateInput(this)">Song 4</td>
-                        <td class="concert-setlist-timestamp" contenteditable="plaintext-only" onblur="validateInputTimestamp(this)">??:??</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="draggable-list-container">
+                <table id='concert-setlist' class="draggable-list">
+                    <tbody>
+                        <tr>
+                            <td draggable="true" ondragstart="onDragStart(this)" ondragend="onDragEnd(this)" ondragenter="onDragEnter(this)" ondragleave="onDragLeave(this)" ondragover="onDragOver(event)" ondrop="onDrop(this)">
+                                <img src="assets/icons/draggable.svg" />
+                            </td>
+                            <td>01</td>
+                            <td>Song 1</td>
+                            <td class="concert-setlist-timestamp" contenteditable="plaintext-only" onblur="validateInputTimestamp(this)">??:??</td>
+                        </tr>
+                        <tr>
+                            <td draggable="true" ondragstart="onDragStart(this)" ondragend="onDragEnd(this)" ondragenter="onDragEnter(this)" ondragleave="onDragLeave(this)" ondragover="onDragOver(event)" ondrop="onDrop(this)">
+                                <img src="assets/icons/draggable.svg" />
+                            </td>
+                            <td>02</td>
+                            <td>Song 2</td>
+                            <td class="concert-setlist-timestamp" contenteditable="plaintext-only" onblur="validateInputTimestamp(this)">??:??</td>
+                        </tr>
+                        <tr>
+                            <td draggable="true" ondragstart="onDragStart(this)" ondragend="onDragEnd(this)" ondragenter="onDragEnter(this)" ondragleave="onDragLeave(this)" ondragover="onDragOver(event)" ondrop="onDrop(this)">
+                                <img src="assets/icons/draggable.svg" />
+                            </td>
+                            <td>03</td>
+                            <td>Song 3</td>
+                            <td class="concert-setlist-timestamp" contenteditable="plaintext-only" onblur="validateInputTimestamp(this)">??:??</td>
+                        </tr>
+                        <tr>
+                            <td draggable="true" ondragstart="onDragStart(this)" ondragend="onDragEnd(this)" ondragenter="onDragEnter(this)" ondragleave="onDragLeave(this)" ondragover="onDragOver(event)" ondrop="onDrop(this)">
+                                <img src="assets/icons/draggable.svg" />
+                            </td>
+                            <td>04</td>
+                            <td>Song 4</td>
+                            <td class="concert-setlist-timestamp" contenteditable="plaintext-only" onblur="validateInputTimestamp(this)">??:??</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </aside>
 </body>
