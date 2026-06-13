@@ -74,19 +74,19 @@
                         <input id="colour-widget-rgb" type="text" value="rgb(255, 255, 255)" onblur="updateColourFromRgb()"/>
                         <input id="colour-widget-hex" type="text" value="#FFFFFF" onblur="updateColourFromHex()"/>
                     </div>
-                    <div id="colour-widget-gradient-buttons">
-                        <button id="colour-widget-gradient-left">Left</button>
-                        <button id="colour-widget-gradient-right">Right</button>
-                        <button id="colour-widget-gradient-swap"></button>
+                    <div id="colour-widget-gradient-button">
+                        <button id="colour-widget-gradient-left" onclick="selectGradientColour(this)" class="colour-widget-gradient-button-active">Left</button>
+                        <button id="colour-widget-gradient-right" onclick="selectGradientColour(this)">Right</button>
+                        <button id="colour-widget-gradient-swap" onclick="swapGradientColour()"></button>
                     </div>
                 </aside>
                 <ul id="tag-previews">
-                    <li>Executive</li>
-                    <li>Assistant Executive</li>
-                    <li>Logistics</li>
-                    <li>Arranger</li>
-                    <li>Artist</li>
-                    <li>Website</li>
+                    <li onclick="selectTag(this)" class="tag-preview-active">Executive</li>
+                    <li onclick="selectTag(this)">Assistant Executive</li>
+                    <li onclick="selectTag(this)">Logistics</li>
+                    <li onclick="selectTag(this)">Arranger</li>
+                    <li onclick="selectTag(this)">Artist</li>
+                    <li onclick="selectTag(this)">Website</li>
                 </ul>
             </section>
         </article>
@@ -96,13 +96,13 @@
             <h2>Announcements</h2>
             <div class="table" id="table-announcements">
                 <ul class="table-toolbar">
-                    <li class="table-toolbar-add"></li>
-                    <li class="table-toolbar-remove"></li>
-                    <li class="table-toolbar-move-up"></li>
-                    <li class="table-toolbar-move-down"></li>
-                    <li class="table-toolbar-move-top"></li>
-                    <li class="table-toolbar-move-bottom"></li>
-                    <li class="table-toolbar-copy"></li>
+                    <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>
+                    <li class="table-toolbar-remove" onclick="tableToolbarRemove(this)"></li>
+                    <li class="table-toolbar-move-up" onclick="tableToolbarMoveUp(this)"></li>
+                    <li class="table-toolbar-move-down" onclick="tableToolbarMoveDown(this)"></li>
+                    <li class="table-toolbar-move-top" onclick="tableToolbarMoveTop(this)"></li>
+                    <li class="table-toolbar-move-bottom" onclick="tableToolbarMoveBottom(this)"></li>
+                    <li class="table-toolbar-copy" onclick="tableToolbarCopy(this)"></li>
                 </ul>
                 <div>
                     <table>
@@ -115,9 +115,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr class="0">
                                 <td onclick="toggleRowSelect(event, this)">
-                                    <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
+                                    <input type="checkbox" class="checkbox" />
                                 </td>
                                 <td>
                                     <img src="assets/icons/alert-triangle.svg" class="table-announcements-icon" onclick="toggleAnnouncementType(this)" />
@@ -128,9 +128,9 @@
                                 </td>
                                 <td contenteditable="true" onblur="validateMultilineInput(this)">This website is under construction or whatever...</td>
                             </tr>
-                            <tr>
+                            <tr class="1">
                                 <td onclick="toggleRowSelect(event, this)">
-                                    <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
+                                    <input type="checkbox" class="checkbox" />
                                 </td>
                                 <td>
                                     <img src="assets/icons/megaphone.svg" class="table-announcements-icon" onclick="toggleAnnouncementType(this)" />
@@ -149,13 +149,13 @@
             <h2>Upcoming Events</h2>
             <div class="table" id="table-upcoming-events">
                 <ul class="table-toolbar">
-                    <li class="table-toolbar-add"></li>
-                    <li class="table-toolbar-remove"></li>
-                    <li class="table-toolbar-move-up"></li>
-                    <li class="table-toolbar-move-down"></li>
-                    <li class="table-toolbar-move-top"></li>
-                    <li class="table-toolbar-move-bottom"></li>
-                    <li class="table-toolbar-copy"></li>
+                    <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>
+                    <li class="table-toolbar-remove" onclick="tableToolbarRemove(this)"></li>
+                    <li class="table-toolbar-move-up" onclick="tableToolbarMoveUp(this)"></li>
+                    <li class="table-toolbar-move-down" onclick="tableToolbarMoveDown(this)"></li>
+                    <li class="table-toolbar-move-top" onclick="tableToolbarMoveTop(this)"></li>
+                    <li class="table-toolbar-move-bottom" onclick="tableToolbarMoveBottom(this)"></li>
+                    <li class="table-toolbar-copy" onclick="tableToolbarCopy(this)"></li>
                 </ul>
                 <div>
                     <table>
@@ -168,26 +168,26 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr class="0">
                                 <td onclick="toggleRowSelect(event, this)">
-                                    <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
+                                    <input type="checkbox" class="checkbox" />
                                 </td>
                                 <td>
                                     <div class="input">
                                         <div>
                                             <img src="assets/icons/events-filled.svg" />
-                                            <input type="text" placeholder="Select by name..." onfocus="focusInput(this)" onblur="blurInput(this)" />
+                                            <input type="text" class="input-event" placeholder="Select by name..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
                                         </div>
-                                        <ul class="input-suggestions">
-                                            <li>
+                                        <ul class="input-suggestions" tabindex="0">
+                                            <li onclick="clickSuggestion(this)">
                                                 <span>Suggestion 1</span>
                                                 <span>More info</span>
                                             </li>
-                                            <li>
+                                            <li onclick="clickSuggestion(this)">
                                                 <span>Suggestion 2</span>
                                                 <span>More info</span>
                                             </li>
-                                            <li>
+                                            <li onclick="clickSuggestion(this)">
                                                 <span>Suggestion 3</span>
                                                 <span>More info</span>
                                             </li>
@@ -200,26 +200,26 @@
                                 </td>
                                 <td contenteditable="plaintext-only" onblur="validateInputAsset(this)">assets/images/locations/oise.webp</td>
                             </tr>
-                            <tr>
+                            <tr class="1">
                                 <td onclick="toggleRowSelect(event, this)">
-                                    <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
+                                    <input type="checkbox" class="checkbox" />
                                 </td>
                                 <td>
                                     <div class="input">
                                         <div>
                                             <img src="assets/icons/events-filled.svg" />
-                                            <input type="text" placeholder="Select by name..." onfocus="focusInput(this)" onblur="blurInput(this)" />
+                                            <input type="text" class="input-event" placeholder="Select by name..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
                                         </div>
-                                        <ul class="input-suggestions">
-                                            <li>
+                                        <ul class="input-suggestions" tabindex="0">
+                                            <li onclick="clickSuggestion(this)">
                                                 <span>Suggestion 1</span>
                                                 <span>More info</span>
                                             </li>
-                                            <li>
+                                            <li onclick="clickSuggestion(this)">
                                                 <span>Suggestion 2</span>
                                                 <span>More info</span>
                                             </li>
-                                            <li>
+                                            <li onclick="clickSuggestion(this)">
                                                 <span>Suggestion 3</span>
                                                 <span>More info</span>
                                             </li>
@@ -247,21 +247,21 @@
                             <div class="input" id="current-event-id">
                                 <div>
                                     <img src="assets/icons/events-filled.svg" />
-                                    <input type="text" placeholder="Select by name..." onfocus="focusInput(this)" onblur="blurInput(this)" />
+                                    <input type="text" class="input-concert" placeholder="Select by name..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
                                 </div>
-                                <ul class="input-suggestions">
-                                    <li>
-                                        <span>Suggestion 1</span>
-                                        <span>More info</span>
-                                    </li>
-                                    <li>
-                                        <span>Suggestion 2</span>
-                                        <span>More info</span>
-                                    </li>
-                                    <li>
-                                        <span>Suggestion 3</span>
-                                        <span>More info</span>
-                                    </li>
+                                <ul class="input-suggestions" tabindex="0">
+                                    <li onclick="clickSuggestion(this)">
+                                            <span>Suggestion 1</span>
+                                            <span>More info</span>
+                                        </li>
+                                        <li onclick="clickSuggestion(this)">
+                                            <span>Suggestion 2</span>
+                                            <span>More info</span>
+                                        </li>
+                                        <li onclick="clickSuggestion(this)">
+                                            <span>Suggestion 3</span>
+                                            <span>More info</span>
+                                        </li>
                                 </ul>
                             </div>
                         </td>
@@ -336,33 +336,19 @@
 
             <div class="table" id="table-members">
                 <ul class="table-toolbar">
-                    <li class="table-toolbar-add"></li>
-                    <li class="table-toolbar-remove"></li>
-                    <li class="table-toolbar-move-up"></li>
-                    <li class="table-toolbar-move-down"></li>
-                    <li class="table-toolbar-move-top"></li>
-                    <li class="table-toolbar-move-bottom"></li>
-                    <li class="table-toolbar-copy"></li>
+                    <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>
+                    <li class="table-toolbar-remove" onclick="tableToolbarRemove(this)"></li>
+                    <li class="table-toolbar-move-up" onclick="tableToolbarMoveUp(this)"></li>
+                    <li class="table-toolbar-move-down" onclick="tableToolbarMoveDown(this)"></li>
+                    <li class="table-toolbar-move-top" onclick="tableToolbarMoveTop(this)"></li>
+                    <li class="table-toolbar-move-bottom" onclick="tableToolbarMoveBottom(this)"></li>
+                    <li class="table-toolbar-copy" onclick="tableToolbarCopy(this)"></li>
                     <li class="table-toolbar-search-container">
                         <div class="input">
                             <div>
                                 <img src="assets/icons/search.svg" />
-                                <input type="text" placeholder="Filter by name..." onfocus="focusInput(this)" onblur="blurInput(this)" />
+                                <input type="text" placeholder="Filter by name..." oninput="filterInput(event)" />
                             </div>
-                            <ul class="input-suggestions">
-                                <li>
-                                    <span>Suggestion 1</span>
-                                    <span>More info</span>
-                                </li>
-                                <li>
-                                    <span>Suggestion 2</span>
-                                    <span>More info</span>
-                                </li>
-                                <li>
-                                    <span>Suggestion 3</span>
-                                    <span>More info</span>
-                                </li>
-                            </ul>
                         </div>
                     </li>
                 </ul>
@@ -379,13 +365,37 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr class="0">
                                 <td onclick="toggleRowSelect(event, this)">
-                                    <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
+                                    <input type="checkbox" class="checkbox" />
                                 </td>
                                 <td contenteditable="plaintext-only" onblur="validateInput(this)">John LMC</td>
-                                <td contenteditable="plaintext-only" onblur="validateInput(this)">Fall 2025</td>
-                                <td contenteditable="plaintext-only" onblur="validateInput(this)">Winter 2026</td>
+                                <td>
+                                    <div class="input-season">
+                                        <select>
+                                            <option>Fall</option>
+                                            <option>Winter</option>
+                                        </select>
+                                        <div class="input">
+                                            <div>
+                                                <input type="text" value="2025" class="input-year" oninput="validateInputYear(this)" onmousewheel="scrollInputYear(event)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="input-season">
+                                        <select>
+                                            <option>Fall</option>
+                                            <option>Winter</option>
+                                        </select>
+                                        <div class="input">
+                                            <div>
+                                                <input type="text" value="2025" class="input-year" oninput="validateInputYear(this)" onmousewheel="scrollInputYear(event)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
                                 <td>
                                     <div class="cell-details">
                                         <p>Piano · Violin · Voice · Bass Guitar · Whatever · Arranger · Role <span>(7)</span></p>
@@ -399,13 +409,37 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="1">
                                 <td onclick="toggleRowSelect(event, this)">
-                                    <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
+                                    <input type="checkbox" class="checkbox" />
                                 </td>
                                 <td contenteditable="plaintext-only" onblur="validateInput(this)">John LMC</td>
-                                <td contenteditable="plaintext-only" onblur="validateInput(this)">Fall 2025</td>
-                                <td contenteditable="plaintext-only" onblur="validateInput(this)">Winter 2026</td>
+                                <td>
+                                    <div class="input-season">
+                                        <select>
+                                            <option>Fall</option>
+                                            <option>Winter</option>
+                                        </select>
+                                        <div class="input">
+                                            <div>
+                                                <input type="text" value="2025" class="input-year" oninput="validateInputYear(this)" onmousewheel="scrollInputYear(event)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="input-season">
+                                        <select>
+                                            <option>Fall</option>
+                                            <option>Winter</option>
+                                        </select>
+                                        <div class="input">
+                                            <div>
+                                                <input type="text" value="2025" class="input-year" oninput="validateInputYear(this)" onmousewheel="scrollInputYear(event)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
                                 <td>
                                     <div class="cell-details">
                                         <p>Piano · Violin · Voice · Bass Guitar · Whatever · Arranger · Role <span>(7)</span></p>
@@ -419,13 +453,37 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="2">
                                 <td onclick="toggleRowSelect(event, this)">
-                                    <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
+                                    <input type="checkbox" class="checkbox" />
                                 </td>
                                 <td contenteditable="plaintext-only" onblur="validateInput(this)">John LMC</td>
-                                <td contenteditable="plaintext-only" onblur="validateInput(this)">Fall 2025</td>
-                                <td contenteditable="plaintext-only" onblur="validateInput(this)">Winter 2026</td>
+                                <td>
+                                    <div class="input-season">
+                                        <select>
+                                            <option>Fall</option>
+                                            <option>Winter</option>
+                                        </select>
+                                        <div class="input">
+                                            <div>
+                                                <input type="text" value="2025" class="input-year" oninput="validateInputYear(this)" onmousewheel="scrollInputYear(event)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="input-season">
+                                        <select>
+                                            <option>Fall</option>
+                                            <option>Winter</option>
+                                        </select>
+                                        <div class="input">
+                                            <div>
+                                                <input type="text" value="2025" class="input-year" oninput="validateInputYear(this)" onmousewheel="scrollInputYear(event)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
                                 <td>
                                     <div class="cell-details">
                                         <p>Piano · Violin · Voice · Bass Guitar <span>(4)</span></p>
@@ -448,33 +506,19 @@
             <h1>Music</h1>
             <div class="table" id="table-music">
                 <ul class="table-toolbar">
-                    <li class="table-toolbar-add"></li>
-                    <li class="table-toolbar-remove"></li>
-                    <li class="table-toolbar-move-up"></li>
-                    <li class="table-toolbar-move-down"></li>
-                    <li class="table-toolbar-move-top"></li>
-                    <li class="table-toolbar-move-bottom"></li>
-                    <li class="table-toolbar-copy"></li>
+                    <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>
+                    <li class="table-toolbar-remove" onclick="tableToolbarRemove(this)"></li>
+                    <li class="table-toolbar-move-up" onclick="tableToolbarMoveUp(this)"></li>
+                    <li class="table-toolbar-move-down" onclick="tableToolbarMoveDown(this)"></li>
+                    <li class="table-toolbar-move-top" onclick="tableToolbarMoveTop(this)"></li>
+                    <li class="table-toolbar-move-bottom" onclick="tableToolbarMoveBottom(this)"></li>
+                    <li class="table-toolbar-copy" onclick="tableToolbarCopy(this)"></li>
                     <li class="table-toolbar-search-container">
                         <div class="input">
                             <div>
                                 <img src="assets/icons/search.svg" />
-                                <input type="text" placeholder="Filter by name..." onfocus="focusInput(this)" onblur="blurInput(this)" />
+                                <input type="text" placeholder="Filter by name..." oninput="filterInput(event)" />
                             </div>
-                            <ul class="input-suggestions">
-                                <li>
-                                    <span>Suggestion 1</span>
-                                    <span>More info</span>
-                                </li>
-                                <li>
-                                    <span>Suggestion 2</span>
-                                    <span>More info</span>
-                                </li>
-                                <li>
-                                    <span>Suggestion 3</span>
-                                    <span>More info</span>
-                                </li>
-                            </ul>
                         </div>
                     </li>
                 </ul>
@@ -492,9 +536,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr class="0">
                                 <td onclick="toggleRowSelect(event, this)">
-                                    <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
+                                    <input type="checkbox" class="checkbox" />
                                 </td>
                                 <td contenteditable="plaintext-only" onblur="validateInput(this)">Zankyosanka</td>
                                 <td contenteditable="plaintext-only" onblur="validateInput(this)">Aimer</td>
@@ -515,12 +559,12 @@
                                 </td>
                                 <td contenteditable="plaintext-only" onblur="validateInput(this)">https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
                             </tr>
-                            <tr class="subtable-row">
+                            <tr class="0-0 subtable-row">
                                 <td></td>
                                 <td colspan="6" class="subtable-container">
                                     <ul class="subtable">
                                         <li onclick="toggleSubrowSelect(event, this)">
-                                            <input type="checkbox" class="subtable-checkbox" oninput="onRowSelect(this)" />
+                                            <input type="checkbox" class="subtable-checkbox" />
                                             <table class="datalist">
                                                 <tbody>
                                                     <tr>
@@ -534,18 +578,18 @@
                                                                 <div class="input datalist-tag-add" onclick="addNewTagToDatalist(this)">
                                                                     <div>
                                                                         <img src="assets/icons/add.svg" />
-                                                                        <input type="text" placeholder="Enter concert..." onfocus="focusInput(this)" onblur="blurInput(this)" onkeydown="keyDownInput(event)" />
+                                                                        <input class="input-event" type="text" placeholder="Enter event..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
                                                                     </div>
-                                                                    <ul class="input-suggestions">
-                                                                        <li>
+                                                                    <ul class="input-suggestions" tabindex="0">
+                                                                        <li onclick="clickSuggestion(this)">
                                                                             <span>Suggestion 1</span>
                                                                             <span>More info</span>
                                                                         </li>
-                                                                        <li>
+                                                                        <li onclick="clickSuggestion(this)">
                                                                             <span>Suggestion 2</span>
                                                                             <span>More info</span>
                                                                         </li>
-                                                                        <li>
+                                                                        <li onclick="clickSuggestion(this)">
                                                                             <span>Suggestion 3</span>
                                                                             <span>More info</span>
                                                                         </li>
@@ -583,18 +627,18 @@
                                                                 <div class="input datalist-tag-add" onclick="addNewTagToDatalist(this)">
                                                                     <div>
                                                                         <img src="assets/icons/add.svg" />
-                                                                        <input type="text" placeholder="Enter arranger..." onfocus="focusInput(this)" onblur="blurInput(this)" onkeydown="keyDownInput(event)" />
+                                                                        <input type="text" class="input-member" placeholder="Enter arranger..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
                                                                     </div>
-                                                                    <ul class="input-suggestions">
-                                                                        <li>
+                                                                    <ul class="input-suggestions" tabindex="0">
+                                                                        <li onclick="clickSuggestion(this)">
                                                                             <span>Suggestion 1</span>
                                                                             <span>More info</span>
                                                                         </li>
-                                                                        <li>
+                                                                        <li onclick="clickSuggestion(this)">
                                                                             <span>Suggestion 2</span>
                                                                             <span>More info</span>
                                                                         </li>
-                                                                        <li>
+                                                                        <li onclick="clickSuggestion(this)">
                                                                             <span>Suggestion 3</span>
                                                                             <span>More info</span>
                                                                         </li>
@@ -623,9 +667,9 @@
                                 </td>
                             </tr>
 
-                            <tr>
+                            <tr class="1">
                                 <td onclick="toggleRowSelect(event, this)">
-                                    <input type="checkbox" oninput="onRowSelect(this)" />
+                                    <input type="checkbox" />
                                 </td>
                                 <td contenteditable="plaintext-only" onblur="validateInput(this)">Zankyosanka</td>
                                 <td contenteditable="plaintext-only" onblur="validateInput(this)">Aimer</td>
@@ -646,9 +690,9 @@
                                 </td>
                                 <td contenteditable="plaintext-only" onblur="validateInput(this)">https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
                             </tr>
-                            <tr>
+                            <tr class="2">
                                 <td onclick="toggleRowSelect(event, this)">
-                                    <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
+                                    <input type="checkbox" class="checkbox" />
                                 </td>
                                 <td contenteditable="plaintext-only" onblur="validateInput(this)">Zankyosanka</td>
                                 <td contenteditable="plaintext-only" onblur="validateInput(this)">Aimer</td>
@@ -678,33 +722,19 @@
             <h1>Events</h1>
             <div class="table" id="table-events">
                 <ul class="table-toolbar">
-                    <li class="table-toolbar-add"></li>
-                    <li class="table-toolbar-remove"></li>
-                    <li class="table-toolbar-move-up"></li>
-                    <li class="table-toolbar-move-down"></li>
-                    <li class="table-toolbar-move-top"></li>
-                    <li class="table-toolbar-move-bottom"></li>
-                    <li class="table-toolbar-copy"></li>
+                    <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>
+                    <li class="table-toolbar-remove" onclick="tableToolbarRemove(this)"></li>
+                    <li class="table-toolbar-move-up" onclick="tableToolbarMoveUp(this)"></li>
+                    <li class="table-toolbar-move-down" onclick="tableToolbarMoveDown(this)"></li>
+                    <li class="table-toolbar-move-top" onclick="tableToolbarMoveTop(this)"></li>
+                    <li class="table-toolbar-move-bottom" onclick="tableToolbarMoveBottom(this)"></li>
+                    <li class="table-toolbar-copy" onclick="tableToolbarCopy(this)"></li>
                     <li class="table-toolbar-search-container">
                         <div class="input">
                             <div>
                                 <img src="assets/icons/search.svg" />
-                                <input type="text" placeholder="Filter by name..." onfocus="focusInput(this)" onblur="blurInput(this)" />
+                                <input type="text" placeholder="Filter by name..." oninput="filterInput(event)" />
                             </div>
-                            <ul class="input-suggestions">
-                                <li>
-                                    <span>Suggestion 1</span>
-                                    <span>More info</span>
-                                </li>
-                                <li>
-                                    <span>Suggestion 2</span>
-                                    <span>More info</span>
-                                </li>
-                                <li>
-                                    <span>Suggestion 3</span>
-                                    <span>More info</span>
-                                </li>
-                            </ul>
                         </div>
                     </li>
                 </ul>
@@ -723,9 +753,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr class="0">
                                 <td onclick="toggleRowSelect(event, this)">
-                                    <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
+                                    <input type="checkbox" class="checkbox" />
                                 </td>
                                 <td>
                                     <select>
@@ -753,7 +783,7 @@
                                 </td>
                                 <td contenteditable="plaintext-only" onblur="validateInput(this)">https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
                             </tr>
-                            <tr class="subtable-row">
+                            <tr class="0-0 subtable-row">
                                 <td></td>
                                 <td colspan="7" class="subtable-container">
                                     <ul class="subtable">
@@ -784,18 +814,18 @@
                 <div>
                     <table>
                         <tbody>
-                            <tr>
+                            <tr class="0">
                                 <td onclick="toggleRowSelect(event, this)">
-                                    <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
+                                    <input type="checkbox" class="checkbox" />
                                 </td>
                                 <td>
                                     <div class="table-faq-q" contenteditable="plaintext-only" onblur="validateInput(this)">This is a question.</div>
                                     <div class="table-faq-a" contenteditable="true" onblur="validateMultilineInput(this)">This is an answer to the question.</div>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="1">
                                 <td onclick="toggleRowSelect(event, this)">
-                                    <input type="checkbox" class="checkbox" oninput="onRowSelect(this)" />
+                                    <input type="checkbox" class="checkbox" />
                                 </td>
                                 <td>
                                     <div class="table-faq-q" contenteditable="plaintext-only" onblur="validateInput(this)">This is a question.</div>
@@ -814,18 +844,18 @@
             <div class="input">
                 <div>
                     <img src="assets/icons/add.svg" />
-                    <input type="text" placeholder="Enter instrument..." onfocus="focusInput(this)" onblur="blurInput(this)" onkeydown="keyDownInput(event)" />
+                    <input type="text" class="input-instrument" placeholder="Enter instrument..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
                 </div>
-                <ul class="input-suggestions">
-                    <li>
+                <ul class="input-suggestions" tabindex="0">
+                    <li onclick="clickSuggestion(this)">
                         <span>Suggestion 1</span>
                         <span>More info</span>
                     </li>
-                    <li>
+                    <li onclick="clickSuggestion(this)">
                         <span>Suggestion 2</span>
                         <span>More info</span>
                     </li>
-                    <li>
+                    <li onclick="clickSuggestion(this)">
                         <span>Suggestion 3</span>
                         <span>More info</span>
                     </li>
@@ -852,18 +882,18 @@
             <div class="input">
                 <div>
                     <img src="assets/icons/add.svg" />
-                    <input type="text" placeholder="Enter role..." onfocus="focusInput(this)" onblur="blurInput(this)" onkeydown="keyDownInput(event)" />
+                    <input type="text" class="input-role" placeholder="Enter role..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
                 </div>
-                <ul class="input-suggestions">
-                    <li>
+                <ul class="input-suggestions" tabindex="0">
+                    <li onclick="clickSuggestion(this)">
                         <span>Suggestion 1</span>
                         <span>More info</span>
                     </li>
-                    <li>
+                    <li onclick="clickSuggestion(this)">
                         <span>Suggestion 2</span>
                         <span>More info</span>
                     </li>
-                    <li>
+                    <li onclick="clickSuggestion(this)">
                         <span>Suggestion 3</span>
                         <span>More info</span>
                     </li>
@@ -953,18 +983,18 @@
                                 <div class="input">
                                     <div>
                                         <img src="assets/icons/music-note.svg" />
-                                        <input type="text" placeholder="Enter instrument..." onfocus="focusInput(this)" onblur="blurInput(this)" onkeydown="keyDownInput(event)" />
+                                        <input type="text" class="input-instrument" placeholder="Enter instrument..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
                                     </div>
-                                    <ul class="input-suggestions">
-                                        <li>
+                                    <ul class="input-suggestions" tabindex="0">
+                                        <li onclick="clickSuggestion(this)">
                                             <span>Suggestion 1</span>
                                             <span>More info</span>
                                         </li>
-                                        <li>
+                                        <li onclick="clickSuggestion(this)">
                                             <span>Suggestion 2</span>
                                             <span>More info</span>
                                         </li>
-                                        <li>
+                                        <li onclick="clickSuggestion(this)">
                                             <span>Suggestion 3</span>
                                             <span>More info</span>
                                         </li>
@@ -984,18 +1014,18 @@
                                     <li class="input datalist-tag-add" onclick="addNewTagToDatalist(this)">
                                         <div>
                                             <img src="assets/icons/add.svg" />
-                                            <input type="text" placeholder="Enter performer..." onfocus="focusInput(this)" onblur="blurInput(this)" onkeydown="keyDownInput(event)" />
+                                            <input type="text" class="input-member" placeholder="Enter performer..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
                                         </div>
-                                        <ul class="input-suggestions">
-                                            <li>
+                                        <ul class="input-suggestions" tabindex="0">
+                                            <li onclick="clickSuggestion(this)">
                                                 <span>Suggestion 1</span>
                                                 <span>More info</span>
                                             </li>
-                                            <li>
+                                            <li onclick="clickSuggestion(this)">
                                                 <span>Suggestion 2</span>
                                                 <span>More info</span>
                                             </li>
-                                            <li>
+                                            <li onclick="clickSuggestion(this)">
                                                 <span>Suggestion 3</span>
                                                 <span>More info</span>
                                             </li>
@@ -1010,18 +1040,18 @@
                                 <div class="input">
                                     <div>
                                         <img src="assets/icons/music-note.svg" />
-                                        <input type="text" placeholder="Enter instrument..." onfocus="focusInput(this)" onblur="blurInput(this)" onkeydown="keyDownInput(event)" />
+                                        <input type="text" class="input-instrument" placeholder="Enter instrument..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
                                     </div>
-                                    <ul class="input-suggestions">
-                                        <li>
+                                    <ul class="input-suggestions" tabindex="0">
+                                        <li onclick="clickSuggestion(this)">
                                             <span>Suggestion 1</span>
                                             <span>More info</span>
                                         </li>
-                                        <li>
+                                        <li onclick="clickSuggestion(this)">
                                             <span>Suggestion 2</span>
                                             <span>More info</span>
                                         </li>
-                                        <li>
+                                        <li onclick="clickSuggestion(this)">
                                             <span>Suggestion 3</span>
                                             <span>More info</span>
                                         </li>
@@ -1041,18 +1071,18 @@
                                     <li class="input datalist-tag-add" onclick="addNewTagToDatalist(this)">
                                         <div>
                                             <img src="assets/icons/add.svg" />
-                                            <input type="text" placeholder="Enter performer..." onfocus="focusInput(this)" onblur="blurInput(this)" onkeydown="keyDownInput(event)" />
+                                            <input type="text" class="input-member" placeholder="Enter performer..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
                                         </div>
-                                        <ul class="input-suggestions">
-                                            <li>
+                                        <ul class="input-suggestions" tabindex="0">
+                                            <li onclick="clickSuggestion(this)">
                                                 <span>Suggestion 1</span>
                                                 <span>More info</span>
                                             </li>
-                                            <li>
+                                            <li onclick="clickSuggestion(this)">
                                                 <span>Suggestion 2</span>
                                                 <span>More info</span>
                                             </li>
-                                            <li>
+                                            <li onclick="clickSuggestion(this)">
                                                 <span>Suggestion 3</span>
                                                 <span>More info</span>
                                             </li>
@@ -1067,18 +1097,18 @@
                                 <div class="input">
                                     <div>
                                         <img src="assets/icons/music-note.svg" />
-                                        <input type="text" placeholder="Enter instrument..." onfocus="focusInput(this)" onblur="blurInput(this)" onkeydown="keyDownInput(event)" />
+                                        <input type="text" class="input-instrument" placeholder="Enter instrument..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
                                     </div>
-                                    <ul class="input-suggestions">
-                                        <li>
+                                    <ul class="input-suggestions" tabindex="0">
+                                        <li onclick="clickSuggestion(this)">
                                             <span>Suggestion 1</span>
                                             <span>More info</span>
                                         </li>
-                                        <li>
+                                        <li onclick="clickSuggestion(this)">
                                             <span>Suggestion 2</span>
                                             <span>More info</span>
                                         </li>
-                                        <li>
+                                        <li onclick="clickSuggestion(this)">
                                             <span>Suggestion 3</span>
                                             <span>More info</span>
                                         </li>
@@ -1090,18 +1120,18 @@
                                     <li class="input datalist-tag-add" onclick="addNewTagToDatalist(this)">
                                         <div>
                                             <img src="assets/icons/add.svg" />
-                                            <input type="text" placeholder="Enter performer..." onfocus="focusInput(this)" onblur="blurInput(this)" onkeydown="keyDownInput(event)" />
+                                            <input type="text" class="input-member" placeholder="Enter performer..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
                                         </div>
-                                        <ul class="input-suggestions">
-                                            <li>
+                                        <ul class="input-suggestions" tabindex="0">
+                                            <li onclick="clickSuggestion(this)">
                                                 <span>Suggestion 1</span>
                                                 <span>More info</span>
                                             </li>
-                                            <li>
+                                            <li onclick="clickSuggestion(this)">
                                                 <span>Suggestion 2</span>
                                                 <span>More info</span>
                                             </li>
-                                            <li>
+                                            <li onclick="clickSuggestion(this)">
                                                 <span>Suggestion 3</span>
                                                 <span>More info</span>
                                             </li>

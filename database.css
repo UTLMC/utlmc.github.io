@@ -386,6 +386,7 @@ Tags tab
     border-bottom: 5px solid #ffd966ff;
 }
 #colour-widget-picker {
+    position: relative;
     cursor: crosshair;
     aspect-ratio: 1;
     background: linear-gradient(transparent, black),
@@ -404,6 +405,7 @@ Tags tab
     position: absolute;
 }
 #colour-widget-hue {
+    position: relative;
     z-index: 2;
     cursor: crosshair;
     width: 100%;
@@ -413,7 +415,7 @@ Tags tab
 #colour-widget-hue-circle {
     margin-top: 0;
 }
-#colour-widget-text, #colour-widget-gradient-buttons {
+#colour-widget-text, #colour-widget-gradient-button {
     padding: 0 15px;
     background-color: rgba(255, 255, 255, 0.3);
     display: flex;
@@ -421,7 +423,7 @@ Tags tab
     gap: 5px;
     justify-content: center;
 }
-#colour-widget-gradient-buttons {
+#colour-widget-gradient-button {
     display: none;  /* toggles to flex */
 }
 #colour-widget-gradient-swap {
@@ -449,31 +451,38 @@ Tags tab
 #colour-widget-hex {
     width: 90px;
 }
-#colour-widget-gradient-buttons {
+#colour-widget-gradient-button {
     padding-bottom: 15px;
 }
-#colour-widget-gradient-buttons button {
+#colour-widget-gradient-button button {
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 15px;
     background-color: white;
     font-size: 16px;
     padding: 3px 10px;
     font-family: 'DM Sans';
-    cursor: pointer;
     transition: 0.2s;
 }
-#colour-widget-gradient-buttons button:hover {
-    filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.1));
+#colour-widget-gradient-button button:not(.colour-widget-gradient-button-active) {
+    cursor: pointer;
 }
-#colour-widget-gradient-buttons button:active {
-    border: 1px solid rgba(0, 0, 0, 0.5);
-    opacity: 0.5;
+#colour-widget-gradient-button button:not(.colour-widget-gradient-button-active):hover {
+    opacity: 0.6;
+    filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.3));
+}
+#colour-widget-gradient-button button:not(.colour-widget-gradient-button-active):active {
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    opacity: 0.3;
     transition: 0s;
+}
+.colour-widget-gradient-button-active {
+    border: 2px solid black !important;
+    font-weight: 600;
 }
 
 #tag-previews {
     flex-grow: 1;
-    background-color: rgba(255, 255, 255, 0.3);
+    background-image: linear-gradient(to bottom in oklab, #1f125a, #351c75);
     padding: 25px !important;
     display: flex;
     flex-direction: row;
@@ -483,22 +492,29 @@ Tags tab
 }
 #tag-previews li {
     font-family: 'DM Sans';
-    background-color: white;
-    padding: 3px 12px;
+    background-color: rgb(100, 100, 100);
+    color: white;
+    padding: 2px 10px;
     border-radius: 15px;
     letter-spacing: -0.5px;
-    cursor: pointer;
     transition: 0.2s;
-    border: 2px solid transparent;
-    border-style: inset;
+    user-select: none;
 }
-#tag-previews li:hover {
-    filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.1));
+#tag-previews li:not(.tag-preview-active) {
+    cursor: pointer;
 }
-#tag-previews li:active {
-    border: 2px solid rgba(0, 0, 0, 0.5);
-    opacity: 0.5;
+#tag-previews li:not(.tag-preview-active):hover {
+    filter: drop-shadow(0 0 3px rgba(185, 198, 255, 0.6));
+    opacity: 0.6;
+}
+#tag-previews li:not(.tag-preview-active):active {
+    filter: drop-shadow(0 0 3px rgba(185, 198, 255, 0.8));
+    opacity: 0.3;
     transition: 0s;
+}
+.tag-preview-active {
+    box-shadow: 0 2px 0 white, 0 -2px 0 white, 2px 0 0 white, -2px 0 0 white;
+    font-weight: 600;
 }
 
 
@@ -517,8 +533,12 @@ Table
     flex-direction: row;
     gap: 6px;
 }
-.table > div {
+.table:not(#table-upcoming-events) > div {
     overflow: auto;
+}
+.table > div > table > thead {
+    position: sticky;
+    top: 0;
 }
 .table-toolbar li {
     background-color: white;
@@ -557,7 +577,8 @@ Table
 .cell-details p {
     font-size: 14px;
     text-align: right;
-    width: fit-content
+    width: fit-content;
+    text-wrap: balance;
 }
 .cell-details span {
     text-wrap: nowrap;
@@ -568,19 +589,25 @@ Table
 .cell-details-button {
     height: 18px;
     cursor: pointer;
-    opacity: 0.4;
+    opacity: 0.5;
     transition: 0.1s;
 }
-.cell-details-button:hover {
-    opacity: 0.6;
+.cell-details-button-disabled {
+    cursor: not-allowed;
+    opacity: 0.2;
 }
-.cell-details-button:active {
+.cell-details-button:not(.cell-details-button-disabled):hover {
+    opacity: 0.7;
+}
+.cell-details-button:not(.cell-details-button-disabled):active {
     opacity: 1;
     transition: 0s;
 }
 
-
-.table thead tr, .table tbody tr th:first-child, .table tbody tr td:first-child {
+.table thead tr {
+    background-color: rgba(240, 234, 227, 0.9);
+}
+.table tbody tr th:first-child, .table tbody tr td:first-child {
     background-color: rgba(255, 255, 255, 0.3);
 }
 .subtable tbody tr td:first-child {
@@ -594,6 +621,14 @@ Table
 }
 .table td {
     padding: 5px 10px;
+}
+
+/* Ensure sticky table header is higher than other rows */
+.table > div > table {
+    z-index: 0;
+}
+.table > div > table > thead {
+    z-index: 1;
 }
 .table table input[type="checkbox"] {
     width: 20px;
@@ -680,10 +715,14 @@ Inputs
     font-family: 'Atkinson Hyperlegible';
     border: none;
     background-color: transparent;
-    color: rgba(0, 0, 0, 0.5);
+    color: rgba(0, 0, 0, 0.7);
     font-size: 16px;
     flex-grow: 1;
     outline: none;
+}
+.input input::placeholder {
+    font-style: italic;
+    color: rgba(0, 0, 0, 0.3);
 }
 .input div {
     display: flex;
@@ -691,6 +730,18 @@ Inputs
     align-items: center;
     width: 100%;
     gap: 3px;
+}
+
+.input-season {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+.input-season .input input {
+    width: 45px;
+}
+.input-year {
+    text-align: center;
 }
 
 .input-suggestions {
@@ -707,6 +758,9 @@ Inputs
     width: 100%;
     filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.1));
     z-index: 2;
+}
+.input-suggestions:empty {
+    border: none;
 }
 .input-suggestions li {
     display: flex;
@@ -855,8 +909,8 @@ Table customization
     justify-content: flex-end;
 }
 
-#table-music tbody tr td:last-child,
-#table-events tbody tr td:last-child {
+#table-music > div > table > tbody > tr:not(.subtable-row) > td:last-child,
+#table-events > div > table > tbody > tr:not(.subtable-row) > td:last-child {
     white-space: nowrap;
     overflow: hidden;
     max-width: 0px;
@@ -907,6 +961,10 @@ Datalist
 *********************************************************************/
 .datalist {
     width: 100%;
+}
+.datalist tbody {
+    position: relative;
+    z-index: 0;
 }
 .datalist tr:nth-child(odd) {
     background-color: rgba(255, 255, 255, 0.3);

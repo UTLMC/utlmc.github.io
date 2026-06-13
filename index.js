@@ -2,17 +2,17 @@
 Helper Functions
 *********************************************************************/
 function debounce(fn, delay) {
-  let timeoutId;
+    let timeoutId;
 
-  return function (...args) {
-    const context = this;
+    return function (...args) {
+        const context = this;
 
-    clearTimeout(timeoutId);
+        clearTimeout(timeoutId);
 
-    timeoutId = setTimeout(() => {
-      fn.apply(context, args);
-    }, delay);
-  };
+        timeoutId = setTimeout(() => {
+            fn.apply(context, args);
+        }, delay);
+    };
 }
 function runOnce(func) {
     let hasRun = false;
@@ -25,22 +25,6 @@ function runOnce(func) {
         hasRun = true;
         return output;
     };
-}
-/**
- * Find all rgb(x, x, x) in a string and return a list of [r, g, b] tuples
- */
-function extractRGB(str) {
-    const regex = /rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)/gi;
-    const results = [];
-    let match = regex.exec(str);
-    while (match) {
-        const r = parseInt(match[1], 10);
-        const g = parseInt(match[2], 10);
-        const b = parseInt(match[3], 10);
-        results.push([r, g, b]);
-        match = regex.exec(str);
-    }
-    return results;
 }
 function assert(condition, errorMessage) {
     if (!condition) {
@@ -288,7 +272,7 @@ function genericToggleTab(element, object) {
         }
     }
 } 
-function toggleEventTab(element) {
+function toggleEventTab(element, id) {
     const navActiveClass = `nav-events-active`;
     const oldActiveElement = cssGetClass(navActiveClass)[0];
     if (oldActiveElement === element) {
@@ -296,7 +280,7 @@ function toggleEventTab(element) {
     }
     oldActiveElement?.classList.remove(navActiveClass);
     element.classList.add(navActiveClass);
-    TABLE_EVENTS.active = parseInt(element.id.substring(element.id.lastIndexOf('-') + 1), 10);
+    TABLE_EVENTS.active = id;
     injectEventBody();
     // setTimeout(() => {
     //     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -853,14 +837,15 @@ function getTagColourStyle(name) {
     if (name.includes(' (')) {
         name = name.slice(0, name.indexOf(' ('));
     }
-    const background = TAGS[name];
-    if (background) {
-        const rgbs = extractRGB(background);
-        const color = rgbs.flat().reduce((a, b) => a + b) / (rgbs.length * 3) > 128 ? 'black' : 'white';
-        if (background.startsWith('linear-gradient')) {
-            return { color, 'background-image': background }
-        } else if (background.startsWith('rgb')) {
-            return { color, 'background-color': background }
+    const rgbs = TAGS[name];
+    if (rgbs) {
+        const color = rgbs.flat().reduce((a, b) => a + b) / rgbs.flat().length > 128 ? 'black' : 'white';
+        if (rgbs.length === 2) {
+            const [c0, c1] = rgbs.map(x => x.join(','))
+            return { color, 'background-image': `linear-gradient(to right in oklab, rgb(${c0}), rgb(${c1}))` }
+        } else if (rgbs.length === 1) {
+            const [r, g, b] = rgbs[0];
+            return { color, 'background-color': `rgb(${r}, ${g}, ${b})` }
         } else {
             throw new Error(background);
         }
@@ -930,7 +915,6 @@ function filterMember(x) {
 function constructMemberRow(member) {
     return construct({
         element: 'tr',
-        id: `section-member-${member.id}`,
         children: [{
             element: 'td',
             innerText: member.name
@@ -1732,8 +1716,7 @@ function initEventSidebarHeightAdjuster() {
 function createEventRow(event) {
     return construct({
         element: 'li',
-        id: `nav-events-${event.id}`,
-        attributes: { onclick: 'toggleEventTab(this)'},
+        attributes: { onclick: `toggleEventTab(this, ${event.id})`},
         children: [{
             element: 'span',
             innerText: event.name

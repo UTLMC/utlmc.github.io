@@ -1,38 +1,38 @@
 const TAGS = {
-    'Executive': 'linear-gradient(to right in oklab, rgb(47, 7, 67), rgb(65, 41, 90))',
-    'Assistant Executive': 'linear-gradient(to right in oklab, rgb(47, 7, 67), rgb(65, 41, 90))',
-    'Logistics': 'linear-gradient(to right in oklab, rgb(47, 7, 67), rgb(65, 41, 90))',
-    'Arranger': 'linear-gradient(to right in oklab, rgb(47, 7, 67), rgb(65, 41, 90))',
-    'Artist': 'linear-gradient(to right in oklab, rgb(47, 7, 67), rgb(65, 41, 90))',
-    'Website': 'linear-gradient(to right in oklab, rgb(47, 7, 67), rgb(65, 41, 90))',
-    'OG': 'linear-gradient(to right in oklab, rgb(137, 33, 107), rgb(218, 68, 83))',
+    'Executive': [[47, 7, 67], [65, 41, 90]],
+    'Assistant Executive': [[47, 7, 67], [65, 41, 90]],
+    'Logistics': [[47, 7, 67], [65, 41, 90]],
+    'Arranger': [[47, 7, 67], [65, 41, 90]],
+    'Artist': [[47, 7, 67], [65, 41, 90]],
+    'Website': [[47, 7, 67], [65, 41, 90]],
+    'OG': [[137, 33, 107], [218, 68, 83]],
 
-    'Ukulele': 'linear-gradient(to right in oklab, rgb(255, 150, 150), rgb(255, 100, 100))',
-    'Acoustic Guitar': 'linear-gradient(to right in oklab, rgb(255, 150, 150), rgb(255, 100, 100))',
-    'Electric Guitar': 'linear-gradient(to right in oklab, rgb(255, 150, 150), rgb(255, 100, 100))',
-    'Bass Guitar': 'linear-gradient(to right in oklab, rgb(255, 150, 150), rgb(255, 100, 100))',
+    'Ukulele': [[255, 150, 150], [255, 100, 100]],
+    'Acoustic Guitar': [[255, 150, 150], [255, 100, 100]],
+    'Electric Guitar': [[255, 150, 150], [255, 100, 100]],
+    'Bass Guitar': [[255, 150, 150], [255, 100, 100]],
 
-    'Voice': 'rgb(255, 255, 255)',
-    'Electric Piano': 'rgb(255, 255, 255)',
-    'Piano': 'rgb(255, 255, 255)',
-    'Drums': 'rgb(255, 255, 255)',
+    'Voice': [[255, 255, 255]],
+    'Electric Piano': [[255, 255, 255]],
+    'Piano': [[255, 255, 255]],
+    'Drums': [[255, 255, 255]],
     
-    'Trumpet': 'linear-gradient(to right in oklab, rgb(255, 255, 110), rgb(255, 240, 160))',
-    'Trombone': 'linear-gradient(to right in oklab, rgb(255, 255, 110), rgb(255, 240, 160))',
+    'Trumpet': [[255, 255, 110], [255, 240, 160]],
+    'Trombone': [[255, 255, 110], [255, 240, 160]],
     
-    'Violin': 'linear-gradient(to right in oklab, rgb(250, 180, 50), rgb(230, 130, 50))',
-    'Cello': 'linear-gradient(to right in oklab, rgb(250, 180, 50), rgb(230, 130, 50))',
-    'Double Bass': 'linear-gradient(to right in oklab, rgb(250, 180, 50), rgb(230, 130, 50))',
+    'Violin': [[250, 180, 50], [230, 130, 50]],
+    'Cello': [[250, 180, 50], [230, 130, 50]],
+    'Double Bass': [[250, 180, 50], [230, 130, 50]],
 
-    'Piccolo': 'rgb(180, 180, 180)',
-    'Recorder': 'rgb(180, 180, 180)',
-    'Flute': 'rgb(180, 180, 180)',
-    'Oboe': 'linear-gradient(to right in oklab, rgb(50, 50, 50), rgb(40, 60, 50))',
-    'Clarinet': 'linear-gradient(to right in oklab, rgb(50, 50, 50), rgb(40, 60, 50))',
-    'Bass Clarinet': 'linear-gradient(to right in oklab, rgb(50, 50, 50), rgb(40, 60, 50))',
-    'Alto Saxophone': 'rgb(220, 190, 70)',
-    'Tenor Saxophone': 'rgb(220, 190, 70)',
-    'Baritone Saxophone': 'rgb(220, 190, 70)',
+    'Piccolo': [[180, 180, 180]],
+    'Recorder': [[180, 180, 180]],
+    'Flute': [[180, 180, 180]],
+    'Oboe': [[50, 50, 50], [40, 60, 50]],
+    'Clarinet': [[50, 50, 50], [40, 60, 50]],
+    'Bass Clarinet': [[50, 50, 50], [40, 60, 50]],
+    'Alto Saxophone': [[220, 190, 70]],
+    'Tenor Saxophone': [[220, 190, 70]],
+    'Baritone Saxophone': [[220, 190, 70]],
 };
 
 const CURRENT_EVENT = {
@@ -6286,7 +6286,7 @@ const FAQ = [
             "On the music side, LMC has historically suffered from lack of tenor/bass instruments like violas, cellos, bassoons, and trombones. Any players are highly-encouraged to join us."
         ]
     },
-];
+].map((x, i) => ({...x, id: i}));
 
 const FORM_LINKS = {
     // 'song-suggestion': '',

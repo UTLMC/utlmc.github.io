@@ -6,11 +6,32 @@ function assert(condition, errorMessage) {
         throw new Error(errorMessage);
     }
 }
+function debounce(fn, delay) {
+    let timeoutId;
+
+    return function (...args) {
+        const context = this;
+
+        clearTimeout(timeoutId);
+
+        timeoutId = setTimeout(() => {
+            fn.apply(context, args);
+        }, delay);
+    };
+}
+function clamp(x, min, max) {
+    return Math.max(Math.min(x, max), min);
+}
 function cssGetId(id) {
     const result = document.getElementById(id);
     if (!result)
         throw new Error(`Invalid id ${id}`);
     return result;
+}
+function cssSetElement(element, properties) {
+    for (const key in properties) {
+        element.style.setProperty(key, properties[key]);
+    }
 }
 function cssGetClass(className) {
     const result = document.getElementsByClassName(className);
@@ -67,22 +88,6 @@ function secondsToTimestamp(seconds) {
 function capitalize(str) {
     return str.split(' ').map(x => x[0].toUpperCase() + x.slice(1)).join(' ');
 }
-/**
- * Find all rgb(x, x, x) in a string and return a list of [r, g, b] tuples
- */
-function extractRGB(str) {
-    const regex = /rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)/gi;
-    const results = [];
-    let match = regex.exec(str);
-    while (match) {
-        const r = parseInt(match[1], 10);
-        const g = parseInt(match[2], 10);
-        const b = parseInt(match[3], 10);
-        results.push([r, g, b]);
-        match = regex.exec(str);
-    }
-    return results;
-}
 function rgbToHex(r, g, b) {
     return "#" + [r, g, b].map(value => value.toString(16).padStart(2, "0")).join("").toUpperCase();
 }
@@ -113,8 +118,7 @@ function hsvToRgb(h, s = 1, v = 1) {
 
     return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
-function rgbToHue(r, g, b) {
-    // Normalize to 0–1
+function rgbToHsv(r, g, b) {
     r /= 255;
     g /= 255;
     b /= 255;
@@ -123,29 +127,27 @@ function rgbToHue(r, g, b) {
     const min = Math.min(r, g, b);
     const diff = max - min;
 
-    // Achromatic case (no color)
-    if (diff === 0) return 0;
+    let h = 0;
+    let s = 0;
+    let v = max;
 
-    let hue;
-    if (max === r) {
-        hue = ((g - b) / diff) % 6;
-    } else if (max === g) {
-        hue = (b - r) / diff + 2;
-    } else {
-        hue = (r - g) / diff + 4;
+    if (diff !== 0) {
+        if (max === r) {        h = ((g - b) / diff) % 6; }
+        else if (max === g) {   h = ((b - r) / diff) + 2; } 
+        else {                  h = ((r - g) / diff) + 4; }
     }
-
-    hue *= 60; // convert to degrees
-    if (hue < 0) {
-        hue += 360;
-    }
-
-    // Normalize to [0, 1]
-    return hue / 360;
+    h /= 6;
+    if (h < 0) h += 1;
+    s = max === 0 ? 0 : diff / max;
+    return [h, s, v];
 }
 function getPerformerNames(performance) {
     return Array.from(new Set(Object.values(performance.performers).flat())).map(x => MEMBERS[x]?.name ?? x);
 }
+function isSubstring(parent, child) {
+    return parent.toLowerCase().includes(child.toLowerCase());
+}
+
 
 
 /*********************************************************************
@@ -163,8 +165,55 @@ function getInstruments() {
 function getEvents() {
     return EVENTS;
 }
-function getTags() {
-    return TAGS;
+function getTag(name) {
+    return TAGS[name ?? cssGetClass('tag-preview-active')[0].innerText];
+}
+
+function setTag(source) {
+    function setTagColour(element, rgb) {
+        const color = rgb.reduce((a, b) => a + b) / 3 > 128 ? 'black' : 'white';
+        cssSetElement(element, {
+            'background': '',
+            'background-color': `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`,
+            'color': color
+        });
+        TAGS[element.innerText] = [rgb];
+    }
+    function setTagGradient(element, rgb0, rgb1) {
+        const color = [...rgb0, ...rgb1].reduce((a, b) => a + b) / 6 > 128 ? 'black' : 'white';
+        const background = `linear-gradient(to right in oklab, rgb(${rgb0.join(',')}), rgb(${rgb1.join(',')}))`;
+        cssSetElement(element, {
+            'background': background,
+            'background-color': '',
+            'color': color
+        })
+        TAGS[element.innerText] = [rgb0, rgb1];
+    }
+    const element = cssGetClass('tag-preview-active')[0];
+    const left = cssGetId('colour-widget-gradient-left');
+    const right = cssGetId('colour-widget-gradient-right');
+
+    if (source.gradient && source.colour) {
+        const [rgb0, rgb1] = source.gradient;
+        if (GRADIENT_LEFT_SELECTED) {
+            setTagGradient(element, source.colour, rgb1);
+            setTagColour(left, source.colour);
+            setTagColour(right, rgb1);
+        } else {
+            setTagGradient(element, rgb0, source.colour);
+            setTagColour(left, rgb0);
+            setTagColour(right, source.colour);    
+        }
+    } else if (source.gradient) {
+        const [rgb0, rgb1] = source.gradient;
+        setTagGradient(element, rgb0, rgb1);
+        setTagColour(left, rgb0);
+        setTagColour(right, rgb1);
+    } else if (source.colour) {
+        setTagColour(element, source.colour);
+    } else {
+        throw new Error();
+    }
 }
 function getCurrentEvent() {
     return CURRENT_EVENT;
@@ -192,6 +241,9 @@ function toggleTab(event) {
     const id = `${event.srcElement.id.substring(4)}`;
     toggle(`tab-${id}`, 'tab-active');
     toggle(`nav-${id}`, 'nav-active');
+
+    // Clear out page specific details
+    TAG_COLOUR_CACHE = undefined;
 }
 
 // If event is given, it is being turned off; otherwise, turn on
@@ -217,14 +269,33 @@ function openModalHelper(id) {
     cssGetId(id).style.setProperty('display', 'flex');
 }
 
-function toggleColourWidgetMode(element) {
+let TAG_COLOUR_CACHE;
+let TAG_IS_GRADIENT_MODE;
+function toggleColourWidgetMode(element, isSwitchingTags) {
     const active = 'colour-widget-mode-active';
     cssGetClass(active)[0].classList.remove(active);
     element.classList.add(active);
 
-    const gradientMode = element.id === 'colour-widget-mode-gradient';
-    cssGetId('colour-widget-gradient-buttons').style.setProperty('display', gradientMode ? 'flex' : 'none');
-    cssGetId('colour-widget-text').style.setProperty('padding-bottom', gradientMode ? '5px' : '15px');
+    const toGradientMode = element.id === 'colour-widget-mode-gradient';
+    cssGetId('colour-widget-gradient-button').style.setProperty('display', toGradientMode ? 'flex' : 'none');
+    cssGetId('colour-widget-text').style.setProperty('padding-bottom', toGradientMode ? '5px' : '15px');
+    TAG_IS_GRADIENT_MODE = toGradientMode;
+
+    if (isSwitchingTags) {
+        TAG_COLOUR_CACHE = undefined;
+    }
+
+    const rgbs = getTag() ?? [[100, 100, 100]];
+    if (toGradientMode) {
+        syncInputsToTagColour({ gradient: (isSwitchingTags ? rgbs : (TAG_COLOUR_CACHE ?? [rgbs[0], rgbs[0]])) });
+    } else {
+        const colour = TAG_COLOUR_CACHE?.[0];
+        const backupColour = isSwitchingTags || GRADIENT_LEFT_SELECTED ? rgbs[0] : rgbs[1];
+        syncInputsToTagColour({ rgb: colour ?? backupColour });
+    }
+    if (!isSwitchingTags) {
+        TAG_COLOUR_CACHE = rgbs;
+    }
 }
 
 function toggleCellDetails(element) {
@@ -262,24 +333,97 @@ function toggleAnnouncementType(element) {
 }
 
 function toggleRowSelect(event, element) {
-    if (event.target.nodeName === 'INPUT') {
+    const button = element.children[0];
+    if (button.disabled) {
         return;
     }
-    const button = element.children[0];
+
+    const rowId = Number(element.parentElement.classList[0]);
+    const tableId = element.closest('.table').id;
+
+    // Clicking checkbox directly
+    if (event.target.nodeName === 'INPUT') {
+        return onRowSelect(event.target.checked, rowId, tableId);
+    }
+
+    // Clicking surrounding area in TD
     button.checked = !button.checked;
-    onRowSelect(element);
+    onRowSelect(button.checked, rowId, tableId);
 }
 function toggleSubrowSelect(event, element) {
-    if (event.target.closest('.datalist') || event.target.nodeName === 'INPUT') {
+    // Ignore clicks to the rest of the LI
+    if (event.target.closest('.datalist')) {
         return;
     }
+
     const button = element.children[0];
+    if (button.disabled) {
+        return;
+    }
+
+    const id = element.parentElement.parentElement.parentElement.classList[0];
+    const [rowId, subrowId] = id.split('-').map(Number);
+    const tableId = element.closest('.table').id;
+
+    // Clicking checkbox directly
+    if (event.target.nodeName === 'INPUT') {
+        return onSubrowSelect(event.target.checked, subrowId, rowId, tableId);
+    }
+
+    // Clicking surrounding area in LI
     button.checked = !button.checked;
-    onRowSelect(element, button.checked);
+    onSubrowSelect(button.checked, subrowId, rowId, tableId);
 }
-function onRowSelect(element) {
-    // TODO: subtable checkboxes being selected should disable regular checkboxes
-    // TODO: regular checkboxes being selected should disable subtable checkboxes
+
+let ROW_SELECTION = {};
+function onRowSelect(checked, rowId, tableId) {
+    if (!ROW_SELECTION[tableId]) {
+        ROW_SELECTION[tableId] = new Set();
+    }
+    const set = ROW_SELECTION[tableId];
+
+    if (checked) {
+        if (set.size === 0) {
+            toggleSubrowSelectionEnabled(false, tableId);
+        }
+        set.add(rowId);
+    } else {
+        set.delete(rowId);
+        if (set.size === 0) {
+            toggleSubrowSelectionEnabled(true, tableId);
+        }
+    }
+}
+
+let SUBROW_SELECTION = {};
+function onSubrowSelect(checked, subrowId, rowId, tableId) {
+    if (!ROW_SELECTION[tableId]) {
+        ROW_SELECTION[tableId] = new Set();
+    }
+    const set = ROW_SELECTION[tableId];
+
+    if (checked) {
+        if (set.size === 0) {
+            toggleRowSelectionEnabled(false, tableId);
+        }
+        set.add(`${rowId}-${subrowId}`);
+    } else {
+        set.delete(`${rowId}-${subrowId}`);
+        if (set.size === 0) {
+            toggleRowSelectionEnabled(true, tableId);
+        }
+    }
+}
+
+function toggleRowSelectionEnabled(on, tableId) {
+    for (const row of cssGetAll(`#${tableId} > div > table > tbody > tr:not(.subtable-row) > td:first-child > input`)) {
+        row.disabled = !on;
+    }
+}
+function toggleSubrowSelectionEnabled(on, tableId) {
+    for (const row of cssGetAll(`#${tableId} .subtable > li > input:first-child`)) {
+        row.disabled = !on;
+    }
 }
 
 
@@ -296,46 +440,41 @@ function onMouseMove(event) {
     MOUSE_X = clientX;
     MOUSE_Y = clientY;
 
-    if (COLOUR_PICKER_ON) {
+    if (PICKER_MODE === 'colour') {
         updateColourFromPicker();
-    }
-    if (HUE_PICKER_ON) {
+    } else if (PICKER_MODE === 'hue') {
         updateHueFromPicker();
     }
 }
 function onMouseDown(down) {
     MOUSE_DOWN = down;
     if (!down) {
-        COLOUR_PICKER_ON = down;
-        HUE_PICKER_ON = down;
+        PICKER_MODE = undefined;
     }
 }
 
-let HUE_PICKER_ON = false;
-let COLOUR_PICKER_ON = false;
-let LAST_VALID_COLOUR = [255, 0, 0];
-let COLOUR_PICKER_PRIMARY = {
-    r: 255,
-    g: 0,
-    b: 0
-}
+let PICKER_MODE;
+let LAST_VALID_COLOUR = [100, 100, 100];
+let COLOUR_PICKER_PRIMARY = [255, 0, 0];
 function pickColourMouseDown(event) {
     event.preventDefault();
-    COLOUR_PICKER_ON = true;
+    PICKER_MODE = 'colour';
     updateColourFromPicker();
 }
 function pickHueMouseDown(event) {
     event.preventDefault();
-    HUE_PICKER_ON = true;
+    PICKER_MODE = 'hue';
     updateHueFromPicker();
 }
 
 // Convert colourpicker position (0-1) to RGB value (0-255)
 function xyToRgb(x, y) {
-    const r = Math.round((1 - y) * ((1 - x) * 255 + x * COLOUR_PICKER_PRIMARY.r));
-    const g = Math.round((1 - y) * ((1 - x) * 255 + x * COLOUR_PICKER_PRIMARY.g));
-    const b = Math.round((1 - y) * ((1 - x) * 255 + x * COLOUR_PICKER_PRIMARY.b));
-    return [r, g, b];
+    const [r, g, b] = COLOUR_PICKER_PRIMARY;
+    return [
+        Math.round((1 - y) * ((1 - x) * 255 + x * r)),
+        Math.round((1 - y) * ((1 - x) * 255 + x * g)),
+        Math.round((1 - y) * ((1 - x) * 255 + x * b))
+    ];
 }
 
 // Convert RGB value (0-255) to colourpicker position (0-1)
@@ -364,67 +503,101 @@ function getCurrentPickerXY() {
         top = rect.top;
     }
 
-    return [(left - rect.left) / rect.width, (top - rect.top) / rect.height];
+    return [left / rect.width, top / rect.height];
 }
 
 // Move the hue picker based on the given hue (0-1)
-function moveHuePicker(x) {
+function moveHuePicker(hue) {
     // Update hue picker circle
     const container = cssGetId('colour-widget-hue');
     const rect = container.getBoundingClientRect();
     const circle = cssGetId('colour-widget-hue-circle');
-    circle.style.setProperty('left', `${x * rect.width + rect.left}px`);
-
-    // Update primary colour
-    const [primaryR, primaryG, primaryB] = hsvToRgb(x, 1, 1);
-    COLOUR_PICKER_PRIMARY.r = primaryR;
-    COLOUR_PICKER_PRIMARY.g = primaryG;
-    COLOUR_PICKER_PRIMARY.b = primaryB;
+    circle.style.setProperty('left', `${hue * rect.width}px`);
 
     // Update gradient
+    const [r, g, b] = COLOUR_PICKER_PRIMARY;
     const box = cssGetId('colour-widget-picker');
     box.style.setProperty(
         'background',
-        `linear-gradient(transparent, black), linear-gradient(to right, white, transparent), rgb(${primaryR}, ${primaryG}, ${primaryB})`
+        `linear-gradient(transparent, black), linear-gradient(to right, white, transparent), rgb(${r}, ${g}, ${b})`
     );
 }
 
-// Move the colour picker bsed on the given position (0-1)
+// Move the colour picker based on the given position (0-1)
 function moveColourPicker(x, y) {
     const container = cssGetId('colour-widget-picker');
     const rect = container.getBoundingClientRect();
     const circle = cssGetId('colour-widget-picker-circle');
-    circle.style.setProperty('left', `${x * rect.width + rect.left}px`);
-    circle.style.setProperty('top', `${y * rect.height + rect.top}px`);
+    const size = rect.width || 275;
+    circle.style.setProperty('left', `${x * size}px`);
+    circle.style.setProperty('top', `${y * size}px`);
+}
+
+function syncInputsToTagColour(source) {
+    let r, g, b;
+
+    if (source.hue) {
+        assert(typeof source.hue === 'number' && source.hue >= 0 && source.hue <= 1, source.hue);
+        COLOUR_PICKER_PRIMARY = hsvToRgb(source.hue, 1, 1);
+        [r, g, b] = xyToRgb(...getCurrentPickerXY());
+        moveHuePicker(source.hue);
+
+    } else if (source.xy) {
+        assert(Array.isArray(source.xy) && source.xy.length === 2 && source.xy[0] >= 0 && source.xy[0] <= 1 && source.xy[1] >= 0 && source.xy[1] <= 1, source.xy);
+        const [x, y] = source.xy;
+        [r, g, b] = xyToRgb(x, y);
+        moveColourPicker(x, y);
+
+    } else if (source.rgb) {
+        assert(Array.isArray(source.rgb) && source.rgb.length === 3 && source.rgb[0] >= 0 && source.rgb[0] <= 255 && source.rgb[1] >= 0 && source.rgb[1] <= 255 && source.rgb[2] >= 0 && source.rgb[2] <= 255, source.rgb);
+
+        [r, g, b] = source.rgb;
+    } else if (source.hex) {
+        assert(typeof source.hex === 'string' && source.hex.length >= 6 && source.hex.length <= 7, source.hex);
+        [r, g, b] = hexToRgb(source.hex);
+    } else if (source.gradient) {
+        assert(Array.isArray(source.gradient) && source.gradient.length === 2 && source.gradient[0].length === 3 && source.gradient[1].length === 3, source.gradient);
+        [r, g, b] = source.gradient[GRADIENT_LEFT_SELECTED ? 0 : 1];
+    }
+
+    if (source.rgb || source.hex || source.gradient) {
+        const hue = rgbToHsv(r, g, b)[0];
+        COLOUR_PICKER_PRIMARY = hsvToRgb(hue, 1, 1);
+        moveHuePicker(hue);
+        moveColourPicker(...rgbToXy(r, g, b));
+    }
+    cssGetId('colour-widget-hex').value = rgbToHex(r, g, b);
+    cssGetId('colour-widget-rgb').value = `rgb(${r}, ${g}, ${b})`;
+    
+    LAST_VALID_COLOUR = [r, g, b];
+    if (source.gradient) {
+        setTag({ gradient: source.gradient });
+    } else {
+        if (TAG_IS_GRADIENT_MODE) {
+            setTag({ gradient: getTag(), colour: LAST_VALID_COLOUR })
+        } else {
+            setTag({ colour: LAST_VALID_COLOUR })
+        }
+    }
 }
 
 // Update colour after moving hue picker
 function updateHueFromPicker() {
     const container = cssGetId('colour-widget-hue');
     const rect = container.getBoundingClientRect();
-    const x = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+    const hue = clamp((event.clientX - rect.left) / rect.width, 0, 1);
     
-    moveHuePicker(x);
-    const [r, g, b] = xyToRgb(...getCurrentPickerXY());
-    
-    LAST_VALID_COLOUR = [r, g, b];
-    cssGetId('colour-widget-rgb').value = `rgb(${r}, ${g}, ${b})`;
-    cssGetId('colour-widget-hex').value = rgbToHex(r, g, b);
+    syncInputsToTagColour({ hue });
 }
 
 // Update colour after moving colour picker
 function updateColourFromPicker() {
     const container = cssGetId('colour-widget-picker');
     const rect = container.getBoundingClientRect();
-    const x = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
-    const y = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
+    const x = clamp((event.clientX - rect.left) / rect.width, 0, 1);
+    const y = clamp((event.clientY - rect.top) / rect.height, 0, 1);
 
-    moveColourPicker(x, y);
-    const [r, g, b] = xyToRgb(x, y);
-    
-    LAST_VALID_COLOUR = [r, g, b];
-    cssGetId('colour-widget-rgb').value = `rgb(${r}, ${g}, ${b})`;
-    cssGetId('colour-widget-hex').value = rgbToHex(r, g, b);
+    syncInputsToTagColour({ xy: [x, y] });
 }
 
 // Update colour after changing RGB input
@@ -440,21 +613,9 @@ const updateColourFromRgb = (() => {
             input.value = `rgb(${r}, ${g}, ${b})`;
             return;
         }
-
-        let r = Number(match[1]);
-        let g = Number(match[2]);
-        let b = Number(match[3]);
-        r = Math.min(255, Math.max(0, r));
-        g = Math.min(255, Math.max(0, g));
-        b = Math.min(255, Math.max(0, b));
-        const normalized = `rgb(${r}, ${g}, ${b})`;
-        input.value = normalized;
-        LAST_VALID_COLOUR = [r, g, b];
-        
-        // Update other inputs
-        moveHuePicker(rgbToHue(r, g, b));
-        moveColourPicker(...rgbToXy(r, g, b));
-        cssGetId('colour-widget-hex').value = rgbToHex(r, g, b);
+        let [r, g, b] = match.slice(1).map(x => clamp(Number(x), 0, 255));
+        input.value = `rgb(${r}, ${g}, ${b})`;
+        syncInputsToTagColour({ rgb: [r, g, b] });
     };
 })();
 
@@ -470,25 +631,47 @@ const updateColourFromHex = (() => {
             input.value = rgbToHex(r, g, b);
             return;
         }
-
         value = value.replace("#", "");
-        
+
         // Expand shorthand #abc -> #aabbcc
         if (value.length === 3) {
             value = value.split("").map(c => c + c).join("");
         }
-        value = "#" + value.toUpperCase();
-        input.value = value;
-
-        // Update other inputs
-        const [r, g, b] = hexToRgb(value);
-        LAST_VALID_COLOUR = [r, g, b];
-        
-        moveHuePicker(rgbToHue(r, g, b));
-        moveColourPicker(...rgbToXy(r, g, b));
-        cssGetId('colour-widget-rgb').value = `rgb(${r}, ${g}, ${b})`;
+        input.value = "#" + value.toUpperCase();
+        syncInputsToTagColour({ hex: value });
     }
 })();
+
+function selectTag(element, forceRefresh) {
+    const active = cssGetClass('tag-preview-active')[0];
+    if (element === active && !forceRefresh) {
+        return;
+    }
+    active.classList.remove('tag-preview-active');
+    element.classList.add('tag-preview-active');
+
+    // Go to solid/gradient mode depending on tag
+    const isGradientMode = getTag()?.length > 1;
+    const id = `colour-widget-mode-${isGradientMode ? 'gradient' : 'solid'}`;
+    toggleColourWidgetMode(cssGetId(id), true);
+}
+
+let GRADIENT_LEFT_SELECTED = true;
+function selectGradientColour(element) {
+    const active = cssGetClass('colour-widget-gradient-button-active')[0];
+    active.classList.remove('colour-widget-gradient-button-active');
+    element.classList.add('colour-widget-gradient-button-active');
+    GRADIENT_LEFT_SELECTED = element.id === 'colour-widget-gradient-left';
+    
+    syncInputsToTagColour({ gradient: getTag() });
+}
+
+function swapGradientColour() {
+    const rgbs = getTag();
+    syncInputsToTagColour({ gradient: [rgbs[1], rgbs[0]]});
+}
+
+// TODO: refactor syncInputsToTagColour to smoothify hue/colour picker 
 
 
 /*********************************************************************
@@ -547,23 +730,163 @@ Inputs
 function setFocusInput(element, focus) {
     element.parentElement.nextElementSibling.style.setProperty('display', focus ? 'flex' : 'none');
 }
-function focusInput(element) {
-    setFocusInput(element, true);
+function focusInput(event) {
+    // Clear suggestions before suggesting new ones
+    event.target.closest('.input').children[1].replaceChildren();
+
+    setFocusInput(event.target, true);
+    updateInputSuggestion(event);
 }
-function blurInput(element) {
+function blurInput(event) {
+    const element = event.target;
+
+    // If focusing into suggestions, do nothing
+    if (event.relatedTarget === element.parentElement.nextElementSibling) {
+        return;
+    }
     setFocusInput(element, false);
 
+    // For + buttons that expand into inputs, hide the inputs
     const parent = element.parentElement?.parentElement;
-    const clicked = 'datalist-tag-add-clicked'
+    const clicked = 'datalist-tag-add-clicked';
     if (parent?.classList.contains(clicked) && !element.value) {
         parent?.classList.remove(clicked);
     }
+}
+function clickSuggestion(element) {
+    const input = element.parentElement.parentElement.children[0].lastElementChild;
+    setFocusInput(input, false);
+
+    // Modal -> filling a suggestion adds a tag
+    let container = element.closest('.modal .datalist-tags');
+    if (container) {
+        // todo: add to datalist, edit members, sort tags
+        input.value = '';
+        return;
+    }
+    
+    // Tag addition
+    container = element.closest('.datalist-tag-add');
+    if (container) {
+        // add new tag
+        console.log('add new tag to this datalist');
+        input.value = '';
+        return;
+    }
+
+    // Fill input value
+    input.value = element.children[0].innerText;
+}
+function clickXButton(element) {
+    // todo
 }
 function keyDownInput(event) {
     if (event.key !== 'Enter') {
         return;
     }
+    
     console.log('enter!');
+}
+function getInputSuggestion(x, getSuggestionName, getSuggestionInfo) {
+    return {
+        element: 'li',
+        children: [{
+            element: 'span',
+            innerText: getSuggestionName ? getSuggestionName(x) : x
+        }, getSuggestionInfo ? {
+            element: 'span',
+            innerText: getSuggestionInfo(x)
+        } : undefined]
+    }
+}
+const updateInputSuggestion = debounce(async (event) => {
+    /*
+    TODO: optimize for speed.
+    Store a cache of the most recent filter for each event.target
+    If entering characters, filter from the existing filter list.
+    */ 
+    const input = event.target;
+
+    let candidates, infoGetter;
+    let nameGetter = x => x.name
+    if (input.classList.contains('input-event')) {
+        candidates = getEvents();
+        infoGetter = x => x.start.slice(0, x.start.lastIndexOf('-'));
+    } else if (input.classList.contains('input-concert')) {
+        candidates = getEvents().filter(x => x.type === 'Concert');
+        infoGetter = x => x.start.slice(0, x.start.lastIndexOf('-'));
+    } else if (input.classList.contains('input-member')) {
+        candidates = getMembers();
+        infoGetter = x => x.joined;
+    } else if (input.classList.contains('input-instrument')) {
+        candidates = getInstruments();
+        nameGetter = x => x;
+    } else if (input.classList.contains('input-music')) {
+        candidates = getMusic();
+        infoGetter = x => x.composer;
+    } else if (input.classList.contains('input-role')) {
+        candidates = Array.from(new Set(getMembers().map(x => x.roles).flat()));
+        nameGetter = x => x;
+    } else {
+        throw new Error(String(Array.from(input.classList)));
+    }
+    
+    const container = input.closest('.input').children[1];
+    const fragment = document.createDocumentFragment();
+    
+    const value = input.value;
+    if (!value) {
+        return container.replaceChildren();
+    }
+    
+    let i = 0;
+    for (const candidate of candidates) {
+        const name = nameGetter(candidate);
+        if (isSubstring(name, value)) {
+            fragment.appendChild(construct({
+                element: 'li',
+                attributes: { onclick: `clickSuggestion(this)` },
+                children: [{
+                    element: 'span',
+                    innerText: name
+                }, infoGetter ? {
+                    element: 'span',
+                    innerText: infoGetter(candidate)
+                } : undefined]
+            }));
+            i += 1;
+            if (i >= 10) {
+                break;
+            }
+        }
+    }
+    container.replaceChildren(fragment);
+}, 200);
+
+const filterInput = debounce(async (event) => {
+    const id = event.target.closest('.table').id;
+    let data;
+    if (id === 'table-members') {
+        data = getMembers();
+    } else if (id === 'table-music') {
+        data = getMusic();
+    } else if (id === 'table-events') {
+        data = getEvents();
+    } else {
+        throw new Error(id);
+    }
+    const filter = x => isSubstring(x.name, event.target.value)
+
+    applyTableFilter(id, data, filter);
+}, 200);
+
+function scrollInputYear(event) {
+    if (event.target.value !== '0' && !event.target.value) {
+        return;
+    }
+    event.preventDefault();
+    const offset = event.deltaY > 0 ? -1 : 1;
+    event.target.value = Number(event.target.value) + offset;
 }
 
 function addNewTagToDatalist(element) {
@@ -627,6 +950,14 @@ function validateInputTimestamp(element) {
     const timestampRegex = /^(?:\?\?:\?\?|\d+:[0-5]\d:[0-5]\d|(?:[0-5]?\d):[0-5]\d)$/;
     value = timestampRegex.test(value) ? value : '??:??';
     element.innerText = value;
+}
+function validateInputYear(element, optional) {
+    if (!element.value && optional) {
+        return;
+    }
+    const value = parseInt(element.value, 10);
+    const currYear = (new Date()).getFullYear();
+    element.value = isNaN(value) ? (optional ? '' : currYear) : clamp(value, 2023, currYear + 10);
 }
 
 
@@ -1154,12 +1485,6 @@ Dynamic Content Injection
 *********************************************************************/
 function construct(json) {
     const element = document.createElement(json.element);
-    if (json.children) {
-        for (const child of json.children) {
-            if (!child) continue;
-            element.appendChild(construct(child));
-        }
-    }
     if (json.attributes) {
         for (const key in json.attributes) {
             element.setAttribute(key, json.attributes[key]);
@@ -1175,9 +1500,6 @@ function construct(json) {
             element.classList.add(name);
         }
     }
-    if (json.value) {
-        element.value = json.value;
-    }
     if (json.id) {
         element.id = json.id;
     }
@@ -1187,19 +1509,28 @@ function construct(json) {
     if (json.innerHTML) {
         element.innerHTML = json.innerHTML;
     }
+    if (json.children) {
+        for (const child of json.children) {
+            if (!child) continue;
+            element.appendChild(construct(child));
+        }
+    }
+    if (json.value) {
+        element.value = json.value;
+    }
     return element;
 }
 
 const X_BUTTON = {
     element: 'img',
     classes: ['x-button'],
+    onclick: 'clickXButton(element)',
     attributes: { src: 'assets/icons/add.svg' }
 }
 const ROW_CHECKBOX = {
     element: 'input',
     classes: ['checkbox'],
     attributes: {
-        oninput: 'onRowSelect(this)',
         type: 'checkbox'
     }
 }
@@ -1234,19 +1565,8 @@ function getInputsStartEnd(data, type, from, until) {
         innerHTML: `Until <input type="${type}" ${data[until] ? `value=${parser(data[until])}` : ''} />`
     }]
 }
-function getInputSuggestion(x, getSuggestionName, getSuggestionInfo) {
-    return {
-        element: 'li',
-        children: [{
-            element: 'span',
-            innerText: getSuggestionName ? getSuggestionName(x) : x
-        }, getSuggestionInfo ? {
-            element: 'span',
-            innerText: getSuggestionInfo(x)
-        } : undefined]
-    }
-}
-function getInputText(iconPath, placeholder, value, suggestions, getSuggestionName, getSuggestionInfo) {
+
+function getInputText(iconPath, placeholder, value, suggestionType) {
     const icon = iconPath ? {
         element: 'img',
         attributes: { src: iconPath }
@@ -1254,16 +1574,17 @@ function getInputText(iconPath, placeholder, value, suggestions, getSuggestionNa
 
     const input = {
         element: 'input',
+        classes: [`input-${suggestionType}`],
         attributes: {
             type: 'text',
             placeholder,
-            onfocus: 'focusInput(this)',
-            onblur: 'blurInput(this)',
+            onfocus: 'focusInput(event)',
+            onblur: 'blurInput(event)',
+            oninput: `updateInputSuggestion(event)`,
+            onkeydown: `keyDownInput(event)`,
             value
         }
     };
-
-    const suggestionsList = suggestions.map(x => getInputSuggestion(x, getSuggestionName, getSuggestionInfo));
 
     return {
         element: 'div',
@@ -1273,12 +1594,12 @@ function getInputText(iconPath, placeholder, value, suggestions, getSuggestionNa
             children: [icon, input]
         }, {
             element: 'ul',
-            classes: ['input-suggestions'],
-            children: suggestionsList
+            attributes: { tabIndex: 0 },
+            classes: ['input-suggestions']
         }]
     }
 }
-function getInputTags(tags, placeholder, suggestions, getSuggestionName, getSuggestionInfo, useOutline) {
+function getInputTags(tags, placeholder, suggestionType, useOutline) {
     const tagList = tags.map((name, i) => ({
         element: 'li',
         classes: useOutline?.[i] ? ['tag-custom'] : [],
@@ -1295,20 +1616,22 @@ function getInputTags(tags, placeholder, suggestions, getSuggestionName, getSugg
             attributes: { src: 'assets/icons/add.svg' }
         }, {
             element: 'input',
+            classes: [`input-${suggestionType}`],
             attributes: {
                 type: 'text',
                 placeholder,
-                onfocus: 'focusInput(this)',
-                onblur: 'blurInput(this)',
-                onkeydown: 'keyDownInput(this)'
+                onfocus: 'focusInput(event)',
+                onblur: 'blurInput(event)',
+                oninput: `updateInputSuggestion(event)`,
+                onkeydown: `keyDownInput(event)`,
             }
         }]
     };
 
     const addInputSuggestions = {
         element: 'ul',
+        attributes: { tabIndex: 0 },
         classes: ['input-suggestions'],
-        children: suggestions.map(x => getInputSuggestion(x, getSuggestionName, getSuggestionInfo))
     }
 
     return {
@@ -1322,7 +1645,11 @@ function getInputTags(tags, placeholder, suggestions, getSuggestionName, getSugg
         }]
     }
 }
-function getInputModalOpener(onclick, items) {
+function getInputModalOpener(onclick, items, disabled) {
+    const classes = ['cell-details-button'];
+    if (disabled) {
+        classes.push('cell-details-button-disabled');
+    }
     return {
         element: 'div',
         classes: ['cell-details'],
@@ -1331,10 +1658,10 @@ function getInputModalOpener(onclick, items) {
             innerHTML: `${items.map(x => `<span>${x}</span>`).join(' · ')} <span class="count">(${items.length})</span>`
         } : undefined, {
             element: 'img',
-            classes: ['cell-details-button'],
+            classes,
             attributes: {
                 src: `assets/icons/edit.svg`,
-                onclick
+                onclick: disabled ? '' : onclick
             }
         }]
     }
@@ -1372,6 +1699,43 @@ function getDatalist(mappings) {
         }]
     }
 }
+function getInputSeason(seasonYear, optional) {
+    const [season, year] = seasonYear.split(' ');
+
+    const options = optional ? ['', 'Fall', 'Winter'] : ['Fall', 'Winter'];
+    const seasonInput = {
+        element: 'select',
+        value: season,
+        children: options.map(x => ({
+            element: 'option',
+            innerText: x
+        }))
+    }
+
+    const yearInput = {
+        element: 'div',
+        classes: ['input'],
+        children: [{
+            element: 'div',
+            children: [{
+                element: 'input',
+                value: year,
+                classes: ['input-year'],
+                attributes: {
+                    type: 'text',
+                    onblur: optional ? 'validateInputYear(this, true)' : 'validateInputYear(this)',
+                    onmousewheel: 'scrollInputYear(event)'
+                }
+            }]
+        }]
+    };
+
+    return {
+        element: 'div',
+        classes: ['input-season'],
+        children: [seasonInput, yearInput]
+    };
+}
 
 /**
  * Helper function for constructing a table row. Auto-constructs a checkbox in the first column.
@@ -1392,7 +1756,7 @@ function constructTable(tableId, list, rowContructor) {
     function constructRow(id, row) {
         fragment.appendChild(construct({
             element: 'tr',
-            id: `${tableId}-${id}`,
+            classes: [`${id}`],
             children: [{
                 element: 'td',
                 attributes: {
@@ -1405,9 +1769,8 @@ function constructTable(tableId, list, rowContructor) {
     function constructSubrow(id, subrow, colspan, noSubtableCheckbox) {
         fragment.appendChild(construct({
             element: 'tr',
-            id: `${tableId}-${id}`,
             style: { display: 'none' },
-            classes: ['subtable-row'],
+            classes: [id, 'subtable-row'],  // this order is important (see toggleSubrowSelect)
             children: [{
                 element: 'td'
             }, {
@@ -1446,6 +1809,26 @@ function constructTable(tableId, list, rowContructor) {
     }
     table.replaceChildren(fragment);
 }
+function applyTableFilter(tableId, list, filter) {
+    const table = cssGetFirst(`#${tableId} tbody`).children;
+    let tableI = 0;
+    for (let i = 0; i < list.length; i++) {
+        const visible = filter(list[i]);
+        const display = visible ? '' : 'none';
+
+        // Set visibility of row
+        table[tableI].style.setProperty('display', display);
+        
+        // Pass subrows, hiding them if row is hidden
+        tableI += 1;
+        while (table[tableI]?.classList.contains('subtable-row')) {
+            if (!visible) {
+                table[tableI].style.setProperty('display', display);
+            }
+            tableI += 1;
+        }
+    }
+}
 
 
 /*********************************************************************
@@ -1483,9 +1866,7 @@ function constructUpcomingEvents() {
             'assets/icons/events-filled.svg',
             'Select by name...',
             events[x.id].name,
-            events.filter(x => x.type === 'Concert'),
-            event => event.name,
-            event => `${event.start.split('|')[0]}`
+            'event'
         )]
     }, {
         element: 'td',
@@ -1570,12 +1951,10 @@ function constructMembers() {
             innerText: x.name
         }, {
             element: 'td',
-            attributes: INPUT_ATTRIBUTES.default,
-            innerText: x.joined
+            children: [getInputSeason(x.joined)]
         }, {
             element: 'td',
-            attributes: INPUT_ATTRIBUTES.default,
-            innerText: x.left
+            children: [getInputSeason(x.left, true)]
         }, {
             element: 'td',
             children: [getInputModalOpener('openModalMemberTags(this)', tags)]
@@ -1641,10 +2020,8 @@ function constructMusicTable() {
                     element: 'td',
                     children: [getInputTags(
                         p.concerts.map(c => EVENTS[c]?.name ?? c),  // temporary until data is fixed
-                        'Enter concert...',
-                        events.filter(x => x.type === 'Concert'),
-                        event => event.name,
-                        event => `${event.start.split('|')[0]}`,
+                        'Enter event...',
+                        'event'
                     )]
                 }],
                 ['Song Type', {
@@ -1665,9 +2042,7 @@ function constructMusicTable() {
                     children: [getInputTags(
                         arranger,
                         'Enter arranger...',
-                        members.slice(0, 10),
-                        member => member.name,
-                        member => member.joined
+                        'member'
                     )]
                 }],
                 ['Group', {
@@ -1718,7 +2093,7 @@ function constructEventTable() {
             children: getInputsStartEnd(x, 'datetime-local', 'start', 'end')
         }, {
             element: 'td',
-            children: [getInputModalOpener('openModalConcertSetlist(this)')]
+            children: [getInputModalOpener('openModalConcertSetlist(this)', undefined, !x.setlist || x.setlist.length === 0)]
         }, {
             element: 'td',
             children: [getInputSubrowOpener()]
@@ -1749,14 +2124,15 @@ function getTagColourStyle(name) {
     if (name.includes(' (')) {
         name = name.slice(0, name.indexOf(' ('));
     }
-    const background = TAGS[name];
-    if (background) {
-        const rgbs = extractRGB(background);
-        const color = rgbs.flat().reduce((a, b) => a + b) / (rgbs.length * 3) > 128 ? 'black' : 'white';
-        if (background.startsWith('linear-gradient')) {
-            return { color, 'background-image': background }
-        } else if (background.startsWith('rgb')) {
-            return { color, 'background-color': background }
+    const rgbs = getTag(name);
+    if (rgbs) {
+        const color = rgbs.flat().reduce((a, b) => a + b) / rgbs.flat().length > 128 ? 'black' : 'white';
+        if (rgbs.length === 2) {
+            const [c0, c1] = rgbs.map(x => x.join(','))
+            return { color, 'background-image': `linear-gradient(to right in oklab, rgb(${c0}), rgb(${c1}))` }
+        } else if (rgbs.length === 1) {
+            const [r, g, b] = rgbs[0];
+            return { color, 'background-color': `rgb(${r}, ${g}, ${b})` }
         } else {
             throw new Error(background);
         }
@@ -1764,31 +2140,34 @@ function getTagColourStyle(name) {
     return {};
 }
 
+function parseRole(role) {
+    const i = role.lastIndexOf('(');
+    if (i === -1) {
+        return role;
+    }
+    return role.slice(0, i).trim();
+}
 function constructTagTab() {
     const members = getMembers();
     const instruments = getInstruments();
 
-    const parseRole = (role) => {
-        const i = role.lastIndexOf('(');
-        if (i === -1) {
-            return role;
-        }
-        return role.slice(0, i).trim();
-    }
     const tags = [
         ...instruments.sort(instrumentSorter),
         ...Array.from(new Set(members.map(x => x.roles.map(parseRole)).flat())).sort(roleSorter)
     ];
     const tagPreviews = cssGetId('tag-previews');
     const fragment = document.createDocumentFragment();
-    for (const tag of tags) {
+    tags.forEach((tag, i) => {
         fragment.appendChild(construct({
             element: 'li',
+            classes: i === 0 ? ['tag-preview-active'] : undefined,
             innerText: tag,
+            attributes: { onclick: "selectTag(this)" },
             style: getTagColourStyle(tag)
-        }))
-    }
+        }));
+    })
     tagPreviews.replaceChildren(fragment);
+    selectTag(cssGetClass('tag-preview-active')[0], true);
 }
 
 constructAnnouncements();
@@ -1805,12 +2184,14 @@ constructEventTable();
 Data injection - Modals
 *********************************************************************/
 function getRowId(element) {
-    const id = element.closest('.subtable-row')?.id || element.closest('tr')?.id;
-    const indices = id.split('-');
-    if (indices.length === 4) {
+    let id = element.closest('.subtable-row')?.classList[0];
+    if (id) {
+        const indices = id.split('-');
         return indices.slice(2).map(x => parseInt(x, 10));
     }
-    return parseInt(indices[indices.length - 1], 10);
+
+    id = element.closest('tr')?.classList[0];
+    return parseInt(id, 10);
 }
 function openModalMemberTags(element) {
     openModalHelper('modal-member-tags');
@@ -1959,16 +2340,14 @@ function openModalPerformancePerformers(element) {
                     'assets/icons/music-note.svg',
                     'Enter instrument...',
                     instruments[instrumentId],
-                    instruments.slice(0, 10)
+                    'instrument'
                 )]
             }, {
                 element: 'td',
                 children: [getInputTags(
                     names.map(x => members[x]?.name ?? x),
                     'Enter performer...',
-                    members.filter(x => typeof(x.name) === 'number').slice(0, 10),
-                    member => member.name,
-                    member => member.joined,
+                    'member',
                     names.map(x => !members[x])
                 )]
             }]
@@ -1987,16 +2366,14 @@ function openModalPerformancePerformers(element) {
                 'assets/icons/music-note.svg',
                 'Enter instrument...',
                 '',
-                instruments.slice(0, 10)
+                'instrument'
             )]
         }, {
             element: 'td',
             children: [getInputTags(
                 [],
                 'Enter performer...',
-                members.filter(x => typeof(x.name) === 'number').slice(0, 10),
-                member => member.name,
-                member => member.joined,
+                'member',
                 members.map(x => !members[x])
             )]
         }]
