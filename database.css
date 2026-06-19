@@ -551,12 +551,16 @@ Table
     transition: 0.2s;
     cursor: pointer;
 }
-.table-toolbar li:hover {
+.table-toolbar li:not(.table-toolbar-disabled):hover {
     background-color: rgba(194, 166, 158, 0.7);
 }
-.table-toolbar li:active {
+.table-toolbar li:not(.table-toolbar-disabled):active {
     transition: 0s;
     background-color: rgba(144, 87, 85, 0.7);
+}
+.table-toolbar-disabled {
+    opacity: 0.5;
+    cursor: not-allowed !important;
 }
 
 .table-toolbar-add { background-image: url('assets/icons/add.svg'); }
@@ -777,6 +781,7 @@ Inputs
     text-align: left;
     letter-spacing: -0.5px;
     line-height: 1;
+    word-break: break-word;
 }
 .input-suggestions li span:last-child {
     color: rgba(0, 0, 0, 0.3);
@@ -877,6 +882,7 @@ Datalist tags
 Table customization
 *********************************************************************/
 #table-events > div,
+#table-faq > div,
 #table-music > div {
     max-height: calc(100vh - 140px);
 }
@@ -1062,7 +1068,8 @@ Modals
     flex-direction: column;
     gap: 10px;
     min-height: 200px;
-    max-width: calc(100% - 100px);
+    min-width: 500px;
+    max-width: min(1000px, calc(100% - 100px));
     max-height: calc(100% - 100px);
 }
 .modal h2 {
@@ -1098,6 +1105,9 @@ Modal datalist
 }
 .modal-datalist-preview {
     opacity: 0.5;
+}
+.modal-datalist-preview td:first-child img {
+    display: none;
 }
 .modal-datalist td {
     padding: 5px 10px;

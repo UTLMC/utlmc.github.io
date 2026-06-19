@@ -97,12 +97,12 @@
             <div class="table" id="table-announcements">
                 <ul class="table-toolbar">
                     <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>
-                    <li class="table-toolbar-remove" onclick="tableToolbarRemove(this)"></li>
-                    <li class="table-toolbar-move-up" onclick="tableToolbarMoveUp(this)"></li>
-                    <li class="table-toolbar-move-down" onclick="tableToolbarMoveDown(this)"></li>
-                    <li class="table-toolbar-move-top" onclick="tableToolbarMoveTop(this)"></li>
-                    <li class="table-toolbar-move-bottom" onclick="tableToolbarMoveBottom(this)"></li>
-                    <li class="table-toolbar-copy" onclick="tableToolbarCopy(this)"></li>
+                    <li class="table-toolbar-remove table-toolbar-disabled" onclick="tableToolbarRemove(this)"></li>
+                    <li class="table-toolbar-move-up table-toolbar-disabled" onclick="tableToolbarMoveUp(this)"></li>
+                    <li class="table-toolbar-move-down table-toolbar-disabled" onclick="tableToolbarMoveDown(this)"></li>
+                    <li class="table-toolbar-move-top table-toolbar-disabled" onclick="tableToolbarMoveTop(this)"></li>
+                    <li class="table-toolbar-move-bottom table-toolbar-disabled" onclick="tableToolbarMoveBottom(this)"></li>
+                    <li class="table-toolbar-copy table-toolbar-disabled" onclick="tableToolbarCopy(this)"></li>
                 </ul>
                 <div>
                     <table>
@@ -115,7 +115,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="0">
+                            <tr id="table-announcements-0">
                                 <td onclick="toggleRowSelect(event, this)">
                                     <input type="checkbox" class="checkbox" />
                                 </td>
@@ -128,7 +128,7 @@
                                 </td>
                                 <td contenteditable="true" onblur="validateMultilineInput(this)">This website is under construction or whatever...</td>
                             </tr>
-                            <tr class="1">
+                            <tr id="table-announcements-1">
                                 <td onclick="toggleRowSelect(event, this)">
                                     <input type="checkbox" class="checkbox" />
                                 </td>
@@ -150,12 +150,12 @@
             <div class="table" id="table-upcoming-events">
                 <ul class="table-toolbar">
                     <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>
-                    <li class="table-toolbar-remove" onclick="tableToolbarRemove(this)"></li>
-                    <li class="table-toolbar-move-up" onclick="tableToolbarMoveUp(this)"></li>
-                    <li class="table-toolbar-move-down" onclick="tableToolbarMoveDown(this)"></li>
-                    <li class="table-toolbar-move-top" onclick="tableToolbarMoveTop(this)"></li>
-                    <li class="table-toolbar-move-bottom" onclick="tableToolbarMoveBottom(this)"></li>
-                    <li class="table-toolbar-copy" onclick="tableToolbarCopy(this)"></li>
+                    <li class="table-toolbar-remove table-toolbar-disabled" onclick="tableToolbarRemove(this)"></li>
+                    <li class="table-toolbar-move-up table-toolbar-disabled" onclick="tableToolbarMoveUp(this)"></li>
+                    <li class="table-toolbar-move-down table-toolbar-disabled" onclick="tableToolbarMoveDown(this)"></li>
+                    <li class="table-toolbar-move-top table-toolbar-disabled" onclick="tableToolbarMoveTop(this)"></li>
+                    <li class="table-toolbar-move-bottom table-toolbar-disabled" onclick="tableToolbarMoveBottom(this)"></li>
+                    <li class="table-toolbar-copy table-toolbar-disabled" onclick="tableToolbarCopy(this)"></li>
                 </ul>
                 <div>
                     <table>
@@ -168,7 +168,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="0">
+                            <tr id="table-upcoming-events-0">
                                 <td onclick="toggleRowSelect(event, this)">
                                     <input type="checkbox" class="checkbox" />
                                 </td>
@@ -200,7 +200,7 @@
                                 </td>
                                 <td contenteditable="plaintext-only" onblur="validateInputAsset(this)">assets/images/locations/oise.webp</td>
                             </tr>
-                            <tr class="1">
+                            <tr id="table-upcoming-events-1">
                                 <td onclick="toggleRowSelect(event, this)">
                                     <input type="checkbox" class="checkbox" />
                                 </td>
@@ -337,12 +337,12 @@
             <div class="table" id="table-members">
                 <ul class="table-toolbar">
                     <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>
-                    <li class="table-toolbar-remove" onclick="tableToolbarRemove(this)"></li>
-                    <li class="table-toolbar-move-up" onclick="tableToolbarMoveUp(this)"></li>
-                    <li class="table-toolbar-move-down" onclick="tableToolbarMoveDown(this)"></li>
-                    <li class="table-toolbar-move-top" onclick="tableToolbarMoveTop(this)"></li>
-                    <li class="table-toolbar-move-bottom" onclick="tableToolbarMoveBottom(this)"></li>
-                    <li class="table-toolbar-copy" onclick="tableToolbarCopy(this)"></li>
+                    <li class="table-toolbar-remove table-toolbar-disabled" onclick="tableToolbarRemove(this)"></li>
+                    <li class="table-toolbar-move-up table-toolbar-disabled" onclick="tableToolbarMoveUp(this)"></li>
+                    <li class="table-toolbar-move-down table-toolbar-disabled" onclick="tableToolbarMoveDown(this)"></li>
+                    <li class="table-toolbar-move-top table-toolbar-disabled" onclick="tableToolbarMoveTop(this)"></li>
+                    <li class="table-toolbar-move-bottom table-toolbar-disabled" onclick="tableToolbarMoveBottom(this)"></li>
+                    <li class="table-toolbar-copy table-toolbar-disabled" onclick="tableToolbarCopy(this)"></li>
                     <li class="table-toolbar-search-container">
                         <div class="input">
                             <div>
@@ -365,7 +365,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="0">
+                            <tr id="table-members-0">
                                 <td onclick="toggleRowSelect(event, this)">
                                     <input type="checkbox" class="checkbox" />
                                 </td>
@@ -409,7 +409,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr class="1">
+                            <tr id="table-members-1">
                                 <td onclick="toggleRowSelect(event, this)">
                                     <input type="checkbox" class="checkbox" />
                                 </td>
@@ -453,7 +453,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr class="2">
+                            <tr id="table-members-2">
                                 <td onclick="toggleRowSelect(event, this)">
                                     <input type="checkbox" class="checkbox" />
                                 </td>
@@ -507,12 +507,12 @@
             <div class="table" id="table-music">
                 <ul class="table-toolbar">
                     <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>
-                    <li class="table-toolbar-remove" onclick="tableToolbarRemove(this)"></li>
-                    <li class="table-toolbar-move-up" onclick="tableToolbarMoveUp(this)"></li>
-                    <li class="table-toolbar-move-down" onclick="tableToolbarMoveDown(this)"></li>
-                    <li class="table-toolbar-move-top" onclick="tableToolbarMoveTop(this)"></li>
-                    <li class="table-toolbar-move-bottom" onclick="tableToolbarMoveBottom(this)"></li>
-                    <li class="table-toolbar-copy" onclick="tableToolbarCopy(this)"></li>
+                    <li class="table-toolbar-remove table-toolbar-disabled" onclick="tableToolbarRemove(this)"></li>
+                    <li class="table-toolbar-move-up table-toolbar-disabled" onclick="tableToolbarMoveUp(this)"></li>
+                    <li class="table-toolbar-move-down table-toolbar-disabled" onclick="tableToolbarMoveDown(this)"></li>
+                    <li class="table-toolbar-move-top table-toolbar-disabled" onclick="tableToolbarMoveTop(this)"></li>
+                    <li class="table-toolbar-move-bottom table-toolbar-disabled" onclick="tableToolbarMoveBottom(this)"></li>
+                    <li class="table-toolbar-copy table-toolbar-disabled" onclick="tableToolbarCopy(this)"></li>
                     <li class="table-toolbar-search-container">
                         <div class="input">
                             <div>
@@ -536,7 +536,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="0">
+                            <tr id="table-music-0">
                                 <td onclick="toggleRowSelect(event, this)">
                                     <input type="checkbox" class="checkbox" />
                                 </td>
@@ -559,7 +559,7 @@
                                 </td>
                                 <td contenteditable="plaintext-only" onblur="validateInput(this)">https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
                             </tr>
-                            <tr class="0-0 subtable-row">
+                            <tr id="table-music-0-0" class="subtable-row">
                                 <td></td>
                                 <td colspan="6" class="subtable-container">
                                     <ul class="subtable">
@@ -573,9 +573,9 @@
                                                             <ul class="datalist-tags">
                                                                 <li>
                                                                     <span>2025 End of Fall Concert</span>
-                                                                    <img src="assets/icons/add.svg" class="x-button" />
+                                                                    <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
                                                                 </li>
-                                                                <div class="input datalist-tag-add" onclick="addNewTagToDatalist(this)">
+                                                                <div class="input datalist-tag-add" onclick="expandNewTagButton(this)">
                                                                     <div>
                                                                         <img src="assets/icons/add.svg" />
                                                                         <input class="input-event" type="text" placeholder="Enter event..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
@@ -618,13 +618,13 @@
                                                             <ul class="datalist-tags">
                                                                 <li>
                                                                     <span>Person 1</span>
-                                                                    <img src="assets/icons/add.svg" class="x-button" />
+                                                                    <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
                                                                 </li>
                                                                 <li>
                                                                     <span>Person 2</span>
-                                                                    <img src="assets/icons/add.svg" class="x-button" />
+                                                                    <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
                                                                 </li>
-                                                                <div class="input datalist-tag-add" onclick="addNewTagToDatalist(this)">
+                                                                <div class="input datalist-tag-add" onclick="expandNewTagButton(this)">
                                                                     <div>
                                                                         <img src="assets/icons/add.svg" />
                                                                         <input type="text" class="input-member" placeholder="Enter arranger..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
@@ -723,12 +723,12 @@
             <div class="table" id="table-events">
                 <ul class="table-toolbar">
                     <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>
-                    <li class="table-toolbar-remove" onclick="tableToolbarRemove(this)"></li>
-                    <li class="table-toolbar-move-up" onclick="tableToolbarMoveUp(this)"></li>
-                    <li class="table-toolbar-move-down" onclick="tableToolbarMoveDown(this)"></li>
-                    <li class="table-toolbar-move-top" onclick="tableToolbarMoveTop(this)"></li>
-                    <li class="table-toolbar-move-bottom" onclick="tableToolbarMoveBottom(this)"></li>
-                    <li class="table-toolbar-copy" onclick="tableToolbarCopy(this)"></li>
+                    <li class="table-toolbar-remove table-toolbar-disabled" onclick="tableToolbarRemove(this)"></li>
+                    <li class="table-toolbar-move-up table-toolbar-disabled" onclick="tableToolbarMoveUp(this)"></li>
+                    <li class="table-toolbar-move-down table-toolbar-disabled" onclick="tableToolbarMoveDown(this)"></li>
+                    <li class="table-toolbar-move-top table-toolbar-disabled" onclick="tableToolbarMoveTop(this)"></li>
+                    <li class="table-toolbar-move-bottom table-toolbar-disabled" onclick="tableToolbarMoveBottom(this)"></li>
+                    <li class="table-toolbar-copy table-toolbar-disabled" onclick="tableToolbarCopy(this)"></li>
                     <li class="table-toolbar-search-container">
                         <div class="input">
                             <div>
@@ -753,7 +753,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="0">
+                            <tr id="table-events-0">
                                 <td onclick="toggleRowSelect(event, this)">
                                     <input type="checkbox" class="checkbox" />
                                 </td>
@@ -783,7 +783,7 @@
                                 </td>
                                 <td contenteditable="plaintext-only" onblur="validateInput(this)">https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
                             </tr>
-                            <tr class="0-0 subtable-row">
+                            <tr id="table-events-0-0" class="subtable-row">
                                 <td></td>
                                 <td colspan="7" class="subtable-container">
                                     <ul class="subtable">
@@ -804,17 +804,17 @@
             <div class="table" id="table-faq">
                 <ul class="table-toolbar">
                     <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>
-                    <li class="table-toolbar-remove" onclick="tableToolbarRemove(this)"></li>
-                    <li class="table-toolbar-move-up" onclick="tableToolbarMoveUp(this)"></li>
-                    <li class="table-toolbar-move-down" onclick="tableToolbarMoveDown(this)"></li>
-                    <li class="table-toolbar-move-top" onclick="tableToolbarMoveTop(this)"></li>
-                    <li class="table-toolbar-move-bottom" onclick="tableToolbarMoveBottom(this)"></li>
-                    <li class="table-toolbar-copy" onclick="tableToolbarCopy(this)"></li>
+                    <li class="table-toolbar-remove table-toolbar-disabled" onclick="tableToolbarRemove(this)"></li>
+                    <li class="table-toolbar-move-up table-toolbar-disabled" onclick="tableToolbarMoveUp(this)"></li>
+                    <li class="table-toolbar-move-down table-toolbar-disabled" onclick="tableToolbarMoveDown(this)"></li>
+                    <li class="table-toolbar-move-top table-toolbar-disabled" onclick="tableToolbarMoveTop(this)"></li>
+                    <li class="table-toolbar-move-bottom table-toolbar-disabled" onclick="tableToolbarMoveBottom(this)"></li>
+                    <li class="table-toolbar-copy table-toolbar-disabled" onclick="tableToolbarCopy(this)"></li>
                 </ul>
                 <div>
                     <table>
                         <tbody>
-                            <tr class="0">
+                            <tr id="table-faq-0">
                                 <td onclick="toggleRowSelect(event, this)">
                                     <input type="checkbox" class="checkbox" />
                                 </td>
@@ -823,7 +823,7 @@
                                     <div class="table-faq-a" contenteditable="true" onblur="validateMultilineInput(this)">This is an answer to the question.</div>
                                 </td>
                             </tr>
-                            <tr class="1">
+                            <tr id="table-faq-1">
                                 <td onclick="toggleRowSelect(event, this)">
                                     <input type="checkbox" class="checkbox" />
                                 </td>
@@ -864,19 +864,19 @@
             <ul class="datalist-tags" id="datalist-member-instruments">
                 <li>
                     <span>Piano</span>
-                    <img src="assets/icons/add.svg" class="x-button" />
+                    <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
                 </li>
                 <li>
                     <span>Voice</span>
-                    <img src="assets/icons/add.svg" class="x-button" />
+                    <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
                 </li>
                 <li>
                     <span>Electric Guitar</span>
-                    <img src="assets/icons/add.svg" class="x-button" />
+                    <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
                 </li>
                 <li>
                     <span>Drums</span>
-                    <img src="assets/icons/add.svg" class="x-button" />
+                    <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
                 </li>
             </ul>
             <div class="input">
@@ -902,11 +902,11 @@
             <ul class="datalist-tags" id="datalist-member-roles">
                 <li>
                     <span>Arranger</span>
-                    <img src="assets/icons/add.svg" class="x-button" />
+                    <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
                 </li>
                 <li>
                     <span>Artist</span>
-                    <img src="assets/icons/add.svg" class="x-button" />
+                    <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
                 </li>
             </ul>
         </div>
@@ -917,7 +917,7 @@
                 <table class="modal-datalist" id="datalist-modal-member-links">
                     <tbody>
                         <tr>
-                            <td><img src="assets/icons/add.svg" class="x-button" /></td>
+                            <td><img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" /></td>
                             <td>
                                 <select>
                                     <option>Bandcamp</option>
@@ -934,7 +934,7 @@
                             <td contenteditable="plaintext-only" onblur="validateInput(this)">https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
                         </tr>
                         <tr>
-                            <td><img src="assets/icons/add.svg" class="x-button" /></td>
+                            <td><img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" /></td>
                             <td>
                                 <select>
                                     <option>Bandcamp</option>
@@ -978,7 +978,7 @@
                 <table class="modal-datalist">
                     <tbody>
                         <tr>
-                            <td><img src="assets/icons/add.svg" class="x-button" /></td>
+                            <td><img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" /></td>
                             <td>
                                 <div class="input">
                                     <div>
@@ -1005,13 +1005,13 @@
                                 <ul class="datalist-tags">
                                     <li>
                                         <span>Person 1</span>
-                                        <img src="assets/icons/add.svg" class="x-button" />
+                                        <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
                                     </li>
                                     <li class="tag-custom">
                                         <span>Person 2</span>
-                                        <img src="assets/icons/add.svg" class="x-button" />
+                                        <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
                                     </li>
-                                    <li class="input datalist-tag-add" onclick="addNewTagToDatalist(this)">
+                                    <li class="input datalist-tag-add" onclick="expandNewTagButton(this)">
                                         <div>
                                             <img src="assets/icons/add.svg" />
                                             <input type="text" class="input-member" placeholder="Enter performer..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
@@ -1035,7 +1035,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><img src="assets/icons/add.svg" class="x-button" /></td>
+                            <td><img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" /></td>
                             <td>
                                 <div class="input">
                                     <div>
@@ -1062,13 +1062,13 @@
                                 <ul class="datalist-tags">
                                     <li>
                                         <span>Person 1</span>
-                                        <img src="assets/icons/add.svg" class="x-button" />
+                                        <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
                                     </li>
                                     <li>
                                         <span>Person 2</span>
-                                        <img src="assets/icons/add.svg" class="x-button" />
+                                        <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
                                     </li>
-                                    <li class="input datalist-tag-add" onclick="addNewTagToDatalist(this)">
+                                    <li class="input datalist-tag-add" onclick="expandNewTagButton(this)">
                                         <div>
                                             <img src="assets/icons/add.svg" />
                                             <input type="text" class="input-member" placeholder="Enter performer..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
@@ -1117,7 +1117,7 @@
                             </td>
                             <td>
                                 <ul class="datalist-tags">
-                                    <li class="input datalist-tag-add" onclick="addNewTagToDatalist(this)">
+                                    <li class="input datalist-tag-add" onclick="expandNewTagButton(this)">
                                         <div>
                                             <img src="assets/icons/add.svg" />
                                             <input type="text" class="input-member" placeholder="Enter performer..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />

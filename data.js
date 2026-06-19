@@ -71,31 +71,28 @@ const ANNOUNCEMENTS = [
         text: 'The LMC is opening for its 3rd year this 2025-2026 Fall-Winter term! Our first meeting is at XX:XX pm at XXXX on Sept. XX. Come get a better idea of our club. No instruments needed. Click [this link](https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform) to become a member!',
         from: '2025-01-01',
     }
-];
+].map((x, i) => ({...x, id: i}));
 
 const UPCOMING_EVENTS = [
     {   
-        id: 0,
         location: 'OISE C-154',
         from: '2025-01-01',
         until: '2029-01-22',
         image: 'assets/images/locations/oise.webp'
     },
     {
-        id: 1,
         location: "Cat's Eye",
         from: '2025-01-01',
         until: '2029-01-22',
         image: 'assets/images/locations/oise.webp'
     },
     {
-        id: 2,
         location: "OISE Something",
         from: '2025-01-01',
         until: '2029-01-22',
         image: 'assets/images/locations/oise.webp'
     },
-];
+].map((x, i) => ({...x, id: i}));
 
 const MEMBERS = [
     {
@@ -1259,6 +1256,7 @@ const MUSIC = [
                         10
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     2
                 ],
@@ -1312,6 +1310,7 @@ const MUSIC = [
                         10
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     9
                 ],
@@ -1365,6 +1364,7 @@ const MUSIC = [
                         10
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     3
                 ],
@@ -1405,6 +1405,7 @@ const MUSIC = [
                         13
                     ]
                 },
+                "id": 0,
                 "songType": "Small",
                 "link": "https://www.youtube.com/watch?v=FvuYsi84Sfg"
             }
@@ -1439,6 +1440,7 @@ const MUSIC = [
                         1
                     ]
                 },
+                "id": 0,
                 "songType": "Small",
                 "link": "https://www.youtube.com/watch?v=_f_jcX2gmpQ"
             }
@@ -1477,6 +1479,7 @@ const MUSIC = [
                         7
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     0
                 ],
@@ -1512,6 +1515,7 @@ const MUSIC = [
                         7
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -1534,6 +1538,7 @@ const MUSIC = [
                         38
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -1565,6 +1570,7 @@ const MUSIC = [
                         13
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -1594,6 +1600,7 @@ const MUSIC = [
                         1
                     ]
                 },
+                "id": 0,
                 "songType": "Small",
                 "link": "https://www.youtube.com/watch?v=d0apOZbRKU4"
             }
@@ -1627,6 +1634,7 @@ const MUSIC = [
                         7
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -1656,6 +1664,7 @@ const MUSIC = [
                         20
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -1681,6 +1690,7 @@ const MUSIC = [
                         9
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     9
                 ],
@@ -1736,6 +1746,7 @@ const MUSIC = [
                         10
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     9
                 ],
@@ -1791,6 +1802,7 @@ const MUSIC = [
                         10
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     3
                 ],
@@ -1849,6 +1861,7 @@ const MUSIC = [
                         10
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     2
                 ],
@@ -1891,6 +1904,7 @@ const MUSIC = [
                         24
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     "OpticWattz"
                 ],
@@ -1922,6 +1936,7 @@ const MUSIC = [
                         13
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -1950,6 +1965,7 @@ const MUSIC = [
                         9
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     9
                 ],
@@ -1977,6 +1993,7 @@ const MUSIC = [
                         9
                     ]
                 },
+                "id": 1,
                 "arranger": [
                     9
                 ],
@@ -2021,6 +2038,7 @@ const MUSIC = [
                         24
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     3
                 ],
@@ -2057,6 +2075,7 @@ const MUSIC = [
                         21
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -2082,6 +2101,7 @@ const MUSIC = [
                         21
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -2113,6 +2133,7 @@ const MUSIC = [
                         1
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -2134,6 +2155,7 @@ const MUSIC = [
                         28
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     "Animenz"
                 ],
@@ -2161,6 +2183,7 @@ const MUSIC = [
                         2
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     2
                 ],
@@ -2197,6 +2220,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "group": "Tokuiten",
                 "songType": "Small"
             }
@@ -2231,6 +2255,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "group": "Tokuiten",
                 "songType": "Small"
             }
@@ -2265,6 +2290,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "group": "Tokuiten",
                 "songType": "Small"
             }
@@ -2297,6 +2323,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     9
                 ],
@@ -2324,6 +2351,7 @@ const MUSIC = [
                         6
                     ]
                 },
+                "id": 0,
                 "songType": "Small",
                 "link": "https://www.youtube.com/watch?v=BkWCOBDLsZI"
             }
@@ -2381,6 +2409,7 @@ const MUSIC = [
                         10
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     3,
                     9
@@ -2428,6 +2457,7 @@ const MUSIC = [
                         10
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     1
                 ],
@@ -2475,6 +2505,7 @@ const MUSIC = [
                         10
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     35
                 ],
@@ -2522,6 +2553,7 @@ const MUSIC = [
                         24
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     2
                 ],
@@ -2558,6 +2590,7 @@ const MUSIC = [
                         27
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     9
                 ],
@@ -2596,6 +2629,7 @@ const MUSIC = [
                         12
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     13
                 ],
@@ -2630,6 +2664,7 @@ const MUSIC = [
                         12
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -2656,6 +2691,7 @@ const MUSIC = [
                         20
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -2689,6 +2725,7 @@ const MUSIC = [
                         22
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -2722,6 +2759,7 @@ const MUSIC = [
                         22
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -2750,6 +2788,7 @@ const MUSIC = [
                         1
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -2781,6 +2820,7 @@ const MUSIC = [
                         21
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -2817,6 +2857,7 @@ const MUSIC = [
                         13
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     3
                 ],
@@ -2856,6 +2897,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "group": "Tokuiten",
                 "songType": "Small"
             }
@@ -2891,6 +2933,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "group": "Tokuiten",
                 "songType": "Small"
             }
@@ -2928,6 +2971,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "group": "Tokuiten",
                 "songType": "Small"
             }
@@ -2965,6 +3009,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "group": "Tokuiten",
                 "songType": "Small"
             }
@@ -3019,6 +3064,7 @@ const MUSIC = [
                         24
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     2
                 ],
@@ -3060,6 +3106,7 @@ const MUSIC = [
                         1
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     9
                 ],
@@ -3082,6 +3129,7 @@ const MUSIC = [
                         5
                     ]
                 },
+                "id": 0,
                 "songType": "Small",
                 "link": "https://www.youtube.com/watch?v=jHEf-jMVkFA"
             }
@@ -3115,6 +3163,7 @@ const MUSIC = [
                         48
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     3
                 ],
@@ -3149,6 +3198,7 @@ const MUSIC = [
                         48
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     3
                 ],
@@ -3200,6 +3250,7 @@ const MUSIC = [
                         53
                     ]
                 },
+                "id": 1,
                 "arranger": [
                     3
                 ],
@@ -3236,6 +3287,7 @@ const MUSIC = [
                         1
                     ]
                 },
+                "id": 0,
                 "group": "2group2",
                 "songType": "Small"
             }
@@ -3268,6 +3320,7 @@ const MUSIC = [
                         1
                     ]
                 },
+                "id": 0,
                 "group": "2group2",
                 "songType": "Small"
             }
@@ -3299,6 +3352,7 @@ const MUSIC = [
                         8
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     55
                 ],
@@ -3343,6 +3397,7 @@ const MUSIC = [
                         53
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     27
                 ],
@@ -3393,6 +3448,7 @@ const MUSIC = [
                         10
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     27
                 ],
@@ -3428,6 +3484,7 @@ const MUSIC = [
                         22
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -3464,6 +3521,7 @@ const MUSIC = [
                         22
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -3495,6 +3553,7 @@ const MUSIC = [
                         27
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     27
                 ],
@@ -3533,6 +3592,7 @@ const MUSIC = [
                         11
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     3
                 ],
@@ -3569,6 +3629,7 @@ const MUSIC = [
                         58
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -3620,6 +3681,7 @@ const MUSIC = [
                         37
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     2
                 ],
@@ -3671,6 +3733,7 @@ const MUSIC = [
                         53
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     3
                 ],
@@ -3707,6 +3770,7 @@ const MUSIC = [
                         60
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -3741,6 +3805,7 @@ const MUSIC = [
                         48
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -3771,6 +3836,7 @@ const MUSIC = [
                         49
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     9
                 ],
@@ -3808,6 +3874,7 @@ const MUSIC = [
                         9
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     9
                 ],
@@ -3839,6 +3906,7 @@ const MUSIC = [
                         9
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     9
                 ],
@@ -3882,6 +3950,7 @@ const MUSIC = [
                         11
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     9
                 ],
@@ -3922,6 +3991,7 @@ const MUSIC = [
                         9
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     9
                 ],
@@ -3946,6 +4016,7 @@ const MUSIC = [
                         28
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     "Animenz"
                 ],
@@ -4003,6 +4074,7 @@ const MUSIC = [
                         10
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     2
                 ],
@@ -4073,6 +4145,7 @@ const MUSIC = [
                         53
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     9
                 ],
@@ -4107,6 +4180,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "group": "LMC Jazz Group",
                 "songType": "Small"
             }
@@ -4135,6 +4209,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "group": "LMC Jazz Group",
                 "songType": "Small"
             }
@@ -4169,6 +4244,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "group": "LMC Jazz Group",
                 "songType": "Small"
             }
@@ -4200,6 +4276,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     3
                 ],
@@ -4229,6 +4306,7 @@ const MUSIC = [
                         "Emiri"
                     ]
                 },
+                "id": 0,
                 "group": "New Resonance Choir",
                 "songType": "External"
             }
@@ -4256,6 +4334,7 @@ const MUSIC = [
                         "Emiri"
                     ]
                 },
+                "id": 0,
                 "group": "New Resonance Choir",
                 "songType": "External"
             }
@@ -4278,6 +4357,7 @@ const MUSIC = [
                         "Fiona"
                     ]
                 },
+                "id": 0,
                 "group": "New Resonance Choir",
                 "songType": "External"
             }
@@ -4302,6 +4382,7 @@ const MUSIC = [
                         "Emiri"
                     ]
                 },
+                "id": 0,
                 "group": "New Resonance Choir",
                 "songType": "External"
             }
@@ -4331,6 +4412,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "group": "2group 2",
                 "songType": "Small"
             }
@@ -4355,6 +4437,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -4378,6 +4461,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -4396,6 +4480,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -4425,6 +4510,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     27
                 ],
@@ -4457,6 +4543,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     27
                 ],
@@ -4491,6 +4578,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "group": "39!",
                 "songType": "Small"
             }
@@ -4517,6 +4605,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     9
                 ],
@@ -4552,6 +4641,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     9
                 ],
@@ -4575,6 +4665,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -4605,6 +4696,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "group": "Super Sentai",
                 "songType": "Small"
             }
@@ -4636,6 +4728,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "group": "Super Sentai",
                 "songType": "Small"
             }
@@ -4664,6 +4757,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "group": "Super Sentai",
                 "songType": "Small"
             }
@@ -4713,6 +4807,7 @@ const MUSIC = [
                         53
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     3
                 ],
@@ -4745,6 +4840,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -4765,6 +4861,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -4789,6 +4886,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "group": "Bows 4 Belts",
                 "songType": "Small"
             }
@@ -4817,6 +4915,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "group": "Bows 4 Belts",
                 "songType": "Small"
             }
@@ -4862,6 +4961,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     27,
                     77
@@ -4896,6 +4996,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -4926,6 +5027,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -4976,6 +5078,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     "8-Bit Big Band"
                 ],
@@ -5025,6 +5128,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     3
                 ],
@@ -5076,6 +5180,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     "Brandon Douglas"
                 ],
@@ -5112,6 +5217,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -5143,6 +5249,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -5172,6 +5279,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -5222,6 +5330,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     27
                 ],
@@ -5257,6 +5366,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -5309,6 +5419,7 @@ const MUSIC = [
                         35
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     9
                 ],
@@ -5359,6 +5470,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     13
                 ],
@@ -5400,6 +5512,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     9
                 ],
@@ -5426,6 +5539,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     9
                 ],
@@ -5485,6 +5599,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     9
                 ],
@@ -5520,6 +5635,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     13
                 ],
@@ -5550,6 +5666,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "group": "Masters of Spinjitzu (Formerly Super Sentai)",
                 "songType": "Small"
             }
@@ -5578,6 +5695,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "group": "2group 2",
                 "songType": "Small"
             }
@@ -5621,6 +5739,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -5649,6 +5768,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -5705,6 +5825,7 @@ const MUSIC = [
                         10
                     ]
                 },
+                "id": 0,
                 "arranger": [
                     2
                 ],
@@ -5740,6 +5861,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -5778,6 +5900,7 @@ const MUSIC = [
                         ""
                     ]
                 },
+                "id": 0,
                 "songType": "Small"
             }
         ]
@@ -6220,7 +6343,7 @@ const FAQ = [
     {
         q: 'Is LMC only for University of Toronto students?',
         a: [
-            'No. While most LMC members are UofT St. George students, individuals of any background are free to join as long as they can physically play with us. Members unable to commute to campus are encouraged to participate online through online events and  projects, which we upload to our YouTube channel.'
+            'No. While most LMC members are UofT St. George students, individuals of any background are free to join as long as they can physically play with us. Members unable to commute to campus are encouraged to participate online through online events and projects, which we upload to our YouTube channel.'
         ]
     },
     {
