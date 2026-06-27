@@ -214,7 +214,12 @@ function toggleTab(element) {
     cssGetId(tabId).classList.add('tab-active');
     
     // Set URL hash
+
+    if (tabId.endsWith('events')) {
+        window.location.hash = `events/${TABLE_EVENTS.active}`;
+    } else {
     window.location.hash = tabId.endsWith('home') ? '#' : `#${tabId.slice(4)}`;
+    }
 
     // Close mobile menu
     if (window.getComputedStyle(cssGetId('nav-page-mobile')).display !== 'none') {
@@ -280,7 +285,10 @@ function toggleEventTab(element, id) {
     }
     oldActiveElement?.classList.remove(navActiveClass);
     element.classList.add(navActiveClass);
+
     TABLE_EVENTS.active = id;
+    window.location.hash = `events/${TABLE_EVENTS.active}`;
+
     injectEventBody();
     // setTimeout(() => {
     //     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -503,12 +511,18 @@ window.addEventListener('DOMContentLoaded', () => {
     injectFAQ();
     injectFormLinks();
     injectCarousel();
-    updateEventsSidebar();
-    injectEventBody();
     updateMusicTable();
 
     // Navigate to tab in hash
-    const page = window.location.hash.substring(1);
+    const [page, eventId] = window.location.hash.substring(1).split("/");
+    if (page === "events" && eventId < EVENTS.length) {
+        TABLE_EVENTS.active = Number(eventId);
+    } else {
+        TABLE_EVENTS.active = EVENTS.length - 1;
+    }
+
+    updateEventsSidebar();
+    injectEventBody();
     if (page.length > 0) {
         toggleTab(`nav-${page}`);
     }
