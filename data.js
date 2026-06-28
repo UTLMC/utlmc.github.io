@@ -94,6 +94,8 @@ const UPCOMING_EVENTS = [
     },
 ].map((x, i) => ({...x, id: i}));
 
+const ROLES = ["Executive (23)", "Executive (23/24)", "Executive (23/25)", "Executive (25)", "Executive (24)", "Assistant Executive (25)", "Arranger", "Artist", "Logistics", "Website", "OG"];
+
 const MEMBERS = [
     {
         "id": 0,
@@ -108,8 +110,8 @@ const MEMBERS = [
             19
         ],
         "roles": [
-            "Executive (23)",
-            "OG"
+            10,
+            0
         ],
         "links": {}
     },
@@ -126,9 +128,9 @@ const MEMBERS = [
             36
         ],
         "roles": [
-            "Executive (23/24)",
-            "Logistics",
-            "OG"
+            10,
+            8,
+            1
         ],
         "links": {}
     },
@@ -142,9 +144,9 @@ const MEMBERS = [
             17
         ],
         "roles": [
-            "Executive (23/25)",
-            "Arranger",
-            "OG"
+            10,
+            6,
+            2
         ],
         "links": {
             "discord": "amoguus",
@@ -166,9 +168,9 @@ const MEMBERS = [
             17
         ],
         "roles": [
-            "Executive (25)",
-            "Arranger",
-            "OG"
+            10,
+            6,
+            3
         ],
         "links": {
             "discord": "pixelatedmike",
@@ -186,7 +188,7 @@ const MEMBERS = [
             8
         ],
         "roles": [
-            "OG"
+            10
         ],
         "links": {}
     },
@@ -199,8 +201,8 @@ const MEMBERS = [
             4
         ],
         "roles": [
-            "Executive (24)",
-            "OG"
+            10,
+            4
         ],
         "links": {
             "youtube": [
@@ -219,7 +221,7 @@ const MEMBERS = [
             7
         ],
         "roles": [
-            "OG"
+            10
         ],
         "links": {
             "youtube": [
@@ -237,7 +239,7 @@ const MEMBERS = [
             14
         ],
         "roles": [
-            "OG"
+            10
         ],
         "links": {}
     },
@@ -254,7 +256,7 @@ const MEMBERS = [
             14
         ],
         "roles": [
-            "OG"
+            10
         ],
         "links": {}
     },
@@ -268,9 +270,9 @@ const MEMBERS = [
             21
         ],
         "roles": [
-            "Arranger",
-            "Website",
-            "OG"
+            10,
+            6,
+            9
         ],
         "links": {}
     },
@@ -285,8 +287,8 @@ const MEMBERS = [
             36
         ],
         "roles": [
-            "Artist",
-            "OG"
+            10,
+            7
         ],
         "links": {}
     },
@@ -305,8 +307,8 @@ const MEMBERS = [
             29
         ],
         "roles": [
-            "Artist",
-            "OG"
+            10,
+            7
         ],
         "links": {}
     },
@@ -319,7 +321,7 @@ const MEMBERS = [
             17
         ],
         "roles": [
-            "OG"
+            10
         ],
         "links": {}
     },
@@ -335,7 +337,7 @@ const MEMBERS = [
             17
         ],
         "roles": [
-            "Arranger"
+            6
         ],
         "links": {
             "spotify": [
@@ -475,7 +477,7 @@ const MEMBERS = [
             35
         ],
         "roles": [
-            "Artist"
+            7
         ],
         "links": {}
     },
@@ -502,8 +504,8 @@ const MEMBERS = [
             13
         ],
         "roles": [
-            "Assistant Executive (25)",
-            "Logistics"
+            8,
+            5
         ],
         "links": {
             "discord": "saltedh"
@@ -521,7 +523,7 @@ const MEMBERS = [
             27
         ],
         "roles": [
-            "Arranger"
+            6
         ],
         "links": {
             "youtube": [
@@ -612,7 +614,7 @@ const MEMBERS = [
             12
         ],
         "roles": [
-            "Artist"
+            7
         ],
         "links": {}
     },
@@ -672,7 +674,7 @@ const MEMBERS = [
             14
         ],
         "roles": [
-            "Assistant Executive (25)"
+            5
         ],
         "links": {
             "discord": "sopha__a"
@@ -688,7 +690,7 @@ const MEMBERS = [
             5
         ],
         "roles": [
-            "Assistant Executive (25)"
+            5
         ],
         "links": {
             "discord": "eeeric_nothing"
@@ -855,7 +857,7 @@ const MEMBERS = [
             36
         ],
         "roles": [
-            "Logistics"
+            8
         ],
         "links": {}
     },
@@ -944,7 +946,7 @@ const MEMBERS = [
             14
         ],
         "roles": [
-            "Logistics"
+            8
         ],
         "links": {}
     },

@@ -905,7 +905,15 @@ function filterMember(x) {
         }
     }
     if (includeTags || excludeTags) {
-        const tags = new Set([...x.roles.map(x => x.slice(0, x.includes(" (") ? x.indexOf(' (') : undefined)), ...x.instruments.map(x => INSTRUMENTS[x].toLowerCase())]);
+        const roles = x.roles.map(x => {
+            const role = ROLES[x];
+            if (role.includes(" (")) {
+                return role.slice(0, x.lastINdexOf(' ('));
+            }
+            return role;
+        });
+        const instruments = x.instruments.map(x => INSTRUMENTS[x].toLowerCase());
+        const tags = new Set([...roles, ...instruments]);
         if (includeTags && includeTags.split(',').map(x => x.toLowerCase().trim()).some(x => !tags.has(x))) return false;
         if (excludeTags && excludeTags.split(',').map(x => x.toLowerCase().trim()).some(x => tags.has(x))) return false;
     }
@@ -925,7 +933,7 @@ function constructMemberRow(member) {
                 classes: ['tag-container'],
                 children: [
                     ...member.instruments.map(x => ({ text: INSTRUMENTS[x], type: 'instrument' })),
-                    ...member.roles.map(x => ({ text: x, type: 'role' }))
+                    ...member.roles.map(x => ({ text: ROLES[x], type: 'role' }))
                 ].map(x => ({
                     element: 'span',
                     classes: [`li-${x.type}`],
@@ -1064,9 +1072,10 @@ function getPersonnel() {
         personnel[instrument] += 1;
     }
     const personnelRoles = new Set(['Arranger', 'Artist', 'Video Editor']);
-    for (const role of personnelRoles) {
-        for (const member of MEMBERS) {
-            if (member.roles.includes(role)) {
+    for (const member of MEMBERS) {
+        for (const i of member.roles) {
+            const role = ROLES[i];
+            if (personnelRoles.has(role)) {
                 if (!personnel[role]) {
                     personnel[role] = 0;
                 }
@@ -1137,7 +1146,7 @@ function getExecTeam() {
     const now = new Date();
     let currYear = now.getMonth() >= 7 ? now.getFullYear() : now.getFullYear() - 1;
 
-    const isExecForYear = (x, year) => x.roles.some(role => role.includes(String(year).slice(2)));
+    const isExecForYear = (x, year) => x.roles.some(role => ROLES[role].includes(String(year).slice(2)));
     let execTeam = MEMBERS.filter(x => isExecForYear(x, currYear));
     while (execTeam.length === 0) {
         currYear -= 1;
@@ -1152,10 +1161,10 @@ function getExecTeam() {
 function injectExecTeam(execTeam, year) {
     function execTeamSorter(a, b) {
         // Order of display: executives, then alphabetically by role, then by real name
-        let roleA = a.roles.find(role => role.includes(digit));
-        let roleB = b.roles.find(role => role.includes(digit));
-        roleA = roleA.slice(0, roleA.indexOf(' ('));
-        roleB = roleB.slice(0, roleB.indexOf(' ('));
+        let roleA = a.roles.find(role => ROLES[role].includes(digit));
+        let roleB = b.roles.find(role => ROLES[role].includes(digit));
+        roleA = ROLES[roleA].slice(0, ROLES[roleA].indexOf(' ('));
+        roleB = ROLES[roleB].slice(0, ROLES[roleB].indexOf(' ('));
 
         const execA = roleA === 'Executive';
         const execB = roleB === 'Executive';
@@ -1175,10 +1184,11 @@ function injectExecTeam(execTeam, year) {
     const digit = String(year).slice(2);
     const execTeamProfile = cssGetId('exec-team-profile');
     execTeam.sort(execTeamSorter).forEach(x => {
-        const execRole = x.roles.find(role => role.includes(digit));
+        const roles = x.roles.map(i => ROLES[i]);
+        const execRole = roles.find(role => role.includes(digit));
         const nonExecRoles = [
             ...x.instruments.map(y => INSTRUMENTS[y]),
-            ...x.roles.filter(role => !role.includes(" ("))
+            ...roles.filter(role => !role.includes(" ("))
         ];
 
         execTeamProfile.appendChild(construct({
@@ -1237,7 +1247,7 @@ function injectHomeOutreach(execTeam) {
     const outreachOptions = new Set(['discord', 'instagram']);
     const homeOutreach = cssGetId('home-outreach');
     execTeam
-        .filter(x => x.roles.some(role => role.startsWith('Executive')))
+        .filter(x => x.roles.some(role => ROLES[role].startsWith('Executive')))
         .sort((a, b) => a.name.localeCompare(b.name))
         .forEach(x => {
             homeOutreach.appendChild(construct({

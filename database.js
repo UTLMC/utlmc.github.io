@@ -89,6 +89,7 @@ function secondsToTimestamp(seconds) {
     return `${h}:${m.padStart(2, '0')}:${s.padStart(2, '0')}`;
 }
 function capitalize(str) {
+    if (!str) return str;
     return str.split(' ').map(x => x[0].toUpperCase() + x.slice(1)).join(' ');
 }
 function rgbToHex(r, g, b) {
@@ -158,8 +159,8 @@ function getDataApi(list) {
     return {
         getAll: () => Object.values(map),
         get: (id) => map[id],
-        insert: (data) => {
-            map[data.id] = structuredClone(data);
+        set: (data) => {
+            map[data.id] = data;
         },
         delete: (id) => {
             delete map[id];
@@ -167,22 +168,35 @@ function getDataApi(list) {
     } 
 } 
 const MEMBERS_API = getDataApi(MEMBERS);
+const EVENTS_API = getDataApi(EVENTS);
+const ANNOUNCEMENTS_API = getDataApi(ANNOUNCEMENTS);
+const UPCOMING_EVENTS_API = getDataApi(UPCOMING_EVENTS);
+const FAQ_API = getDataApi(FAQ);
 const MUSIC_API = (() => {
+    // TODO: internally store performances as a map of IDs to objects
     const map = Object.fromEntries(MUSIC.map(x => [x.id, x]));
     return {
         getAll: () => Object.values(map),
         get: (id) => map[id],
-        insert: (data) => {
-            map[data.id] = structuredClone(data);
+        indexSubrow: (id, subId) => map[id].performances.findIndex(x => x.id === subId),
+        set: (data) => {
+            map[data.id] = data;
         },
-        insertSubrow: (data, newSubrowId, copiedSubrowId) => {
-            if (copiedSubrowId) {
-                data.performances = [data.performances[copiedSubrowId]];
+        /**
+         * - `data` the API-returned data to extract subrow data from
+         * - `rowId` ID number of row that we append to
+         * - `subrowID` new ID of subrow to append
+         * - `copiedSubrowId` id of subrow to copy, if we're copying it
+         */
+        insertSubrow: (data, rowId, subrowId, copiedSubrowId) => {
+            data = structuredClone(data);
+            if (typeof copiedSubrowId === 'number') {
+                data.performances = [data.performances.find(x => x.id === copiedSubrowId)];
             }
             assert(data.performances.length === 1, data.performances);
-            const performance = structuredClone(data.performances[0]);
-            performance.id = newSubrowId;
-            map[data.id].performances.push(performance);
+            const performance = data.performances[0];
+            performance.id = subrowId;
+            map[rowId].performances.push(performance);
         },
         delete: (id) => {
             delete map[id];
@@ -193,10 +207,6 @@ const MUSIC_API = (() => {
         }
     } 
 })();
-const EVENTS_API = getDataApi(EVENTS);
-const ANNOUNCEMENTS_API = getDataApi(ANNOUNCEMENTS);
-const UPCOMING_EVENTS_API = getDataApi(UPCOMING_EVENTS);
-const FAQ_API = getDataApi(FAQ);
 
 function getCurrentEvent() {
     return CURRENT_EVENT;
@@ -204,6 +214,17 @@ function getCurrentEvent() {
 function getInstruments() {
     return INSTRUMENTS;
 }
+const indexInstrument = (() => {
+    const instruments = Object.fromEntries(INSTRUMENTS.map((x, i) => [x, i]));
+    return (x) => instruments[x];
+})();
+function getRoles() {
+    return ROLES;
+}
+const indexRole = (() => {
+    const roles = Object.fromEntries(ROLES.map((x, i) => [x, i]))
+    return (x) => roles[x];
+})()
 function getTag(name) {
     return TAGS[name ?? cssGetClass('tag-preview-active')[0].innerText];
 }
@@ -322,7 +343,7 @@ function toggleConcertSetlistType(element) {
 
     const cellDisplay = element.id === 'concert-setlist-type-one-video' ? 'table-cell' : 'none';
     for (const element of cssGetClass('concert-setlist-timestamp')) {
-        cssSetElement(element, { display: 'cellDisplay' });
+        cssSetElement(element, { display: cellDisplay });
     }
 }
 
@@ -333,6 +354,7 @@ function toggleAnnouncementType(element) {
     } else {
         element.src = 'assets/icons/alert-triangle.svg';
     }
+    syncData(element);
 }
 
 let TAG_COLOUR_CACHE;
@@ -405,8 +427,8 @@ function toggleSubrowSelect(event, element) {
         return;
     }
 
-    const tr = element.parentElement.parentElement.parentElement.id.split('-');
-    const [rowId, subrowId] = tr.slice(2).map(Number);
+    const tr = element.parentElement.parentElement.id.split('-');
+    const [rowId, subrowId] = tr.slice(-2).map(Number);
     const tableId = element.closest('.table').id;
 
     // Clicking checkbox directly
@@ -502,232 +524,70 @@ function updateTableToolbar(set, tableId) {
     toggleClassBy(`#${tableId} .table-toolbar-copy`, setSize === 1);
 }
 
-// Get every subrow of a table row (TR). If the current row is a subrow, return [].
-function getSubrows(element) {
-    if (isSubrow(element)) {
-        return [];
-    }
-    const subrows = [];
-    let curr = element.nextElementSibling;
-    while (curr && isSubrow(curr)) {
-        subrows.push(curr);
-        curr = curr.nextElementSibling;
-    }
-    return subrows;
-}
-// Get the deepest subrow of a table row (TR)
-function getLowestSubrow(element) {
-    let curr = element;
-    while (curr.nextElementSibling && isSubrow(curr.nextElementSibling)) {
-        curr = curr.nextElementSibling;
-    }
-    return curr;
-}
-// Get selected table rows/subrows and their ids
-function getSelectedTableItems(element) {
+function getTableToolbarContext(element, asSelectionList) {
     const tableId = element.closest('.table').id;
-    const set = ROW_SELECTION[tableId]?.size > 0 ? ROW_SELECTION[tableId] : SUBROW_SELECTION[tableId];
-    
-    // Rows must be sorted by order in table for row-moving algorithms to work
-    const rows = Array.from(set).map(x => cssGetId(`${tableId}-${x}`)).sort((a, b) => a.rowIndex - b.rowIndex);
-    const ids = new Set(rows.map(row => row.id));
+    const isSubrow = SUBROW_SELECTION[tableId]?.size > 0;
 
-    return [ids, rows];
-}
-function tableMoveRowsToEnd(element, moveTop) {
-    if (element.classList.contains('table-toolbar-disabled')) {
-        return;
-    }
-    
-    // Get a row to append things before it
-    function getTopRow(element) {
-        if (isSubrow(element)) {
-            let curr = element;
-            while (curr.previousElementSibling && isSubrow(curr.previousElementSibling)) {
-                curr = curr.previousElementSibling;
-            }
-            return curr;
+    let selected;
+    if (isSubrow) {
+        const ids = Array.from(SUBROW_SELECTION[tableId]);
+        if (ids.length === 1 && !asSelectionList) {
+            selected = cssGetId(`${tableId}-${ids[0]}`);
         } else {
-            return element.parentElement.children[0];
+            selected = ids;
         }
-    }
-
-    // Get a subrow to append things after it
-    function getBottomRow(element) {
-        if (isSubrow(element)) {
-            let curr = element;
-            while (curr.nextElementSibling && isSubrow(curr.nextElementSibling)) {
-                curr = curr.nextElementSibling;
-            }
-            return curr;
+    } else if (ROW_SELECTION[tableId]?.size > 0) {
+        const ids = Array.from(ROW_SELECTION[tableId]);
+        if (ids.length === 1 && !asSelectionList) {
+            selected = cssGetId(`${tableId}-${ids[0]}`);
         } else {
-            let curr = element.parentElement.lastElementChild;
-            while (isSubrow(curr)) {
-                curr = curr.previousElementSibling;
-            }
-            return curr;
+            selected = ids;
         }
     }
-
-    const [ids, rows] = getSelectedTableItems(element);
-    
-    if (moveTop) {
-        for (let i = rows.length - 1; i >= 0; i--) {
-            const top = getTopRow(rows[i]);
-            if (top === rows[i]) {
-                continue;
-            }
-            const subrows = getSubrows(rows[i]);
-            top.before(rows[i]);
-            subrows.forEach(element => top.before(element));
-            rows[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        return;
-    }
-
-    for (let i = 0; i < rows.length; i++) {
-        const bottom = getBottomRow(rows[i]);
-        if (bottom === rows[i]) {
-            continue;
-        }
-        const lowestSubrow = getLowestSubrow(bottom);
-        const subrows = getSubrows(rows[i]);
-        subrows.toReversed().forEach(element => lowestSubrow.after(element));
-        lowestSubrow.after(rows[i]);
-        rows[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+    return [tableId, isSubrow, selected];
 }
-function tableMoveRows(element, moveUp) {
-    if (element.classList.contains('table-toolbar-disabled')) {
-        return;
-    }
-
-    // If element is a subrow, get a subrow sibling. Otherwise, get a row sibling
-    function getSiblingOfSameType(element, getNextSibling) {
-        const sibling = getNextSibling ? 'nextElementSibling' : 'previousElementSibling';
-        let curr = element[sibling];
-        if (isSubrow(element)) {
-            if (!isSubrow(curr)) {
-                return null;
-            }
-        } else {
-            while (curr && isSubrow(curr)) {
-                curr = curr[sibling];
-            }
-        }
-        return curr;
-    }
-
-    const [ids, rows] = getSelectedTableItems(element);
-
-    if (moveUp) {
-        for (let i = 0; i < rows.length; i++) {
-            const prev = getSiblingOfSameType(rows[i], false);
-            if (prev && !ids.has(prev.id)) {
-                const subrows = getSubrows(rows[i]);
-                prev.before(rows[i]);
-                subrows.forEach(element => prev.before(element));
-                if (prev) {
-                    ids.delete(rows[i].id);
-                }
-            }
-            rows[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        return;
-    }
-
-    for (let i = rows.length - 1; i >= 0; i--) {
-        const next = getSiblingOfSameType(rows[i], true);
-        if (next && !ids.has(next.id)) {
-            // Moving a subrow -> put curr row after next row
-            if (isSubrow(rows[i])) {
-                next.after(rows[i]);
-
-            // Moving a row -> put curr row after last subrow of next row
-            } else {
-                const subrows = getSubrows(rows[i]);
-                const lowestSubrow = getLowestSubrow(next);
-                subrows.toReversed().forEach(element => lowestSubrow.after(element));
-                lowestSubrow.after(rows[i]);
-            }
-
-            if (next) {
-                ids.delete(rows[i].id);
-            }
-        }
-        rows[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-}
-
-function getRowAddingContext(element) {
-    const tableId = element.closest('.table').id;
-    let set, type;
-    if (SUBROW_SELECTION[tableId]?.size > 0) {
-        set = SUBROW_SELECTION[tableId];
-        type = 'subrow';
-    } else {
-        set = ROW_SELECTION[tableId]
-        type = 'row';
-    }
-
-    let anchorElement;
-    let id;
-    if (set?.size > 0) {
-        if (set.size > 1) {
-            throw new Error("WTF");
-        }
-        id = Array.from(set)[0];
-        anchorElement = cssGetId(`${tableId}-${id}`);
-        if (type === 'row') {
-            anchorElement = getLowestSubrow(anchorElement);
-        }
-    }
-    return [tableId, type, id, anchorElement];
-}
-
 function tableToolbarAdd(element) {
-    if (element.classList.contains('table-toolbar-disabled')) {
+    if (element.classList.contains('table-toolbar-disabled'))
         return;
-    }
-    const [tableId, type, , anchorElement] = getRowAddingContext(element);
-    TABLE_OPERATIONS[tableId][type](anchorElement);
+    const [tableId, isSubrow, selectedElement] = getTableToolbarContext(element);
+    TABLE_OPERATIONS[tableId][isSubrow ? 'subrowAdd' : 'rowAdd'](selectedElement);
 }
 function tableToolbarCopy(element) {
-    if (element.classList.contains('table-toolbar-disabled')) {
+    if (element.classList.contains('table-toolbar-disabled'))
         return;
-    }
-    let [tableId, type, id, anchorElement] = getRowAddingContext(element);
-    TABLE_OPERATIONS[tableId][type](anchorElement, id);
+    const [tableId, isSubrow, selectedElement] = getTableToolbarContext(element);
+    TABLE_OPERATIONS[tableId][isSubrow ? 'subrowAdd' : 'rowAdd'](selectedElement, true);
 }
 function tableToolbarRemove(element) {
-    if (element.classList.contains('table-toolbar-disabled')) {
+    if (element.classList.contains('table-toolbar-disabled'))
         return;
-    }
-    const tableId = element.closest('.table').id;
-    let type, ids, set;
-    if (SUBROW_SELECTION[tableId]?.size > 0) {
-        type = 'subrowDelete';
-        set = SUBROW_SELECTION[tableId];
-        ids = Array.from(set);
-    } else {
-        type = 'rowDelete';
-        set = ROW_SELECTION;
-        ids = Array.from(set[tableId]);
-    }
-    TABLE_OPERATIONS[tableId][type](ids);
-    updateTableToolbar(set, tableId);
+    const [tableId, isSubrow, ids] = getTableToolbarContext(element, true);
+    TABLE_OPERATIONS[tableId][isSubrow ? 'subrowDelete' : 'rowDelete'](ids);
+    updateTableToolbar(isSubrow ? SUBROW_SELECTION : ROW_SELECTION, tableId);
 }
 function tableToolbarMoveUp(element) {
-    tableMoveRows(element, true);
+    if (element.classList.contains('table-toolbar-disabled'))
+        return;
+    const [tableId, isSubrow] = getTableToolbarContext(element);
+    TABLE_OPERATIONS[tableId][isSubrow ? 'subrowMove' : 'rowMove'](true);
 }
 function tableToolbarMoveDown(element) {
-    tableMoveRows(element, false);
+    if (element.classList.contains('table-toolbar-disabled'))
+        return;
+    const [tableId, isSubrow] = getTableToolbarContext(element);
+    TABLE_OPERATIONS[tableId][isSubrow ? 'subrowMove' : 'rowMove'](false);
 }
 function tableToolbarMoveTop(element) {
-    tableMoveRowsToEnd(element, true);
+    if (element.classList.contains('table-toolbar-disabled'))
+        return;
+    const [tableId, isSubrow] = getTableToolbarContext(element);
+    TABLE_OPERATIONS[tableId][isSubrow ? 'subrowMoveToEnd' : 'rowMoveToEnd'](true);
 }
 function tableToolbarMoveBottom(element) {
-    tableMoveRowsToEnd(element, false);
+    if (element.classList.contains('table-toolbar-disabled'))
+        return;
+    const [tableId, isSubrow] = getTableToolbarContext(element);
+    TABLE_OPERATIONS[tableId][isSubrow ? 'subrowMoveToEnd' : 'rowMoveToEnd'](false);
 }
 
 
@@ -1034,236 +894,267 @@ function onDrop(element) {
 /*********************************************************************
 Input suggestions
 *********************************************************************/
-function toggleShowInputSuggestion(element, focus) {
-    cssSetElement(element.parentElement.nextElementSibling, { display: focus ? 'flex' : 'none' });
+function memberSorter(a, b) {
+    if (a.left && !b.left) {
+        return 1;
+    } else if (!a.left && b.left) {
+        return -1;
+    }
+    const [a0, a1] = a.joined.split(' ');
+    const [b0, b1] = b.joined.split(' ');
+    if (a1 === b1) {
+        if (a0 === b0) {
+            return a.name.localeCompare(b.name);
+        } else {
+            return a0 > b0 ? -1 : 1;
+        }
+    } else {
+        return Number(a1) - Number(b1);
+    }
 }
+
+let INPUT_CHANGED = false;
+function inputInput(event) {
+    INPUT_CHANGED = true;
+    updateInputSuggestion(event);
+}
+
 const updateInputSuggestion = debounce(async (event) => {
     /*
     TODO: optimize for speed.
-    Store a cache of the most recent filter for each event.target
-    If entering characters, filter from the existing filter list.
-    For datalists/tags, hide already-added suggestions
+    - Store a cache of the most recent filter for each event.target
+    - If entering characters, filter from the existing filter list.
+    
+    - For taglist, hide already-added suggestions
     */ 
     const input = event.target;
-
-    let candidates, infoGetter;
-    let nameGetter = x => x.name
-    if (input.classList.contains('input-event')) {
-        candidates = EVENTS_API.getAll();
-        infoGetter = x => x.start.slice(0, x.start.lastIndexOf('-'));
-    } else if (input.classList.contains('input-concert')) {
-        candidates = EVENTS_API.getAll().filter(x => x.type === 'Concert');
-        infoGetter = x => x.start.slice(0, x.start.lastIndexOf('-'));
-    } else if (input.classList.contains('input-member')) {
-        candidates = MEMBERS_API.getAll();
-        infoGetter = x => x.joined;
-    } else if (input.classList.contains('input-instrument')) {
-        candidates = getInstruments();
-        nameGetter = x => x;
-    } else if (input.classList.contains('input-music')) {
-        candidates = MUSIC_API.getAll();
-        infoGetter = x => x.composer;
-    } else if (input.classList.contains('input-role')) {
-        candidates = Array.from(new Set(MEMBERS_API.getAll().map(x => x.roles).flat()));
-        nameGetter = x => x;
-    } else {
-        throw new Error(String(Array.from(input.classList)));
-    }
-    
     const container = input.closest('.input').children[1];
-    const fragment = document.createDocumentFragment();
-    
     const value = input.value;
     if (!value) {
         return container.replaceChildren();
     }
-    
+
+    let candidates, infoGetter;
+    let nameGetter = x => x.name
+    if (input.classList.contains('input-type-event')) {
+        candidates = EVENTS_API.getAll().toSorted((a, b) => b.start.localeCompare(a.start));
+        infoGetter = x => [x.id, x.start.slice(0, x.start.lastIndexOf('-'))];
+
+    } else if (input.classList.contains('input-type-concert')) {
+        candidates = EVENTS_API.getAll().filter(x => x.type === 'Concert').toSorted((a, b) => b.start.localeCompare(a.start));
+        infoGetter = x => [x.id, x.start.slice(0, x.start.lastIndexOf('-'))];
+
+    } else if (input.classList.contains('input-type-member')) {
+        candidates = MEMBERS_API.getAll().toSorted(memberSorter);
+        infoGetter = x => {
+            const [season, year] = x.joined.split(' ');
+            let info = `${season.slice(0, 1)}${year.slice(2)}`;
+            if (x.left) {
+                const [season, year] = x.left.split(' ');
+                info = `${info}-${season.slice(0, 1)}${year.slice(2)}`;
+            }
+            return[x.id, info];
+        }
+    } else if (input.classList.contains('input-type-instrument')) {
+        candidates = getInstruments();
+        nameGetter = x => x;
+        infoGetter = x => [indexInstrument(x)]
+    } else if (input.classList.contains('input-type-music')) {
+        candidates = MUSIC_API.getAll();
+        infoGetter = x => [x.id, x.composer];
+    } else if (input.classList.contains('input-type-role')) {
+        candidates = getRoles();
+        nameGetter = x => x;
+        infoGetter = x => [indexRole(x)]
+    } else {
+        throw new Error(String(Array.from(input.classList)));
+    }
+    // TODO: add more input-... classes for arrangers and performers of an instrument?
+
+    const fragment = document.createDocumentFragment();
     let i = 0;
+    const lowPriorityCandidates = [];
     for (const candidate of candidates) {
         const name = nameGetter(candidate);
         if (isSubstring(name, value)) {
-            fragment.appendChild(construct({
+            const result = infoGetter(candidate);
+            const element = construct({
                 element: 'li',
                 attributes: { onclick: `clickSuggestion(this)` },
                 children: [{
                     element: 'span',
                     innerText: name
-                }, infoGetter ? {
+                }, result ? {
                     element: 'span',
-                    innerText: infoGetter(candidate)
+                    classes: result.length === 1 ? ['input-suggestions-hidden'] : [],
+                    innerHTML: result.length === 2 ? `<em>${result[1]}</em> <em>(#${result[0]})</em>` : `<em>(#${result[0]})</em>`
                 } : undefined]
-            }));
+            });
+            if (name.toLowerCase().startsWith(value.toLowerCase())) {
+                fragment.appendChild(element);
+            } else {
+                lowPriorityCandidates.push(element);
+            }
             i += 1;
             if (i >= 10) {
                 break;
             }
         }
     }
+    for (const element of lowPriorityCandidates) {
+        fragment.appendChild(element);
+    }
     container.replaceChildren(fragment);
-}, 200);
+    container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}, 0);
+
+function toggleShowInputSuggestion(suggestions, show) {
+    cssSetElement(suggestions, { display: show ? 'flex' : 'none' });
+}
+
+function extractId(text) {
+    return Number(text.slice(text.indexOf('(#') + 2, text.indexOf(')')))
+}
+
+function extractSuggestionId(suggestion) {
+    return extractId(suggestion.lastElementChild.lastElementChild.innerText);
+}
+
+/**
+ * If there is only one possible suggestion or an exact match, retrieve its id and value
+ * strictness = 1 -> only find exact matches
+ * strictness = 0 -> do not find matches
+ */
+function getSuggestionIfExists(inputContainer, input, newValue) {
+    const strictness = inputStrictness(input);
+    let id, value;
+
+    const suggestions = inputContainer.lastElementChild;
+    if (suggestions.classList.contains('input-suggestions')) {
+        let suggestion;
+        if (strictness > 1 && suggestions.children.length === 1) {
+            suggestion = suggestions.children[0];
+        } else if (strictness > 0) {
+            const exactMatches = Array.from(suggestions.children).filter(x => x.children[0].innerText.toLowerCase() === newValue.toLowerCase());
+            if (exactMatches.length === 1) {
+                suggestion = exactMatches[0];
+            }
+        }
+        if (!suggestion)
+            return [id, value];
+        value = suggestion.children[0].innerText;
+        id = extractSuggestionId(suggestion);
+    }
+    return [id, value];
+}
 
 
 /*********************************************************************
 Inputs
 *********************************************************************/
+// 0 = Accept custom values
+// 1 = Accept custom values, but all values must be unique (case-insensitive)
+// 2 = Accept only predefined values
+function inputStrictness(input) {
+    if (input.classList.contains('input-type-member'))
+        return 0;
+    if (['instrument', 'role'].some(x => input.classList.contains(`input-type-${x}`)))
+        return 1;
+    return 2;
+}
 function focusInput(event) {
+    const inputContainer = event.target.closest('.input');
+
     // Clear suggestions before suggesting new ones
-    event.target.closest('.input').children[1].replaceChildren();
+    inputContainer.children[1].replaceChildren();
 
-    toggleShowInputSuggestion(event.target, true);
-    updateInputSuggestion(event);
+    toggleShowInputSuggestion(event.target.parentElement.nextElementSibling, true);
+    updateInputSuggestion(event, true);
 }
+
+let BLUR_AFTER_INPUT_EDIT = false;
 function blurInput(event) {
-    const element = event.target;
-
-    // If blurring input due to focusing into suggestions, do nothing
-    if (event.relatedTarget === element.parentElement.nextElementSibling) {
-        return;
-    }
-    blurInputHelper(element);
-}
-function blurInputHelper(element) {
-    toggleShowInputSuggestion(element, false);
-
-    // For (+) buttons that expand into inputs, hide inputs when unfocusing 
-    const inputContainer = element.parentElement?.parentElement;
-    if (inputContainer?.classList.contains('datalist-tag-add-clicked')) {
-        inputContainer?.classList.remove('datalist-tag-add-clicked');
-        element.value = '';
-        return;
-    }
-
-    // In a modal, promote preview rows or remove existing rows
-    const row = element.closest('tr');
-    if (row && element.closest('#modal-performance-performers')) {
-        updateModalDatalistRowFromInput(row, element);
-    }
-}
-function updateModalDatalistRowFromInput(row, element) {
-    const isPreviewRow = row.classList.contains('modal-datalist-preview');
-    
-    // Add new row if non-blank value found in preview input
-    if (isPreviewRow && element.value) {
-        const temp = element.value;
-        element.value = '';
-        ifInDatalistAddRowBelow(row);
-        element.value = temp;
-
-    // Clear current row if every inner input is empty
-    } else if (
-        !isPreviewRow
-        && Array.from(row.querySelectorAll('input')).every(x => !x.value)
-        && Array.from(row.querySelectorAll('.datalist-tags')).every(x => x.children.length === 1)
-    ) {
-        setTimeout(() => { row.remove(); }, 1);
-    }
-}
-function ifInDatalistAddRowBelow(element) {
-    const tr = element.closest('.modal-datalist-preview');
-    if (!tr) {
-        return;
-    }
-    const newRow = tr.cloneNode(true);
-    tr.after(newRow);
-    tr.classList.toggle('modal-datalist-preview');
-}
-
-function clickXButton(element) {
-    // Deleting a tag from the list
-    if (element.closest('.datalist-tags')) {
-        // In modal datalists, if deleting a tag makes the row empty, delete the row
-        if (element.closest('.modal-datalist')) {
-            const row = element.closest('tr');
-            if (
-                row
-                && Array.from(row.querySelectorAll('input')).every(x => !x.value)
-                && Array.from(row.querySelectorAll('.datalist-tags')).every(x => x.children.length === 2)
-            ) {
-                setTimeout(() => { row.remove(); }, 1);
-                return;
-            }
-        }
-
-        // TODO: sync immediately with data
-        setTimeout(() => { element.parentElement.remove(); }, 1);
-        return;
-    }
-
-    // Deleting a row directly in a modal datalist
-    if (element.closest('.modal-datalist')) {
-        setTimeout(() => { element.parentElement.parentElement.remove(); }, 1);
-        return;
-    }
-    throw new Error('wtf');
-}
-
-/**
- * Handle creating/deleting row/tags when an input is edited.
- * - `input` The <input>
- * - `inputContainer` The ancestor class holding the <input> and related elements (e.g. suggestions)
- * - `newValue` The new value of the <input>
- */
-function enterInput(input, inputContainer, newValue) {
-    toggleShowInputSuggestion(input, false);
-
-    // Separate input and tag list -> clicking an input suggestion adds a tag
-    const datalist = inputContainer.nextElementSibling;
-    if (datalist?.classList.contains('datalist-tags')) {
-        input.value = '';
-        
-        // TODO: replace this with a real lookup by ID
-        if (Array.from(datalist.children).some(x => x.innerText === newValue)) {
-            return;
-        }
-        datalist.appendChild(construct(createInputTag(newValue)));
-        setTimeout(() => { input.focus();  }, 1);
-        return;
-    }
-    
-    // Input suggestion inside a (+) button -> add tag
-    if (inputContainer.classList.contains('datalist-tag-add')) {
-        input.value = '';
-        setTimeout(() => {
-            blurInputHelper(input);
-            // TODO: replace this with a real lookup by ID
-            if (Array.from(inputContainer.parentElement.children).slice(0, -1).some(x => x.innerText === newValue)) {
-                return;
-            }
-            ifInDatalistAddRowBelow(inputContainer);
-            inputContainer.before(construct(createInputTag(newValue)));
-        }, 1);
-        return;
-    }
-
-    // Regular input suggestion -> fill input
-    input.value = '';
-    ifInDatalistAddRowBelow(inputContainer);
-    input.value = newValue;
-}
-function keyDownInput(event) {
-    if (event.key !== 'Enter') {
-        return;
-    }
     const input = event.target;
     const inputContainer = input.parentElement.parentElement;
     const newValue = input.value;
-    if (!newValue) {
+    const suggestions = input.parentElement.nextElementSibling;
+
+    // If blurring input due to focusing into suggestions, do nothing
+    if (event.relatedTarget === suggestions)
+        return;
+
+    toggleShowInputSuggestion(suggestions, false);
+    closeNewTagButton(inputContainer);
+
+    if (!INPUT_CHANGED) {
+        INPUT_CHANGED = false;
         return;
     }
-    enterInput(input, inputContainer, newValue);
-}
-function clickSuggestion(element) {
-    const input = inputContainer.children[0].lastElementChild;
-    const inputContainer = element.parentElement.parentElement;
-    const newValue = element.children[0].innerText;
-    enterInput(input, inputContainer, newValue);
+
+    syncData(input);
+
+    if (BLUR_AFTER_INPUT_EDIT)
+        return;
+
+    const row = inputContainer.closest('tr');
+    if (!row)
+        return;
+
+    const isPreviewRow = row.classList.contains('modal-datalist-preview');
+    if (newValue) {
+        if (isPreviewRow || (!isInputAndTaglist(inputContainer) && !isTaglistButton(inputContainer))) {  // e.g. modal performances
+            const [id, canonicalValue] = getSuggestionIfExists(inputContainer, input, newValue);
+            return editInput(input, inputContainer, newValue, id, canonicalValue);
+        }
+        input.value = '';
+        return;
+    }
+
+    // e.g. performances modal
+    const rowInputsEmpty = Array.from(row.querySelectorAll('input:not([type="hidden"])')).every(x => !x.value);
+    const rowTagsEmpty = Array.from(row.querySelectorAll('.taglist')).every(x => x.children.length === 1);
+    if (!isPreviewRow && rowInputsEmpty && rowTagsEmpty)
+        setTimeout(() => { row.remove(); }, 0);
 }
 
+function clickXButton(element) {
+    const tagList = element.closest('.taglist');
+    const modalDatalist = element.closest('.modal-datalist');
+
+    if (tagList) {
+        if (modalDatalist) {
+            // If deleting a tag makes the row empty, delete the row (e.g. deleting performer)
+            const row = element.closest('tr');
+            if (row && Array.from(row.querySelectorAll('input')).every(x => !x.value)
+                    && Array.from(row.querySelectorAll('.taglist')).every(x => x.children.length === 2)) {
+                setTimeout(() => {
+                    row.remove();
+                    syncData(modalDatalist);
+                }, 0);
+                return;
+            }
+        }
+        setTimeout(() => {  // e.g. deleting arranger
+            element.parentElement.remove();
+            syncData(tagList);
+        }, 0);
+    } else if (modalDatalist) {
+        setTimeout(() => {  // e.g. deleting row in member links
+            element.parentElement.parentElement.remove();
+            syncData(modalDatalist);
+        }, 0);
+    } else {
+        throw new Error('wtf');
+    }
+}
+
+// Handles creating/deleting rows when a TD is edited (e.g. member links)
 function editTd(element, value) {
     const tr = element.parentElement;
     const tds = Array.from(tr.querySelectorAll('td[contenteditable="plaintext-only"]'));
 
     if (tr.classList.contains('modal-datalist-preview')) { 
+        // Add new row if TD content is edited
         if (element.innerText !== value)  {
             // Store and unset "default" TD values of preview row
             const oldValues = [];
@@ -1290,11 +1181,167 @@ function editTd(element, value) {
     }
 }
 
-function expandNewTagButton(element) {
-    const name = 'datalist-tag-add-clicked';
-    if (!element.classList.contains(name)) {
-        element.classList.add(name);
-        element.children[0].children[1].focus();
+/**
+ * Find the datalist row where `element` belongs and (if existent) copy it below.
+ */
+function ifInDatalistAddRowBelow(inputContainer, input) {
+    const tr = inputContainer.closest('.modal-datalist-preview');
+    if (!tr) {
+        return;
+    }
+
+    let suggestion = inputContainer.lastElementChild;
+    if (suggestion?.classList.contains('input-suggestions')) {
+        toggleShowInputSuggestion(suggestion, false);
+    }
+    closeNewTagButton(inputContainer);
+
+    const newRow = tr.cloneNode(true);
+    tr.after(newRow);
+    tr.classList.toggle('modal-datalist-preview');
+
+    expandNewTagButton(inputContainer);
+}
+
+function duplicateTagExists(taglist, newValue, id) {
+    const existingTags = new Set(Array.from(taglist.children).map(x => {
+        if (x.children.length === 3)
+            return extractId(x.children[1].innerText);
+        return x.children[0].innerText;
+    }));
+    return existingTags.has(typeof id === 'undefined' ? newValue : id);
+}
+
+function duplicateInstrumentExists(inputContainer, newValue) {
+    const datalist = inputContainer.closest('.modal-datalist tbody')
+    if (!datalist) {
+        return false;
+    }
+    const instruments = getInstruments();
+    const existingInstruments = new Set(Array.from(datalist.children).map(x => {
+        const value = x.children[1].children[0].children[0].children[2].value;
+        return parseInt(value, 10) ? instruments[parseInt(value, 10)] : value;
+    }));
+    return existingInstruments.has(newValue);
+} 
+
+function isInputAndTaglist(inputContainer) {
+    const taglist = inputContainer.nextElementSibling;
+    if (taglist?.classList.contains('taglist')) {
+        return taglist;
+    }
+}
+function isTaglistButton(inputContainer) {
+    return inputContainer.classList.contains('taglist-add');
+}
+
+/**
+ * Handle creating/deleting row/tags when an input is edited.
+ * - `input` The <input>
+ * - `inputContainer` The ancestor class holding the <input> and related elements (e.g. suggestions)
+ * - `newValue` The new value of the <input>
+ * - `id` The id of the new value (blank for custom values)
+ * - `canonicalValue` The full name of the new value (blank for custom values)
+ */
+function editInput(input, inputContainer, newValue, id, canonicalValue) {
+    input.value = '';
+    const strictness = inputStrictness(input);
+    if (strictness === 2 && typeof id !== 'number') {
+        return;
+    } else if (strictness === 1 && newValue.toLowerCase() === canonicalValue?.toLowerCase()) {
+        newValue = canonicalValue;
+    }
+    const value = strictness === 2 ? canonicalValue : newValue;
+    
+    // Separate input and tag list -> filling an input suggestion adds a tag
+    const taglist = isInputAndTaglist(inputContainer);
+    if (taglist) {
+        if (duplicateTagExists(taglist, value, id))
+            return;
+
+        const hideId = ['instrument', 'role'].some(x => input.classList.contains(`input-type-${x}`));
+        taglist.appendChild(construct(createInputTag(value, id, hideId)));
+        return;
+    }
+    
+    // Input suggestion inside a (+) button -> add tag
+    if (isTaglistButton(inputContainer)) {
+        setTimeout(() => {
+            if (duplicateTagExists(inputContainer.parentElement, value, id))
+                return;
+
+            ifInDatalistAddRowBelow(inputContainer, input);
+            inputContainer.before(construct(createInputTag(value, id)));
+        }, 0);
+        return;
+    }
+
+    if (duplicateInstrumentExists(inputContainer, value))
+        return;
+
+    // Regular input suggestion -> fill input
+    ifInDatalistAddRowBelow(inputContainer, input);
+    input.value = value;
+    if (input.previousElementSibling.type === 'hidden') {
+        input.previousElementSibling.value = id;
+    }
+}
+
+function keyDownInput(event) {
+    if (event.key !== 'Enter') {
+        return;
+    }
+    const input = event.target;
+    const inputContainer = input.parentElement.parentElement;
+    const newValue = input.value;
+    if (!newValue) {
+        return;
+    }
+
+    const [id, canonicalValue] = getSuggestionIfExists(inputContainer, input, newValue);
+    editInput(input, inputContainer, newValue, id, canonicalValue);
+    setTimeout(() => {
+        BLUR_AFTER_INPUT_EDIT = true;
+        input.blur();
+        expandNewTagButton(inputContainer);
+        input.focus();
+
+        // current/upcoming event, performances modal
+        if (!isInputAndTaglist(inputContainer) && !isTaglistButton(inputContainer))
+            input.blur();
+        BLUR_AFTER_INPUT_EDIT = false;
+    }, 0);
+}
+function clickSuggestion(element) {
+    const inputContainer = element.parentElement.parentElement;
+    const input = inputContainer.children[0].lastElementChild;
+    const newValue = element.children[0].innerText;
+
+    const id = extractSuggestionId(element);
+    editInput(input, inputContainer, newValue, id, newValue);
+    setTimeout(() => {
+        BLUR_AFTER_INPUT_EDIT = true;
+        input.blur();
+        input.focus();
+        
+        // current/upcoming event, performances modal
+        if (!isInputAndTaglist(inputContainer) && !isTaglistButton(inputContainer))
+            input.blur();
+        BLUR_AFTER_INPUT_EDIT = false;
+    }, 0);
+}
+
+function expandNewTagButton(container) {
+    const name = 'taglist-add-clicked';
+    if (container.classList.contains('taglist-add') && !container.classList.contains(name)) {
+        container.classList.add(name);
+        container.children[0].children[1].focus();
+    }
+}
+function closeNewTagButton(container) {
+    const name = 'taglist-add-clicked';
+    if (container.classList.contains(name)) {
+        container.classList.remove(name);
     }
 }
 
@@ -1327,28 +1374,60 @@ const filterInput = debounce(async (event) => {
     const filter = x => isSubstring(x.name, event.target.value);
 
     applyTableFilter(id, data, filter);
-}, 200);
+}, 0);
 
 function applyTableFilter(tableId, list, filter) {
-    const table = cssGetFirst(`#${tableId} tbody`).children;
-    let tableI = 0;
-    for (let i = 0; i < list.length; i++) {
-        const visible = filter(list[i]);
+    for (const item of list) {
+        const visible = filter(item);
         const display = visible ? '' : 'none';
 
         // Set visibility of row
-        cssSetElement(table[tableI], { display });
+        const row = cssGetId(`${tableId}-${item.id}`);
+        cssSetElement(row, { display });
         
         // Pass subrows, hiding them if row is hidden
-        tableI += 1;
-        while (isSubrow(table[tableI])) {
+        let curr = row.nextElementSibling;
+        while (isSubrow(curr)) {
             if (!visible) {
-                cssSetElement(table[tableI], { display });
+                cssSetElement(curr, { display });
             }
-            tableI += 1;
+            curr = curr.nextElementSibling;
         }
     }
 }
+
+
+/*********************************************************************
+Input syncing
+*********************************************************************/
+function syncData(element) {
+    if (element.closest('.modal')) {
+        return;
+    }
+    if (element.closest('#datalist-current-event')) {
+        console.log('current event');
+        return;
+    }
+    if (element.closest('#current-event-description-container')) {
+        console.log('container');
+        return;
+    }
+    const tableId = element.closest('.table').id;
+    if (!tableId) {
+        console.warn(element);
+        throw new Error('where');
+    }
+    const subrow = element.closest('.subtable-row');
+    if (subrow) {
+        return TABLE_OPERATIONS[tableId].subrowEdit([subrow]);
+    }
+    const row = element.closest('tr');
+    TABLE_OPERATIONS[tableId].rowEdit([row]);
+}
+
+// todo: custom syncing for instruments (after editing member-tag/performance modal)
+// todo: custom syncing for roles (after editing member-tag modal)
+// todo: custom syncing for current-event
 
 
 /*********************************************************************
@@ -1366,12 +1445,14 @@ function validateInput(element) {
     let value = element.innerText;
     value = value.replace(/[\r\n]+/g, '').trim();
     element.innerText = value;
+    syncData(element);
 }
 function validateMultilineInput(element) {
     let value = element.innerHTML;
     value = value.replace(/[\r\n]+/g, '').trim();
     value = parseMarkdown(value);
     element.innerHTML = value;
+    syncData(element);
 }
 function validateInputAsset(element) {
     let value = element.innerText;
@@ -1395,6 +1476,7 @@ function validateInputAsset(element) {
     } else {
         cssSetElement(validation, { display: 'none' });
     }
+    syncData(element);
 }
 function validateInputTimestamp(element) {
     let value = element.innerText;
@@ -1403,6 +1485,7 @@ function validateInputTimestamp(element) {
     const timestampRegex = /^(?:\?\?:\?\?|\d+:[0-5]\d:[0-5]\d|(?:[0-5]?\d):[0-5]\d)$/;
     value = timestampRegex.test(value) ? value : '??:??';
     element.innerText = value;
+    syncData(element);
 }
 function validateInputYear(element, optional) {
     if (!element.value && optional) {
@@ -1411,6 +1494,18 @@ function validateInputYear(element, optional) {
     const value = parseInt(element.value, 10);
     const currYear = (new Date()).getFullYear();
     element.value = isNaN(value) ? (optional ? '' : currYear) : clamp(value, 2023, currYear + 10);
+    syncData(element);
+}
+function validateInputEvent(input, isConcert, newValue) {
+    const name = newValue ?? input.value;
+    const event = EVENTS_API.getAll().filter(x => (!isConcert || x.type === 'Concert') && isSubstring(x.name, name));
+    if (event.length === 1) {
+        input.value = event[0].name;
+        return true;
+    } else {
+        input.value = '';
+        return false;
+    }
 }
 
 
@@ -1474,7 +1569,7 @@ function parseCSV(csv) {
     return rows.map(x => x.map(y => y.trim()));
 }
 
-function parseSeason(season) {
+function validateSeason(season) {
     const [name, year] = season.split(' ');
     const names = ['Fall', 'Winter'];
     if (!names.includes(name)) {
@@ -1575,16 +1670,16 @@ function roleSorter(a, b) {
     a = a.toLowerCase();
     b = b.toLowerCase();
     if (a.includes(' (')) { a = a.slice(0, a.lastIndexOf(' (')); }
-    if (b.includes(' (')) { b = b.slice(0, a.lastIndexOf(' (')); }
+    if (b.includes(' (')) { b = b.slice(0, b.lastIndexOf(' (')); }
 
     const groupA = roleOrder[a];
     const groupB = roleOrder[b];
     if (!groupA || !groupB) {
         return a.localeCompare(b);
     } else if (!groupA) {
-        return -1;
-    } else if (!groupB) {
         return 1;
+    } else if (!groupB) {
+        return -1;
     }
     const i = groupA.localeCompare(groupB);
     if (i === 0) {
@@ -1632,25 +1727,30 @@ async function uploadMembers(element) {
         }
     }
 
+    let allRoles = members.map(row => row[indices['Roles']]?.split(',').map(x => x.trim()).filter(x => x).flat() ?? []).flat();
+    allRoles = Array.from(new Set(allRoles)).sort(roleSorter);
+    const rowIndexer = Object.fromEntries(allRoles.map((x, i) => [x, i]));
+
     const parsed = members.map((row, i) => {
         // Only show Discord of current execs
         const rawRoles = row[indices['Roles']];
         const isExec = rawRoles.includes(` (`) && rawRoles.includes(`${String(year).slice(2)}`);
         const discord = isExec ? row[indices['Discord']] : undefined;
+        const roles = rawRoles?.split(',').map(x => rowIndexer[x.trim()]).filter(x => x !== undefined) ?? [];
         
         return {
             id: i,
             name: row[indices['Public Name']],
-            joined: parseSeason(row[indices['Season Start']]),
+            joined: validateSeason(row[indices['Season Start']]),
             left: row[indices['Season End']],
             instruments: row[indices['Instruments']].split(',').map(x => x.trim()).sort(instrumentSorter),
-            roles: row[indices['Roles']] ? row[indices['Roles']].split(',').map(x => x.trim()).sort(roleSorter) : [],
+            roles,
             links: parseLinks(discord, row[indices['Personal Links']] ? row[indices['Personal Links']].split('\n') : [])
         }
     });
 
     const discords = members.map(row => row[indices['Discord']]);
-    return [parsed, discords];
+    return [parsed, discords, allRoles];
 }
 
 async function uploadMusic(element) {
@@ -1891,7 +1991,7 @@ function enrichMemberData(members, instruments) {
 }
 
 async function parseData() {
-    const [memberData, discords] = await uploadMembers(cssGetId('upload-members'));
+    const [memberData, discords, roles] = await uploadMembers(cssGetId('upload-members'));
     const musicData = await uploadMusic(cssGetId('upload-music'));
     const eventData = await uploadEvents(cssGetId('upload-events'));
 
@@ -1899,6 +1999,7 @@ async function parseData() {
     const fullEventData = enrichEventData(eventData, setlists);
     enrichMemberData(memberData, instruments);
 
+    console.log(roles);
     console.log(instruments);
     console.log(memberData);
     console.log(fullEventData);
@@ -1982,7 +2083,18 @@ const INPUT_ATTRIBUTES = {
         onblur: 'validateInputTimestamp(this)'
     }
 }
-
+function createDropdown(value, options) {
+    const children = options.map(x => ({
+        element: 'option',
+        innerText: x
+    }));
+    return {
+        element: 'select',
+        value,
+        attributes: { onblur: 'syncData(this)' },
+        children
+    };
+}
 function createInputsStartEnd(data, type, from, until) {
     let parser = x => x;
     if (type === 'datetime-local') {
@@ -1990,27 +2102,35 @@ function createInputsStartEnd(data, type, from, until) {
     }
     return [{
         element: 'p',
-        innerHTML: `From <input type="${type}" ${data[from] ? `value=${parser(data[from])}` : ''} />`
+        innerHTML: `From <input type="${type}" ${data[from] ? `value=${parser(data[from])}` : ''} onblur="syncData(this)" />`
     }, {
         element: 'p',
-        innerHTML: `Until <input type="${type}" ${data[until] ? `value=${parser(data[until])}` : ''} />`
+        innerHTML: `Until <input type="${type}" ${data[until] ? `value=${parser(data[until])}` : ''} onblur="syncData(this)" />`
     }]
 }
-function createInputText(iconPath, placeholder, value, suggestionType) {
+function createInputText(iconPath, placeholder, value, id, suggestionType) {
     const icon = iconPath ? {
         element: 'img',
         attributes: { src: iconPath }
     } : undefined;
 
+    const hidden = {
+        element: 'input',
+        attributes: {
+            type: 'hidden',
+            value: id,
+        }
+    };
+
     const input = {
         element: 'input',
-        classes: [`input-${suggestionType}`],
+        classes: [`input-type-${suggestionType}`],
         attributes: {
             type: 'text',
             placeholder,
             onfocus: 'focusInput(event)',
             onblur: 'blurInput(event)',
-            oninput: `updateInputSuggestion(event)`,
+            oninput: `inputInput(event)`,
             onkeydown: `keyDownInput(event)`,
             value
         }
@@ -2021,7 +2141,7 @@ function createInputText(iconPath, placeholder, value, suggestionType) {
         classes: ['input'],
         children: [{
             element: 'div',
-            children: [icon, input]
+            children: [icon, hidden, input]
         }, {
             element: 'ul',
             attributes: { tabIndex: 0 },
@@ -2029,18 +2149,24 @@ function createInputText(iconPath, placeholder, value, suggestionType) {
         }]
     }
 }
-function createInputTag(name, useOutline) {
+function createInputTag(name, id, hideId) {
+    const existingId = typeof(id) === 'number';
     return {
         element: 'li',
-        classes: useOutline ? ['tag-custom'] : [],
+        classes: existingId ? [] : ['tag-custom'],
         children: [{
             element: 'span',
             innerText: name
-        }, X_BUTTON]
+        }, existingId ? {
+            element: 'span',
+            classes: ['taglist-id'],
+            innerText: `(#${id})`,
+            style: hideId ? { display: 'none' } : {}
+        } : undefined, X_BUTTON]
     };
 }
-function createInputTags(tags, placeholder, suggestionType, useOutline) {
-    const tagList = tags.map((name, i) => createInputTag(name, useOutline?.[i]));
+function createInputTags(tags, placeholder, suggestionType) {
+    const tagList = tags.map(([id, name], i) => createInputTag(name, id));
 
     const addInput = {
         element: 'div',
@@ -2049,13 +2175,13 @@ function createInputTags(tags, placeholder, suggestionType, useOutline) {
             attributes: { src: 'assets/icons/add.svg' }
         }, {
             element: 'input',
-            classes: [`input-${suggestionType}`],
+            classes: [`input-type-${suggestionType}`],
             attributes: {
                 type: 'text',
                 placeholder,
                 onfocus: 'focusInput(event)',
                 onblur: 'blurInput(event)',
-                oninput: `updateInputSuggestion(event)`,
+                oninput: `inputInput(event)`,
                 onkeydown: `keyDownInput(event)`,
             }
         }]
@@ -2069,10 +2195,10 @@ function createInputTags(tags, placeholder, suggestionType, useOutline) {
 
     return {
         element: 'ul',
-        classes: ['datalist-tags'],
+        classes: ['taglist'],
         children: [...tagList, {
             element: 'li',
-            classes: ['input', 'datalist-tag-add'],
+            classes: ['input', 'taglist-add'],
             attributes: { onclick: 'expandNewTagButton(this)' },
             children: [addInput, addInputSuggestions]
         }]
@@ -2136,14 +2262,7 @@ function createInputSeason(seasonYear, optional) {
     const [season, year] = seasonYear.split(' ');
 
     const options = optional ? ['', 'Fall', 'Winter'] : ['Fall', 'Winter'];
-    const seasonInput = {
-        element: 'select',
-        value: season,
-        children: options.map(x => ({
-            element: 'option',
-            innerText: x
-        }))
-    }
+    const seasonInput = createDropdown(season, options);
 
     const yearInput = {
         element: 'div',
@@ -2199,150 +2318,13 @@ function constructTableSubrow(tableId, id, subrow, colspan, noSubtableCheckbox) 
             classes: ['subtable-container'],
             attributes: { colspan },
             children: [{
-                element: 'ul',
+                element: 'div',
                 classes: ['subtable'],
-                children: noSubtableCheckbox ? [subrow] : [{
-                    element: 'li',
-                    attributes: { onclick: 'toggleSubrowSelect(event, this)' },
-                    children: [ROW_CHECKBOX, ...subrow]
-                }]
+                attributes: noSubtableCheckbox ? {} : { onclick: 'toggleSubrowSelect(event, this)' },
+                children: noSubtableCheckbox ? [subrow] : [ROW_CHECKBOX, subrow]
             }]
         }]
     });
-}
-
-// Helper function for constructTable. Return functions for operating on rows/subrows
-function getRowOperations(tableId, api, templateData, dataParser) {
-    const table = cssGetFirst(`#${tableId} tbody`);
-    let defaultData;
-
-    // Parse input data into constructable JSON if given, otherwise return template JSON
-    function parseData(data) {
-        if (!data) {
-            return defaultData;
-        }
-        let row = dataParser(data);
-        let subrows, noSubtableCheckbox;
-        let supportsSubrow = row.length >= 2 && Array.isArray(row[0]) && Array.isArray(row[1]);
-        if (supportsSubrow) {
-            [row, subrows, ...extra] = row;
-            noSubtableCheckbox = extra.length > 0;
-        }
-        return [row, subrows, noSubtableCheckbox, supportsSubrow];
-    }
-
-    defaultData = parseData(templateData);
-    const supportsSubrow = defaultData[3];  // Whether the table has subrows
-    
-    const operations = {
-        /**
-         * Append new row.
-         * 
-         * `element`: HTML element. The new row is appended directly beneath it. If undefined, table bottom is chosen.
-         * `copiedRowId`: Specify data from a row ID to fill the new row with. Used for copying rows. If undefined, template data is used.
-         */
-        row: (element, copiedRowId) => {
-            const data = api.get(copiedRowId);
-            const [row, subrows, noSubtableCheckbox] = parseData(data);
-            AUTOINCREMENT[tableId] += 1;
-            const id = AUTOINCREMENT[tableId];
-            api.insert({ ...data || templateData, id });
-            
-            let newRow;
-            if (supportsSubrow) {
-                const newSubrows = document.createDocumentFragment();
-                newRow = constructTableRow(tableId, id, row);
-                subrows.forEach((x, i) => newSubrows.appendChild(
-                    constructTableSubrow(tableId, `${id}-${i}`, subrows[0], row.length, noSubtableCheckbox))
-                );
-                if (element) {
-                    element.after(newSubrows);
-                    element.after(newRow);
-                } else {
-                    table.appendChild(newRow);
-                    table.appendChild(newSubrows);
-                }
-                // Show new subrow with row
-                toggleCellDetails(newRow.querySelector('.cell-details img[src="assets/icons/hide.svg"]'));
-            } else if (element) {
-                newRow = constructTableRow(tableId, id, row);
-                element.after(newRow);
-            } else {
-                newRow = constructTableRow(tableId, id, row);
-                table.appendChild(newRow);
-            }
-            newRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        },
-
-        subrow: supportsSubrow ? (element, copiedRowId) => {
-            assert(element, `Trying to create subrow without specifying element to anchor it to`);
-            let copiedSubrowId;
-            if (copiedRowId) {
-                [copiedRowId, copiedSubrowId] = copiedRowId.split('-').map(Number);
-            }
-
-            const data = api.get(copiedRowId);
-            const [row, subrows, noSubtableCheckbox] = parseData(data);
-            const subrow = subrows[copiedSubrowId || 0];
-
-            // Get new subrow index <- current largest index + 1
-            // Bad runtime complexity, but realistically we won't get >5 subrows for current use cases
-            let maxSubrowId = -1;
-            let curr = element;
-            while (isSubrow(curr)) {
-                curr = curr.previousElementSibling;  // Go back to beginning of subrows
-            }
-            curr = curr.nextElementSibling;  // Go to end of subrows
-            while (isSubrow(curr)) {
-                maxSubrowId = Math.max(maxSubrowId, Number(curr.id.split('-').at(-1)));
-                curr = curr.nextElementSibling;
-            }
-            const newSubrowId = maxSubrowId + 1;
-            
-            // If re-inserting the first subrow (after deleting all subrows), element is not a subrow, so 2nd case hits
-            const id = Number(element.id.split('-').at(-2)) || Number(element.id.split('-').at(-1));
-            api.insertSubrow({ ...data || templateData, id }, newSubrowId, copiedSubrowId);
-
-            const newSubrow = constructTableSubrow(tableId, `${id}-${newSubrowId}`, subrow, row.length, noSubtableCheckbox);
-            cssSetElement(newSubrow, { display: element.style.display });
-            element.after(newSubrow);
-            newSubrow.scrollIntoView({ behavior: 'smooth', block: 'center' });  
-        } : undefined,
-
-        rowDelete: (ids) => {
-            for (const id of ids) {
-                const row = cssGetId(`${tableId}-${id}`);
-                
-                // Delete subows
-                let curr = row.nextElementSibling;
-                while (curr && isSubrow(curr)) {
-                    const next = curr.nextElementSibling;
-                    curr.remove();
-                    curr = next;
-                }
-
-                api.delete(id);
-                row.remove();
-                ROW_SELECTION[tableId].delete(id);
-            }
-        },
-
-        subrowDelete: supportsSubrow ? (ids) => {
-            for (const id of ids) {
-                const [rowId, subrowId] = id.split('-').map(Number);
-                cssGetId(`${tableId}-${id}`).remove();
-                SUBROW_SELECTION[tableId].delete(id);
-                api.deleteSubrow(rowId, subrowId);
-
-                // If no subrows remain after deletion, create a blank one
-                const row = cssGetId(`${tableId}-${rowId}`);
-                if (!isSubrow(row.nextElementSibling)) {
-                    operations.subrow(getLowestSubrow(row));
-                }
-            }
-        } : undefined
-    };
-    return operations;
 }
 
 let AUTOINCREMENT = {};
@@ -2352,51 +2334,408 @@ let AUTOINCREMENT = {};
  * - `tableID (string)`: CSS id of the table
  * - `api`: Object with get/insert/delete methods to interact with internal data (e.g. MEMBERS_API)
  * - `templateData (T)`: A template data used as the placeholder when adding a new row
- * - `dataParser ((T) => ...)`: Function that takes in your list item and outputs `construct` syntax.
+ * - `dataParser (T => <td>[])`: Function that takes in your list item and outputs `construct` syntax.
+ * - `rowSyncer ((id, <td>[]) => void)`: Function that takes in constructed rows and updates the API data 
  * 
- *   If the table has no subrows, dataParser should output data for 1 row,
- *      e.g. `[column1, column2, ...]`
+ * `dataParser` outputs a list where each item is a `<td>`, e.g. `[column1, column2, ...]`
  * 
- *   If the table has subrows, dataParser should additionally output all subrows for the row,
- *      e.g. `[[column1, column2, ...], [subrow1, subrow2, ...]]`
+ * `rowSyncer` takes in a list of `<td>` elements in the same order they were given.
  * 
- *   If the table should not have a checkbox in subrows, the input should be
- *      e.g. `[[column1, column2, ...], [subrow1, subrow2, ...], true]`
+ * Output is an object of table operations. 
  */
-function constructTable(tableId, api, templateData, dataParser) {
+function constructTable(tableId, api, templateData, dataParser, rowSyncer) {
     const table = cssGetFirst(`#${tableId} tbody`);
     const fragment = document.createDocumentFragment();
 
     // Construct rows of table
     let maxId = -1;
     for (const data of api.getAll()) {
-        let subrows;
-        let row = dataParser(data);
-
-        // [[col1, col2, ...], [subrow1, subrow2, ...]] -> subtable rows
-        if (row.length >= 2 && Array.isArray(row[0]) && Array.isArray(row[1])) {
-            [row, subrows, ...extra] = row;
-            const noSubtableCheckbox = extra.length > 0;
-
-            fragment.appendChild(constructTableRow(tableId, data.id, row));
-            subrows.forEach((subrow, i) => fragment.appendChild(constructTableSubrow(
-                tableId,
-                `${data.id}-${i}`,
-                subrow,
-                row.length,
-                noSubtableCheckbox
-            )));
-        
         // [col1, col2, ...] -> table row
-        } else {
-            fragment.appendChild(constructTableRow(tableId, data.id, row));
-        }
+        const row = dataParser(data);
+        fragment.appendChild(constructTableRow(tableId, data.id, row));
         maxId = Math.max(data.id, maxId);
     }
     table.replaceChildren(fragment);
     AUTOINCREMENT[tableId] = maxId;
 
-    return getRowOperations(tableId, api, templateData, dataParser);
+    function parseRowId(element) {
+        return Number(element.id.split('-').at(-1));
+    }
+
+    return {
+        rowAdd: (row, copyRow) => {
+            AUTOINCREMENT[tableId] += 1;
+            const id = AUTOINCREMENT[tableId];
+
+            let tr;
+            if (copyRow) {
+                assert(row, `No row specified to copy`);
+                const data = api.get(parseRowId(row));
+                api.set({ ...data, id });
+                tr = constructTableRow(tableId, id, dataParser(data));
+            } else {
+                api.set({ id, ...templateData });
+                tr = constructTableRow(tableId, id, dataParser(templateData));
+            }
+
+            if (row) row.after(tr);
+            else table.appendChild(tr);
+
+            tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        },
+        rowDelete: (ids) => {
+            for (const id of ids) {
+                cssGetId(`${tableId}-${id}`).remove();
+                api.delete(id);
+                ROW_SELECTION[tableId].delete(id);
+                if (AUTOINCREMENT[tableId] === id) {
+                    AUTOINCREMENT[tableId] -= 1;
+                }
+            }
+        },
+        rowEdit: (elements) => {
+            for (const tr of elements) {
+                const id = parseRowId(tr);
+                rowSyncer(id, Array.from(tr.children).slice(1));
+            }
+        },
+        rowMoveToEnd: (moveTop) => {
+            const fragment = document.createDocumentFragment();
+            Array.from(ROW_SELECTION[tableId])
+                .map(id => cssGetId(`${tableId}-${id}`))
+                .sort((a, b) => a.sectionRowIndex - b.sectionRowIndex)
+                .forEach(x => fragment.appendChild(x));
+            if (moveTop) {
+                table.prepend(fragment);
+                table.children[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                table.appendChild(fragment);
+                table.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        },
+        rowMove: (moveUp) => {
+            const rows = Array.from(ROW_SELECTION[tableId])
+                .map(id => cssGetId(`${tableId}-${id}`))
+                .sort((a, b) => a.sectionRowIndex - b.sectionRowIndex);
+            const notMoved = new Set(rows.map(x => x.id));
+
+            if (moveUp) {
+                for (let i = 0; i < rows.length; i++) {
+                    const prev = table.children[rows[i].sectionRowIndex - 1];
+                    if (prev && !notMoved.has(prev.id)) {
+                        prev.before(rows[i]);
+                        notMoved.delete(prev.id);
+                    }
+                }
+            } else {
+                for (let i = rows.length - 1; i >= 0; i--) {
+                    const next = table.children[rows[i].sectionRowIndex + 1];
+                    if (next && !notMoved.has(next.id)) {
+                        next.after(rows[i]);
+                        notMoved.delete(next.id);
+                    }
+                }
+            }
+            const middle = Math.floor(rows.length / 2);
+            rows[middle].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+}
+
+/**
+ * Like `contructTable` but for tables containing subrows.
+ * - `tableID (string)`: CSS id of the table
+ * - `api`: Object with get/insert/delete methods to interact with internal data (e.g. MUSIC_API)
+ * - `templateData (T)`: A template data used as the placeholder when adding a new row/subrow
+ * - `dataParser (T => [<td>[], <?>[], ...])`: Function that takes in your list item and outputs `construct` syntax.
+ * - `rowSyncer ((id, <td>[], subIds, <?>[]) => void)`: Function that takes in constructed rows and updates the API data 
+ * 
+ * `dataParser` outputs a list where index 0 is the row and index 1 is a list of subrows 
+ *     e.g. `[row, [subrow1, subrow2, ...]]`
+ * 
+ * The rows and subrows are lists where each item is a `<td>`.
+ * If no checkboxes are needed in the subrows, add an additional dummy row
+ *     e.g. `[[column1, column2, ...], [subrow1, subrow2, ...], true]`
+ * 
+ * `rowSyncer` takes in the row `<td>` and a list of subrows (`<td>`).
+ */
+function constructTableWithSubrows(tableId, api, templateData, dataParser, rowSyncer) {
+    const tree = {};
+    function createRowAndSubrows(data) {
+        const fragment = document.createDocumentFragment();
+
+        // [[col1, col2, ...], [subrow1, subrow2, ...], ...] -> subtable rows
+        const [row, subrows, ...extra] = dataParser(data);
+        const noSubtableCheckbox = extra.length > 0;
+
+        const newRow = constructTableRow(tableId, data.id, row);
+        fragment.appendChild(newRow);
+        tree[data.id] = { max: -1, children: new Set() };
+
+        subrows.forEach((subrow, i) => {
+            const id = `${data.id}-${i}`;
+            fragment.appendChild(constructTableSubrow(tableId, id, subrow, row.length, noSubtableCheckbox));
+            tree[data.id].max = Math.max(tree[data.id].max, i);
+            tree[data.id].children.add(id);
+        });
+        return [fragment, newRow];
+    }
+    function createSubrow(data, rowId, copiedSubrowId) {
+        const [row, subrows, ...extra] = dataParser(data);
+        const noSubtableCheckbox = extra.length > 0;
+
+        tree[rowId].max += 1;
+        const newId = tree[rowId].max;
+
+        const subrow = subrows[typeof copiedSubrowId === 'number' ? api.indexSubrow(rowId, copiedSubrowId) : 0];
+        const tr = constructTableSubrow(tableId, `${rowId}-${newId}`, subrow, row.length, noSubtableCheckbox);
+        tree[rowId].children.add(`${rowId}-${newId}`);
+        return [tr, newId];
+    }
+
+    const table = cssGetFirst(`#${tableId} tbody`);
+    const fragment = document.createDocumentFragment();
+
+    // Construct rows of table
+    let maxId = -1;
+    for (const data of api.getAll()) {
+        fragment.appendChild(createRowAndSubrows(data)[0]);
+        maxId = Math.max(data.id, maxId);
+    }
+    table.replaceChildren(fragment);
+    AUTOINCREMENT[tableId] = maxId;
+
+    function parseRowId(row) {
+        if (isSubrow(row)) {
+            return Number(row.id.split('-').at(-2));
+        }
+        return Number(row.id.split('-').at(-1));
+    }
+
+    const operations = {
+        rowAdd: (row, copyRow) => {
+            AUTOINCREMENT[tableId] += 1;
+            const id = AUTOINCREMENT[tableId];
+
+            let fragment, tr, data;
+            if (copyRow) {
+                assert(row, `No row specified to copy`);
+                data = { ...api.get(parseRowId(row)), id };
+                [fragment, tr] = createRowAndSubrows(data);
+            } else {
+                data = { id, ...templateData };
+                [fragment, tr] = createRowAndSubrows(data);
+            }
+            api.set(data);
+
+            if (row) {
+                const anchor = table.children[row.sectionRowIndex + tree[parseRowId(row)].children.size];
+                anchor.after(fragment);
+            } else {
+                table.appendChild(fragment);
+            }
+
+            toggleCellDetails(tr.querySelector('.cell-details img[src="assets/icons/hide.svg"]'));
+            tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        },
+        rowDelete: (ids) => {
+            for (const id of ids) {
+                for (const childId of tree[id].children) {
+                    cssGetId(`${tableId}-${childId}`).remove();
+                }
+                delete tree[id];
+
+                cssGetId(`${tableId}-${id}`).remove();
+                api.delete(id);
+                ROW_SELECTION[tableId].delete(id);
+                if (AUTOINCREMENT[tableId] === id) {
+                    AUTOINCREMENT[tableId] -= 1;
+                }
+            }
+            toggleSubrowSelectionEnabled(true, tableId);
+        },
+        rowEdit: (elements) => {
+            for (const tr of elements) {
+                const row = Array.from(tr.children).slice(1);
+                const id = parseRowId(tr);
+                const subIds = Array.from(tree[id].children);
+                const subrows = subIds.map(subId => {
+                    const subrow = cssGetId(`${tableId}-${subId}`);
+                    return subrow.querySelector('.subtable').lastElementChild;
+                });
+                rowSyncer(id, row, subIds, subrows);
+            }
+        },
+        rowMoveToEnd: (moveTop) => {
+            const fragment = document.createDocumentFragment();
+            let lastRow;
+            Array.from(ROW_SELECTION[tableId])
+                .map(id => cssGetId(`${tableId}-${id}`))
+                .sort((a, b) => a.sectionRowIndex - b.sectionRowIndex)
+                .forEach((x, i, arr) => {
+                    if (i === arr.length - 1) {
+                        lastRow = x;
+                    }
+                    fragment.appendChild(x);
+                    tree[parseRowId(x)].children.forEach(y => fragment.appendChild(cssGetId(`${tableId}-${y}`)));
+                });
+            if (moveTop) {
+                table.prepend(fragment);
+                table.children[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                table.appendChild(fragment);
+                lastRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        },
+        rowMove: (moveUp) => {
+            const rows = Array.from(ROW_SELECTION[tableId])
+                .map(id => cssGetId(`${tableId}-${id}`))
+                .sort((a, b) => a.sectionRowIndex - b.sectionRowIndex);
+            const notMoved = new Set(rows.map(x => x.id));
+
+            if (moveUp) {
+                for (let i = 0; i < rows.length; i++) {
+                    const rowId = parseRowId(rows[i]);
+                    const prevTr = table.children[rows[i].sectionRowIndex - 1];
+                    if (!prevTr) continue;
+                    const prev = cssGetId(`${tableId}-${parseRowId(prevTr)}`);
+
+                    if (!notMoved.has(prev.id)) {
+                        const fragment = document.createDocumentFragment();
+                        fragment.appendChild(rows[i]);
+                        tree[rowId].children.forEach(id => fragment.appendChild(cssGetId(`${tableId}-${id}`)));
+
+                        prev.before(fragment);
+                        notMoved.delete(prev.id);
+                    }
+                }
+            } else {
+                for (let i = rows.length - 1; i >= 0; i--) {
+                    const rowId = parseRowId(rows[i]);
+                    
+                    let next = table.children[rows[i].sectionRowIndex + tree[rowId].children.size + 1];
+                    if (!next) continue;
+                    const nextId = next.id;
+                    next = table.children[next.sectionRowIndex + tree[parseRowId(next)].children.size];
+                    
+                    if (next && !notMoved.has(nextId)) {
+                        const fragment = document.createDocumentFragment();
+                        fragment.appendChild(rows[i]);
+                        tree[rowId].children.forEach(id => fragment.appendChild(cssGetId(`${tableId}-${id}`)));
+
+                        next.after(fragment);
+                        notMoved.delete(nextId);
+                    }
+                }
+            }
+            const middle = Math.floor(rows.length / 2);
+            rows[middle].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        },
+        subrowAdd: (subrow, copySubrow) => {
+            let tr, subrowId;
+            let [rowId, copiedSubrowId] = subrow.id.split('-').slice(-2).map(Number);
+            if (copySubrow) {
+                const data = api.get(rowId);
+                [tr, subrowId] = createSubrow(data, rowId, copiedSubrowId);
+                api.insertSubrow(data, rowId, subrowId, copiedSubrowId);
+            } else {
+                if (!rowId) {
+                    // When deleting the last subrow, it is re-added, so a row is passed into `subrow`
+                    // So `[rowId, copiedSubrowId] = [NaN, actualRowId]`
+                    rowId = copiedSubrowId;
+                }
+                [tr, subrowId] = createSubrow(templateData, rowId);
+                api.insertSubrow(templateData, rowId, subrowId);
+            }
+
+            subrow.after(tr);
+            cssSetElement(tr, { display: subrow.style.display });
+            tr.scrollIntoView({ behavior: 'smooth', block: 'center' });  
+        },
+        subrowDelete: (ids) => {
+            for (const id of ids) {
+                const [rowId, subrowId] = id.split('-').map(Number);
+                cssGetId(`${tableId}-${id}`).remove();
+                SUBROW_SELECTION[tableId].delete(id);
+                api.deleteSubrow(rowId, subrowId);
+
+                tree[rowId].children.delete(id);
+                if (subrowId === tree[rowId].max) {
+                    tree[rowId].max -= 1;
+                }
+
+                // If no subrows remain after deletion, create a blank one
+                if (tree[rowId].children.size === 0) {
+                    operations.subrowAdd(cssGetId(`${tableId}-${rowId}`));
+                }
+            }
+            toggleRowSelectionEnabled(true, tableId);
+        },
+        subrowEdit: (elements) => {
+            for (const tr of elements) {
+                const [id, subId] = tr.id.split('-').slice(-2).map(Number);
+                const subrow = tr.querySelector('.subtable').lastElementChild;
+                rowSyncer(id, undefined, subId, subrow);
+            }
+        },
+        subrowMoveToEnd: (moveTop) => {
+            const fragments = {};
+            Array.from(SUBROW_SELECTION[tableId])
+                .map(id => cssGetId(`${tableId}-${id}`))
+                .sort((a, b) => a.sectionRowIndex - b.sectionRowIndex)
+                .forEach(x => {
+                    const rowId = parseRowId(x);
+                    if (!fragments[rowId]) {
+                        fragments[rowId] = document.createDocumentFragment();
+                    }
+                    fragments[rowId].appendChild(x);
+                });
+
+            for (const rowId in fragments) {
+                const row = cssGetId(`${tableId}-${rowId}`);
+                const fragment = fragments[rowId];
+                if (moveTop) {
+                    row.after(fragment);
+                } else {
+                    const nextId = Number(rowId) + 1;
+                    if (tree[nextId]) {
+                        cssGetId(`${tableId}-${nextId}`).before(fragment);
+                    } else {
+                        table.appendChild(fragment);
+                    }
+                }
+            }
+            const row = cssGetId(`${tableId}-${Array.from(SUBROW_SELECTION[tableId])[0]}`);
+            row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        },
+        subrowMove: (moveUp) => {
+            const rows = Array.from(SUBROW_SELECTION[tableId])
+                .map(id => cssGetId(`${tableId}-${id}`))
+                .sort((a, b) => a.sectionRowIndex - b.sectionRowIndex);
+            const notMoved = new Set(rows.map(x => x.id));
+
+            if (moveUp) {
+                for (let i = 0; i < rows.length; i++) {
+                    const prev = table.children[rows[i].sectionRowIndex - 1];
+                    if (prev && isSubrow(prev) && !notMoved.has(prev.id)) {
+                        prev.before(rows[i]);
+                        notMoved.delete(prev.id);
+                    }
+                }
+            } else {
+                for (let i = rows.length - 1; i >= 0; i--) {
+                    const next = table.children[rows[i].sectionRowIndex + 1];
+                    if (next && isSubrow(next) && !notMoved.has(next.id)) {
+                        next.after(rows[i]);
+                        notMoved.delete(next.id);
+                    }
+                }
+            }
+            const middle = Math.floor(rows.length / 2);
+            rows[middle].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        },
+    };
+    return operations;
 }
 
 
@@ -2422,14 +2761,14 @@ function constructAnnouncements() {
         from: ymd,
         until: ymd,
     }
-    
-    return constructTable('table-announcements', ANNOUNCEMENTS_API, template, (x) => [{
+
+    const dataParser = (x) => [{
         element: 'td',
         children: [{
             element: 'img',
             attributes: {
                 src: `assets/icons/${x.type === 'alert' ? 'alert-triangle.svg' : 'megaphone.svg'}`,
-                onclick: 'toggleAnnouncementType(this)'
+                onclick: 'toggleAnnouncementType(this)',
             },
             classes: ['table-announcements-icon'],
         }]
@@ -2440,7 +2779,19 @@ function constructAnnouncements() {
         element: 'td',
         attributes: INPUT_ATTRIBUTES.multiline,
         innerHTML: parseMarkdown(x.text)
-    }]);
+    }];
+
+    const rowSyncer = (id, tds) => {
+        ANNOUNCEMENTS_API.set({
+            id,
+            type: tds[0].children[0].src.endsWith('alert-triangle.svg') ? 'alert' : 'announcement',
+            text: tds[2].innerHTML,
+            from: tds[1].children[0].children[0].value,
+            until: tds[1].children[1].children[0].value
+        })
+    }
+    
+    return constructTable('table-announcements', ANNOUNCEMENTS_API, template, dataParser, rowSyncer);
 }
 function constructUpcomingEvents() {
     const ymd = getTemplateDateString();
@@ -2451,12 +2802,13 @@ function constructUpcomingEvents() {
         image: 'assets/images/locations/???.webp'
     }
 
-    return constructTable('table-upcoming-events', UPCOMING_EVENTS_API, template, (x) => [{
+    const dataParser = (x) => [{
         element: 'td',
         children: [createInputText(
             'assets/icons/events-filled.svg',
             'Select by name...',
-            EVENTS_API.get(x.id)?.name,
+            EVENTS_API.get(x.id)?.name ?? '',
+            x.id,
             'event'
         )]
     }, {
@@ -2466,10 +2818,22 @@ function constructUpcomingEvents() {
         element: 'td',
         attributes: INPUT_ATTRIBUTES.asset,
         innerText: x.image
-    }])
+    }];
+
+    const rowSyncer = (id, tds) => {
+        // TODO: store <input hidden> storing input IDs
+        // UPCOMING_EVENTS_API.set({
+        //     id,
+        //     location,
+        //     from,
+        //     until,
+        //     image
+        // })
+    }
+
+    return constructTable('table-upcoming-events', UPCOMING_EVENTS_API, template, dataParser, rowSyncer);
 }
 function constructCurrentEvent() {
-    const events = EVENTS_API.getAll();
     const currentEvent = getCurrentEvent();
 
     const { name } = EVENTS_API.get(currentEvent.id);
@@ -2497,8 +2861,8 @@ function constructFaq() {
         q: 'Placeholder',
         a: ['Placeholder']
     };
-    
-    return constructTable('table-faq', FAQ_API, template, ({q, a}) => [{
+
+    const dataParser = ({q, a}) => [{
         element: 'td',
         children: [{
             element: 'div',
@@ -2515,7 +2879,17 @@ function constructFaq() {
                 innerHTML: parseMarkdown(x)
             }))
         }]
-    }]);
+    }];
+
+    const rowSyncer = (id, tds) => {
+        FAQ_API.set({
+            id,
+            q: tds[0].children[0].innerText,
+            a: tds[0].children[1].innerHTML.replaceAll('</div>', '').replaceAll('<br>', '').split('<div>')
+        });
+    }
+    
+    return constructTable('table-faq', FAQ_API, template, dataParser, rowSyncer);
 };
 
 
@@ -2524,18 +2898,21 @@ Data injection - Members table
 *********************************************************************/
 function constructMembers() {
     const instruments = getInstruments();
-    const templateSeason = `Fall ${(new Date()).getFullYear()}`;
+    const roles = getRoles();
+
+    const now = new Date();
+    const templateSeason = `${now.getMonth() > 5 ? 'Fall' : 'Winter'} ${now.getFullYear()}`;
     const template = {
         name: "John LMC",
         joined: templateSeason,
-        left: templateSeason,
+        left: '',
         instruments: [],
         roles: [],
         links: {}
     };
 
-    return constructTable('table-members', MEMBERS_API, template, (x) => {
-        const tags = [...x.instruments.map(i => instruments[i]), ...x.roles];
+    const dataParser = (x) => {
+        const tags = [...x.instruments.map(i => instruments[i]), ...x.roles.map(i => roles[i])];
         const links = Object.keys(x.links).map(capitalize);
         return [{
             element: 'td',
@@ -2554,7 +2931,18 @@ function constructMembers() {
             element: 'td',
             children: [createInputModalOpener('openModalMemberLinks(this)', links)]
         }]
-    })
+    };
+
+    const rowSyncer = (id, tds) => {
+        console.log(tds)
+        // MEMBERS_API.set({
+        //     id,
+
+        // })
+        // TODO: sync tags & links
+    }
+
+    return constructTable('table-members', MEMBERS_API, template, dataParser, rowSyncer);
 }
 
 
@@ -2562,14 +2950,8 @@ function constructMembers() {
 Data injection - Music table
 *********************************************************************/
 function constructMusicTable() {
-    const mediaOrigins = ['', 'Anime', 'Video Game', 'Vocaloid'].map(x => ({
-        element: 'option',
-        innerText: x
-    }));
-    const songTypes = ['Large Ensemble', 'Small Ensemble', 'External Group'].map(x => ({
-        element: 'option',
-        innerText: x
-    }))
+    const mediaOrigins = ['', 'Anime', 'Video Game', 'Vocaloid'];
+    const songTypes = ['Large Ensemble', 'Small Ensemble', 'External Group'];
 
     const template = {
         name: "Placeholder",
@@ -2581,7 +2963,7 @@ function constructMusicTable() {
         }]
     };
 
-    return constructTable('table-music', MUSIC_API, template, (x) => {
+    const dataParser = (x) => {
         const performances = x.performances.map(p => p.concerts.map(c => EVENTS_API.get(c)?.start?.slice(0, 7) ?? c)).flat();
         const row = [{
             element: 'td',
@@ -2597,11 +2979,7 @@ function constructMusicTable() {
             innerText: x.from
         }, {
             element: 'td',
-            children: [{
-                element: 'select',
-                value: x.mediaOrigin || '',
-                children: mediaOrigins
-            }]
+            children: [createDropdown(x.mediaOrigin || '', mediaOrigins)]
         }, {
             element: 'td',
             children: [createInputSubrowOpener(performances)]
@@ -2612,24 +2990,24 @@ function constructMusicTable() {
         }];
 
         const subrows = x.performances.map(p => {
-            const arranger = p.arranger?.map(a => MEMBERS_API.get(a)?.name ?? a) ?? [];
+            const arranger = p.arranger?.map(a => {
+                const name = MEMBERS_API.get(a)?.name;
+                return name ? [a, name] : [undefined, a];
+            }) ?? [];
+            const concerts = p.concerts.map(c => {
+                const name = EVENTS_API.get(c)?.name;
+                return name ? [c, name] : [undefined, c]; // temporarily accept arbitary strings until data is fixed
+            })
             const performerNames = getPerformerNames(p);
-            return [createDatalist([
+            const songType = p.songType === 'Large' ? 'Large Ensemble' : p.songType === 'Small' ? 'Small Ensemble' : 'External Group';
+            return createDatalist([
                 ['Concerts', {
                     element: 'td',
-                    children: [createInputTags(
-                        p.concerts.map(c => EVENTS[c]?.name ?? c),  // temporary until data is fixed
-                        'Enter event...',
-                        'event'
-                    )]
+                    children: [createInputTags(concerts, 'Enter event...', 'event')]
                 }],
                 ['Song Type', {
                     element: 'td',
-                    children: [{
-                        element: 'select',
-                        value: p.songType === 'Large' ? 'Large Ensemble' : p.songType === 'Small' ? 'Small Ensemble' : 'External Group',
-                        children: songTypes
-                    }]
+                    children: [createDropdown(songType, songTypes)]
                 }],
                 ['Sheet Music', {
                     element: 'td',
@@ -2638,11 +3016,7 @@ function constructMusicTable() {
                 }],
                 ['Arranger(s)', {
                     element: 'td',
-                    children: [createInputTags(
-                        arranger,
-                        'Enter arranger...',
-                        'member'
-                    )]
+                    children: [createInputTags(arranger, 'Enter arranger...', 'member')]
                 }],
                 ['Group', {
                     element: 'td',
@@ -2653,10 +3027,17 @@ function constructMusicTable() {
                     element: 'td',
                     children: [createInputModalOpener('openModalPerformancePerformers(this)', performerNames)]
                 }]
-            ])];
+            ]);
         });
         return [row, subrows];
-    })
+    };
+
+    const rowSyncer = (id, row, subIds, subrows) => {
+        console.log(row);
+        console.log(subrows)
+    }
+
+    return constructTableWithSubrows('table-music', MUSIC_API, template, dataParser, rowSyncer);
 }
 
 
@@ -2673,19 +3054,12 @@ function constructEventTable() {
         setlist: []
     };
 
-    return constructTable('table-events', EVENTS_API, template, (x) => {
-        const eventTypes = ['Concert', 'Workshop', 'Other', 'External'].map(x => ({
-            element: 'option',
-            innerText: x
-        }))
+    const eventTypes = ['Concert', 'Workshop', 'Other', 'External'];
 
+    const dataParser = (x) => {
         const row = [{
             element: 'td',
-            children: [{
-                element: 'select',
-                value: x.type,
-                children: eventTypes
-            }]
+            children: [createDropdown(x.type, eventTypes)]
         }, {
             element: 'td',
             attributes: INPUT_ATTRIBUTES.default,
@@ -2710,16 +3084,20 @@ function constructEventTable() {
         }];
         
         const subrows = [{
-            element: 'li',
-            children: [{
-                element: 'div',
-                attributes: INPUT_ATTRIBUTES.multiline,
-                innerHTML: x.description ? parseMarkdown(x.description) : ''
-            }]
+            element: 'div',
+            attributes: INPUT_ATTRIBUTES.multiline,
+            innerHTML: x.description ? parseMarkdown(x.description) : ''
         }];
 
         return [row, subrows, true];
-    })
+    };
+
+    const rowSyncer = (id, rows, subIds, subrows) => {
+        console.log(rows)
+        console.log(subrows);
+    }
+
+    return constructTableWithSubrows('table-events', EVENTS_API, template, dataParser, rowSyncer);
 }
 
 
@@ -2755,11 +3133,9 @@ function parseRole(role) {
 function constructTagTab() {
     const members = MEMBERS_API.getAll();
     const instruments = getInstruments();
+    const roles = getRoles();
 
-    const tags = [
-        ...instruments.sort(instrumentSorter),
-        ...Array.from(new Set(members.map(x => x.roles.map(parseRole)).flat())).sort(roleSorter)
-    ];
+    const tags = [...instruments, ...roles];
     const tagPreviews = cssGetId('tag-previews');
     const fragment = document.createDocumentFragment();
     tags.forEach((tag, i) => {
@@ -2792,7 +3168,7 @@ Data injection - Modals
 *********************************************************************/
 function getRowId(element) {
     let ids = (element.closest('.subtable-row') || element.closest('tr')).id.split('-');    
-    ids = ids.slice(ids.length - 2).map(x => parseInt(x, 10));
+    ids = ids.slice(-2).map(x => parseInt(x, 10));
     if (!isNaN(ids[0]) && !isNaN(ids[1])) {
         return ids;
     }
@@ -2804,6 +3180,7 @@ function openModalMemberTags(element) {
     const id = getRowId(element);
     const member = MEMBERS_API.get(id);
     const instruments = getInstruments();
+    const roles = getRoles();
 
     // Title
     cssGetFirst('#modal-member-tags h2 span').innerText = `for ${member.name}`;
@@ -2811,16 +3188,16 @@ function openModalMemberTags(element) {
     // Instruments
     let container = cssGetId('datalist-member-instruments');
     let fragment = document.createDocumentFragment();
-    for (const instrument of member.instruments) {
-        fragment.appendChild(construct(createInputTag(instruments[instrument])));
+    for (const id of member.instruments) {
+        fragment.appendChild(construct(createInputTag(instruments[id], id, true)));
     }
     container.replaceChildren(fragment);
 
     // Roles
     container = cssGetId('datalist-member-roles');
     fragment = document.createDocumentFragment();
-    for (const role of member.roles) {
-        fragment.appendChild(construct(createInputTag(role)))
+    for (const id of member.roles) {
+        fragment.appendChild(construct(createInputTag(roles[id], id, true)))
     }
     container.replaceChildren(fragment);
 }
@@ -2830,10 +3207,7 @@ function openModalMemberLinks(element) {
     const id = getRowId(element);
     const member = MEMBERS_API.get(id);
     const instruments = getInstruments();
-    const socialMediaOptions = ['Bandcamp', 'Discord', 'Instagram', 'LinkedIn', 'Musescore', 'Spotify', 'Soundcloud', 'Youtube'].map(x => ({
-        element: 'option',
-        innerText: x
-    }))
+    const socialMediaOptions = ['Bandcamp', 'Discord', 'Instagram', 'LinkedIn', 'Musescore', 'Spotify', 'Soundcloud', 'Youtube'];
 
     // Title
     cssGetFirst('#modal-member-links h2 span').innerText = `for ${member.name}`;
@@ -2855,11 +3229,7 @@ function openModalMemberLinks(element) {
                 children: [X_BUTTON]
             }, {
                 element: 'td',
-                children: [{
-                    element: 'select',
-                    value: capitalize(socialMedia),
-                    children: socialMediaOptions
-                }]
+                children: [createDropdown(capitalize(socialMedia), socialMediaOptions)]
             }, {
                 element: 'td',
                 attributes: INPUT_ATTRIBUTES.default,
@@ -2881,10 +3251,7 @@ function openModalMemberLinks(element) {
             children: [X_BUTTON]
         }, {
             element: 'td',
-            children: [{
-                element: 'select',
-                children: socialMediaOptions
-            }]
+            children: [createDropdown(undefined, socialMediaOptions)]
         }, {
             element: 'td',
             attributes: {
@@ -2907,7 +3274,6 @@ function openModalPerformancePerformers(element) {
     openModalHelper('modal-performance-performers');
 
     const instruments = getInstruments();
-    const members = MEMBERS_API.getAll();
     const [id, subId] = getRowId(element);
     const song = MUSIC_API.get(id);
     const performers = song.performances[subId].performers;
@@ -2918,7 +3284,12 @@ function openModalPerformancePerformers(element) {
     // Performer
     const table = cssGetFirst('#modal-performance-performers tbody');
     const fragment = document.createDocumentFragment();
-    for (const [instrumentId, names] of Object.entries(performers)) {
+    for (const [instrumentId, memberIds] of Object.entries(performers)) {
+        const names = memberIds.map(id => {
+            const name = MEMBERS_API.get(id)?.name;
+            return name ? [id, name] : [undefined, id]
+        });
+
         fragment.appendChild(construct({
             element: 'tr',
             children: [{
@@ -2930,16 +3301,12 @@ function openModalPerformancePerformers(element) {
                     'assets/icons/music-note.svg',
                     'Enter instrument...',
                     instruments[instrumentId],
+                    instrumentId,
                     'instrument'
                 )]
             }, {
                 element: 'td',
-                children: [createInputTags(
-                    names.map(x => members[x]?.name ?? x),
-                    'Enter performer...',
-                    'member',
-                    names.map(x => !members[x])
-                )]
+                children: [createInputTags(names, 'Enter performer...', 'member')]
             }]
         }));
     }
@@ -2953,20 +3320,10 @@ function openModalPerformancePerformers(element) {
             children: [X_BUTTON]
         }, {
             element: 'td',
-            children: [createInputText(
-                'assets/icons/music-note.svg',
-                'Enter instrument...',
-                '',
-                'instrument'
-            )]
+            children: [createInputText('assets/icons/music-note.svg', 'Enter instrument...', '', '', 'instrument')]
         }, {
             element: 'td',
-            children: [createInputTags(
-                [],
-                'Enter performer...',
-                'member',
-                members.map(x => !members[x])
-            )]
+            children: [createInputTags([], 'Enter performer...', 'member')]
         }]
     }));
     table.replaceChildren(fragment);
@@ -2976,7 +3333,6 @@ function openModalConcertSetlist(element) {
 
     const id = getRowId(element);
     const { name, setlist, video } = EVENTS_API.get(id);
-    const music = MUSIC_API.getAll();
 
     // Title
     cssGetFirst('#modal-concert-setlist h2 span').innerText = `for ${name}`;
@@ -3014,7 +3370,7 @@ function openModalConcertSetlist(element) {
                 innerText: index
             }, {
                 element: 'td',
-                innerText: music[songId].name
+                innerText: MUSIC_API.get(songId).name
             }, {
                 element: 'td',
                 classes: ['concert-setlist-timestamp'],

@@ -672,16 +672,12 @@ Table
     list-style: none;
     padding-left: 0;
     display: flex;
-    flex-direction: column;
-    border: 2px solid rgba(0, 0, 0, 0.3);
-    border-radius: 15px;
-    padding-left: 5px;
-}
-.subtable li {
-    display: flex;
     flex-direction: row;
     gap: 5px;
     align-items: center;
+    border: 2px solid rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding-left: 5px;
 }
 .subtable .cell-details {
     justify-content: normal;
@@ -759,7 +755,7 @@ Inputs
     border-radius: 5px;
     position: absolute;
     background-color: white;
-    width: 100%;
+    min-width: 100%;
     filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.1));
     z-index: 2;
 }
@@ -796,6 +792,16 @@ Inputs
     background-color: rgba(92, 87, 26, 0.2) !important;
     transition: 0s;
 }
+.input-suggestions li span em {
+    text-wrap: nowrap;
+    font-style: normal;
+}
+.input-suggestions li span em:last-child {
+    opacity: 0.66;
+}
+.input-suggestions-hidden {
+    display: none;
+}
 
 input[type="date"], input[type="datetime-local"] {
     font-family: 'Atkinson Hyperlegible';
@@ -816,7 +822,7 @@ input[type="datetime-local"] {
 /*********************************************************************
 Datalist tags
 *********************************************************************/
-.datalist-tags {
+.taglist {
     list-style: none;
     padding-left: 0;
     display: flex;
@@ -825,7 +831,7 @@ Datalist tags
     gap: 5px;
     align-items: center;
 }
-.datalist-tags li {
+.taglist li {
     background-color: rgb(251, 109, 109);
     padding: 2px 10px;
     border-radius: 15px;
@@ -835,7 +841,12 @@ Datalist tags
     gap: 5px;
     font-size: 16px;
 }
-.datalist-tag-add {
+.taglist-id {
+    color: rgb(156, 8, 8);
+    user-select: none;
+    font-size: 12px;
+}
+.taglist-add {
     border-radius: 12px;
     transition: 0.1s;
     opacity: 0.8;
@@ -843,30 +854,30 @@ Datalist tags
     cursor: pointer;
     aspect-ratio: 1;
 }
-.datalist-tag-add:not(.datalist-tag-add-clicked):hover {
+.taglist-add:not(.taglist-add-clicked):hover {
     opacity: 0.5;
 }
-.datalist-tag-add:not(.datalist-tag-add-clicked):active {
+.taglist-add:not(.taglist-add-clicked):active {
     transition: 0s;
     opacity: 0.2;
 }
 
-.datalist-tag-add-clicked {
+.taglist-add-clicked {
     cursor: auto;
     opacity: 1;
 }
 
-.datalist-tag-add input {
+.taglist-add input {
     display: none;
 }
-.datalist-tag-add-clicked input {
+.taglist-add-clicked input {
     display: unset;
 }
 
-.datalist-tag-add img {
+.taglist-add img {
     margin-left: 1px !important;
 }
-.datalist-tag-add-clicked img {
+.taglist-add-clicked img {
     margin-left: 2px !important;
 }
 
@@ -890,7 +901,7 @@ Table customization
     max-height: calc(100vh - 230px);
 }
 
-#table-events .subtable li {
+#table-events .subtable {
     padding: 10px;
     flex-direction: column;
     align-items: normal;
@@ -1101,6 +1112,7 @@ Modal datalist
 *********************************************************************/
 .modal-datalist-container {
     width: 100%;
+    min-height: 150px;
     overflow-y: auto;
 }
 .modal-datalist-preview {

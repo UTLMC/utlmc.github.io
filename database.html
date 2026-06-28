@@ -176,7 +176,7 @@
                                     <div class="input">
                                         <div>
                                             <img src="assets/icons/events-filled.svg" />
-                                            <input type="text" class="input-event" placeholder="Select by name..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
+                                            <input type="text" class="input-type-event" placeholder="Select by name..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="inputInput(event)" onkeydown="keyDownInput(event)" />
                                         </div>
                                         <ul class="input-suggestions" tabindex="0">
                                             <li onclick="clickSuggestion(this)">
@@ -208,7 +208,7 @@
                                     <div class="input">
                                         <div>
                                             <img src="assets/icons/events-filled.svg" />
-                                            <input type="text" class="input-event" placeholder="Select by name..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
+                                            <input type="text" class="input-type-event" placeholder="Select by name..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="inputInput(event)" onkeydown="keyDownInput(event)" />
                                         </div>
                                         <ul class="input-suggestions" tabindex="0">
                                             <li onclick="clickSuggestion(this)">
@@ -247,32 +247,33 @@
                             <div class="input" id="current-event-id">
                                 <div>
                                     <img src="assets/icons/events-filled.svg" />
-                                    <input type="text" class="input-concert" placeholder="Select by name..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
+                                    <input type="hidden" value="0" />
+                                    <input type="text" class="input-type-concert" placeholder="Select by name..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="inputInput(event)" onkeydown="keyDownInput(event)" />
                                 </div>
                                 <ul class="input-suggestions" tabindex="0">
                                     <li onclick="clickSuggestion(this)">
-                                            <span>Suggestion 1</span>
-                                            <span>More info</span>
-                                        </li>
-                                        <li onclick="clickSuggestion(this)">
-                                            <span>Suggestion 2</span>
-                                            <span>More info</span>
-                                        </li>
-                                        <li onclick="clickSuggestion(this)">
-                                            <span>Suggestion 3</span>
-                                            <span>More info</span>
-                                        </li>
+                                        <span>Suggestion 1</span>
+                                        <span>More info</span>
+                                    </li>
+                                    <li onclick="clickSuggestion(this)">
+                                        <span>Suggestion 2</span>
+                                        <span>More info</span>
+                                    </li>
+                                    <li onclick="clickSuggestion(this)">
+                                        <span>Suggestion 3</span>
+                                        <span>More info</span>
+                                    </li>
                                 </ul>
                             </div>
                         </td>
                         <td>Visible From</td>
-                        <td><input type="datetime-local" id="current-event-visible-from" /></td>
+                        <td><input type="datetime-local" id="current-event-visible-from" onblur="syncData(this)" /></td>
                     </tr>
                     <tr>
                         <td>Location</td>
                         <td contenteditable="plaintext-only" onblur="validateInput(this)" id="current-event-location">252 Bloor Street West (OISE C-162)</td>
                         <td>Visible Until</td>
-                        <td><input type="datetime-local" id="current-event-visible-until" /></td>
+                        <td><input type="datetime-local" id="current-event-visible-until" onblur="syncData(this)" /></td>
                     </tr>
                     <tr>
                         <td>Tickets</td>
@@ -562,108 +563,106 @@
                             <tr id="table-music-0-0" class="subtable-row">
                                 <td></td>
                                 <td colspan="6" class="subtable-container">
-                                    <ul class="subtable">
-                                        <li onclick="toggleSubrowSelect(event, this)">
-                                            <input type="checkbox" class="subtable-checkbox" />
-                                            <table class="datalist">
-                                                <tbody>
-                                                    <tr>
-                                                        <td>Concerts</td>
-                                                        <td>
-                                                            <ul class="datalist-tags">
-                                                                <li>
-                                                                    <span>2025 End of Fall Concert</span>
-                                                                    <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
-                                                                </li>
-                                                                <div class="input datalist-tag-add" onclick="expandNewTagButton(this)">
-                                                                    <div>
-                                                                        <img src="assets/icons/add.svg" />
-                                                                        <input class="input-event" type="text" placeholder="Enter event..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
-                                                                    </div>
-                                                                    <ul class="input-suggestions" tabindex="0">
-                                                                        <li onclick="clickSuggestion(this)">
-                                                                            <span>Suggestion 1</span>
-                                                                            <span>More info</span>
-                                                                        </li>
-                                                                        <li onclick="clickSuggestion(this)">
-                                                                            <span>Suggestion 2</span>
-                                                                            <span>More info</span>
-                                                                        </li>
-                                                                        <li onclick="clickSuggestion(this)">
-                                                                            <span>Suggestion 3</span>
-                                                                            <span>More info</span>
-                                                                        </li>
-                                                                    </ul>
+                                    <div class="subtable" onclick="toggleSubrowSelect(event, this)">
+                                        <input type="checkbox" class="subtable-checkbox" />
+                                        <table class="datalist">
+                                            <tbody>
+                                                <tr>
+                                                    <td>Concerts</td>
+                                                    <td>
+                                                        <ul class="taglist">
+                                                            <li>
+                                                                <span>2025 End of Fall Concert</span>
+                                                                <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
+                                                            </li>
+                                                            <div class="input taglist-add" onclick="expandNewTagButton(this)">
+                                                                <div>
+                                                                    <img src="assets/icons/add.svg" />
+                                                                    <input class="input-type-event" type="text" placeholder="Enter event..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="inputInput(event)" onkeydown="keyDownInput(event)" />
                                                                 </div>
-                                                            </ul>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Song Type</td>
-                                                        <td>
-                                                            <select>
-                                                                <option>Large Ensemble</option>
-                                                                <option>Small Ensemble</option>
-                                                                <option>External Group</option>
-                                                            </select>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Sheet Music</td>
-                                                        <td contenteditable="plaintext-only" onblur="validateInput(this)">https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Arranger(s)</td>
-                                                        <td>
-                                                            <ul class="datalist-tags">
-                                                                <li>
-                                                                    <span>Person 1</span>
-                                                                    <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
-                                                                </li>
-                                                                <li>
-                                                                    <span>Person 2</span>
-                                                                    <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
-                                                                </li>
-                                                                <div class="input datalist-tag-add" onclick="expandNewTagButton(this)">
-                                                                    <div>
-                                                                        <img src="assets/icons/add.svg" />
-                                                                        <input type="text" class="input-member" placeholder="Enter arranger..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
-                                                                    </div>
-                                                                    <ul class="input-suggestions" tabindex="0">
-                                                                        <li onclick="clickSuggestion(this)">
-                                                                            <span>Suggestion 1</span>
-                                                                            <span>More info</span>
-                                                                        </li>
-                                                                        <li onclick="clickSuggestion(this)">
-                                                                            <span>Suggestion 2</span>
-                                                                            <span>More info</span>
-                                                                        </li>
-                                                                        <li onclick="clickSuggestion(this)">
-                                                                            <span>Suggestion 3</span>
-                                                                            <span>More info</span>
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-                                                            </ul>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Group</td>
-                                                        <td contenteditable="plaintext-only" onblur="validateInput(this)">https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Performer(s)</td>
-                                                        <td>
-                                                            <div class="cell-details">
-                                                                <p>Person 1 · Person 2 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 <span>(15)</span></p>
-                                                                <img class="cell-details-button" src="assets/icons/edit.svg" onclick="openModalPerformancePerformers(this)" />
+                                                                <ul class="input-suggestions" tabindex="0">
+                                                                    <li onclick="clickSuggestion(this)">
+                                                                        <span>Suggestion 1</span>
+                                                                        <span>More info</span>
+                                                                    </li>
+                                                                    <li onclick="clickSuggestion(this)">
+                                                                        <span>Suggestion 2</span>
+                                                                        <span>More info</span>
+                                                                    </li>
+                                                                    <li onclick="clickSuggestion(this)">
+                                                                        <span>Suggestion 3</span>
+                                                                        <span>More info</span>
+                                                                    </li>
+                                                                </ul>
                                                             </div>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </li>
-                                    </ul>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Song Type</td>
+                                                    <td>
+                                                        <select>
+                                                            <option>Large Ensemble</option>
+                                                            <option>Small Ensemble</option>
+                                                            <option>External Group</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Sheet Music</td>
+                                                    <td contenteditable="plaintext-only" onblur="validateInput(this)">https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Arranger(s)</td>
+                                                    <td>
+                                                        <ul class="taglist">
+                                                            <li>
+                                                                <span>Person 1</span>
+                                                                <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
+                                                            </li>
+                                                            <li>
+                                                                <span>Person 2</span>
+                                                                <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
+                                                            </li>
+                                                            <div class="input taglist-add" onclick="expandNewTagButton(this)">
+                                                                <div>
+                                                                    <img src="assets/icons/add.svg" />
+                                                                    <input type="text" class="input-type-member" placeholder="Enter arranger..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="inputInput(event)" onkeydown="keyDownInput(event)" />
+                                                                </div>
+                                                                <ul class="input-suggestions" tabindex="0">
+                                                                    <li onclick="clickSuggestion(this)">
+                                                                        <span>Suggestion 1</span>
+                                                                        <span>More info</span>
+                                                                    </li>
+                                                                    <li onclick="clickSuggestion(this)">
+                                                                        <span>Suggestion 2</span>
+                                                                        <span>More info</span>
+                                                                    </li>
+                                                                    <li onclick="clickSuggestion(this)">
+                                                                        <span>Suggestion 3</span>
+                                                                        <span>More info</span>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Group</td>
+                                                    <td contenteditable="plaintext-only" onblur="validateInput(this)">https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Performer(s)</td>
+                                                    <td>
+                                                        <div class="cell-details">
+                                                            <p>Person 1 · Person 2 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 · Person 3 <span>(15)</span></p>
+                                                            <img class="cell-details-button" src="assets/icons/edit.svg" onclick="openModalPerformancePerformers(this)" />
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </td>
                             </tr>
 
@@ -786,11 +785,9 @@
                             <tr id="table-events-0-0" class="subtable-row">
                                 <td></td>
                                 <td colspan="7" class="subtable-container">
-                                    <ul class="subtable">
-                                        <li>
-                                            <div contenteditable="true" onblur="validateMultilineInput(this)">asdasda sdadasdasds adasdsadasd sad sad sa dsa dsa dsadsadsa dsa dad a</div>
-                                        </li>
-                                    </ul>
+                                    <div class="subtable">
+                                        <div contenteditable="true" onblur="validateMultilineInput(this)">asdasda sdadasdasds adasdsadasd sad sad sa dsa dsa dsadsadsa dsa dad a</div>
+                                    </div>
                                 </td>
                             </tr>
 
@@ -844,7 +841,7 @@
             <div class="input">
                 <div>
                     <img src="assets/icons/add.svg" />
-                    <input type="text" class="input-instrument" placeholder="Enter instrument..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
+                    <input type="text" class="input-type-instrument" placeholder="Enter instrument..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="inputInput(event)" onkeydown="keyDownInput(event)" />
                 </div>
                 <ul class="input-suggestions" tabindex="0">
                     <li onclick="clickSuggestion(this)">
@@ -861,7 +858,7 @@
                     </li>
                 </ul>
             </div>
-            <ul class="datalist-tags" id="datalist-member-instruments">
+            <ul class="taglist" id="datalist-member-instruments">
                 <li>
                     <span>Piano</span>
                     <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
@@ -882,7 +879,7 @@
             <div class="input">
                 <div>
                     <img src="assets/icons/add.svg" />
-                    <input type="text" class="input-role" placeholder="Enter role..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
+                    <input type="text" class="input-type-role" placeholder="Enter role..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="inputInput(event)" onkeydown="keyDownInput(event)" />
                 </div>
                 <ul class="input-suggestions" tabindex="0">
                     <li onclick="clickSuggestion(this)">
@@ -899,7 +896,7 @@
                     </li>
                 </ul>
             </div>
-            <ul class="datalist-tags" id="datalist-member-roles">
+            <ul class="taglist" id="datalist-member-roles">
                 <li>
                     <span>Arranger</span>
                     <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
@@ -983,7 +980,7 @@
                                 <div class="input">
                                     <div>
                                         <img src="assets/icons/music-note.svg" />
-                                        <input type="text" class="input-instrument" placeholder="Enter instrument..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
+                                        <input type="text" class="input-type-instrument" placeholder="Enter instrument..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="inputInput(event)" onkeydown="keyDownInput(event)" />
                                     </div>
                                     <ul class="input-suggestions" tabindex="0">
                                         <li onclick="clickSuggestion(this)">
@@ -1002,7 +999,7 @@
                                 </div>
                             </td>
                             <td>
-                                <ul class="datalist-tags">
+                                <ul class="taglist">
                                     <li>
                                         <span>Person 1</span>
                                         <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
@@ -1011,10 +1008,10 @@
                                         <span>Person 2</span>
                                         <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
                                     </li>
-                                    <li class="input datalist-tag-add" onclick="expandNewTagButton(this)">
+                                    <li class="input taglist-add" onclick="expandNewTagButton(this)">
                                         <div>
                                             <img src="assets/icons/add.svg" />
-                                            <input type="text" class="input-member" placeholder="Enter performer..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
+                                            <input type="text" class="input-type-member" placeholder="Enter performer..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="inputInput(event)" onkeydown="keyDownInput(event)" />
                                         </div>
                                         <ul class="input-suggestions" tabindex="0">
                                             <li onclick="clickSuggestion(this)">
@@ -1040,7 +1037,7 @@
                                 <div class="input">
                                     <div>
                                         <img src="assets/icons/music-note.svg" />
-                                        <input type="text" class="input-instrument" placeholder="Enter instrument..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
+                                        <input type="text" class="input-type-instrument" placeholder="Enter instrument..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="inputInput(event)" onkeydown="keyDownInput(event)" />
                                     </div>
                                     <ul class="input-suggestions" tabindex="0">
                                         <li onclick="clickSuggestion(this)">
@@ -1059,7 +1056,7 @@
                                 </div>
                             </td>
                             <td>
-                                <ul class="datalist-tags">
+                                <ul class="taglist">
                                     <li>
                                         <span>Person 1</span>
                                         <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
@@ -1068,10 +1065,10 @@
                                         <span>Person 2</span>
                                         <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
                                     </li>
-                                    <li class="input datalist-tag-add" onclick="expandNewTagButton(this)">
+                                    <li class="input taglist-add" onclick="expandNewTagButton(this)">
                                         <div>
                                             <img src="assets/icons/add.svg" />
-                                            <input type="text" class="input-member" placeholder="Enter performer..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
+                                            <input type="text" class="input-type-member" placeholder="Enter performer..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="inputInput(event)" onkeydown="keyDownInput(event)" />
                                         </div>
                                         <ul class="input-suggestions" tabindex="0">
                                             <li onclick="clickSuggestion(this)">
@@ -1097,7 +1094,7 @@
                                 <div class="input">
                                     <div>
                                         <img src="assets/icons/music-note.svg" />
-                                        <input type="text" class="input-instrument" placeholder="Enter instrument..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
+                                        <input type="text" class="input-type-instrument" placeholder="Enter instrument..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="inputInput(event)" onkeydown="keyDownInput(event)" />
                                     </div>
                                     <ul class="input-suggestions" tabindex="0">
                                         <li onclick="clickSuggestion(this)">
@@ -1116,11 +1113,11 @@
                                 </div>
                             </td>
                             <td>
-                                <ul class="datalist-tags">
-                                    <li class="input datalist-tag-add" onclick="expandNewTagButton(this)">
+                                <ul class="taglist">
+                                    <li class="input taglist-add" onclick="expandNewTagButton(this)">
                                         <div>
                                             <img src="assets/icons/add.svg" />
-                                            <input type="text" class="input-member" placeholder="Enter performer..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="updateInputSuggestion(event)" onkeydown="keyDownInput(event)" />
+                                            <input type="text" class="input-type-member" placeholder="Enter performer..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="inputInput(event)" onkeydown="keyDownInput(event)" />
                                         </div>
                                         <ul class="input-suggestions" tabindex="0">
                                             <li onclick="clickSuggestion(this)">
