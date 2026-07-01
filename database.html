@@ -30,14 +30,14 @@
                 <li id="nav-faq" onclick="toggleTab(event)">FAQ</li>
             </menu>
         </nav>
-        <div class="container-io">
-            <div class="container-io-button">
+        <div id="container-io">
+            <div id="container-io-button">
                 <label class="io-button" id="download-button" for="download-data">Export Data</label>
                 <input type="button" id="download-data" onclick="downloadData()">
                 <label class="io-button" id="upload-button" for="upload-data">Upload Data</label>
                 <input type="file" id="upload-data" onchange="uploadData()" accept=".js">
             </div>
-            <p>Nothing currently loaded.</p>
+            <p id="helper-text"></p>
         </div>
     </header>
     <main>
@@ -80,14 +80,20 @@
                         <button id="colour-widget-gradient-swap" onclick="swapGradientColour()"></button>
                     </div>
                 </aside>
-                <ul id="tag-previews">
-                    <li onclick="selectTag(this)" class="tag-preview-active">Executive</li>
-                    <li onclick="selectTag(this)">Assistant Executive</li>
-                    <li onclick="selectTag(this)">Logistics</li>
-                    <li onclick="selectTag(this)">Arranger</li>
-                    <li onclick="selectTag(this)">Artist</li>
-                    <li onclick="selectTag(this)">Website</li>
-                </ul>
+                <div id="tag-previews-container">
+                    <ul class="tag-previews" id="tag-previews-instruments">
+                        <li onclick="selectTag(this)">Assistant Executive</li>
+                        <li onclick="selectTag(this)">Logistics</li>
+                    </ul>
+                    <ul class="tag-previews" id="tag-previews-roles">
+                        <li onclick="selectTag(this)" class="tag-preview-active">Executive</li>
+                        <li onclick="selectTag(this)">Assistant Executive</li>
+                        <li onclick="selectTag(this)">Logistics</li>
+                        <li onclick="selectTag(this)">Arranger</li>
+                        <li onclick="selectTag(this)">Artist</li>
+                        <li onclick="selectTag(this)">Website</li>
+                    </ul>
+                </div>
             </section>
         </article>
         <article id="tab-bulletin">
@@ -164,6 +170,7 @@
                                 <th></th>
                                 <th>Event</th>
                                 <th>Visible</th>
+                                <th>Location (Short)</th>
                                 <th>Asset Path</th>
                             </tr>
                         </thead>
@@ -198,6 +205,7 @@
                                     <p>From <input type="date" /></p>
                                     <p>Until <input type="date" /></p>
                                 </td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">252 Bloor Street West (OISE C-162)</td>
                                 <td contenteditable="plaintext-only" onblur="validateInputAsset(this)">assets/images/locations/oise.webp</td>
                             </tr>
                             <tr id="table-upcoming-events-1">
@@ -599,6 +607,14 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
+                                                    <td>Online Recording</td>
+                                                    <td contenteditable="plaintext-only" onblur="validateInput(this)">https://www.youtube.com/watch?v=zVNVMBZ1kPg</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Sheet Music</td>
+                                                    <td contenteditable="plaintext-only" onblur="validateInput(this)">https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv</td>
+                                                </tr>
+                                                <tr>
                                                     <td>Song Type</td>
                                                     <td>
                                                         <select>
@@ -607,10 +623,6 @@
                                                             <option>External Group</option>
                                                         </select>
                                                     </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Sheet Music</td>
-                                                    <td contenteditable="plaintext-only" onblur="validateInput(this)">https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Arranger(s)</td>
@@ -627,7 +639,7 @@
                                                             <div class="input taglist-add" onclick="expandNewTagButton(this)">
                                                                 <div>
                                                                     <img src="assets/icons/add.svg" />
-                                                                    <input type="text" class="input-type-member" placeholder="Enter arranger..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="inputInput(event)" onkeydown="keyDownInput(event)" />
+                                                                    <input type="text" class="input-type-arranger" placeholder="Enter arranger..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="inputInput(event)" onkeydown="keyDownInput(event)" />
                                                                 </div>
                                                                 <ul class="input-suggestions" tabindex="0">
                                                                     <li onclick="clickSuggestion(this)">
@@ -648,8 +660,8 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Group</td>
-                                                    <td contenteditable="plaintext-only" onblur="validateInput(this)">https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv</td>
+                                                    <td>Group Name</td>
+                                                    <td contenteditable="plaintext-only" onblur="validateInput(this)">Cool group</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Performer(s)</td>
@@ -835,7 +847,7 @@
             </div>
         </article>
     </main>
-    <aside id="modal-container" onclick="toggleModal(event)">
+    <aside id="modal-container" onclick="closeModals(event)">
         <div id="modal-member-tags" class="modal">
             <h2>Tags <span>for John LMC</span></h2>
             <div class="input">
@@ -906,6 +918,11 @@
                     <img src="assets/icons/add.svg" class="x-button" onclick="clickXButton(this)" />
                 </li>
             </ul>
+            <p class="validation-text"></p>
+            <ul class="modal-action-buttons">
+                <li onclick="closeModals()">Back</li>
+                <li onclick="syncModalMemberTags()">Confirm</li>
+            </ul>
         </div>
 
         <div id="modal-member-links" class="modal">
@@ -967,6 +984,11 @@
                     </tbody>
                 </table>
             </div>
+            <p class="validation-text"></p>
+            <ul class="modal-action-buttons">
+                <li onclick="closeModals()">Back</li>
+                <li onclick="syncModalMemberLinks(this)">Confirm</li>
+            </ul>
         </div>
 
         <div id="modal-performance-performers" class="modal">
@@ -1011,7 +1033,7 @@
                                     <li class="input taglist-add" onclick="expandNewTagButton(this)">
                                         <div>
                                             <img src="assets/icons/add.svg" />
-                                            <input type="text" class="input-type-member" placeholder="Enter performer..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="inputInput(event)" onkeydown="keyDownInput(event)" />
+                                            <input type="text" class="input-type-performer" placeholder="Enter performer..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="inputInput(event)" onkeydown="keyDownInput(event)" />
                                         </div>
                                         <ul class="input-suggestions" tabindex="0">
                                             <li onclick="clickSuggestion(this)">
@@ -1140,6 +1162,11 @@
                     </tbody>
                 </table>
             </div>
+            <p class="validation-text"></p>
+            <ul class="modal-action-buttons">
+                <li onclick="closeModals()">Back</li>
+                <li onclick="syncModalPerformancePerformers(this)">Confirm</li>
+            </ul>
         </div>
 
         <div id="modal-concert-setlist" class="modal">
@@ -1148,7 +1175,7 @@
                 <li id='concert-setlist-type-no-video' class='concert-setlist-types-active' onclick="toggleConcertSetlistType(this)">No Video</li>
                 <li id='concert-setlist-type-one-video' onclick="toggleConcertSetlistType(this)">Concert Video</li>
             </ul>
-            <div id='concert-setlist-one-video' class="input">
+            <div id='concert-setlist-video' class="input">
                 <img src="assets/icons/logos/youtube.svg" />
                 <input type="text" placeholder="Enter youtube video URL" />
             </div>
@@ -1159,7 +1186,10 @@
                             <td draggable="true" ondragstart="onDragStart(this)" ondragend="onDragEnd(this)" ondragenter="onDragEnter(this)" ondragleave="onDragLeave(this)" ondragover="onDragOver(event)" ondrop="onDrop(this)">
                                 <img src="assets/icons/draggable.svg" />
                             </td>
-                            <td>01</td>
+                            <td>
+                                <span>01</span>
+                                <span class="setlist-id">1</span>
+                            </td>
                             <td>Song 1</td>
                             <td class="concert-setlist-timestamp" contenteditable="plaintext-only" onblur="validateInputTimestamp(this)">??:??</td>
                         </tr>
@@ -1167,7 +1197,10 @@
                             <td draggable="true" ondragstart="onDragStart(this)" ondragend="onDragEnd(this)" ondragenter="onDragEnter(this)" ondragleave="onDragLeave(this)" ondragover="onDragOver(event)" ondrop="onDrop(this)">
                                 <img src="assets/icons/draggable.svg" />
                             </td>
-                            <td>02</td>
+                            <td>
+                                <span>02</span>
+                                <span class="setlist-id">1</span>
+                            </td>
                             <td>Song 2</td>
                             <td class="concert-setlist-timestamp" contenteditable="plaintext-only" onblur="validateInputTimestamp(this)">??:??</td>
                         </tr>
@@ -1175,7 +1208,10 @@
                             <td draggable="true" ondragstart="onDragStart(this)" ondragend="onDragEnd(this)" ondragenter="onDragEnter(this)" ondragleave="onDragLeave(this)" ondragover="onDragOver(event)" ondrop="onDrop(this)">
                                 <img src="assets/icons/draggable.svg" />
                             </td>
-                            <td>03</td>
+                            <td>
+                                <span>03</span>
+                                <span class="setlist-id">1</span>
+                            </td>
                             <td>Song 3</td>
                             <td class="concert-setlist-timestamp" contenteditable="plaintext-only" onblur="validateInputTimestamp(this)">??:??</td>
                         </tr>
@@ -1183,13 +1219,20 @@
                             <td draggable="true" ondragstart="onDragStart(this)" ondragend="onDragEnd(this)" ondragenter="onDragEnter(this)" ondragleave="onDragLeave(this)" ondragover="onDragOver(event)" ondrop="onDrop(this)">
                                 <img src="assets/icons/draggable.svg" />
                             </td>
-                            <td>04</td>
+                            <td>
+                                <span>04</span>
+                                <span class="setlist-id">1</span>
+                            </td>
                             <td>Song 4</td>
                             <td class="concert-setlist-timestamp" contenteditable="plaintext-only" onblur="validateInputTimestamp(this)">??:??</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+            <ul class="modal-action-buttons">
+                <li onclick="closeModals()">Back</li>
+                <li onclick="syncModalConcertSetlist(this)">Confirm</li>
+            </ul>
         </div>
     </aside>
 </body>

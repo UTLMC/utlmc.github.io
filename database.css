@@ -116,6 +116,9 @@ header {
     flex-direction: column;
     justify-content: space-between;
     min-height: var(--min-height);
+    min-width: 330px;
+    max-width: 330px;
+    width: 330px;
 }
 #sidebar-title {
     display: flex;
@@ -282,21 +285,23 @@ main article h2 {
 /*******************************
 Input/output
 *******************************/
-.container-io {
+#helper-text {
+    display: none;
+    color: #9c6644;
+    letter-spacing: -0.5px;
+}
+#container-io {
     display: flex;
     gap: 10px;
     flex-direction: column;
     user-select: none;
 }
-.container-io p {
-    color: #9c6644;
-}
-.container-io-button {
+#container-io-button {
     display: flex;
     gap: 5px;
     flex-direction: column;
 }
-.container-io-button input {
+#container-io-button input {
     display: none;
 }
 .io-button {
@@ -480,17 +485,22 @@ Tags tab
     font-weight: 600;
 }
 
-#tag-previews {
-    flex-grow: 1;
+#tag-previews-container {
+    display: flex;
+    flex-direction: column;
     background-image: linear-gradient(to bottom in oklab, #1f125a, #351c75);
-    padding: 25px !important;
+    gap: 25px;
+    padding: 25px;
+    height: fit-content;
+}
+.tag-previews {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     gap: 12px;
     align-content: flex-start;
 }
-#tag-previews li {
+.tag-previews li {
     font-family: 'DM Sans';
     background-color: rgb(100, 100, 100);
     color: white;
@@ -500,14 +510,14 @@ Tags tab
     transition: 0.2s;
     user-select: none;
 }
-#tag-previews li:not(.tag-preview-active) {
+.tag-previews li:not(.tag-preview-active) {
     cursor: pointer;
 }
-#tag-previews li:not(.tag-preview-active):hover {
+.tag-previews li:not(.tag-preview-active):hover {
     filter: drop-shadow(0 0 3px rgba(185, 198, 255, 0.6));
     opacity: 0.6;
 }
-#tag-previews li:not(.tag-preview-active):active {
+.tag-previews li:not(.tag-preview-active):active {
     filter: drop-shadow(0 0 3px rgba(185, 198, 255, 0.8));
     opacity: 0.3;
     transition: 0s;
@@ -841,10 +851,12 @@ Datalist tags
     gap: 5px;
     font-size: 16px;
 }
-.taglist-id {
+.taglist-id, .taglist-id-link {
     color: rgb(156, 8, 8);
-    user-select: none;
     font-size: 12px;
+}
+.taglist-id {
+    user-select: none;
 }
 .taglist-add {
     border-radius: 12px;
@@ -1090,6 +1102,34 @@ Modals
     font-weight: 400;
 }
 
+.modal-action-buttons {
+    display: flex;
+    list-style: none;
+    padding-left: 0;
+    width: 100%;
+    gap: 15px;
+}
+.modal-action-buttons li {
+    flex-grow: 1;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    color: gray;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    transition: 0.1s;
+    user-select: none;
+    cursor: pointer;
+}
+.modal-action-buttons li:hover {
+    background-color: rgba(0, 0, 0, 0.1); 
+}
+.modal-action-buttons li:active {
+    transition: 0s;
+    color: black;
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.2); 
+}
+
 .x-button {
     height: 13px;
     transform: rotate(45deg);
@@ -1112,8 +1152,8 @@ Modal datalist
 *********************************************************************/
 .modal-datalist-container {
     width: 100%;
-    min-height: 150px;
     overflow-y: auto;
+    flex-grow: 1;
 }
 .modal-datalist-preview {
     opacity: 0.5;
@@ -1159,7 +1199,7 @@ Modal setlist
     opacity: 0.2;
     transition: 0s;
 }
-#concert-setlist-one-video {
+#concert-setlist-video {
     display: none;  /* toggles to flex */
 }
 .concert-setlist-timestamp {
@@ -1170,6 +1210,10 @@ Modal setlist
     border-style: inset;
     border: none;
     border-bottom: 5px solid #ffd966ff;
+}
+
+.setlist-id {
+    display: none;
 }
 
 .draggable-list-container {

@@ -75,18 +75,21 @@ const ANNOUNCEMENTS = [
 
 const UPCOMING_EVENTS = [
     {   
+        eventId: 0,
         location: 'OISE C-154',
         from: '2025-01-01',
         until: '2029-01-22',
         image: 'assets/images/locations/oise.webp'
     },
     {
+        eventId: 1,
         location: "Cat's Eye",
         from: '2025-01-01',
         until: '2029-01-22',
         image: 'assets/images/locations/oise.webp'
     },
     {
+        eventId: 2,
         location: "OISE Something",
         from: '2025-01-01',
         until: '2029-01-22',
@@ -113,7 +116,7 @@ const MEMBERS = [
             10,
             0
         ],
-        "links": {}
+        "links": []
     },
     {
         "id": 1,
@@ -132,7 +135,7 @@ const MEMBERS = [
             8,
             1
         ],
-        "links": {}
+        "links": []
     },
     {
         "id": 2,
@@ -148,13 +151,17 @@ const MEMBERS = [
             6,
             2
         ],
-        "links": {
-            "discord": "amoguus",
-            "youtube": [
+        "links": [
+            [
+                "discord",
+                "amoguus"
+            ],
+            [
+                "youtube",
                 "Deez",
                 "https://www.youtube.com/@deez9741"
             ]
-        }
+        ]
     },
     {
         "id": 3,
@@ -172,10 +179,16 @@ const MEMBERS = [
             6,
             3
         ],
-        "links": {
-            "discord": "pixelatedmike",
-            "instagram": "michaelkim_05"
-        }
+        "links": [
+            [
+                "discord",
+                "pixelatedmike"
+            ],
+            [
+                "instagram",
+                "michaelkim_05"
+            ]
+        ]
     },
     {
         "id": 4,
@@ -190,7 +203,7 @@ const MEMBERS = [
         "roles": [
             10
         ],
-        "links": {}
+        "links": []
     },
     {
         "id": 5,
@@ -204,12 +217,13 @@ const MEMBERS = [
             10,
             4
         ],
-        "links": {
-            "youtube": [
+        "links": [
+            [
+                "youtube",
                 "Amako ni Naru",
                 "https://www.youtube.com/@amakoninaru8389"
             ]
-        }
+        ]
     },
     {
         "id": 6,
@@ -223,12 +237,13 @@ const MEMBERS = [
         "roles": [
             10
         ],
-        "links": {
-            "youtube": [
+        "links": [
+            [
+                "youtube",
                 "Cerocune",
                 "https://www.youtube.com/@Cerocune"
             ]
-        }
+        ]
     },
     {
         "id": 7,
@@ -241,7 +256,7 @@ const MEMBERS = [
         "roles": [
             10
         ],
-        "links": {}
+        "links": []
     },
     {
         "id": 8,
@@ -258,7 +273,7 @@ const MEMBERS = [
         "roles": [
             10
         ],
-        "links": {}
+        "links": []
     },
     {
         "id": 9,
@@ -274,7 +289,7 @@ const MEMBERS = [
             6,
             9
         ],
-        "links": {}
+        "links": []
     },
     {
         "id": 10,
@@ -290,7 +305,7 @@ const MEMBERS = [
             10,
             7
         ],
-        "links": {}
+        "links": []
     },
     {
         "id": 11,
@@ -310,7 +325,7 @@ const MEMBERS = [
             10,
             7
         ],
-        "links": {}
+        "links": []
     },
     {
         "id": 12,
@@ -323,7 +338,7 @@ const MEMBERS = [
         "roles": [
             10
         ],
-        "links": {}
+        "links": []
     },
     {
         "id": 13,
@@ -339,16 +354,18 @@ const MEMBERS = [
         "roles": [
             6
         ],
-        "links": {
-            "spotify": [
+        "links": [
+            [
+                "spotify",
                 "Kaizyu",
                 "https://open.spotify.com/artist/30UzBgSpF2zQq3cc2uWQiv?si=P1obSR1RRL2tt8kRDC56ng"
             ],
-            "youtube": [
+            [
+                "youtube",
                 "WhyKai",
                 "https://www.youtube.com/@WhyKaii"
             ]
-        }
+        ]
     },
     {
         "id": 14,
@@ -359,7 +376,7 @@ const MEMBERS = [
             25
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 15,
@@ -370,7 +387,7 @@ const MEMBERS = [
             17
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 16,
@@ -382,7 +399,7 @@ const MEMBERS = [
             27
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 17,
@@ -394,7 +411,7 @@ const MEMBERS = [
             17
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 18,
@@ -405,7 +422,7 @@ const MEMBERS = [
             7
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 19,
@@ -416,7 +433,7 @@ const MEMBERS = [
             24
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 20,
@@ -430,7 +447,7 @@ const MEMBERS = [
             13
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 21,
@@ -441,7 +458,7 @@ const MEMBERS = [
             14
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 22,
@@ -452,7 +469,7 @@ const MEMBERS = [
             13
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 23,
@@ -464,7 +481,7 @@ const MEMBERS = [
             13
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 24,
@@ -479,7 +496,7 @@ const MEMBERS = [
         "roles": [
             7
         ],
-        "links": {}
+        "links": []
     },
     {
         "id": 25,
@@ -492,7 +509,7 @@ const MEMBERS = [
             18
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 26,
@@ -507,9 +524,12 @@ const MEMBERS = [
             8,
             5
         ],
-        "links": {
-            "discord": "saltedh"
-        }
+        "links": [
+            [
+                "discord",
+                "saltedh"
+            ]
+        ]
     },
     {
         "id": 27,
@@ -525,12 +545,13 @@ const MEMBERS = [
         "roles": [
             6
         ],
-        "links": {
-            "youtube": [
+        "links": [
+            [
+                "youtube",
                 "Rayzerfang Music",
                 "https://www.youtube.com/channel/UClEvA2YVTvVi-8RUTY5CFFg"
             ]
-        }
+        ]
     },
     {
         "id": 28,
@@ -541,7 +562,7 @@ const MEMBERS = [
             5
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 29,
@@ -553,7 +574,7 @@ const MEMBERS = [
             5
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 30,
@@ -564,7 +585,7 @@ const MEMBERS = [
             5
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 31,
@@ -576,7 +597,7 @@ const MEMBERS = [
             17
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 32,
@@ -588,7 +609,7 @@ const MEMBERS = [
             25
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 33,
@@ -602,7 +623,7 @@ const MEMBERS = [
             14
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 34,
@@ -616,7 +637,7 @@ const MEMBERS = [
         "roles": [
             7
         ],
-        "links": {}
+        "links": []
     },
     {
         "id": 35,
@@ -627,7 +648,7 @@ const MEMBERS = [
             35
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 36,
@@ -638,7 +659,7 @@ const MEMBERS = [
             5
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 37,
@@ -651,7 +672,7 @@ const MEMBERS = [
             14
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 38,
@@ -662,7 +683,7 @@ const MEMBERS = [
             5
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 39,
@@ -676,9 +697,12 @@ const MEMBERS = [
         "roles": [
             5
         ],
-        "links": {
-            "discord": "sopha__a"
-        }
+        "links": [
+            [
+                "discord",
+                "sopha__a"
+            ]
+        ]
     },
     {
         "id": 40,
@@ -692,9 +716,12 @@ const MEMBERS = [
         "roles": [
             5
         ],
-        "links": {
-            "discord": "eeeric_nothing"
-        }
+        "links": [
+            [
+                "discord",
+                "eeeric_nothing"
+            ]
+        ]
     },
     {
         "id": 41,
@@ -705,7 +732,7 @@ const MEMBERS = [
             4
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 42,
@@ -718,7 +745,7 @@ const MEMBERS = [
             12
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 43,
@@ -729,7 +756,7 @@ const MEMBERS = [
             4
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 44,
@@ -742,7 +769,7 @@ const MEMBERS = [
             13
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 45,
@@ -755,7 +782,7 @@ const MEMBERS = [
             14
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 46,
@@ -768,7 +795,7 @@ const MEMBERS = [
             13
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 47,
@@ -784,7 +811,7 @@ const MEMBERS = [
             17
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 48,
@@ -796,7 +823,7 @@ const MEMBERS = [
             27
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 49,
@@ -808,7 +835,7 @@ const MEMBERS = [
             21
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 50,
@@ -820,7 +847,7 @@ const MEMBERS = [
             17
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 51,
@@ -831,7 +858,7 @@ const MEMBERS = [
             25
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 52,
@@ -845,7 +872,7 @@ const MEMBERS = [
             28
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 53,
@@ -859,7 +886,7 @@ const MEMBERS = [
         "roles": [
             8
         ],
-        "links": {}
+        "links": []
     },
     {
         "id": 54,
@@ -871,7 +898,7 @@ const MEMBERS = [
             13
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 55,
@@ -883,7 +910,7 @@ const MEMBERS = [
             8
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 56,
@@ -894,7 +921,7 @@ const MEMBERS = [
             13
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 57,
@@ -906,7 +933,7 @@ const MEMBERS = [
             13
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 58,
@@ -921,7 +948,7 @@ const MEMBERS = [
             26
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 59,
@@ -935,7 +962,7 @@ const MEMBERS = [
             14
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 60,
@@ -948,7 +975,7 @@ const MEMBERS = [
         "roles": [
             8
         ],
-        "links": {}
+        "links": []
     },
     {
         "id": 61,
@@ -963,7 +990,7 @@ const MEMBERS = [
             21
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 62,
@@ -975,7 +1002,7 @@ const MEMBERS = [
             25
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 63,
@@ -988,7 +1015,7 @@ const MEMBERS = [
             5
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 64,
@@ -1001,7 +1028,7 @@ const MEMBERS = [
             7
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 65,
@@ -1012,7 +1039,7 @@ const MEMBERS = [
             5
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 66,
@@ -1027,7 +1054,7 @@ const MEMBERS = [
             27
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 67,
@@ -1038,7 +1065,7 @@ const MEMBERS = [
             17
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 68,
@@ -1049,7 +1076,7 @@ const MEMBERS = [
             7
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 69,
@@ -1065,7 +1092,7 @@ const MEMBERS = [
             28
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 70,
@@ -1076,7 +1103,7 @@ const MEMBERS = [
             7
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 71,
@@ -1087,7 +1114,7 @@ const MEMBERS = [
             7
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 72,
@@ -1099,7 +1126,7 @@ const MEMBERS = [
             4
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 73,
@@ -1110,7 +1137,7 @@ const MEMBERS = [
             4
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 74,
@@ -1123,7 +1150,7 @@ const MEMBERS = [
             13
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 75,
@@ -1135,7 +1162,7 @@ const MEMBERS = [
             14
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 76,
@@ -1147,7 +1174,7 @@ const MEMBERS = [
             8
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 77,
@@ -1158,7 +1185,7 @@ const MEMBERS = [
             4
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 78,
@@ -1169,7 +1196,7 @@ const MEMBERS = [
             13
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 79,
@@ -1184,7 +1211,7 @@ const MEMBERS = [
             36
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 80,
@@ -1195,7 +1222,7 @@ const MEMBERS = [
             33
         ],
         "roles": [],
-        "links": {}
+        "links": []
     },
     {
         "id": 81,
@@ -1206,7 +1233,7 @@ const MEMBERS = [
             13
         ],
         "roles": [],
-        "links": {}
+        "links": []
     }
 ];
 

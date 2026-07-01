@@ -768,7 +768,7 @@ async function injectHomeBulletin() {
     const announcements = ANNOUNCEMENTS.filter(visibilityCheck);
     const upcomingEvents = UPCOMING_EVENTS.filter(visibilityCheck);
 
-    for (const { type, text } of ANNOUNCEMENTS) {
+    for (const { type, text } of announcements) {
         containerAnnouncements.appendChild(construct({
             element: 'aside',
             classes: ['announcement'],
@@ -782,8 +782,9 @@ async function injectHomeBulletin() {
         }));
     }
 
-    for (const { id, image } of UPCOMING_EVENTS) {
-        const { name: title, start, end, location } = EVENTS[id];
+    for (const { eventId, image, location: locationShort } of upcomingEvents) {
+        const { name: title, start, end, location: locationLong } = EVENTS[eventId];
+        const location = locationShort || locationLong;
         const dateStart = parseDate(start);
         const dateEnd = parseDate(end);
 
@@ -949,15 +950,15 @@ function constructMemberRow(member) {
             children: [{
                 element: 'ul',
                 classes: ['list-social-media'],
-                children: Object.entries(member.links).map(([site, info]) => ({
+                children: member.links.map(([site, username, url]) => ({
                     element: 'li',
                     classes: [`li-${site}`],
-                    innerText: Array.isArray(info) ? '' : info,
-                    children: Array.isArray(info) ? [{
+                    innerText: url ? undefined : username,
+                    children: url ? [{
                         element: 'a',
-                        innerText: info[0],
+                        innerText: username,
                         attributes: {
-                            href: info[1],
+                            href: url,
                             target: '_blank'
                         }
                     }] : []
@@ -1219,13 +1220,7 @@ function injectExecTeam(execTeam, year) {
                 }, {
                     element: 'ul',
                     classes: ['list-social-media'],
-                    children: Object.entries(x.links).map(([site, info]) => {
-                        let url, username;
-                        if (Array.isArray(info)) {
-                            [username, url] = info;
-                        } else {
-                            username = info;
-                        }
+                    children: x.links.map(([site, username, url]) => {
                         return {
                             element: 'li',
                             classes: [`li-${site}`],
@@ -1257,10 +1252,18 @@ function injectHomeOutreach(execTeam) {
             homeOutreach.appendChild(construct({
                 element: 'ul',
                 classes: ['list-social-media'],
-                children: Object.entries(x.links).filter(([site]) => outreachOptions.has(site)).map(([site, info]) => ({
+                children: x.links.filter(([site]) => outreachOptions.has(site)).map(([site, username, url]) => ({
                     element: 'li',
                     classes: [`li-${site}`],
-                    innerHTML: info
+                    innerText: url ? undefined : username,
+                    children: url ? [{
+                        element: 'a',
+                        innerText: username,
+                        attributes: {
+                            href: url,
+                            target: '_blank'
+                        }
+                    }] : []
                 }))
             }))
         });

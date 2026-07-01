@@ -182,6 +182,10 @@ const MUSIC_API = (() => {
         set: (data) => {
             map[data.id] = data;
         },
+        setSubrow: (id, subId, data) => {
+            const index = map[id].performances.findIndex(x => x.id === subId);
+            map[id].performances[index] = data;
+        },
         /**
          * - `data` the API-returned data to extract subrow data from
          * - `rowId` ID number of row that we append to
@@ -211,24 +215,38 @@ const MUSIC_API = (() => {
 function getCurrentEvent() {
     return CURRENT_EVENT;
 }
-function getInstruments() {
-    return INSTRUMENTS;
+function setCurrentEvent(kv) {
+    for (const key in kv) {
+        if (typeof kv[key] === 'object') {
+            for (const keykey in kv[key]) {
+                CURRENT_EVENT[key][keykey] = kv[key][keykey]
+            }
+        }
+        CURRENT_EVENT[key] = kv[key];
+    }
 }
-const indexInstrument = (() => {
-    const instruments = Object.fromEntries(INSTRUMENTS.map((x, i) => [x, i]));
-    return (x) => instruments[x];
-})();
-function getRoles() {
-    return ROLES;
+function getEnumApi(list) {
+    const map = Object.fromEntries(list.map((x, i) => [x, i]));
+    let i = list.length;
+
+    return {
+        getAll: () => list,
+        index: (name) => map[name],
+        add: (name) => {
+            map[name] = i;
+            list.push(name);
+            i += 1;
+            return i - 1;
+        }
+    }
 }
-const indexRole = (() => {
-    const roles = Object.fromEntries(ROLES.map((x, i) => [x, i]))
-    return (x) => roles[x];
-})()
+const INSTRUMENTS_API = getEnumApi(INSTRUMENTS);
+const ROLES_API = getEnumApi(ROLES);
+
 function getTag(name) {
     return TAGS[name ?? cssGetClass('tag-preview-active')[0].innerText];
 }
-function setTag(source) {
+function setTag(source, modifyTAGS) {
     function setTagColour(element, rgb) {
         const color = rgb.reduce((a, b) => a + b) / 3 > 128 ? 'black' : 'white';
         cssSetElement(element, {
@@ -236,7 +254,12 @@ function setTag(source) {
             'background-color': `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`,
             'color': color
         });
-        TAGS[element.innerText] = [rgb];
+        if (!modifyTAGS)
+            return;
+        else if (rgb.every((_, i) => rgb[i] === DEFAULT_TAG_COLOUR[i]))
+            delete TAGS[element.innerText];
+        else
+            TAGS[element.innerText] = [rgb];
     }
     function setTagGradient(element, rgb0, rgb1) {
         const color = [...rgb0, ...rgb1].reduce((a, b) => a + b) / 6 > 128 ? 'black' : 'white';
@@ -269,13 +292,13 @@ function setTag(source) {
         setTagColour(left, rgb0);
         setTagColour(right, rgb1);
     } else if (source.colour) {
-        setTagColour(element, source.colour);
+        setTagColour(element, source.colour, true);
     } else {
         throw new Error();
     }
 }
-function getPerformerNames(performance) {
-    const uniquePerformers = new Set(Object.values(performance.performers).flat());
+function getPerformerNames(performers) {
+    const uniquePerformers = new Set(Object.values(performers).flat());
     return Array.from(uniquePerformers).map(x => MEMBERS_API.get(x)?.name ?? x);
 }
 
@@ -289,17 +312,58 @@ function setActiveClass(element, className) {
     element.classList.add(className);
 }
 
+function destroyTabContent(id) {
+    if (id === 'tags') {
+        cssGetId('tag-previews-instruments').replaceChildren();
+        cssGetId('tag-previews-roles').replaceChildren();
+    } else if (id === 'bulletin') {
+        cssGetFirst('#table-announcements tbody').replaceChildren();
+        cssGetFirst('#table-upcoming-events tbody').replaceChildren();
+    } else if (id === 'members') {
+        cssGetFirst('#table-members tbody').replaceChildren();
+    } else if (id === 'music') {
+        cssGetFirst('#table-music tbody').replaceChildren();
+    } else if (id === 'events') {
+        cssGetFirst('#table-events tbody').replaceChildren();
+    } else if (id === 'faq') {
+        cssGetFirst('#table-faq tbody').replaceChildren();
+    }
+}
+
 function toggleTab(event) {
     const id = `${event.srcElement.id.substring(4)}`;
+    if (cssGetId(`tab-${id}`) === cssGetClass('tab-active')[0]) {
+        return;
+    }
+    const activeId = cssGetClass('tab-active')[0]
     setActiveClass(cssGetId(`tab-${id}`), 'tab-active');
     setActiveClass(cssGetId(`nav-${id}`), 'nav-active');
+
+    setTimeout(() => {
+        destroyTabContent(activeId);
+        if (id === 'tags') {
+            constructTagTab();
+        } else if (id === 'bulletin') {
+            constructCurrentEvent();
+            TABLE_OPERATIONS['table-announcements'] = constructAnnouncements();
+            TABLE_OPERATIONS['table-upcoming-events'] = constructUpcomingEvents();
+        } else if (id === 'members') {
+            TABLE_OPERATIONS['table-members'] = constructMembers();
+        } else if (id === 'music') {
+            TABLE_OPERATIONS['table-music'] = constructMusicTable();
+        } else if (id === 'events') {
+            TABLE_OPERATIONS['table-events'] = constructEventTable();
+        } else if (id === 'faq') {
+            TABLE_OPERATIONS['table-faq'] = constructFaq();
+        }
+    }, 0);
 
     // Clear out page specific details
     TAG_COLOUR_CACHE = undefined;
 }
 
 // If event is given, turn off. Otherwise, toggle normally
-function toggleModal(event) {
+function closeModals(event) {
     if (event) {
         const modals = cssGetClass('modal');
         for (const element of modals) {
@@ -307,17 +371,19 @@ function toggleModal(event) {
                 return;
             }
         }
-        for (const element of modals) {
-            cssSetElement(element, { display: 'none' });        
-        }
     }
+    const modals = cssGetClass('modal');
+    for (const element of modals) {
+        cssSetElement(element, { display: 'none' });
+        element.querySelector('.validation-text')?.style.setProperty('display', '');
+    }
+    MODAL_INFO = undefined;
+    cssSetElement(cssGetId('modal-container'), { display: 'none' });
+}
+function openModal(id) {
     const modalContainer = cssGetId('modal-container');
     const modalOn = modalContainer.style.display === 'flex';
     cssSetElement(modalContainer, { display: modalOn ? 'none' : 'flex' });
-    return modalOn;
-}
-function openModalHelper(id) {
-    toggleModal();
     cssSetId(id, { display: 'flex' });
 }
 
@@ -339,7 +405,7 @@ function toggleConcertSetlistType(element) {
     setActiveClass(element, 'concert-setlist-types-active');
     
     const videoDisplay = element.id === 'concert-setlist-type-one-video' ? 'flex' : 'none';
-    cssSetId('concert-setlist-one-video', { display: videoDisplay });
+    cssSetId('concert-setlist-video', { display: videoDisplay });
 
     const cellDisplay = element.id === 'concert-setlist-type-one-video' ? 'table-cell' : 'none';
     for (const element of cssGetClass('concert-setlist-timestamp')) {
@@ -562,8 +628,13 @@ function tableToolbarRemove(element) {
     if (element.classList.contains('table-toolbar-disabled'))
         return;
     const [tableId, isSubrow, ids] = getTableToolbarContext(element, true);
-    TABLE_OPERATIONS[tableId][isSubrow ? 'subrowDelete' : 'rowDelete'](ids);
-    updateTableToolbar(isSubrow ? SUBROW_SELECTION : ROW_SELECTION, tableId);
+
+    const err = TABLE_OPERATIONS[tableId][isSubrow ? 'subrowDelete' : 'rowDelete'](ids);
+    if (err) {
+        setHelperText(err);
+    } else {
+        updateTableToolbar(isSubrow ? SUBROW_SELECTION : ROW_SELECTION, tableId);
+    }
 }
 function tableToolbarMoveUp(element) {
     if (element.classList.contains('table-toolbar-disabled'))
@@ -592,11 +663,22 @@ function tableToolbarMoveBottom(element) {
 
 
 /*********************************************************************
-Colour picker widget
+Event listeners
 *********************************************************************/
 document.addEventListener('mousemove', onMouseMove);
 document.addEventListener('mousedown', () => onMouseDown(true));
 document.addEventListener('mouseup', () => onMouseDown(false));
+
+function setHelperText(text) {
+    const helperText = cssGetId('helper-text');
+    if (text) {
+        cssSetElement(helperText, { display: 'block' });
+        helperText.innerText = text;
+    } else {
+        cssSetElement(helperText, { display: '' });
+        helperText.innerText = '';
+    }
+}
 
 let MOUSE_X, MOUSE_Y, MOUSE_DOWN;
 function onMouseMove(event) {
@@ -609,6 +691,20 @@ function onMouseMove(event) {
     } else if (PICKER_MODE === 'hue') {
         updateHueFromPicker();
     }
+
+    if (MODAL_INFO !== undefined) {
+        return;
+    }
+    let tr = event.target.closest('tbody tr');
+    if (tr) {
+        if (!tr.id) {
+            tr = tr.parentElement.closest('tbody tr');
+        }
+        const [id, subId] = tr.id.split('-').map(x => parseInt(x, 10)).filter(x => !isNaN(x));
+        setHelperText(typeof(subId) === 'number' ? `Subrow #${subId}, row #${id}` : `Row #${id}`);
+    } else {
+        setHelperText();
+    }
 }
 function onMouseDown(down) {
     MOUSE_DOWN = down;
@@ -617,6 +713,10 @@ function onMouseDown(down) {
     }
 }
 
+
+/*********************************************************************
+Colour picker widget
+*********************************************************************/
 let PICKER_MODE;
 let LAST_VALID_COLOUR = DEFAULT_TAG_COLOUR;
 let COLOUR_PICKER_PRIMARY = [255, 0, 0];
@@ -815,7 +915,7 @@ function selectTag(element, forceRefresh) {
     if (element === active && !forceRefresh) {
         return;
     }
-    active.classList.remove('tag-preview-active');
+    active?.classList.remove('tag-preview-active');
     element.classList.add('tag-preview-active');
 
     // Go to solid/gradient mode depending on tag
@@ -886,7 +986,7 @@ function onDrop(element) {
     // Refresh setlist numbers
     const n = Math.max(2, String(tbody.children.length).length);
     for (let i = 0; i < tbody.children.length; i++) {
-        tbody.children[i].children[1].innerText = String(i + 1).padStart(n, '0');
+        tbody.children[i].children[1].children[0].innerText = String(i + 1).padStart(n, '0');
     }
 }
 
@@ -935,7 +1035,9 @@ const updateInputSuggestion = debounce(async (event) => {
     }
 
     let candidates, infoGetter;
-    let nameGetter = x => x.name
+    let nameGetter = x => x.name;
+    let prioritizeStartsWith = true;  // Whether to prioritize candidates that start with input text
+
     if (input.classList.contains('input-type-event')) {
         candidates = EVENTS_API.getAll().toSorted((a, b) => b.start.localeCompare(a.start));
         infoGetter = x => [x.id, x.start.slice(0, x.start.lastIndexOf('-'))];
@@ -944,8 +1046,37 @@ const updateInputSuggestion = debounce(async (event) => {
         candidates = EVENTS_API.getAll().filter(x => x.type === 'Concert').toSorted((a, b) => b.start.localeCompare(a.start));
         infoGetter = x => [x.id, x.start.slice(0, x.start.lastIndexOf('-'))];
 
-    } else if (input.classList.contains('input-type-member')) {
-        candidates = MEMBERS_API.getAll().toSorted(memberSorter);
+    } else if (['member', 'arranger', 'performer'].some(x => input.classList.contains(`input-type-${x}`))) {
+        if (input.classList.contains('input-type-member')) {
+            candidates = MEMBERS_API.getAll().toSorted(memberSorter);
+
+        } else if (input.classList.contains('input-type-arranger')) {
+            prioritizeStartsWith = false;
+            candidates = MEMBERS_API.getAll().toSorted((a, b) => {
+                const aArranger = a.roles.some(i => ROLES[i] === 'Arranger');
+                const bArranger = b.roles.some(i => ROLES[i] === 'Arranger');
+                if (aArranger && !bArranger)
+                    return -1;
+                else if (!aArranger && bArranger)
+                    return 1;
+                return memberSorter(a, b);
+            });
+
+        } else if (input.classList.contains('input-type-performer')) {
+            prioritizeStartsWith = false;
+            const instruments = INSTRUMENTS_API.getAll();
+            const instrumentRow = input.closest('td').previousElementSibling;
+            const instrument = instrumentRow.children[0].children[0].lastElementChild.value;
+            candidates = MEMBERS_API.getAll().toSorted((a, b) => {
+                const aPerformer = a.instruments.some(i => instruments[i] === instrument);
+                const bPerformer = b.instruments.some(i => instruments[i] === instrument);
+                if (aPerformer && !bPerformer)
+                    return -1;
+                else if (!aPerformer && bPerformer)
+                    return 1;
+                return memberSorter(a, b);
+            });
+        }
         infoGetter = x => {
             const [season, year] = x.joined.split(' ');
             let info = `${season.slice(0, 1)}${year.slice(2)}`;
@@ -953,23 +1084,22 @@ const updateInputSuggestion = debounce(async (event) => {
                 const [season, year] = x.left.split(' ');
                 info = `${info}-${season.slice(0, 1)}${year.slice(2)}`;
             }
-            return[x.id, info];
+            return [x.id, info];
         }
     } else if (input.classList.contains('input-type-instrument')) {
-        candidates = getInstruments();
+        candidates = INSTRUMENTS_API.getAll();
         nameGetter = x => x;
-        infoGetter = x => [indexInstrument(x)]
+        infoGetter = x => [INSTRUMENTS_API.index(x)]
     } else if (input.classList.contains('input-type-music')) {
         candidates = MUSIC_API.getAll();
         infoGetter = x => [x.id, x.composer];
     } else if (input.classList.contains('input-type-role')) {
-        candidates = getRoles();
+        candidates = ROLES_API.getAll();
         nameGetter = x => x;
-        infoGetter = x => [indexRole(x)]
+        infoGetter = x => [ROLES_API.index(x)];
     } else {
         throw new Error(String(Array.from(input.classList)));
     }
-    // TODO: add more input-... classes for arrangers and performers of an instrument?
 
     const fragment = document.createDocumentFragment();
     let i = 0;
@@ -990,7 +1120,7 @@ const updateInputSuggestion = debounce(async (event) => {
                     innerHTML: result.length === 2 ? `<em>${result[1]}</em> <em>(#${result[0]})</em>` : `<em>(#${result[0]})</em>`
                 } : undefined]
             });
-            if (name.toLowerCase().startsWith(value.toLowerCase())) {
+            if (!prioritizeStartsWith || name.toLowerCase().startsWith(value.toLowerCase())) {
                 fragment.appendChild(element);
             } else {
                 lowPriorityCandidates.push(element);
@@ -1056,7 +1186,7 @@ Inputs
 // 1 = Accept custom values, but all values must be unique (case-insensitive)
 // 2 = Accept only predefined values
 function inputStrictness(input) {
-    if (input.classList.contains('input-type-member'))
+    if (['member', 'arranger', 'performer'].some(x => input.classList.contains(`input-type-${x}`)))
         return 0;
     if (['instrument', 'role'].some(x => input.classList.contains(`input-type-${x}`)))
         return 1;
@@ -1209,7 +1339,7 @@ function duplicateTagExists(taglist, newValue, id) {
             return extractId(x.children[1].innerText);
         return x.children[0].innerText;
     }));
-    return existingTags.has(typeof id === 'undefined' ? newValue : id);
+    return existingTags.has(id === undefined ? newValue : id);
 }
 
 function duplicateInstrumentExists(inputContainer, newValue) {
@@ -1217,7 +1347,7 @@ function duplicateInstrumentExists(inputContainer, newValue) {
     if (!datalist) {
         return false;
     }
-    const instruments = getInstruments();
+    const instruments = INSTRUMENTS_API.getAll();
     const existingInstruments = new Set(Array.from(datalist.children).map(x => {
         const value = x.children[1].children[0].children[0].children[2].value;
         return parseInt(value, 10) ? instruments[parseInt(value, 10)] : value;
@@ -1283,7 +1413,7 @@ function editInput(input, inputContainer, newValue, id, canonicalValue) {
     ifInDatalistAddRowBelow(inputContainer, input);
     input.value = value;
     if (input.previousElementSibling.type === 'hidden') {
-        input.previousElementSibling.value = id;
+        input.previousElementSibling.value = id ?? '';
     }
 }
 
@@ -1350,9 +1480,16 @@ function scrollInputYear(event) {
         return;
     }
     event.preventDefault();
+    const oldValue = Number(event.target.value);
+
     const offset = event.deltaY > 0 ? -1 : 1;
     const currYear = (new Date()).getFullYear();
-    event.target.value = clamp(Number(event.target.value) + offset, 2023, currYear + 10);
+    const newValue = clamp(Number(event.target.value) + offset, 2023, currYear + 10);
+    event.target.value = newValue;
+    
+    if (oldValue !== newValue) {
+        syncData(event.target);
+    }
 }
 
 
@@ -1400,17 +1537,83 @@ function applyTableFilter(tableId, list, filter) {
 /*********************************************************************
 Input syncing
 *********************************************************************/
+function parseInnerHTML(text) {
+    const paragraphs = [];
+    text = text.replaceAll('<br>', '');
+    let i = text.indexOf('<div>');
+    while (i >= 0) {
+        if (i === 0) {
+            const j = text.indexOf('</div>');
+            paragraphs.push(text.slice(i + 5, j));
+            text = text.slice(j + 6);
+        } else {
+            paragraphs.push(text.slice(0, i));
+            text = text.slice(i)
+        }
+        i = text.indexOf('<div>');
+    }
+    return paragraphs;
+}
+function syncCurrentEvent(element) {
+    if (element.id === 'current-event-visible-from') {
+        setCurrentEvent({ hideBefore: element.value.replace("T", "|") });
+    } else if (element.id === 'current-event-visible-until') {
+        setCurrentEvent({ hideAfter: element.value.replace("T", "|") });
+    } else if (element.id === 'current-event-poster') {
+        setCurrentEvent({ links: { poster: element.innerText }});
+    } else if (element.id === 'current-event-rvsp') {
+        setCurrentEvent({ links: { rvsp: element.innerText }});
+    } else if (element.id === 'current-event-setlist') {
+        setCurrentEvent({ links: { setlist: element.innerText }});
+    } else if (element.id === 'current-event-tickets') {
+        setCurrentEvent({ tickets: element.innerText });
+    } else if (element.id === 'current-event-location') {
+        setCurrentEvent({ location: element.innerText });
+    } else if (cssGetId('current-event-id').contains(element)) {
+        setCurrentEvent({ id: Number(element.previousElementSibling.value) });
+    } else {
+        console.warn(element);
+        throw new Error("WHUH");
+    }
+}
+function syncCurrentEventDescription(element) {
+    if (cssGetId('preconcert-description').contains(element))
+        return setCurrentEvent({ preConcertDescription: parseInnerHTML(element.innerHTML) });
+    
+    if (cssGetId('postconcert-description').contains(element))
+        return setCurrentEvent({ postConcertDescription: parseInnerHTML(element.innerHTML) });
+    
+    console.warn(element);
+    throw new Error("HUH");
+}
+
+function parseTaglist(element) {
+    const list = [];
+    const set = new Set();
+    for (const li of element.children) {
+        if (li.classList.contains('taglist-add'))
+            continue;
+        if (li.children.length === 3)
+            list.push(extractId(li.children[1].innerText));
+        else
+            set.add(li.children[0].innerText);
+    }
+    return [list, set];
+}
+function refreshInputModalOpener(td, items) {
+    const p = td.children[0].children[0];
+    p.innerHTML = `${items.map(x => `<span>${x}</span>`).join(' · ')} <span class="count">(${items.length})</span>`;
+}
+
 function syncData(element) {
     if (element.closest('.modal')) {
         return;
     }
     if (element.closest('#datalist-current-event')) {
-        console.log('current event');
-        return;
+        return syncCurrentEvent(element);
     }
     if (element.closest('#current-event-description-container')) {
-        console.log('container');
-        return;
+        return syncCurrentEventDescription(element);
     }
     const tableId = element.closest('.table').id;
     if (!tableId) {
@@ -1425,9 +1628,6 @@ function syncData(element) {
     TABLE_OPERATIONS[tableId].rowEdit([row]);
 }
 
-// todo: custom syncing for instruments (after editing member-tag/performance modal)
-// todo: custom syncing for roles (after editing member-tag modal)
-// todo: custom syncing for current-event
 
 
 /*********************************************************************
@@ -1489,6 +1689,7 @@ function validateInputTimestamp(element) {
 }
 function validateInputYear(element, optional) {
     if (!element.value && optional) {
+        syncData(element);
         return;
     }
     const value = parseInt(element.value, 10);
@@ -1583,9 +1784,9 @@ function validateSeason(season) {
 }
 
 function parseLinks(discord, links) {
-    const data = {};
+    const data = [];
     if (discord) {
-        data.discord = discord;
+        data.push(['discord', discord]);
     }
 
     for (const link of links) {
@@ -1596,9 +1797,9 @@ function parseLinks(discord, links) {
         const [, username, source] = match;
         if (source.includes(',')) {
             const [site, url] = source.split(',').map(x => x.trim());
-            data[site.toLowerCase()] = [username.trim(), url];
+            data.push([site.toLowerCase(), username.trim(), url]);
         } else {
-            data[source.toLowerCase()] = username.trim();
+            data.push([source.toLowerCase(), username.trim()]);
         }
         
     }
@@ -1667,13 +1868,11 @@ const roleOrder = {
     'og': '3',
 }
 function roleSorter(a, b) {
-    a = a.toLowerCase();
-    b = b.toLowerCase();
-    if (a.includes(' (')) { a = a.slice(0, a.lastIndexOf(' (')); }
-    if (b.includes(' (')) { b = b.slice(0, b.lastIndexOf(' (')); }
+    a = parseRole(a.toLowerCase());
+    b = parseRole(b.toLowerCase());
 
-    const groupA = roleOrder[a];
-    const groupB = roleOrder[b];
+    const groupA = a.includes('executive') ? String(Math.min(Number(roleOrder[a]), 1)) : roleOrder[a];
+    const groupB = b.includes('executive') ? String(Math.min(Number(roleOrder[b]), 1)) : roleOrder[b];
     if (!groupA || !groupB) {
         return a.localeCompare(b);
     } else if (!groupA) {
@@ -2336,6 +2535,7 @@ let AUTOINCREMENT = {};
  * - `templateData (T)`: A template data used as the placeholder when adding a new row
  * - `dataParser (T => <td>[])`: Function that takes in your list item and outputs `construct` syntax.
  * - `rowSyncer ((id, <td>[]) => void)`: Function that takes in constructed rows and updates the API data 
+ * - `deleteChecker (id => str)`: Function that checks if the row can be deleted safely (if not, return a string message)
  * 
  * `dataParser` outputs a list where each item is a `<td>`, e.g. `[column1, column2, ...]`
  * 
@@ -2343,7 +2543,7 @@ let AUTOINCREMENT = {};
  * 
  * Output is an object of table operations. 
  */
-function constructTable(tableId, api, templateData, dataParser, rowSyncer) {
+function constructTable(tableId, api, templateData, dataParser, rowSyncer, deleteChecker) {
     const table = cssGetFirst(`#${tableId} tbody`);
     const fragment = document.createDocumentFragment();
 
@@ -2384,6 +2584,10 @@ function constructTable(tableId, api, templateData, dataParser, rowSyncer) {
             tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
         },
         rowDelete: (ids) => {
+            ids = ids.map(Number);
+            const err = deleteChecker?.(ids);
+            if (err)
+                return err;
             for (const id of ids) {
                 cssGetId(`${tableId}-${id}`).remove();
                 api.delete(id);
@@ -2449,6 +2653,7 @@ function constructTable(tableId, api, templateData, dataParser, rowSyncer) {
  * - `templateData (T)`: A template data used as the placeholder when adding a new row/subrow
  * - `dataParser (T => [<td>[], <?>[], ...])`: Function that takes in your list item and outputs `construct` syntax.
  * - `rowSyncer ((id, <td>[], subIds, <?>[]) => void)`: Function that takes in constructed rows and updates the API data 
+ * - `deleteChecker (id => str)`: Function that checks if the row can be deleted safely (if not, return a string message)
  * 
  * `dataParser` outputs a list where index 0 is the row and index 1 is a list of subrows 
  *     e.g. `[row, [subrow1, subrow2, ...]]`
@@ -2459,7 +2664,7 @@ function constructTable(tableId, api, templateData, dataParser, rowSyncer) {
  * 
  * `rowSyncer` takes in the row `<td>` and a list of subrows (`<td>`).
  */
-function constructTableWithSubrows(tableId, api, templateData, dataParser, rowSyncer) {
+function constructTableWithSubrows(tableId, api, templateData, dataParser, rowSyncer, deleteChecker) {
     const tree = {};
     function createRowAndSubrows(data) {
         const fragment = document.createDocumentFragment();
@@ -2539,6 +2744,11 @@ function constructTableWithSubrows(tableId, api, templateData, dataParser, rowSy
             tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
         },
         rowDelete: (ids) => {
+            ids = ids.map(Number);
+            const err = deleteChecker?.(ids);
+            if (err)
+                return err;
+
             for (const id of ids) {
                 for (const childId of tree[id].children) {
                     cssGetId(`${tableId}-${childId}`).remove();
@@ -2577,7 +2787,9 @@ function constructTableWithSubrows(tableId, api, templateData, dataParser, rowSy
                         lastRow = x;
                     }
                     fragment.appendChild(x);
-                    tree[parseRowId(x)].children.forEach(y => fragment.appendChild(cssGetId(`${tableId}-${y}`)));
+                    for (const y of tree[parseRowId(x)].children) {
+                        fragment.appendChild(cssGetId(`${tableId}-${y}`));
+                    }
                 });
             if (moveTop) {
                 table.prepend(fragment);
@@ -2603,7 +2815,9 @@ function constructTableWithSubrows(tableId, api, templateData, dataParser, rowSy
                     if (!notMoved.has(prev.id)) {
                         const fragment = document.createDocumentFragment();
                         fragment.appendChild(rows[i]);
-                        tree[rowId].children.forEach(id => fragment.appendChild(cssGetId(`${tableId}-${id}`)));
+                        for (const id of tree[rowId].children) {
+                            fragment.appendChild(cssGetId(`${tableId}-${id}`));
+                        }
 
                         prev.before(fragment);
                         notMoved.delete(prev.id);
@@ -2621,7 +2835,9 @@ function constructTableWithSubrows(tableId, api, templateData, dataParser, rowSy
                     if (next && !notMoved.has(nextId)) {
                         const fragment = document.createDocumentFragment();
                         fragment.appendChild(rows[i]);
-                        tree[rowId].children.forEach(id => fragment.appendChild(cssGetId(`${tableId}-${id}`)));
+                        for (const id of tree[rowId].children) {
+                            fragment.appendChild(cssGetId(`${tableId}-${id}`));
+                        }
 
                         next.after(fragment);
                         notMoved.delete(nextId);
@@ -2653,6 +2869,9 @@ function constructTableWithSubrows(tableId, api, templateData, dataParser, rowSy
             tr.scrollIntoView({ behavior: 'smooth', block: 'center' });  
         },
         subrowDelete: (ids) => {
+            if (err)
+                return err;
+
             for (const id of ids) {
                 const [rowId, subrowId] = id.split('-').map(Number);
                 cssGetId(`${tableId}-${id}`).remove();
@@ -2785,7 +3004,7 @@ function constructAnnouncements() {
         ANNOUNCEMENTS_API.set({
             id,
             type: tds[0].children[0].src.endsWith('alert-triangle.svg') ? 'alert' : 'announcement',
-            text: tds[2].innerHTML,
+            text: parseInnerHTML(tds[2].innerHTML),
             from: tds[1].children[0].children[0].value,
             until: tds[1].children[1].children[0].value
         })
@@ -2807,7 +3026,7 @@ function constructUpcomingEvents() {
         children: [createInputText(
             'assets/icons/events-filled.svg',
             'Select by name...',
-            EVENTS_API.get(x.id)?.name ?? '',
+            EVENTS_API.get(x.eventId)?.name ?? '',
             x.id,
             'event'
         )]
@@ -2816,19 +3035,23 @@ function constructUpcomingEvents() {
         children: createInputsStartEnd(x, 'date', 'from', 'to')
     }, {
         element: 'td',
+        attributes: INPUT_ATTRIBUTES.default,
+        innerText: x.location
+    }, {
+        element: 'td',
         attributes: INPUT_ATTRIBUTES.asset,
         innerText: x.image
     }];
 
     const rowSyncer = (id, tds) => {
-        // TODO: store <input hidden> storing input IDs
-        // UPCOMING_EVENTS_API.set({
-        //     id,
-        //     location,
-        //     from,
-        //     until,
-        //     image
-        // })
+        UPCOMING_EVENTS_API.set({
+            id,
+            eventId: Number(tds[0].children[0].children[0].children[1].value),
+            location: tds[2].innerText,
+            from: tds[1].children[0].lastElementChild.value,
+            until: tds[1].children[1].lastElementChild.value,
+            image: tds[3].innerText
+        })
     }
 
     return constructTable('table-upcoming-events', UPCOMING_EVENTS_API, template, dataParser, rowSyncer);
@@ -2840,7 +3063,8 @@ function constructCurrentEvent() {
     const { links: { poster, rvsp, setlist }, tickets, hideBefore, hideAfter, location, preConcertDescription, postConcertDescription } = currentEvent;
 
     const container = cssGetId('current-event-id');
-    const input = container.children[0].children[1];
+    const input = container.children[0].lastElementChild;
+    input.previousElementSibling.value = currentEvent.id;
     input.value = name;
 
     if (hideBefore) { cssGetId('current-event-visible-from').value = hideBefore.replace('|', 'T'); }
@@ -2885,7 +3109,7 @@ function constructFaq() {
         FAQ_API.set({
             id,
             q: tds[0].children[0].innerText,
-            a: tds[0].children[1].innerHTML.replaceAll('</div>', '').replaceAll('<br>', '').split('<div>')
+            a: parseInnerHTML(tds[0].children[1].innerHTML)
         });
     }
     
@@ -2897,8 +3121,8 @@ function constructFaq() {
 Data injection - Members table
 *********************************************************************/
 function constructMembers() {
-    const instruments = getInstruments();
-    const roles = getRoles();
+    const instruments = INSTRUMENTS_API.getAll();
+    const roles = ROLES_API.getAll();
 
     const now = new Date();
     const templateSeason = `${now.getMonth() > 5 ? 'Fall' : 'Winter'} ${now.getFullYear()}`;
@@ -2908,12 +3132,12 @@ function constructMembers() {
         left: '',
         instruments: [],
         roles: [],
-        links: {}
+        links: []
     };
 
     const dataParser = (x) => {
         const tags = [...x.instruments.map(i => instruments[i]), ...x.roles.map(i => roles[i])];
-        const links = Object.keys(x.links).map(capitalize);
+        const links = x.links.map(y => capitalize(y[0]));
         return [{
             element: 'td',
             attributes: INPUT_ATTRIBUTES.default,
@@ -2934,15 +3158,43 @@ function constructMembers() {
     };
 
     const rowSyncer = (id, tds) => {
-        console.log(tds)
-        // MEMBERS_API.set({
-        //     id,
-
-        // })
-        // TODO: sync tags & links
+        const { instruments, roles, links } = MEMBERS_API.get(id);
+        const joinedContainer = tds[1].children[0];
+        const joinedYear = joinedContainer.lastElementChild.children[0].children[0].value;
+        const joinedSeason = joinedContainer.children[0].value;
+        const leftContainer = tds[2].children[0];
+        const leftSeason = leftContainer.children[0].value;
+        const leftYear = leftContainer.lastElementChild.children[0].children[0].value;
+        
+        MEMBERS_API.set({
+            id,
+            name: tds[0].innerText,
+            joined: `${joinedSeason} ${joinedYear}`,
+            left: leftSeason && leftYear ? `${leftSeason} ${leftYear}` : "",
+            instruments,
+            roles,
+            links
+        })
     }
 
-    return constructTable('table-members', MEMBERS_API, template, dataParser, rowSyncer);
+    const deleteChecker = (ids) => {
+        const music = MUSIC_API.getAll();
+        for (const x of music) {
+            for (const p of x.performances) {
+                const performers = new Set(Object.values(p.performers).flat());
+                const arrangers = new Set(p.arranger);
+                for (const id of ids) {
+                    if (performers.has(id)) {
+                        return `Cannot delete members who have performed (${MEMBERS_API.get(id).name} // ${x.name})`;
+                    } else if (arrangers.has(id)) {
+                        return `Cannot delete members who have arranged (${MEMBERS_API.get(id).name} // ${x.name})`;
+                    }
+                }
+            }
+        }
+    }
+
+    return constructTable('table-members', MEMBERS_API, template, dataParser, rowSyncer, deleteChecker);
 }
 
 
@@ -2997,28 +3249,33 @@ function constructMusicTable() {
             const concerts = p.concerts.map(c => {
                 const name = EVENTS_API.get(c)?.name;
                 return name ? [c, name] : [undefined, c]; // temporarily accept arbitary strings until data is fixed
-            })
-            const performerNames = getPerformerNames(p);
+            });
+            const performerNames = getPerformerNames(p.performers);
             const songType = p.songType === 'Large' ? 'Large Ensemble' : p.songType === 'Small' ? 'Small Ensemble' : 'External Group';
             return createDatalist([
                 ['Concerts', {
                     element: 'td',
                     children: [createInputTags(concerts, 'Enter event...', 'event')]
                 }],
-                ['Song Type', {
+                ['Online Recording', {
                     element: 'td',
-                    children: [createDropdown(songType, songTypes)]
+                    attributes: INPUT_ATTRIBUTES.default,
+                    innerText: p.link
                 }],
                 ['Sheet Music', {
                     element: 'td',
                     attributes: INPUT_ATTRIBUTES.default,
                     innerText: p.sheetMusic
                 }],
+                ['Song Type', {
+                    element: 'td',
+                    children: [createDropdown(songType, songTypes)]
+                }],
                 ['Arranger(s)', {
                     element: 'td',
-                    children: [createInputTags(arranger, 'Enter arranger...', 'member')]
+                    children: [createInputTags(arranger, 'Enter arranger...', 'arranger')]
                 }],
-                ['Group', {
+                ['Group Name', {
                     element: 'td',
                     attributes: INPUT_ATTRIBUTES.default,
                     innerText: p.group
@@ -3033,8 +3290,35 @@ function constructMusicTable() {
     };
 
     const rowSyncer = (id, row, subIds, subrows) => {
-        console.log(row);
-        console.log(subrows)
+        const music = MUSIC_API.get(id);
+        if (row) {
+            MUSIC_API.set({
+                id,
+                name: row[0].innerText,
+                composer: row[1].innerText,
+                from: row[2].innerText,
+                mediaOrigin: row[3].children[0].value,
+                reference: row[5].innerText, 
+                performances: music.performances
+            });
+        } else {
+            const subrow = MUSIC_API.get(id).performances.find(x => x.id === subIds);
+            const trs = subrows.children[0].children;
+            const concertTags = trs[0].lastElementChild.children[0];
+            const arrangerTags = trs[4].lastElementChild.children[0];
+            const concerts = Array.from(concertTags.children).slice(0, -1).map(x => extractId(x.children[1].innerText));
+            const arranger = Array.from(arrangerTags.children).slice(0, -1).map(x => extractId(x.children[1].innerText));
+            MUSIC_API.setSubrow(id, subIds, {
+                id: subIds,
+                concerts,
+                songType: trs[3].lastElementChild.children[0].value,
+                sheetMusic: trs[2].lastElementChild.innerText,
+                arranger,
+                link: trs[1].lastElementChild.innerText,
+                group: trs[5].lastElementChild.innerText,
+                performers: subrow.performers
+            });
+        }
     }
 
     return constructTableWithSubrows('table-music', MUSIC_API, template, dataParser, rowSyncer);
@@ -3092,12 +3376,44 @@ function constructEventTable() {
         return [row, subrows, true];
     };
 
-    const rowSyncer = (id, rows, subIds, subrows) => {
-        console.log(rows)
-        console.log(subrows);
+    const rowSyncer = (id, row, subIds, subrows) => {
+        const event = EVENTS_API.get(id);
+        if (row) {
+            EVENTS_API.set({
+                id,
+                type: row[0].children[0].value,
+                name: row[1].innerText,
+                location: row[2].innerText,
+                start: row[3].children[0].lastElementChild.value.replace('T', '|'),
+                end: row[3].lastElementChild.lastElementChild.value.replace('T', '|'),
+                setlist: event.setlist,
+                video: event.video,
+                gallery: row[6].innerText,
+                description: event.description
+            });
+        } else {
+            EVENTS_API.set({
+                ...event,
+                description: parseInnerHTML(subrows.innerHTML)
+            });
+        }
     }
 
-    return constructTableWithSubrows('table-events', EVENTS_API, template, dataParser, rowSyncer);
+    const deleteChecker = (ids) => {
+        const music = MUSIC_API.getAll();
+        for (const x of music) {
+            for (const p of x.performances) {
+                const concerts = new Set(Object.values(p.concerts));
+                for (const id of ids) {
+                    if (concerts.has(id)) {
+                        return `Cannot delete events with performances (${EVENTS_API.get(id).name} // ${x.name})`;
+                    }
+                }
+            }
+        }
+    }
+
+    return constructTableWithSubrows('table-events', EVENTS_API, template, dataParser, rowSyncer, deleteChecker);
 }
 
 
@@ -3105,9 +3421,7 @@ function constructEventTable() {
 Data injection - Tags tab
 *********************************************************************/
 function getTagColourStyle(name) {
-    if (name.includes(' (')) {
-        name = name.slice(0, name.indexOf(' ('));
-    }
+    name = parseRole(name);
     const rgbs = getTag(name);
     if (rgbs) {
         const color = rgbs.flat().reduce((a, b) => a + b) / rgbs.flat().length > 128 ? 'black' : 'white';
@@ -3126,61 +3440,61 @@ function getTagColourStyle(name) {
 function parseRole(role) {
     const i = role.lastIndexOf('(');
     if (i === -1) {
-        return role;
+        return role.trim();
     }
     return role.slice(0, i).trim();
 }
 function constructTagTab() {
     const members = MEMBERS_API.getAll();
-    const instruments = getInstruments();
-    const roles = getRoles();
+    const instruments = INSTRUMENTS_API.getAll();
+    const roles = Array.from(new Set(ROLES_API.getAll().map(parseRole)));
 
     const tags = [...instruments, ...roles];
-    const tagPreviews = cssGetId('tag-previews');
+    const tagPreviewsInstruments = cssGetId('tag-previews-instruments');
+    const tagPreviewsRoles = cssGetId('tag-previews-roles');
     const fragment = document.createDocumentFragment();
-    tags.forEach((tag, i) => {
-        fragment.appendChild(construct({
-            element: 'li',
-            classes: i === 0 ? ['tag-preview-active'] : undefined,
-            innerText: tag,
-            attributes: { onclick: "selectTag(this)" },
-            style: getTagColourStyle(tag)
-        }));
-    })
-    tagPreviews.replaceChildren(fragment);
-    selectTag(cssGetClass('tag-preview-active')[0], true);
+    for (const [data, container] of [[instruments, tagPreviewsInstruments], [roles, tagPreviewsRoles]]) {
+        data.forEach((tag, i) => {
+            fragment.appendChild(construct({
+                element: 'li',
+                innerText: tag,
+                attributes: { onclick: "selectTag(this)" },
+                style: getTagColourStyle(tag)
+            }));
+        })
+        container.replaceChildren(fragment);
+    }
+    const firstTag = tagPreviewsInstruments.children[0];
+    if (firstTag) {
+        firstTag?.classList.add('tag-preview-active');
+        selectTag(firstTag, true);
+    }
 }
 
-constructTagTab();
-constructCurrentEvent();
-const TABLE_OPERATIONS = {
-    'table-announcements': constructAnnouncements(),
-    'table-upcoming-events': constructUpcomingEvents(),
-    'table-faq': constructFaq(),
-    'table-members': constructMembers(),
-    'table-music': constructMusicTable(),
-    'table-events': constructEventTable()
-};
+const TABLE_OPERATIONS = {};
 
 
 /*********************************************************************
 Data injection - Modals
 *********************************************************************/
+let MODAL_INFO;
 function getRowId(element) {
     let ids = (element.closest('.subtable-row') || element.closest('tr')).id.split('-');    
     ids = ids.slice(-2).map(x => parseInt(x, 10));
     if (!isNaN(ids[0]) && !isNaN(ids[1])) {
+        MODAL_INFO = ids;
         return ids;
     }
+    MODAL_INFO = ids[1];
     return ids[1];
 }
 function openModalMemberTags(element) {
-    openModalHelper('modal-member-tags');
+    openModal('modal-member-tags');
 
     const id = getRowId(element);
     const member = MEMBERS_API.get(id);
-    const instruments = getInstruments();
-    const roles = getRoles();
+    const instruments = INSTRUMENTS_API.getAll();
+    const roles = ROLES_API.getAll();
 
     // Title
     cssGetFirst('#modal-member-tags h2 span').innerText = `for ${member.name}`;
@@ -3202,11 +3516,11 @@ function openModalMemberTags(element) {
     container.replaceChildren(fragment);
 }
 function openModalMemberLinks(element) {
-    openModalHelper('modal-member-links');
+    openModal('modal-member-links');
 
     const id = getRowId(element);
     const member = MEMBERS_API.get(id);
-    const instruments = getInstruments();
+    const instruments = INSTRUMENTS_API.getAll();
     const socialMediaOptions = ['Bandcamp', 'Discord', 'Instagram', 'LinkedIn', 'Musescore', 'Spotify', 'Soundcloud', 'Youtube'];
 
     // Title
@@ -3215,13 +3529,7 @@ function openModalMemberLinks(element) {
     // Links
     const datalist = cssGetFirst('#datalist-modal-member-links tbody');
     const fragment = document.createDocumentFragment();
-    for (const [socialMedia, info] of Object.entries(member.links)) {
-        let username = info;
-        let link = '';
-        if (Array.isArray(info)) {
-            [username, link] = info;
-        }
-
+    for (const [socialMedia, username, url] of member.links) {
         fragment.appendChild(construct({
             element: 'tr',
             children: [{
@@ -3237,7 +3545,7 @@ function openModalMemberLinks(element) {
             }, {
                 element: 'td',
                 attributes: INPUT_ATTRIBUTES.default,
-                innerText: link
+                innerText: url
             }]
         }));
     }
@@ -3271,12 +3579,12 @@ function openModalMemberLinks(element) {
     datalist.replaceChildren(fragment);
 }
 function openModalPerformancePerformers(element) {
-    openModalHelper('modal-performance-performers');
+    openModal('modal-performance-performers');
 
-    const instruments = getInstruments();
+    const instruments = INSTRUMENTS_API.getAll();
     const [id, subId] = getRowId(element);
     const song = MUSIC_API.get(id);
-    const performers = song.performances[subId].performers;
+    const performers = song.performances.find(x => x.id === subId).performers;
     
     // Title
     cssGetFirst('#modal-performance-performers h2 span').innerText = `for ${song.name}`;
@@ -3306,7 +3614,7 @@ function openModalPerformancePerformers(element) {
                 )]
             }, {
                 element: 'td',
-                children: [createInputTags(names, 'Enter performer...', 'member')]
+                children: [createInputTags(names, 'Enter performer...', 'performer')]
             }]
         }));
     }
@@ -3329,7 +3637,7 @@ function openModalPerformancePerformers(element) {
     table.replaceChildren(fragment);
 }
 function openModalConcertSetlist(element) {
-    openModalHelper('modal-concert-setlist');
+    openModal('modal-concert-setlist');
 
     const id = getRowId(element);
     const { name, setlist, video } = EVENTS_API.get(id);
@@ -3346,7 +3654,8 @@ function openModalConcertSetlist(element) {
         if (Array.isArray(info)) {
             [songId, timestamp] = info;
         }
-        const index = String(i + 1).padStart(String(setlist.length).length, '0');
+        const n = Math.max(2, String(setlist.length).length);
+        const index = String(i + 1).padStart(n, '0');
 
         fragment.appendChild(construct({
             element: 'tr',
@@ -3367,7 +3676,14 @@ function openModalConcertSetlist(element) {
                 }]
             }, {
                 element: 'td',
-                innerText: index
+                children: [{
+                    element: 'span',
+                    innerText: index
+                }, {
+                    element: 'span',
+                    classes: ['setlist-id'],
+                    innerText: songId
+                }]
             }, {
                 element: 'td',
                 innerText: MUSIC_API.get(songId).name
@@ -3383,5 +3699,157 @@ function openModalConcertSetlist(element) {
 
     // Video
     cssGetId(`concert-setlist-type-${video ? 'one' : 'no'}-video`).onclick();
-    cssGetFirst('#concert-setlist-one-video input').value = video || '';
+    cssGetFirst('#concert-setlist-video input').value = video || '';
+}
+
+
+/*********************************************************************
+Sync modals
+*********************************************************************/
+function syncModalMemberTags() {
+    // Roles
+    const datalist = cssGetId('datalist-member-roles');
+    const validation = datalist.nextElementSibling;
+    const [roles, newRoles] = parseTaglist(datalist);
+    for (const role of newRoles) {
+        // todo
+        if (!/^[^\(\)]+( \(\d\d(\/\d\d)*\))?$/.test(role)) {
+            validation.innerText = `Invalid role '${role}'. Brackets may only be used to indicate years, e.g. role (23) or role (24/25/26)`;
+            cssSetElement(validation, { display: 'block' });
+            return;
+        }
+    }
+    cssSetElement(validation, { display: 'none' });
+    for (const x of newRoles) {
+        const i = ROLES_API.add(x);
+        roles.push(i);
+    };
+
+    // Instruments
+    const [instruments, newInstruments] = parseTaglist(cssGetId('datalist-member-instruments'));
+    for (const x of newInstruments) {
+        const i = INSTRUMENTS_API.add(x);
+        instruments.push(i);
+    };
+
+    // Sync data
+    const member = MEMBERS_API.get(MODAL_INFO);
+    MEMBERS_API.set({ ...member, instruments, roles });
+
+    // Update row cell
+    const allInstruments = INSTRUMENTS_API.getAll();
+    const allRoles = ROLES_API.getAll();
+    const items = [...instruments.map(i => allInstruments[i]), ...roles.map(i => allRoles[i])];
+    refreshInputModalOpener(cssGetId(`table-members-${MODAL_INFO}`).children[4], items);
+
+    closeModals();
+}
+function syncModalMemberLinks() {
+    // Extract links
+    const links = [];
+    const datalist = cssGetId('datalist-modal-member-links');
+    const validation = datalist.parentElement.nextElementSibling;
+    for (const tr of datalist.children[0].children) {
+        if (tr.classList.contains('modal-datalist-preview')) {
+            continue;
+        }
+        const socialMedia = tr.children[1].children[0].value.toLowerCase();
+        const username = tr.children[2].innerText;
+        const link = tr.children[3].innerText;
+        if (!username) {
+            validation.innerText = 'There is a row with no username specified.'
+            cssSetElement(validation, { display: 'block' });
+            return;
+        }
+        links.push([socialMedia, username, link]);
+    }
+    cssSetElement(validation, { display: 'none' });
+
+    // Sync data
+    const member = MEMBERS_API.get(MODAL_INFO);
+    MEMBERS_API.set({ ...member, links });
+
+    // Update row cell
+    const items = links.map(x => capitalize(x[0]));
+    refreshInputModalOpener(cssGetId(`table-members-${MODAL_INFO}`).children[5], items);
+
+    closeModals();
+}
+function syncModalPerformancePerformers() {
+    // Extract instruments & names
+    const p = {};
+    const newInstruments = new Set();
+    const datalist = cssGetFirst('#modal-performance-performers .modal-datalist');
+    const validation = datalist.parentElement.nextElementSibling;
+    for (const tr of datalist.children[0].children) {
+        if (tr.classList.contains('modal-datalist-preview')) {
+            continue;
+        }
+        const div = tr.children[1].children[0].children[0];
+        let instrument = parseInt(div.children[1].value, 10);
+        if (isNaN(instrument)) {
+            instrument = div.children[2].value;
+            if (!instrument) {
+                validation.innerText = 'There is a row with no instrument.';
+                cssSetElement(validation, { display: 'block' });
+                return;
+            }
+            newInstruments.add(instrument);
+        }
+        const [performers, newPerformers] = parseTaglist(tr.children[2].children[0]);
+        if (performers.length === 0) {
+            validation.innerText = 'There is a row with no performers.';
+            cssSetElement(validation, { display: 'block' });
+            return;
+        }
+        p[instrument] = performers;
+        for (const x of newPerformers) {
+            p[instrument].push(x);
+        }
+    }
+    cssSetElement(validation, { display: '' });
+    for (const x of newInstruments) {
+        const i = INSTRUMENTS_API.add(x);
+        p[i] = p[x];
+        delete p[x];
+    };
+
+    // Sync data
+    const [id, subId] = MODAL_INFO;
+    const subrow = MUSIC_API.get(id).performances.find(x => x.id === subId);
+    MUSIC_API.setSubrow(id, subId, { ...subrow, performers: p });
+    console.log(MUSIC_API.get(id))
+
+    // Update new cell
+    const items = getPerformerNames(p);
+    const subtable = cssGetId(`table-music-${id}-${subId}`).lastElementChild.children[0];
+    console.log(subtable);
+    refreshInputModalOpener(subtable.lastElementChild.children[0].lastElementChild.lastElementChild, items);
+
+    closeModals();
+}
+function syncModalConcertSetlist() {
+    // Extract video
+    const container = cssGetId('concert-setlist-video');
+    const video = container.style.display === 'none' ? '' : container.lastElementChild.value;
+    
+    // Extract setlist and timestamps
+    const setlist = [];
+    for (const tr of cssGetId('concert-setlist').children[0].children) {
+        const id = Number(tr.children[1].children[1].innerText);
+        let timestamp;
+        if (tr.lastElementChild.style.display !== 'none') {
+            const value = tr.lastElementChild.innerText;
+            if (!value.includes("?")) {
+                timestamp = timestampToSeconds(value);
+            }
+        }
+        setlist.push(timestamp ? [id, timestamp] : id);
+    }   
+
+    // Sync data
+    const event = EVENTS_API.get(MODAL_INFO);
+    EVENTS_API.set({ ...event, video, setlist })
+
+    closeModals();
 }
