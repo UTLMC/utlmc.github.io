@@ -167,12 +167,24 @@ function getDataApi(list) {
         }
     } 
 } 
-const MEMBERS_API = getDataApi(MEMBERS);
-const EVENTS_API = getDataApi(EVENTS);
-const ANNOUNCEMENTS_API = getDataApi(ANNOUNCEMENTS);
-const UPCOMING_EVENTS_API = getDataApi(UPCOMING_EVENTS);
-const FAQ_API = getDataApi(FAQ);
-const MUSIC_API = (() => {
+function getEventsApi() {
+    const api = {
+        ...getDataApi(EVENTS),
+        addToSetlist(eventId, musicId) {
+            const event = api.get(eventId);
+            if (!event.setlist) {
+                event.setlist = [];
+            }
+            event.setlist.push(musicId);
+        },
+        removeFromSetlist(eventId, musicId) {
+            const event = api.get(eventId);
+            event.setlist = event.setlist.filter(x => x !== musicId);
+        }
+    }
+    return api;
+}
+function getMusicApi() {
     // TODO: internally store performances as a map of IDs to objects
     const map = Object.fromEntries(MUSIC.map(x => [x.id, x]));
     return {
@@ -203,27 +215,23 @@ const MUSIC_API = (() => {
             map[rowId].performances.push(performance);
         },
         delete: (id) => {
+            for (const performance of map[id].performances) {
+                for (const concert of performance.concerts) {
+                    API.EVENTS.removeFromSetlist(concert, id);
+                }
+            }
             delete map[id];
         },
         deleteSubrow: (id, subId) => {
             // Bad runtime complexity but we'll realistically never have >5 performances of the same song
-            map[id].performances = map[id].performances.filter(x => x.id !== subId);
+            const i = map[id].performances.findIndex(x => x.id === subId);
+            const concerts = map[id].performances[i].concerts;
+            for (const concert of concerts) {
+                API.EVENTS.removeFromSetlist(concert, id);
+            }
+            map[id].performances.splice(i, 1);
         }
     } 
-})();
-
-function getCurrentEvent() {
-    return CURRENT_EVENT;
-}
-function setCurrentEvent(kv) {
-    for (const key in kv) {
-        if (typeof kv[key] === 'object') {
-            for (const keykey in kv[key]) {
-                CURRENT_EVENT[key][keykey] = kv[key][keykey]
-            }
-        }
-        CURRENT_EVENT[key] = kv[key];
-    }
 }
 function getEnumApi(list) {
     const map = Object.fromEntries(list.map((x, i) => [x, i]));
@@ -240,9 +248,35 @@ function getEnumApi(list) {
         }
     }
 }
-const INSTRUMENTS_API = getEnumApi(INSTRUMENTS);
-const ROLES_API = getEnumApi(ROLES);
 
+const API = {
+    MEMBERS: getDataApi(MEMBERS),
+    ANNOUNCEMENTS: getDataApi(ANNOUNCEMENTS),
+    UPCOMING_EVENTS: getDataApi(UPCOMING_EVENTS),
+    FAQ: getDataApi(FAQ),
+    EVENTS: getEventsApi(),
+    MUSIC: getMusicApi(),
+    INSTRUMENTS: getEnumApi(INSTRUMENTS),
+    ROLES: getEnumApi(ROLES)
+}
+
+function getCurrentEvent() {
+    return CURRENT_EVENT;
+}
+function setCurrentEvent(kv) {
+    for (const key in kv) {
+        if (typeof kv[key] === 'object') {
+            for (const keykey in kv[key]) {
+                CURRENT_EVENT[key][keykey] = kv[key][keykey]
+            }
+        }
+        CURRENT_EVENT[key] = kv[key];
+    }
+}
+
+function getTags() {
+    return TAGS;
+}
 function getTag(name) {
     return TAGS[name ?? cssGetClass('tag-preview-active')[0].innerText];
 }
@@ -297,10 +331,6 @@ function setTag(source, modifyTAGS) {
         throw new Error();
     }
 }
-function getPerformerNames(performers) {
-    const uniquePerformers = new Set(Object.values(performers).flat());
-    return Array.from(uniquePerformers).map(x => MEMBERS_API.get(x)?.name ?? x);
-}
 
 
 /*********************************************************************
@@ -330,12 +360,12 @@ function destroyTabContent(id) {
     }
 }
 
-function toggleTab(event) {
-    const id = `${event.srcElement.id.substring(4)}`;
-    if (cssGetId(`tab-${id}`) === cssGetClass('tab-active')[0]) {
+function toggleTab(element, forceRefresh) {
+    const id = `${element.id.substring(4)}`;
+    if (!forceRefresh && cssGetId(`tab-${id}`) === cssGetClass('tab-active')[0]) {
         return;
     }
-    const activeId = cssGetClass('tab-active')[0]
+    const activeId = cssGetClass('tab-active')[0];
     setActiveClass(cssGetId(`tab-${id}`), 'tab-active');
     setActiveClass(cssGetId(`nav-${id}`), 'nav-active');
 
@@ -695,13 +725,13 @@ function onMouseMove(event) {
     if (MODAL_INFO !== undefined) {
         return;
     }
-    let tr = event.target.closest('tbody tr');
+    let tr = event.target.closest('.table tbody tr');
     if (tr) {
         if (!tr.id) {
-            tr = tr.parentElement.closest('tbody tr');
+            tr = tr.parentElement.closest('.table tbody tr');
         }
         const [id, subId] = tr.id.split('-').map(x => parseInt(x, 10)).filter(x => !isNaN(x));
-        setHelperText(typeof(subId) === 'number' ? `Subrow #${subId}, row #${id}` : `Row #${id}`);
+        setHelperText(typeof(subId) === 'number' ? `Hover on subrow #${subId}, row #${id}` : `Hover on row #${id}`);
     } else {
         setHelperText();
     }
@@ -1039,22 +1069,22 @@ const updateInputSuggestion = debounce(async (event) => {
     let prioritizeStartsWith = true;  // Whether to prioritize candidates that start with input text
 
     if (input.classList.contains('input-type-event')) {
-        candidates = EVENTS_API.getAll().toSorted((a, b) => b.start.localeCompare(a.start));
+        candidates = API.EVENTS.getAll().toSorted((a, b) => b.start.localeCompare(a.start));
         infoGetter = x => [x.id, x.start.slice(0, x.start.lastIndexOf('-'))];
 
     } else if (input.classList.contains('input-type-concert')) {
-        candidates = EVENTS_API.getAll().filter(x => x.type === 'Concert').toSorted((a, b) => b.start.localeCompare(a.start));
+        candidates = API.EVENTS.getAll().filter(x => x.type === 'Concert').toSorted((a, b) => b.start.localeCompare(a.start));
         infoGetter = x => [x.id, x.start.slice(0, x.start.lastIndexOf('-'))];
 
     } else if (['member', 'arranger', 'performer'].some(x => input.classList.contains(`input-type-${x}`))) {
         if (input.classList.contains('input-type-member')) {
-            candidates = MEMBERS_API.getAll().toSorted(memberSorter);
+            candidates = API.MEMBERS.getAll().toSorted(memberSorter);
 
         } else if (input.classList.contains('input-type-arranger')) {
             prioritizeStartsWith = false;
-            candidates = MEMBERS_API.getAll().toSorted((a, b) => {
-                const aArranger = a.roles.some(i => ROLES[i] === 'Arranger');
-                const bArranger = b.roles.some(i => ROLES[i] === 'Arranger');
+            candidates = API.MEMBERS.getAll().toSorted((a, b) => {
+                const aArranger = a.roles?.some(i => ROLES[i] === 'Arranger');
+                const bArranger = b.roles?.some(i => ROLES[i] === 'Arranger');
                 if (aArranger && !bArranger)
                     return -1;
                 else if (!aArranger && bArranger)
@@ -1064,10 +1094,10 @@ const updateInputSuggestion = debounce(async (event) => {
 
         } else if (input.classList.contains('input-type-performer')) {
             prioritizeStartsWith = false;
-            const instruments = INSTRUMENTS_API.getAll();
+            const instruments = API.INSTRUMENTS.getAll();
             const instrumentRow = input.closest('td').previousElementSibling;
             const instrument = instrumentRow.children[0].children[0].lastElementChild.value;
-            candidates = MEMBERS_API.getAll().toSorted((a, b) => {
+            candidates = API.MEMBERS.getAll().toSorted((a, b) => {
                 const aPerformer = a.instruments.some(i => instruments[i] === instrument);
                 const bPerformer = b.instruments.some(i => instruments[i] === instrument);
                 if (aPerformer && !bPerformer)
@@ -1087,16 +1117,16 @@ const updateInputSuggestion = debounce(async (event) => {
             return [x.id, info];
         }
     } else if (input.classList.contains('input-type-instrument')) {
-        candidates = INSTRUMENTS_API.getAll();
+        candidates = API.INSTRUMENTS.getAll();
         nameGetter = x => x;
-        infoGetter = x => [INSTRUMENTS_API.index(x)]
+        infoGetter = x => [API.INSTRUMENTS.index(x)]
     } else if (input.classList.contains('input-type-music')) {
-        candidates = MUSIC_API.getAll();
+        candidates = API.MUSIC.getAll();
         infoGetter = x => [x.id, x.composer];
     } else if (input.classList.contains('input-type-role')) {
-        candidates = ROLES_API.getAll();
+        candidates = API.ROLES.getAll();
         nameGetter = x => x;
-        infoGetter = x => [ROLES_API.index(x)];
+        infoGetter = x => [API.ROLES.index(x)];
     } else {
         throw new Error(String(Array.from(input.classList)));
     }
@@ -1347,7 +1377,7 @@ function duplicateInstrumentExists(inputContainer, newValue) {
     if (!datalist) {
         return false;
     }
-    const instruments = INSTRUMENTS_API.getAll();
+    const instruments = API.INSTRUMENTS.getAll();
     const existingInstruments = new Set(Array.from(datalist.children).map(x => {
         const value = x.children[1].children[0].children[0].children[2].value;
         return parseInt(value, 10) ? instruments[parseInt(value, 10)] : value;
@@ -1500,11 +1530,11 @@ const filterInput = debounce(async (event) => {
     const id = event.target.closest('.table').id;
     let data;
     if (id === 'table-members') {
-        data = MEMBERS_API.getAll();
+        data = API.MEMBERS.getAll();
     } else if (id === 'table-music') {
-        data = MUSIC_API.getAll();
+        data = API.MUSIC.getAll();
     } else if (id === 'table-events') {
-        data = EVENTS_API.getAll();
+        data = API.EVENTS.getAll();
     } else {
         throw new Error(id);
     }
@@ -1697,30 +1727,203 @@ function validateInputYear(element, optional) {
     element.value = isNaN(value) ? (optional ? '' : currYear) : clamp(value, 2023, currYear + 10);
     syncData(element);
 }
-function validateInputEvent(input, isConcert, newValue) {
-    const name = newValue ?? input.value;
-    const event = EVENTS_API.getAll().filter(x => (!isConcert || x.type === 'Concert') && isSubstring(x.name, name));
-    if (event.length === 1) {
-        input.value = event[0].name;
-        return true;
-    } else {
-        input.value = '';
-        return false;
+
+
+/*********************************************************************
+Exporting and uploading data
+*********************************************************************/
+function saveAsJS(filename, text) {
+    const blob = new Blob([text], {
+        type: "application/javascript",
+    });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function minify(x, keepId) {
+    function _minify(x, depth) {
+        if (Array.isArray(x)) {
+            for (let i = x.length - 1; i >= 0; i--) {
+                const v = x[i];
+
+                if (v === undefined || v === null || v === '') {
+                    x.splice(i, 1);
+                    continue;
+                }
+
+                if (typeof v === 'object' && _minify(v, depth + 1)) {
+                    x.splice(i, 1);
+                }
+            }
+
+            return x.length === 0;
+        }
+
+        if (!keepId && depth <= 1) {
+            delete x.id;
+        }
+
+        for (const key of Object.keys(x)) {
+            const v = x[key];
+
+            if (v === undefined || v === null || v === '') {
+                delete x[key];
+                continue;
+            }
+
+            if (typeof v === 'object' && _minify(v, depth + 1)) {
+                delete x[key];
+            }
+        }
+
+        return Object.keys(x).length === 0;
     }
+    _minify(x, 0);
+    return JSON.stringify(x, null, 4);
+}
+
+function exportData() {
+    const text = `const TAGS = ${minify(getTags())};
+
+const ROLES = ${minify(API.ROLES.getAll())};
+
+const INSTRUMENTS = ${minify(API.INSTRUMENTS.getAll())};
+
+const CURRENT_EVENT = ${minify(getCurrentEvent(), true)};
+
+const ANNOUNCEMENTS = ${minify(API.ANNOUNCEMENTS.getAll())}.map((x, i) => ({...x, id: i}));
+
+const UPCOMING_EVENTS = ${minify(API.UPCOMING_EVENTS.getAll())}.map((x, i) => ({...x, id: i}));
+
+const MEMBERS = ${minify(API.MEMBERS.getAll())}.map((x, i) => ({...x, id: i}));
+
+const MUSIC = ${minify(API.MUSIC.getAll())}.map((x, i) => ({...x, id: i}));
+
+const EVENTS = ${minify(API.EVENTS.getAll())}.map((x, i) => ({...x, id: i}));
+
+const FAQ = ${minify(API.FAQ.getAll())}.map((x, i) => ({...x, id: i}));
+
+const CAROUSEL = [
+    {
+        "url": "assets/images/carousel 2025-04.webp",
+        "caption": "End of Winter <br> Concert <b>2025/04</b>",
+        "yLims": [300, 1300],
+        "captionXPosition": "60%",
+        "captionRight": true,
+        "captionTopOnMobile": true,
+        "width": 3171,
+        "height": 1524
+    },
+    {
+        "url": "assets/images/carousel 2026-04.webp",
+        "caption": "Tunes & Treats <br> <b>2026/04</b>",
+        "yLims": [250, 1150],
+        "captionXPosition": "70%",
+        "captionRight": false,
+        "captionTopOnMobile": true,
+        "width": 2400,
+        "height": 1350
+    },
+    {
+        "url": "assets/images/carousel 2025-01.webp",
+        "caption": "End of Fall <br> Concert <b>2025/01</b>",
+        "yLims": [400, 1300],
+        "captionXPosition": "40%",
+        "captionRight": true,
+        "captionTopOnMobile": true,
+        "width": 2520,
+        "height": 1418
+    }
+];
+`;
+    saveAsJS('data.js', text);
+}
+function reassignObject(oldObj, newObj) {
+    for (const key in oldObj) {
+        delete oldObj[key];
+    }
+    for (const key in newObj) {
+        oldObj[key] = newObj[key];
+    }
+}
+function reassignList(oldList, newList) {
+    oldList.length = 0;
+    oldList.push(...newList);
+}
+async function uploadData(element) {
+    if (element.files.length === 0)
+        return;
+    const [file] = element.files
+    const content = await file.text();
+
+    const regex = /const\s+(\w+)\s*=\s*([\s\S]*?);(?=\s*const|\s*$)/g;
+    const matches = [...content.matchAll(regex)];
+    for (const [, name, code] of matches) {
+        const end = '.map((x, i) => ({...x, id: i}))';
+        const value = code.endsWith(end) ? code.slice(0, -end.length) : code;
+        if (name === 'TAGS') {
+            reassignObject(TAGS, JSON.parse(value));
+
+        } else if (name === 'INSTRUMENTS') {
+            reassignList(INSTRUMENTS, JSON.parse(value));
+            API.INSTRUMENTS = getEnumApi(INSTRUMENTS);
+
+        } else if (name === 'CURRENT_EVENT') {
+            reassignObject(CURRENT_EVENT, JSON.parse(value));
+
+        } else if (name === 'ANNOUNCEMENTS') {
+            console.log(value);
+            reassignList(ANNOUNCEMENTS, JSON.parse(value));
+            API.ANNOUNCEMENTS = getDataApi(ANNOUNCEMENTS);
+
+        } else if (name === 'UPCOMING_EVENTS') {
+            reassignList(UPCOMING_EVENTS, JSON.parse(value));
+            API.UPCOMING_EVENTS = getDataApi(UPCOMING_EVENTS);
+
+        } else if (name === 'MEMBERS') {
+            reassignList(MEMBERS, JSON.parse(value));
+            API.MEMBERS = getDataApi(MEMBERS);
+
+        } else if (name === 'MUSIC') {
+            reassignList(MUSIC, JSON.parse(value));
+            API.MUSIC = getMusicApi();
+
+        } else if (name === 'EVENTS') {
+            reassignList(EVENTS, JSON.parse(value));
+            API.EVENTS = getEventsApi();
+
+        } else if (name === 'FAQ') {
+            reassignList(FAQ, JSON.parse(value));
+            API.FAQ = getDataApi(FAQ);
+
+        } else if (name === 'CAROUSEL') {
+            reassignList(CAROUSEL, JSON.parse(value));
+
+        } else if (name === 'ROLES') {
+            reassignList(ROLES, JSON.parse(value));
+            API.ROLES = getEnumApi(ROLES)
+
+        } else {
+            console.warn(value);
+            throw new Error(name);
+        }
+    }
+
+    toggleTab(cssGetClass('tab-active')[0], true);
 }
 
 
 /*********************************************************************
 Parsing CSV data
 *********************************************************************/
-function downloadData() {
-    console.log("Download");
-}
-function uploadData() {
-    console.log("Upload");
-}
-
-
 function parseCSV(csv) {
     const rows = [];
     let current = [];
@@ -1918,7 +2121,7 @@ async function uploadMembers(element) {
 
     // Get current year
     const now = new Date();
-    let year = now.getMonth() >= 7 ? now.getFullYear() : now.getFullYear() - 1;
+    let year = now.getMonth() >= 8 ? now.getFullYear() : now.getFullYear() - 1;
     while (!members.some(row => row[indices['Roles']].includes(String(year).slice(2)))) {
         year -= 1;
         if (year === 2022) {
@@ -2531,7 +2734,7 @@ let AUTOINCREMENT = {};
 /**
  * Function for constructing a table and its contents. Auto-constructs a checkbox in the first column.
  * - `tableID (string)`: CSS id of the table
- * - `api`: Object with get/insert/delete methods to interact with internal data (e.g. MEMBERS_API)
+ * - `api`: Object with get/insert/delete methods to interact with internal data (e.g. API.MEMBERS)
  * - `templateData (T)`: A template data used as the placeholder when adding a new row
  * - `dataParser (T => <td>[])`: Function that takes in your list item and outputs `construct` syntax.
  * - `rowSyncer ((id, <td>[]) => void)`: Function that takes in constructed rows and updates the API data 
@@ -2649,7 +2852,7 @@ function constructTable(tableId, api, templateData, dataParser, rowSyncer, delet
 /**
  * Like `contructTable` but for tables containing subrows.
  * - `tableID (string)`: CSS id of the table
- * - `api`: Object with get/insert/delete methods to interact with internal data (e.g. MUSIC_API)
+ * - `api`: Object with get/insert/delete methods to interact with internal data (e.g. API.MUSIC)
  * - `templateData (T)`: A template data used as the placeholder when adding a new row/subrow
  * - `dataParser (T => [<td>[], <?>[], ...])`: Function that takes in your list item and outputs `construct` syntax.
  * - `rowSyncer ((id, <td>[], subIds, <?>[]) => void)`: Function that takes in constructed rows and updates the API data 
@@ -2869,9 +3072,6 @@ function constructTableWithSubrows(tableId, api, templateData, dataParser, rowSy
             tr.scrollIntoView({ behavior: 'smooth', block: 'center' });  
         },
         subrowDelete: (ids) => {
-            if (err)
-                return err;
-
             for (const id of ids) {
                 const [rowId, subrowId] = id.split('-').map(Number);
                 cssGetId(`${tableId}-${id}`).remove();
@@ -3001,7 +3201,7 @@ function constructAnnouncements() {
     }];
 
     const rowSyncer = (id, tds) => {
-        ANNOUNCEMENTS_API.set({
+        API.ANNOUNCEMENTS.set({
             id,
             type: tds[0].children[0].src.endsWith('alert-triangle.svg') ? 'alert' : 'announcement',
             text: parseInnerHTML(tds[2].innerHTML),
@@ -3010,7 +3210,7 @@ function constructAnnouncements() {
         })
     }
     
-    return constructTable('table-announcements', ANNOUNCEMENTS_API, template, dataParser, rowSyncer);
+    return constructTable('table-announcements', API.ANNOUNCEMENTS, template, dataParser, rowSyncer);
 }
 function constructUpcomingEvents() {
     const ymd = getTemplateDateString();
@@ -3026,7 +3226,7 @@ function constructUpcomingEvents() {
         children: [createInputText(
             'assets/icons/events-filled.svg',
             'Select by name...',
-            EVENTS_API.get(x.eventId)?.name ?? '',
+            API.EVENTS.get(x.eventId)?.name ?? '',
             x.id,
             'event'
         )]
@@ -3044,7 +3244,7 @@ function constructUpcomingEvents() {
     }];
 
     const rowSyncer = (id, tds) => {
-        UPCOMING_EVENTS_API.set({
+        API.UPCOMING_EVENTS.set({
             id,
             eventId: Number(tds[0].children[0].children[0].children[1].value),
             location: tds[2].innerText,
@@ -3054,12 +3254,11 @@ function constructUpcomingEvents() {
         })
     }
 
-    return constructTable('table-upcoming-events', UPCOMING_EVENTS_API, template, dataParser, rowSyncer);
+    return constructTable('table-upcoming-events', API.UPCOMING_EVENTS, template, dataParser, rowSyncer);
 }
 function constructCurrentEvent() {
     const currentEvent = getCurrentEvent();
-
-    const { name } = EVENTS_API.get(currentEvent.id);
+    const { name } = API.EVENTS.get(currentEvent.id);
     const { links: { poster, rvsp, setlist }, tickets, hideBefore, hideAfter, location, preConcertDescription, postConcertDescription } = currentEvent;
 
     const container = cssGetId('current-event-id');
@@ -3106,14 +3305,14 @@ function constructFaq() {
     }];
 
     const rowSyncer = (id, tds) => {
-        FAQ_API.set({
+        API.FAQ.set({
             id,
             q: tds[0].children[0].innerText,
             a: parseInnerHTML(tds[0].children[1].innerHTML)
         });
     }
     
-    return constructTable('table-faq', FAQ_API, template, dataParser, rowSyncer);
+    return constructTable('table-faq', API.FAQ, template, dataParser, rowSyncer);
 };
 
 
@@ -3121,8 +3320,8 @@ function constructFaq() {
 Data injection - Members table
 *********************************************************************/
 function constructMembers() {
-    const instruments = INSTRUMENTS_API.getAll();
-    const roles = ROLES_API.getAll();
+    const instruments = API.INSTRUMENTS.getAll();
+    const roles = API.ROLES.getAll();
 
     const now = new Date();
     const templateSeason = `${now.getMonth() > 5 ? 'Fall' : 'Winter'} ${now.getFullYear()}`;
@@ -3136,18 +3335,18 @@ function constructMembers() {
     };
 
     const dataParser = (x) => {
-        const tags = [...x.instruments.map(i => instruments[i]), ...x.roles.map(i => roles[i])];
-        const links = x.links.map(y => capitalize(y[0]));
+        const tags = [...x.instruments?.map(i => instruments[i]) ?? [], ...x.roles?.map(i => roles[i]) ?? []];
+        const links = x.links?.map(y => capitalize(y[0])) ?? [];
         return [{
             element: 'td',
             attributes: INPUT_ATTRIBUTES.default,
             innerText: x.name
         }, {
             element: 'td',
-            children: [createInputSeason(x.joined)]
+            children: [createInputSeason(x.joined ?? '')]
         }, {
             element: 'td',
-            children: [createInputSeason(x.left, true)]
+            children: [createInputSeason(x.left ?? '', true)]
         }, {
             element: 'td',
             children: [createInputModalOpener('openModalMemberTags(this)', tags)]
@@ -3158,7 +3357,7 @@ function constructMembers() {
     };
 
     const rowSyncer = (id, tds) => {
-        const { instruments, roles, links } = MEMBERS_API.get(id);
+        const { instruments, roles, links } = API.MEMBERS.get(id);
         const joinedContainer = tds[1].children[0];
         const joinedYear = joinedContainer.lastElementChild.children[0].children[0].value;
         const joinedSeason = joinedContainer.children[0].value;
@@ -3166,7 +3365,7 @@ function constructMembers() {
         const leftSeason = leftContainer.children[0].value;
         const leftYear = leftContainer.lastElementChild.children[0].children[0].value;
         
-        MEMBERS_API.set({
+        API.MEMBERS.set({
             id,
             name: tds[0].innerText,
             joined: `${joinedSeason} ${joinedYear}`,
@@ -3178,29 +3377,34 @@ function constructMembers() {
     }
 
     const deleteChecker = (ids) => {
-        const music = MUSIC_API.getAll();
+        const music = API.MUSIC.getAll();
         for (const x of music) {
             for (const p of x.performances) {
                 const performers = new Set(Object.values(p.performers).flat());
                 const arrangers = new Set(p.arranger);
                 for (const id of ids) {
                     if (performers.has(id)) {
-                        return `Cannot delete members who have performed (${MEMBERS_API.get(id).name} // ${x.name})`;
+                        return `Cannot delete members who have performed (${API.MEMBERS.get(id).name} // ${x.name})`;
                     } else if (arrangers.has(id)) {
-                        return `Cannot delete members who have arranged (${MEMBERS_API.get(id).name} // ${x.name})`;
+                        return `Cannot delete members who have arranged (${API.MEMBERS.get(id).name} // ${x.name})`;
                     }
                 }
             }
         }
     }
 
-    return constructTable('table-members', MEMBERS_API, template, dataParser, rowSyncer, deleteChecker);
+    return constructTable('table-members', API.MEMBERS, template, dataParser, rowSyncer, deleteChecker);
 }
 
 
 /*********************************************************************
 Data injection - Music table
 *********************************************************************/
+function getPerformerNames(performers) {
+    const uniquePerformers = new Set(Object.values(performers).flat());
+    return Array.from(uniquePerformers).map(x => API.MEMBERS.get(x)?.name ?? x);
+}
+
 function constructMusicTable() {
     const mediaOrigins = ['', 'Anime', 'Video Game', 'Vocaloid'];
     const songTypes = ['Large Ensemble', 'Small Ensemble', 'External Group'];
@@ -3216,7 +3420,7 @@ function constructMusicTable() {
     };
 
     const dataParser = (x) => {
-        const performances = x.performances.map(p => p.concerts.map(c => EVENTS_API.get(c)?.start?.slice(0, 7) ?? c)).flat();
+        const performances = x.performances?.map(p => p.concerts?.map(c => API.EVENTS.get(c)?.start?.slice(0, 7) ?? c) ?? []).flat() ?? [];
         const row = [{
             element: 'td',
             attributes: INPUT_ATTRIBUTES.default,
@@ -3243,14 +3447,14 @@ function constructMusicTable() {
 
         const subrows = x.performances.map(p => {
             const arranger = p.arranger?.map(a => {
-                const name = MEMBERS_API.get(a)?.name;
+                const name = API.MEMBERS.get(a)?.name;
                 return name ? [a, name] : [undefined, a];
             }) ?? [];
-            const concerts = p.concerts.map(c => {
-                const name = EVENTS_API.get(c)?.name;
+            const concerts = p.concerts?.map(c => {
+                const name = API.EVENTS.get(c)?.name;
                 return name ? [c, name] : [undefined, c]; // temporarily accept arbitary strings until data is fixed
-            });
-            const performerNames = getPerformerNames(p.performers);
+            }) ?? [];
+            const performerNames = getPerformerNames(p.performers ?? {});
             const songType = p.songType === 'Large' ? 'Large Ensemble' : p.songType === 'Small' ? 'Small Ensemble' : 'External Group';
             return createDatalist([
                 ['Concerts', {
@@ -3290,9 +3494,9 @@ function constructMusicTable() {
     };
 
     const rowSyncer = (id, row, subIds, subrows) => {
-        const music = MUSIC_API.get(id);
+        const music = API.MUSIC.get(id);
         if (row) {
-            MUSIC_API.set({
+            API.MUSIC.set({
                 id,
                 name: row[0].innerText,
                 composer: row[1].innerText,
@@ -3302,13 +3506,16 @@ function constructMusicTable() {
                 performances: music.performances
             });
         } else {
-            const subrow = MUSIC_API.get(id).performances.find(x => x.id === subIds);
+            const prev = new Set(music.performances.map(x => x.concerts).flat());
+            const subrow = music.performances.find(x => x.id === subIds);
+            
             const trs = subrows.children[0].children;
             const concertTags = trs[0].lastElementChild.children[0];
             const arrangerTags = trs[4].lastElementChild.children[0];
             const concerts = Array.from(concertTags.children).slice(0, -1).map(x => extractId(x.children[1].innerText));
             const arranger = Array.from(arrangerTags.children).slice(0, -1).map(x => extractId(x.children[1].innerText));
-            MUSIC_API.setSubrow(id, subIds, {
+            
+            API.MUSIC.setSubrow(id, subIds, {
                 id: subIds,
                 concerts,
                 songType: trs[3].lastElementChild.children[0].value,
@@ -3316,12 +3523,20 @@ function constructMusicTable() {
                 arranger,
                 link: trs[1].lastElementChild.innerText,
                 group: trs[5].lastElementChild.innerText,
-                performers: subrow.performers
+                performers: subrow?.performers
             });
+
+            const curr = new Set(concerts);
+            for (const toAdd of curr.difference(prev)) {
+                API.EVENTS.addToSetlist(toAdd, id);
+            }
+            for (const toRemove of prev.difference(curr)) {
+                API.EVENTS.removeFromSetlist(toRemove, id);
+            }
         }
     }
 
-    return constructTableWithSubrows('table-music', MUSIC_API, template, dataParser, rowSyncer);
+    return constructTableWithSubrows('table-music', API.MUSIC, template, dataParser, rowSyncer);
 }
 
 
@@ -3377,9 +3592,9 @@ function constructEventTable() {
     };
 
     const rowSyncer = (id, row, subIds, subrows) => {
-        const event = EVENTS_API.get(id);
+        const event = API.EVENTS.get(id);
         if (row) {
-            EVENTS_API.set({
+            API.EVENTS.set({
                 id,
                 type: row[0].children[0].value,
                 name: row[1].innerText,
@@ -3392,7 +3607,7 @@ function constructEventTable() {
                 description: event.description
             });
         } else {
-            EVENTS_API.set({
+            API.EVENTS.set({
                 ...event,
                 description: parseInnerHTML(subrows.innerHTML)
             });
@@ -3400,20 +3615,20 @@ function constructEventTable() {
     }
 
     const deleteChecker = (ids) => {
-        const music = MUSIC_API.getAll();
+        const music = API.MUSIC.getAll();
         for (const x of music) {
             for (const p of x.performances) {
                 const concerts = new Set(Object.values(p.concerts));
                 for (const id of ids) {
                     if (concerts.has(id)) {
-                        return `Cannot delete events with performances (${EVENTS_API.get(id).name} // ${x.name})`;
+                        return `Cannot delete events with performances (${API.EVENTS.get(id).name} // ${x.name})`;
                     }
                 }
             }
         }
     }
 
-    return constructTableWithSubrows('table-events', EVENTS_API, template, dataParser, rowSyncer, deleteChecker);
+    return constructTableWithSubrows('table-events', API.EVENTS, template, dataParser, rowSyncer, deleteChecker);
 }
 
 
@@ -3445,9 +3660,9 @@ function parseRole(role) {
     return role.slice(0, i).trim();
 }
 function constructTagTab() {
-    const members = MEMBERS_API.getAll();
-    const instruments = INSTRUMENTS_API.getAll();
-    const roles = Array.from(new Set(ROLES_API.getAll().map(parseRole)));
+    const members = API.MEMBERS.getAll();
+    const instruments = API.INSTRUMENTS.getAll();
+    const roles = Array.from(new Set(API.ROLES.getAll().map(parseRole)));
 
     const tags = [...instruments, ...roles];
     const tagPreviewsInstruments = cssGetId('tag-previews-instruments');
@@ -3492,9 +3707,9 @@ function openModalMemberTags(element) {
     openModal('modal-member-tags');
 
     const id = getRowId(element);
-    const member = MEMBERS_API.get(id);
-    const instruments = INSTRUMENTS_API.getAll();
-    const roles = ROLES_API.getAll();
+    const member = API.MEMBERS.get(id);
+    const instruments = API.INSTRUMENTS.getAll();
+    const roles = API.ROLES.getAll();
 
     // Title
     cssGetFirst('#modal-member-tags h2 span').innerText = `for ${member.name}`;
@@ -3510,7 +3725,7 @@ function openModalMemberTags(element) {
     // Roles
     container = cssGetId('datalist-member-roles');
     fragment = document.createDocumentFragment();
-    for (const id of member.roles) {
+    for (const id of member.roles ?? []) {
         fragment.appendChild(construct(createInputTag(roles[id], id, true)))
     }
     container.replaceChildren(fragment);
@@ -3519,8 +3734,8 @@ function openModalMemberLinks(element) {
     openModal('modal-member-links');
 
     const id = getRowId(element);
-    const member = MEMBERS_API.get(id);
-    const instruments = INSTRUMENTS_API.getAll();
+    const member = API.MEMBERS.get(id);
+    const instruments = API.INSTRUMENTS.getAll();
     const socialMediaOptions = ['Bandcamp', 'Discord', 'Instagram', 'LinkedIn', 'Musescore', 'Spotify', 'Soundcloud', 'Youtube'];
 
     // Title
@@ -3529,7 +3744,7 @@ function openModalMemberLinks(element) {
     // Links
     const datalist = cssGetFirst('#datalist-modal-member-links tbody');
     const fragment = document.createDocumentFragment();
-    for (const [socialMedia, username, url] of member.links) {
+    for (const [socialMedia, username, url] of member.links ?? []) {
         fragment.appendChild(construct({
             element: 'tr',
             children: [{
@@ -3581,10 +3796,10 @@ function openModalMemberLinks(element) {
 function openModalPerformancePerformers(element) {
     openModal('modal-performance-performers');
 
-    const instruments = INSTRUMENTS_API.getAll();
+    const instruments = API.INSTRUMENTS.getAll();
     const [id, subId] = getRowId(element);
-    const song = MUSIC_API.get(id);
-    const performers = song.performances.find(x => x.id === subId).performers;
+    const song = API.MUSIC.get(id);
+    const performers = song.performances.find(x => x.id === subId)?.performers ?? {};
     
     // Title
     cssGetFirst('#modal-performance-performers h2 span').innerText = `for ${song.name}`;
@@ -3594,7 +3809,7 @@ function openModalPerformancePerformers(element) {
     const fragment = document.createDocumentFragment();
     for (const [instrumentId, memberIds] of Object.entries(performers)) {
         const names = memberIds.map(id => {
-            const name = MEMBERS_API.get(id)?.name;
+            const name = API.MEMBERS.get(id)?.name;
             return name ? [id, name] : [undefined, id]
         });
 
@@ -3640,7 +3855,7 @@ function openModalConcertSetlist(element) {
     openModal('modal-concert-setlist');
 
     const id = getRowId(element);
-    const { name, setlist, video } = EVENTS_API.get(id);
+    const { name, setlist, video } = API.EVENTS.get(id);
 
     // Title
     cssGetFirst('#modal-concert-setlist h2 span').innerText = `for ${name}`;
@@ -3686,7 +3901,7 @@ function openModalConcertSetlist(element) {
                 }]
             }, {
                 element: 'td',
-                innerText: MUSIC_API.get(songId).name
+                innerText: API.MUSIC.get(songId).name
             }, {
                 element: 'td',
                 classes: ['concert-setlist-timestamp'],
@@ -3712,7 +3927,6 @@ function syncModalMemberTags() {
     const validation = datalist.nextElementSibling;
     const [roles, newRoles] = parseTaglist(datalist);
     for (const role of newRoles) {
-        // todo
         if (!/^[^\(\)]+( \(\d\d(\/\d\d)*\))?$/.test(role)) {
             validation.innerText = `Invalid role '${role}'. Brackets may only be used to indicate years, e.g. role (23) or role (24/25/26)`;
             cssSetElement(validation, { display: 'block' });
@@ -3721,24 +3935,24 @@ function syncModalMemberTags() {
     }
     cssSetElement(validation, { display: 'none' });
     for (const x of newRoles) {
-        const i = ROLES_API.add(x);
+        const i = API.ROLES.add(x);
         roles.push(i);
     };
 
     // Instruments
     const [instruments, newInstruments] = parseTaglist(cssGetId('datalist-member-instruments'));
     for (const x of newInstruments) {
-        const i = INSTRUMENTS_API.add(x);
+        const i = API.INSTRUMENTS.add(x);
         instruments.push(i);
     };
 
     // Sync data
-    const member = MEMBERS_API.get(MODAL_INFO);
-    MEMBERS_API.set({ ...member, instruments, roles });
+    const member = API.MEMBERS.get(MODAL_INFO);
+    API.MEMBERS.set({ ...member, instruments, roles });
 
     // Update row cell
-    const allInstruments = INSTRUMENTS_API.getAll();
-    const allRoles = ROLES_API.getAll();
+    const allInstruments = API.INSTRUMENTS.getAll();
+    const allRoles = API.ROLES.getAll();
     const items = [...instruments.map(i => allInstruments[i]), ...roles.map(i => allRoles[i])];
     refreshInputModalOpener(cssGetId(`table-members-${MODAL_INFO}`).children[4], items);
 
@@ -3766,8 +3980,8 @@ function syncModalMemberLinks() {
     cssSetElement(validation, { display: 'none' });
 
     // Sync data
-    const member = MEMBERS_API.get(MODAL_INFO);
-    MEMBERS_API.set({ ...member, links });
+    const member = API.MEMBERS.get(MODAL_INFO);
+    API.MEMBERS.set({ ...member, links });
 
     // Update row cell
     const items = links.map(x => capitalize(x[0]));
@@ -3809,21 +4023,19 @@ function syncModalPerformancePerformers() {
     }
     cssSetElement(validation, { display: '' });
     for (const x of newInstruments) {
-        const i = INSTRUMENTS_API.add(x);
+        const i = API.INSTRUMENTS.add(x);
         p[i] = p[x];
         delete p[x];
     };
 
     // Sync data
     const [id, subId] = MODAL_INFO;
-    const subrow = MUSIC_API.get(id).performances.find(x => x.id === subId);
-    MUSIC_API.setSubrow(id, subId, { ...subrow, performers: p });
-    console.log(MUSIC_API.get(id))
+    const subrow = API.MUSIC.get(id).performances.find(x => x.id === subId);
+    API.MUSIC.setSubrow(id, subId, { ...subrow, performers: p });
 
     // Update new cell
     const items = getPerformerNames(p);
     const subtable = cssGetId(`table-music-${id}-${subId}`).lastElementChild.children[0];
-    console.log(subtable);
     refreshInputModalOpener(subtable.lastElementChild.children[0].lastElementChild.lastElementChild, items);
 
     closeModals();
@@ -3848,8 +4060,8 @@ function syncModalConcertSetlist() {
     }   
 
     // Sync data
-    const event = EVENTS_API.get(MODAL_INFO);
-    EVENTS_API.set({ ...event, video, setlist })
+    const event = API.EVENTS.get(MODAL_INFO);
+    API.EVENTS.set({ ...event, video, setlist })
 
     closeModals();
 }

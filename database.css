@@ -298,7 +298,7 @@ Input/output
 }
 #container-io-button {
     display: flex;
-    gap: 5px;
+    gap: 10px;
     flex-direction: column;
 }
 #container-io-button input {
@@ -338,7 +338,7 @@ Input/output
     background-repeat: no-repeat;
     background-position: 50% 50%;
 }
-#download-button:before { background-image: url('assets/icons/download.png'); }  /* https://www.flaticon.com/free-icon/download_724933 */
+#export-button:before { background-image: url('assets/icons/download.png'); }  /* https://www.flaticon.com/free-icon/download_724933 */
 #upload-button:before { background-image: url('assets/icons/upload.png'); }
 
 

@@ -19,25 +19,25 @@
                 <h1>Light Music Club</h1>
             </hgroup>
             <menu>
-                <li id="nav-home" class="nav-active" onclick="toggleTab(event)">Home</li>
-                <li id="nav-tags" onclick="toggleTab(event)">Tags</li>
-                <li id="nav-bulletin" onclick="toggleTab(event)">Bulletin</li>
-                <li id="nav-links" onclick="toggleTab(event)">Links</li>
-                <li id="nav-images" onclick="toggleTab(event)">Images</li>
-                <li id="nav-members" onclick="toggleTab(event)">Members</li>
-                <li id="nav-music" onclick="toggleTab(event)">Music</li>
-                <li id="nav-events" onclick="toggleTab(event)">Events</li>
-                <li id="nav-faq" onclick="toggleTab(event)">FAQ</li>
+                <li id="nav-home" class="nav-active" onclick="toggleTab(this)">Home</li>
+                <li id="nav-tags" onclick="toggleTab(this)">Tags</li>
+                <li id="nav-bulletin" onclick="toggleTab(this)">Bulletin</li>
+                <li id="nav-links" onclick="toggleTab(this)">Links</li>
+                <li id="nav-images" onclick="toggleTab(this)">Images</li>
+                <li id="nav-members" onclick="toggleTab(this)">Members</li>
+                <li id="nav-music" onclick="toggleTab(this)">Music</li>
+                <li id="nav-events" onclick="toggleTab(this)">Events</li>
+                <li id="nav-faq" onclick="toggleTab(this)">FAQ</li>
             </menu>
         </nav>
         <div id="container-io">
-            <div id="container-io-button">
-                <label class="io-button" id="download-button" for="download-data">Export Data</label>
-                <input type="button" id="download-data" onclick="downloadData()">
-                <label class="io-button" id="upload-button" for="upload-data">Upload Data</label>
-                <input type="file" id="upload-data" onchange="uploadData()" accept=".js">
-            </div>
             <p id="helper-text"></p>
+            <div id="container-io-button">
+                <label class="io-button" id="upload-button" for="upload-data">Upload Data</label>
+                <input type="file" id="upload-data" onchange="uploadData(this)" accept=".js">
+                <label class="io-button" id="export-button" for="export-data">Export Data</label>
+                <input type="button" id="export-data" onclick="exportData()">
+            </div>
         </div>
     </header>
     <main>
@@ -312,28 +312,8 @@
         </article>
         <article id="tab-links">
             <h1>Links</h1>
-            <h2>Practice</h2>
-            <dl>
-                <dt class="editable-text"><p contenteditable="plaintext-only">Metronome</p></dt>
-                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
-                <dt class="editable-text"><p contenteditable="plaintext-only">Nahre Sol</p></dt>
-                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
-            </dl>
-
-            <dl>
-                <dt>Rehearsal Calendar <span>Google Calendar</span></dt>
-                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
-                <dt>Large-Ensemble Rehearsal Location <span>Google Maps</span></dt>
-                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
-                <dt>Large-Ensemble Sheet Music <span>Google Drive</span></dt>
-                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
-                <dt>Small-Ensemble Sheet Music <span>Google Drive</span></dt>
-                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
-                <dt>Sheet Music Archive <span>Google Drive</span></dt>
-                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
-                <dt>Materials <span>Google Drive</span></dt>
-                <dd class="editable-text"><p contenteditable="plaintext-only">Dunno</p></dd>
-            </dl>
+            <h2>Header 1</h2>
+            <p>Sample text</p>
         </article>
         <article id="tab-images">
             <h1>Images</h1>

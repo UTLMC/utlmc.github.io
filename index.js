@@ -501,7 +501,6 @@ window.addEventListener('DOMContentLoaded', () => {
     injectHomeBulletin();
     injectMembers();
     injectFAQ();
-    injectFormLinks();
     injectCarousel();
     updateEventsSidebar();
     injectEventBody();
@@ -577,13 +576,6 @@ function construct(json) {
         }
     }
     return element;
-}
-
-
-async function injectFormLinks() {
-    for (const [id, link] of Object.entries(FORM_LINKS)) {
-        cssGetId(id).setAttribute('href', link);
-    }
 }
 
 
@@ -906,14 +898,14 @@ function filterMember(x) {
         }
     }
     if (includeTags || excludeTags) {
-        const roles = x.roles.map(x => {
+        const roles = x.roles?.map(x => {
             const role = ROLES[x];
             if (role.includes(" (")) {
-                return role.slice(0, x.lastINdexOf(' ('));
+                return role.slice(0, role.lastIndexOf(' ('));
             }
             return role;
-        });
-        const instruments = x.instruments.map(x => INSTRUMENTS[x].toLowerCase());
+        }) ?? [];
+        const instruments = x.instruments?.map(x => INSTRUMENTS[x].toLowerCase()) ?? [];
         const tags = new Set([...roles, ...instruments]);
         if (includeTags && includeTags.split(',').map(x => x.toLowerCase().trim()).some(x => !tags.has(x))) return false;
         if (excludeTags && excludeTags.split(',').map(x => x.toLowerCase().trim()).some(x => tags.has(x))) return false;
@@ -933,8 +925,8 @@ function constructMemberRow(member) {
                 element: 'p',
                 classes: ['tag-container'],
                 children: [
-                    ...member.instruments.map(x => ({ text: INSTRUMENTS[x], type: 'instrument' })),
-                    ...member.roles.map(x => ({ text: ROLES[x], type: 'role' }))
+                    ...member.instruments?.map(x => ({ text: INSTRUMENTS[x], type: 'instrument' })) ?? [],
+                    ...member.roles?.map(x => ({ text: ROLES[x], type: 'role' })) ?? []
                 ].map(x => ({
                     element: 'span',
                     classes: [`li-${x.type}`],
@@ -950,7 +942,7 @@ function constructMemberRow(member) {
             children: [{
                 element: 'ul',
                 classes: ['list-social-media'],
-                children: member.links.map(([site, username, url]) => ({
+                children: member.links?.map(([site, username, url]) => ({
                     element: 'li',
                     classes: [`li-${site}`],
                     innerText: url ? undefined : username,
@@ -962,7 +954,7 @@ function constructMemberRow(member) {
                             target: '_blank'
                         }
                     }] : []
-                }))
+                })) ?? undefined
             }]
         }]
     });
@@ -1074,7 +1066,7 @@ function getPersonnel() {
     }
     const personnelRoles = new Set(['Arranger', 'Artist', 'Video Editor']);
     for (const member of MEMBERS) {
-        for (const i of member.roles) {
+        for (const i of member.roles ?? []) {
             const role = ROLES[i];
             if (personnelRoles.has(role)) {
                 if (!personnel[role]) {
@@ -1141,13 +1133,13 @@ function injectPersonnel(personnel, personnelRoles) {
 }
 
 function getExecTeam() {
-    // Before August 20XX, use executive team from 20XX - 1
-    // After August 20XX, update executive team to 20XX
+    // Before September 20XX, use executive team from 20XX - 1
+    // At September 20XX, update executive team to 20XX
     // If execs for 20XX don't exist, use the largest existing year 
     const now = new Date();
-    let currYear = now.getMonth() >= 7 ? now.getFullYear() : now.getFullYear() - 1;
+    let currYear = now.getMonth() >= 8 ? now.getFullYear() : now.getFullYear() - 1;
 
-    const isExecForYear = (x, year) => x.roles.some(role => ROLES[role].includes(String(year).slice(2)));
+    const isExecForYear = (x, year) => x.roles?.some(role => ROLES[role].includes(String(year).slice(2)));
     let execTeam = MEMBERS.filter(x => isExecForYear(x, currYear));
     while (execTeam.length === 0) {
         currYear -= 1;
@@ -1360,8 +1352,8 @@ function parseArrangers(arrangers) {
  */
 function extractPerformanceInfo(p) {
     const data = {
-        instrumentation: getInstrumentationFromPerformers(p.performers),
-        concerts: p.concerts,
+        instrumentation: getInstrumentationFromPerformers(p.performers ?? {}),
+        concerts: p.concerts ?? [],
         songType: p.songType
     };
     if (p.arranger) {
@@ -1834,7 +1826,7 @@ function constructSetlistTabSongItem(performanceInfo, song, i) {
                     }
                 }, {
                     element: 'dl',
-                    children: Object.entries(performanceInfo.performers).map(([instrumentId, performersId]) => (
+                    children: Object.entries(performanceInfo.performers ?? {}).map(([instrumentId, performersId]) => (
                         performersId
                             .map(performerId => MEMBERS[performerId]?.name ?? performerId)
                             .toSorted()
