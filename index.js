@@ -215,10 +215,10 @@ function toggleTab(element) {
     
     // Set URL hash
 
-    if (tabId.endsWith('events')) {
+    if (tabId == 'tab-events') {
         window.location.hash = `events/${TABLE_EVENTS.active}`;
     } else {
-    window.location.hash = tabId.endsWith('home') ? '#' : `#${tabId.slice(4)}`;
+        window.location.hash = tabId.endsWith('home') ? '#' : `#${tabId.slice(4)}`;
     }
 
     // Close mobile menu
@@ -515,8 +515,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Navigate to tab in hash
     const [page, eventId] = window.location.hash.substring(1).split("/");
-    if (page === "events" && eventId < EVENTS.length) {
-        TABLE_EVENTS.active = Number(eventId);
+    id = parseInt(eventId, 10)
+    if (page === "events" && 0 <= eventId && eventId < EVENTS.length && !Number.isNaN(id)) {
+        TABLE_EVENTS.active = id;
     } else {
         TABLE_EVENTS.active = EVENTS.length - 1;
     }
