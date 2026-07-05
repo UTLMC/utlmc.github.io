@@ -76,21 +76,18 @@ const ANNOUNCEMENTS = [
 const UPCOMING_EVENTS = [
     {   
         eventId: 0,
-        location: 'OISE C-154',
         from: '2025-01-01',
         until: '2029-01-22',
         image: 'assets/images/locations/oise.webp'
     },
     {
         eventId: 1,
-        location: "Cat's Eye",
         from: '2025-01-01',
         until: '2029-01-22',
         image: 'assets/images/locations/oise.webp'
     },
     {
         eventId: 2,
-        location: "OISE Something",
         from: '2025-01-01',
         until: '2029-01-22',
         image: 'assets/images/locations/oise.webp'

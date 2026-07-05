@@ -148,22 +148,44 @@ function rgbToHsv(r, g, b) {
 function isSubstring(parent, child) {
     return parent.toLowerCase().includes(child.toLowerCase());
 }
-
+function reassignObject(oldObj, newObj) {
+    for (const key in oldObj) {
+        delete oldObj[key];
+    }
+    const forbidden = new Set(["__proto__", "prototype", "constructor"]);
+    for (const key of Object.keys(newObj)) {
+        if (!forbidden.has(key)) {
+            oldObj[key] = newObj[key];
+        }
+    }
+}
+function reassignList(oldList, newList) {
+    oldList.length = 0;
+    oldList.push(...newList);
+}
 
 
 /*********************************************************************
 Data
 *********************************************************************/
 function getDataApi(list) {
-    const map = Object.fromEntries(list.map(x => [x.id, x]));
+    let map = new Map(list.map(x => [x.id, x]));
     return {
-        getAll: () => Object.values(map),
-        get: (id) => map[id],
-        set: (data) => {
-            map[data.id] = data;
+        getAll: () => list,
+        get: (id) => map.get(id),
+        set: (id, fields) => {
+            Object.assign(map.get(id), fields);
+        },
+        insert: (data) => {
+            map.set(data.id, data);
+            list.push(data);
         },
         delete: (id) => {
-            delete map[id];
+            map.delete(id);
+        },
+        resetData: (newList) => {
+            reassignList(list, newList);
+            map = new Map(list.map(x => [x.id, x]));
         }
     } 
 } 
@@ -178,73 +200,99 @@ function getEventsApi() {
             event.setlist.push(musicId);
         },
         removeFromSetlist(eventId, musicId) {
+            // Scales poorly but we'll never have >100 songs per concert so who cares
             const event = api.get(eventId);
             event.setlist = event.setlist.filter(x => x !== musicId);
         }
     }
     return api;
 }
+
 function getMusicApi() {
-    // TODO: internally store performances as a map of IDs to objects
-    const map = Object.fromEntries(MUSIC.map(x => [x.id, x]));
+    let map = new Map(MUSIC.map(song => {
+        song.performances = new Map(song.performances.map(performance => [performance.id, performance]));
+        return [song.id, song];
+    }));
+
     return {
-        getAll: () => Object.values(map),
-        get: (id) => map[id],
-        indexSubrow: (id, subId) => map[id].performances.findIndex(x => x.id === subId),
-        set: (data) => {
-            map[data.id] = data;
+        getAll: () => MUSIC,
+        get: (id) => map.get(id),
+        getAllSubrows: (id) => Array.from(map.get(id).performances.values()),
+        getSubrow: (id, subId) => map.get(id).performances.get(subId),
+        set: (id, fields) => {
+            Object.assign(map.get(id), fields);
         },
-        setSubrow: (id, subId, data) => {
-            const index = map[id].performances.findIndex(x => x.id === subId);
-            map[id].performances[index] = data;
+        setSubrow: (id, subId, fields) => {
+            Object.assign(map.get(id).performances.get(subId), fields);
         },
-        /**
-         * - `data` the API-returned data to extract subrow data from
-         * - `rowId` ID number of row that we append to
-         * - `subrowID` new ID of subrow to append
-         * - `copiedSubrowId` id of subrow to copy, if we're copying it
-         */
-        insertSubrow: (data, rowId, subrowId, copiedSubrowId) => {
-            data = structuredClone(data);
-            if (typeof copiedSubrowId === 'number') {
-                data.performances = [data.performances.find(x => x.id === copiedSubrowId)];
-            }
-            assert(data.performances.length === 1, data.performances);
-            const performance = data.performances[0];
-            performance.id = subrowId;
-            map[rowId].performances.push(performance);
+        insert: (data) => {
+            map.set(data.id, data);
+            MUSIC.push(data);
+        },
+        insertSubrow: (id, data) => {
+            map.get(id).performances.set(data.id, data);
         },
         delete: (id) => {
-            for (const performance of map[id].performances) {
-                for (const concert of performance.concerts) {
+            for (const subId in map.get(id).performances) {
+                for (const concert of map.get(id).performances.get(subId).concerts) {
                     API.EVENTS.removeFromSetlist(concert, id);
                 }
             }
-            delete map[id];
+            map.delete(id);
         },
         deleteSubrow: (id, subId) => {
-            // Bad runtime complexity but we'll realistically never have >5 performances of the same song
-            const i = map[id].performances.findIndex(x => x.id === subId);
-            const concerts = map[id].performances[i].concerts;
-            for (const concert of concerts) {
+            for (const concert of map.get(id).performances.get(subId).concerts) {
                 API.EVENTS.removeFromSetlist(concert, id);
             }
-            map[id].performances.splice(i, 1);
+            map.get(id).performances.delete(subId);
+        },
+        resetData: (newList, sublists) => {
+            if (sublists) {
+                for (let i = 0; i < newList.length; i++) {
+                    newList[i].performances = sublists[i];
+                }
+            }
+            reassignList(MUSIC, newList);
+            map = new Map(MUSIC.map(song => {
+                if (Array.isArray(song.performances)) {
+                    song.performances = new Map(song.performances.map(performance => [performance.id, performance]));
+                }
+                return [song.id, song];
+            }));
+        },
+        getCanonical: () => {
+            return MUSIC.map(song => ({
+                ...song,
+                performances: Array.from(song.performances.values())
+            }));
+        },
+        iterateSubrows: function*() {
+            for (const [id, song] of map) {
+                for (const [subId, performance] of song.performances) {
+                    yield [id, subId, song, performance];
+                }
+            }
         }
-    } 
+    }
 }
+
 function getEnumApi(list) {
-    const map = Object.fromEntries(list.map((x, i) => [x, i]));
+    let map = new Map(list.map((x, i) => [x, i]));
     let i = list.length;
 
     return {
         getAll: () => list,
-        index: (name) => map[name],
+        index: (name) => map.get(name),
         add: (name) => {
-            map[name] = i;
+            map.set(name, i);
             list.push(name);
             i += 1;
             return i - 1;
+        },
+        resetData: (newList) => {
+            reassignList(list, newList);
+            map = new Map(list.map((x, i) => [x, i]));
+            i = list.length;
         }
     }
 }
@@ -332,7 +380,6 @@ function setTag(source, modifyTAGS) {
     }
 }
 
-
 /*********************************************************************
 Toggleables
 *********************************************************************/
@@ -342,6 +389,15 @@ function setActiveClass(element, className) {
     element.classList.add(className);
 }
 
+function reorderTabContent(id) {
+    if (id === 'bulletin') {
+        TABLE_OPERATIONS['table-announcements'].reorder();
+        TABLE_OPERATIONS['table-upcoming-events'].reorder();
+    } else if (['members', 'music', 'events', 'faq'].includes(id)) {
+        TABLE_OPERATIONS[`table-${id}`].reorder();
+    }
+}
+
 function destroyTabContent(id) {
     if (id === 'tags') {
         cssGetId('tag-previews-instruments').replaceChildren();
@@ -349,28 +405,24 @@ function destroyTabContent(id) {
     } else if (id === 'bulletin') {
         cssGetFirst('#table-announcements tbody').replaceChildren();
         cssGetFirst('#table-upcoming-events tbody').replaceChildren();
-    } else if (id === 'members') {
-        cssGetFirst('#table-members tbody').replaceChildren();
-    } else if (id === 'music') {
-        cssGetFirst('#table-music tbody').replaceChildren();
-    } else if (id === 'events') {
-        cssGetFirst('#table-events tbody').replaceChildren();
-    } else if (id === 'faq') {
-        cssGetFirst('#table-faq tbody').replaceChildren();
+    } else if (['members', 'music', 'events', 'faq'].includes(id)) {
+        cssGetFirst(`#table-${id} tbody`).replaceChildren();
     }
 }
 
 function toggleTab(element, forceRefresh) {
     const id = `${element.id.substring(4)}`;
-    if (!forceRefresh && cssGetId(`tab-${id}`) === cssGetClass('tab-active')[0]) {
+    const active = cssGetClass('tab-active')[0];
+    if (!forceRefresh && cssGetId(`tab-${id}`) === active) {
         return;
     }
-    const activeId = cssGetClass('tab-active')[0];
     setActiveClass(cssGetId(`tab-${id}`), 'tab-active');
     setActiveClass(cssGetId(`nav-${id}`), 'nav-active');
 
     setTimeout(() => {
-        destroyTabContent(activeId);
+        reorderTabContent(active.id.slice(4));
+        destroyTabContent(active.id.slice(4));
+        
         if (id === 'tags') {
             constructTagTab();
         } else if (id === 'bulletin') {
@@ -585,7 +637,7 @@ function toggleRowSelectionEnabled(on, tableId) {
     }
 }
 function toggleSubrowSelectionEnabled(on, tableId) {
-    for (const row of cssGetAll(`#${tableId} .subtable > li > input:first-child`)) {
+    for (const row of cssGetAll(`#${tableId} .subtable > input:first-child`)) {
         row.disabled = !on;
     }
 }
@@ -710,6 +762,24 @@ function setHelperText(text) {
     }
 }
 
+const hoverHelperText = (() => {
+    let exitedTr = false;
+    return (event) => {
+        let tr = event.target.closest('.table tbody tr');
+        if (tr) {
+            exitedTr = false;
+            if (!tr.id) {
+                tr = tr.parentElement.closest('.table tbody tr');
+            }
+            const [id, subId] = tr.id.split('-').map(x => parseInt(x, 10)).filter(x => !isNaN(x));
+            setHelperText(typeof(subId) === 'number' ? `Hover on subrow #${subId}, row #${id}` : `Hover on row #${id}`);
+        } else if (!exitedTr) {
+            exitedTr = true;
+            setHelperText();
+        }
+    }
+})()
+
 let MOUSE_X, MOUSE_Y, MOUSE_DOWN;
 function onMouseMove(event) {
     const { clientX, clientY } = event;
@@ -721,19 +791,9 @@ function onMouseMove(event) {
     } else if (PICKER_MODE === 'hue') {
         updateHueFromPicker();
     }
-
-    if (MODAL_INFO !== undefined) {
-        return;
-    }
-    let tr = event.target.closest('.table tbody tr');
-    if (tr) {
-        if (!tr.id) {
-            tr = tr.parentElement.closest('.table tbody tr');
-        }
-        const [id, subId] = tr.id.split('-').map(x => parseInt(x, 10)).filter(x => !isNaN(x));
-        setHelperText(typeof(subId) === 'number' ? `Hover on subrow #${subId}, row #${id}` : `Hover on row #${id}`);
-    } else {
-        setHelperText();
+    
+    if (MODAL_INFO === undefined) {
+        return hoverHelperText(event)
     }
 }
 function onMouseDown(down) {
@@ -1748,7 +1808,7 @@ function saveAsJS(filename, text) {
     URL.revokeObjectURL(url);
 }
 
-function minify(x, keepId) {
+function minify(x) {
     function _minify(x, depth) {
         if (Array.isArray(x)) {
             for (let i = x.length - 1; i >= 0; i--) {
@@ -1759,15 +1819,18 @@ function minify(x, keepId) {
                     continue;
                 }
 
-                if (typeof v === 'object' && _minify(v, depth + 1)) {
-                    x.splice(i, 1);
+                if (typeof v === 'object') {
+                    _minify(v, depth + 1);
                 }
+                // if (typeof v === 'object' && _minify(v, depth + 1)) {
+                //     x.splice(i, 1);
+                // }
             }
 
             return x.length === 0;
         }
 
-        if (!keepId && depth <= 1) {
+        if (depth === 1) {
             delete x.id;
         }
 
@@ -1779,37 +1842,84 @@ function minify(x, keepId) {
                 continue;
             }
 
-            if (typeof v === 'object' && _minify(v, depth + 1)) {
-                delete x[key];
+            if (typeof v === 'object') {
+                _minify(v, depth + 1)
             }
+            // if (typeof v === 'object' && _minify(v, depth + 1)) {
+            //     delete x[key];
+            // }
         }
 
         return Object.keys(x).length === 0;
     }
-    _minify(x, 0);
-    return JSON.stringify(x, null, 4);
+    const copy = structuredClone(x);
+    _minify(copy, 0);
+    return JSON.stringify(copy, null, 4);
 }
 
-function exportData() {
-    const text = `const TAGS = ${minify(getTags())};
+function sanityCheckData() {
+    const notPerformed = new Set();
+    for (const member of API.MEMBERS.getAll()) {
+        if (member.left) {
+            const [joinedM, joinedY] = member.joined.split(' ');
+            const [leftM, leftY] = member.left.split(' ');
+            if (leftY < joinedY) {
+                return `Invalid joined/left year for member '${member.name}' (#${member.id})`;
+            } else if (leftY === joinedY && leftM === 'Winter' && joinedM === 'Fall') {
+                return `Invalid joined/left time for member '${member.name}' (#${member.id})`;
+            }
+        }
+        if (member.instruments.length === 0 && member.roles.length === 0) {
+            console.warn(`Member '${member.name}' (#${member.id}) has no tags`);
+        }
+        notPerformed.add(member.id);
+    }
+    for (const [id, subId, music, p] of API.MUSIC.iterateSubrows()) {
+        if (!p.link && !(p.concerts?.length > 0))
+            return `Performance of '${music.name}' (#${id}) in subrow #${subId} has no link or concert`;
+        if (!p.performers || Object.values(p.performers).length === 0)
+            return `No performers for '${music.name}' (#${id}) in subrow #${subId}`;
+        Object.values(p.performers).forEach(x => {
+            const i = parseInt(x, 10);
+            if (!isNaN(i)) {
+                notPerformed.delete(i);
+            }
+        });
+    }
+    if (notPerformed.size > 0) {
+        const members = Array.from(notPerformed).map(x => {
+            const { name, id } = API.MEMBERS.get(x);
+            return `- ${name} (#${id})`;
+        });
+        console.warn(`${notPerformed.size} member(s) found with no performances:\n${members.join('\n')}`)
+    }
+    for (const event of API.EVENTS.getAll()) {
+        if (event.type === 'Concert' && event.setlist.length === 0) {
+            console.warn(`Concert '${event.name}' (#${event.id}) has nothing in its setlist`);
+        }
+    }
+}
 
-const ROLES = ${minify(API.ROLES.getAll())};
+function getExportCodeTemplate(data) {
+    return `const TAGS = ${minify(data.tags)};
 
-const INSTRUMENTS = ${minify(API.INSTRUMENTS.getAll())};
+const ROLES = ${minify(data.roles)};
 
-const CURRENT_EVENT = ${minify(getCurrentEvent(), true)};
+const INSTRUMENTS = ${minify(data.instruments)};
 
-const ANNOUNCEMENTS = ${minify(API.ANNOUNCEMENTS.getAll())}.map((x, i) => ({...x, id: i}));
+const CURRENT_EVENT = ${minify(data.currentEvent)};
 
-const UPCOMING_EVENTS = ${minify(API.UPCOMING_EVENTS.getAll())}.map((x, i) => ({...x, id: i}));
+const ANNOUNCEMENTS = ${minify(data.announcements)}.map((x, i) => ({...x, id: i}));
 
-const MEMBERS = ${minify(API.MEMBERS.getAll())}.map((x, i) => ({...x, id: i}));
+const UPCOMING_EVENTS = ${minify(data.upcomingEvents)}.map((x, i) => ({...x, id: i}));
 
-const MUSIC = ${minify(API.MUSIC.getAll())}.map((x, i) => ({...x, id: i}));
+const MEMBERS = ${minify(data.members)}.map((x, i) => ({...x, id: i}));
 
-const EVENTS = ${minify(API.EVENTS.getAll())}.map((x, i) => ({...x, id: i}));
+const MUSIC = ${minify(data.music)}.map((x, i) => ({...x, id: i}));
 
-const FAQ = ${minify(API.FAQ.getAll())}.map((x, i) => ({...x, id: i}));
+const EVENTS = ${minify(data.events)}.map((x, i) => ({...x, id: i}));
+
+const FAQ = ${minify(data.faq)}.map((x, i) => ({...x, id: i}));
 
 const CAROUSEL = [
     {
@@ -1844,21 +1954,100 @@ const CAROUSEL = [
     }
 ];
 `;
+}
+
+/**
+ * getExportCodeTemplate remaps every index to [0, n - 1]
+ * However it doesn't touch foreign keys, so we must adjust them here
+ */
+function remapForeignKeyIndices() {
+    // Keep existing instruments & roles
+    const newMemberIndices = {};
+    const instrumentSet = new Set();
+    const roleSet = new Set();
+    const members = structuredClone(API.MEMBERS.getAll());
+    members.forEach((member, i) => {
+        for (const instrument of member.instruments) {
+            instrumentSet.add(instrument);
+        }
+        for (const role of member.roles) {
+            roleSet.add(role);
+        }
+        newMemberIndices[member.id] = i;
+    });
+    
+    // Recreate instruments list
+    const oldInstruments = API.INSTRUMENTS.getAll();
+    const newInstruments = Array.from(instrumentSet).map(i => oldInstruments[i]).sort(instrumentSorter);
+    const newInstrumentIndices = Object.fromEntries(newInstruments.map((x, i) => [API.INSTRUMENTS.index(x), i]));
+
+    // Recreate roles list
+    const oldRoles = API.ROLES.getAll();
+    const newRoles = Array.from(roleSet).map(i => oldRoles[i]).sort(roleSorter);
+    const newRoleIndices = Object.fromEntries(newRoles.map((x, i) => [API.ROLES.index(x), i]));
+
+    // Remap instruments & roles
+    for (const member of members) {
+        member.instruments = member.instruments.map(i => newInstrumentIndices[i]);
+        member.roles = member.roles.map(i => newRoleIndices[i]);
+    }
+
+    const newEventIndices = {};
+    const events = structuredClone(API.EVENTS.getAll());
+    events.forEach((event, i) => {
+        newEventIndices[event.id] = i;
+    });
+
+    // Remap member/event indices
+    const newMusicIndices = {};
+    const music = structuredClone(API.MUSIC.getCanonical());
+    music.forEach((song, i) => {
+        for (const p of song.performances) {
+            p.concerts = p.concerts.map(ind => newEventIndices[ind] ?? ind);  // temporary
+            p.arranger = p.arranger?.map(ind => newMemberIndices[ind] ?? ind);
+            p.performers = Object.fromEntries(
+                Object.entries(p.performers).map(([instrument, members]) => [
+                    newInstrumentIndices[instrument],
+                    members.map(member => newMemberIndices[member] ?? member)
+                ])
+            );
+        }
+        newMusicIndices[song.id] = i;
+    });
+
+    // Remap song indices
+    for (const event of events) {
+        event.setlist = event.setlist?.map(i => newMusicIndices[i]);
+    }
+
+    return { members, music, events, instruments: newInstruments, roles: newRoles };
+}
+
+function exportData() {
+    const err = sanityCheckData();
+    if (err)
+        return setHelperText(`Data check failed: ${err}`);
+    setHelperText();
+
+    reorderTabContent(cssGetClass('tab-active')[0].id.slice(4));
+
+    const { members, music, events, instruments, roles } = remapForeignKeyIndices();
+
+    const text = getExportCodeTemplate({
+        tags: getTags(),
+        roles,
+        instruments,
+        currentEvent: getCurrentEvent(),
+        announcements: API.ANNOUNCEMENTS.getAll(),
+        upcomingEvents: API.UPCOMING_EVENTS.getAll(),
+        members,
+        music,
+        events,
+        faq: API.FAQ.getAll()
+    });
     saveAsJS('data.js', text);
 }
-function reassignObject(oldObj, newObj) {
-    for (const key in oldObj) {
-        delete oldObj[key];
-    }
-    for (const key in newObj) {
-        oldObj[key] = newObj[key];
-    }
-}
-function reassignList(oldList, newList) {
-    oldList.length = 0;
-    oldList.push(...newList);
-}
-async function uploadData(element) {
+async function importData(element) {
     if (element.files.length === 0)
         return;
     const [file] = element.files
@@ -1866,57 +2055,28 @@ async function uploadData(element) {
 
     const regex = /const\s+(\w+)\s*=\s*([\s\S]*?);(?=\s*const|\s*$)/g;
     const matches = [...content.matchAll(regex)];
+    
     for (const [, name, code] of matches) {
         const end = '.map((x, i) => ({...x, id: i}))';
         const value = code.endsWith(end) ? code.slice(0, -end.length) : code;
         if (name === 'TAGS') {
             reassignObject(TAGS, JSON.parse(value));
-
-        } else if (name === 'INSTRUMENTS') {
-            reassignList(INSTRUMENTS, JSON.parse(value));
-            API.INSTRUMENTS = getEnumApi(INSTRUMENTS);
-
         } else if (name === 'CURRENT_EVENT') {
             reassignObject(CURRENT_EVENT, JSON.parse(value));
-
-        } else if (name === 'ANNOUNCEMENTS') {
-            console.log(value);
-            reassignList(ANNOUNCEMENTS, JSON.parse(value));
-            API.ANNOUNCEMENTS = getDataApi(ANNOUNCEMENTS);
-
-        } else if (name === 'UPCOMING_EVENTS') {
-            reassignList(UPCOMING_EVENTS, JSON.parse(value));
-            API.UPCOMING_EVENTS = getDataApi(UPCOMING_EVENTS);
-
-        } else if (name === 'MEMBERS') {
-            reassignList(MEMBERS, JSON.parse(value));
-            API.MEMBERS = getDataApi(MEMBERS);
-
-        } else if (name === 'MUSIC') {
-            reassignList(MUSIC, JSON.parse(value));
-            API.MUSIC = getMusicApi();
-
-        } else if (name === 'EVENTS') {
-            reassignList(EVENTS, JSON.parse(value));
-            API.EVENTS = getEventsApi();
-
-        } else if (name === 'FAQ') {
-            reassignList(FAQ, JSON.parse(value));
-            API.FAQ = getDataApi(FAQ);
-
         } else if (name === 'CAROUSEL') {
             reassignList(CAROUSEL, JSON.parse(value));
-
-        } else if (name === 'ROLES') {
-            reassignList(ROLES, JSON.parse(value));
-            API.ROLES = getEnumApi(ROLES)
-
         } else {
-            console.warn(value);
-            throw new Error(name);
+            const data = JSON.parse(value);
+            if (data.length >= 1 && String(data[0]) === '[object Object]') {
+                for (let i = 0; i < data.length; i++) {
+                    data[i].id = i;
+                }
+            }
+            API[name].resetData(data);
         }
     }
 
+    setHelperText(`Successfully imported '${file.name}'`);
     toggleTab(cssGetClass('tab-active')[0], true);
 }
 
@@ -2091,6 +2251,9 @@ function roleSorter(a, b) {
 }
 
 async function uploadMembers(element) {
+    if (element.files.length === 0) {
+        throw new Error(`No members CSV uploaded`);
+    }
     const raw = await element.files[0].text();
     const data = parseCSV(raw);
     
@@ -2156,6 +2319,9 @@ async function uploadMembers(element) {
 }
 
 async function uploadMusic(element) {
+    if (element.files.length === 0) {
+        throw new Error(`No music CSV uploaded`);
+    }
     const raw = await element.files[0].text();
     const data = parseCSV(raw);
     
@@ -2198,6 +2364,10 @@ async function uploadMusic(element) {
 }
 
 async function uploadPerformances(element, memberData, discords, musicData, eventData) {
+    if (element.files.length === 0) {
+        throw new Error(`No performances CSV uploaded`);
+    }
+
     musicData = Object.fromEntries(musicData.map(x => [x.name, x]));
 
     const raw = await element.files[0].text();
@@ -2332,6 +2502,10 @@ async function uploadPerformances(element, memberData, discords, musicData, even
 }
 
 async function uploadEvents(element) {
+    if (element.files.length === 0) {
+        throw new Error(`No event CSV uploaded`);
+    }
+
     const raw = await element.files[0].text();
     let [header, ...data] = parseCSV(raw);
 
@@ -2377,7 +2551,7 @@ function enrichEventData(events, setlists) {
             continue;
         }
         if (!map[name]) {
-            console.warn(`Unknown concert ${name}, expected something from ${events.map(x => x.name)}`);
+            console.warn(`Unknown concert: '${name}'\nExpected something from:\n${events.map(x => `- ${x.name}`).join('\n')}`);
             continue;
         }
         map[name].setlist = setlist;
@@ -2393,19 +2567,40 @@ function enrichMemberData(members, instruments) {
 }
 
 async function parseData() {
-    const [memberData, discords, roles] = await uploadMembers(cssGetId('upload-members'));
-    const musicData = await uploadMusic(cssGetId('upload-music'));
-    const eventData = await uploadEvents(cssGetId('upload-events'));
+    try {
+        const [memberData, discords, roles] = await uploadMembers(cssGetId('upload-members'));
+        const musicData = await uploadMusic(cssGetId('upload-music'));
+        const eventData = await uploadEvents(cssGetId('upload-events'));
 
-    const [performancesData, setlists, instruments] = await uploadPerformances(cssGetId('upload-performances'), memberData, discords, musicData, eventData);
-    const fullEventData = enrichEventData(eventData, setlists);
-    enrichMemberData(memberData, instruments);
+        const [performancesData, setlists, instruments] = await uploadPerformances(cssGetId('upload-performances'), memberData, discords, musicData, eventData);
+        const fullEventData = enrichEventData(eventData, setlists);
+        enrichMemberData(memberData, instruments);
 
-    console.log(roles);
-    console.log(instruments);
-    console.log(memberData);
-    console.log(fullEventData);
-    console.log(performancesData);
+        console.log(roles);
+        console.log(instruments);
+        console.log(memberData);
+        console.log(fullEventData);
+        console.log(performancesData);
+
+        const text = getExportCodeTemplate({
+            tags: getTags(),
+            roles,
+            instruments,
+            currentEvent: getCurrentEvent(),
+            announcements: API.ANNOUNCEMENTS.getAll(),
+            upcomingEvents: API.UPCOMING_EVENTS.getAll(),
+            members: memberData,
+            music: performancesData,
+            events: fullEventData,
+            faq: API.FAQ.getAll()
+        });
+        saveAsJS('data.js', text);
+
+        cssGetId('parse-data-validation').innerText = '';
+    } catch(error) {
+        cssGetId('parse-data-validation').innerText = String(error);
+        throw error;
+    }
 }
 
 
@@ -2460,11 +2655,16 @@ const X_BUTTON = {
         onclick: 'clickXButton(this)',
     }
 }
-const ROW_CHECKBOX = {
-    element: 'input',
-    classes: ['checkbox'],
-    attributes: {
-        type: 'checkbox'
+function createRowCheckbox(checked) {
+    const attributes = { type: 'checkbox' };
+    if (checked) {
+        attributes.checked = true;
+    }
+
+    return {
+        element: 'input',
+        classes: ['checkbox'],
+        attributes
     }
 }
 const INPUT_ATTRIBUTES = {
@@ -2693,6 +2893,7 @@ function createInputSeason(seasonYear, optional) {
 
 // Helper function for constructTable. Construct a single table row
 function constructTableRow(tableId, id, row) {
+    const checked = ROW_SELECTION[tableId]?.has(String(id));
     return construct({
         element: 'tr',
         id: `${tableId}-${id}`,
@@ -2701,13 +2902,14 @@ function constructTableRow(tableId, id, row) {
             attributes: {
                 onclick: 'toggleRowSelect(event, this)'
             },
-            children: [ROW_CHECKBOX]
+            children: [createRowCheckbox(checked)]
         }, ...row]
     });
 }
 
 // Helper function for constructTable. Construct a single table subrow
 function constructTableSubrow(tableId, id, subrow, colspan, noSubtableCheckbox) {
+    const checked = SUBROW_SELECTION[tableId]?.has(id);
     return construct({
         element: 'tr',
         style: { display: 'none' },
@@ -2723,7 +2925,7 @@ function constructTableSubrow(tableId, id, subrow, colspan, noSubtableCheckbox) 
                 element: 'div',
                 classes: ['subtable'],
                 attributes: noSubtableCheckbox ? {} : { onclick: 'toggleSubrowSelect(event, this)' },
-                children: noSubtableCheckbox ? [subrow] : [ROW_CHECKBOX, subrow]
+                children: noSubtableCheckbox ? [subrow] : [createRowCheckbox(checked), subrow]
             }]
         }]
     });
@@ -2735,25 +2937,23 @@ let AUTOINCREMENT = {};
  * Function for constructing a table and its contents. Auto-constructs a checkbox in the first column.
  * - `tableID (string)`: CSS id of the table
  * - `api`: Object with get/insert/delete methods to interact with internal data (e.g. API.MEMBERS)
- * - `templateData (T)`: A template data used as the placeholder when adding a new row
- * - `dataParser (T => <td>[])`: Function that takes in your list item and outputs `construct` syntax.
- * - `rowSyncer ((id, <td>[]) => void)`: Function that takes in constructed rows and updates the API data 
- * - `deleteChecker (id => str)`: Function that checks if the row can be deleted safely (if not, return a string message)
- * 
- * `dataParser` outputs a list where each item is a `<td>`, e.g. `[column1, column2, ...]`
- * 
- * `rowSyncer` takes in a list of `<td>` elements in the same order they were given.
+ * - `templateData (T)`: Placeholder data for adding blank rows
+ * - `dataParser (T => <td>[])`: Takes in your list item, outputs row HTML.
+ * - `rowSyncer ((id, <td>[]) => void)`: Takes in row id & HTML, updates the API data 
+ * - `deleteChecker (id => str)`: Takes in row id, return string if row can't be deleted safely. Optional
  * 
  * Output is an object of table operations. 
  */
 function constructTable(tableId, api, templateData, dataParser, rowSyncer, deleteChecker) {
-    const table = cssGetFirst(`#${tableId} tbody`);
-    const fragment = document.createDocumentFragment();
+    function parseRowId(element) {
+        return Number(element.id.split('-').at(-1));
+    }
 
     // Construct rows of table
+    const table = cssGetFirst(`#${tableId} tbody`);
+    const fragment = document.createDocumentFragment();
     let maxId = -1;
     for (const data of api.getAll()) {
-        // [col1, col2, ...] -> table row
         const row = dataParser(data);
         fragment.appendChild(constructTableRow(tableId, data.id, row));
         maxId = Math.max(data.id, maxId);
@@ -2761,25 +2961,22 @@ function constructTable(tableId, api, templateData, dataParser, rowSyncer, delet
     table.replaceChildren(fragment);
     AUTOINCREMENT[tableId] = maxId;
 
-    function parseRowId(element) {
-        return Number(element.id.split('-').at(-1));
-    }
-
     return {
+        reorder: () => {
+            const newList = [];
+            for (const row of cssGetFirst(`#${tableId} tbody`).children) {
+                newList.push(api.get(parseRowId(row)));
+            }
+            api.resetData(newList);
+        },
         rowAdd: (row, copyRow) => {
             AUTOINCREMENT[tableId] += 1;
             const id = AUTOINCREMENT[tableId];
 
-            let tr;
-            if (copyRow) {
-                assert(row, `No row specified to copy`);
-                const data = api.get(parseRowId(row));
-                api.set({ ...data, id });
-                tr = constructTableRow(tableId, id, dataParser(data));
-            } else {
-                api.set({ id, ...templateData });
-                tr = constructTableRow(tableId, id, dataParser(templateData));
-            }
+            const data = structuredClone(copyRow ? api.get(parseRowId(row)) : templateData);
+            data.id = id;
+            api.insert(data);
+            const tr = constructTableRow(tableId, id, dataParser(data));
 
             if (row) row.after(tr);
             else table.appendChild(tr);
@@ -2787,7 +2984,6 @@ function constructTable(tableId, api, templateData, dataParser, rowSyncer, delet
             tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
         },
         rowDelete: (ids) => {
-            ids = ids.map(Number);
             const err = deleteChecker?.(ids);
             if (err)
                 return err;
@@ -2795,7 +2991,7 @@ function constructTable(tableId, api, templateData, dataParser, rowSyncer, delet
                 cssGetId(`${tableId}-${id}`).remove();
                 api.delete(id);
                 ROW_SELECTION[tableId].delete(id);
-                if (AUTOINCREMENT[tableId] === id) {
+                if (AUTOINCREMENT[tableId] === Number(id)) {
                     AUTOINCREMENT[tableId] -= 1;
                 }
             }
@@ -2850,61 +3046,55 @@ function constructTable(tableId, api, templateData, dataParser, rowSyncer, delet
 }
 
 /**
- * Like `contructTable` but for tables containing subrows.
- * - `tableID (string)`: CSS id of the table
- * - `api`: Object with get/insert/delete methods to interact with internal data (e.g. API.MUSIC)
- * - `templateData (T)`: A template data used as the placeholder when adding a new row/subrow
- * - `dataParser (T => [<td>[], <?>[], ...])`: Function that takes in your list item and outputs `construct` syntax.
- * - `rowSyncer ((id, <td>[], subIds, <?>[]) => void)`: Function that takes in constructed rows and updates the API data 
- * - `deleteChecker (id => str)`: Function that checks if the row can be deleted safely (if not, return a string message)
- * 
- * `dataParser` outputs a list where index 0 is the row and index 1 is a list of subrows 
- *     e.g. `[row, [subrow1, subrow2, ...]]`
- * 
- * The rows and subrows are lists where each item is a `<td>`.
- * If no checkboxes are needed in the subrows, add an additional dummy row
- *     e.g. `[[column1, column2, ...], [subrow1, subrow2, ...], true]`
- * 
- * `rowSyncer` takes in the row `<td>` and a list of subrows (`<td>`).
+ * Like `contructTable` but for tables containing subrows. A few differences:
+ * - `dataParser` outputs a tuple [row, subrows]
+ *     - T1 => [<td>[], <?>[]]
+ * - `dataParserSubrow` is a subrow constructor for `templateSubdata`. If undefined, table has no checkboxes 
+ *     - T2 => <?>[]
+ * - `rowSyncer` syncs rows as well as individual subrows
+ *     - (id, <td>[], subIds, <?>[]) => void (sync row and subrows)
+ *     - (id, undefined, subId, <?>) => void (sync a subrow)
  */
-function constructTableWithSubrows(tableId, api, templateData, dataParser, rowSyncer, deleteChecker) {
+function constructTableWithSubrows(tableId, api, templateData, templateSubdata, dataParser, dataParserSubrow, rowSyncer, deleteChecker) {
+    const noSubtableCheckbox = !dataParserSubrow || !templateSubdata;
+    let rowLength; 
     const tree = {};
+    
     function createRowAndSubrows(data) {
         const fragment = document.createDocumentFragment();
 
-        // [[col1, col2, ...], [subrow1, subrow2, ...], ...] -> subtable rows
-        const [row, subrows, ...extra] = dataParser(data);
-        const noSubtableCheckbox = extra.length > 0;
-
+        const [row, subrows] = dataParser(data);
         const newRow = constructTableRow(tableId, data.id, row);
         fragment.appendChild(newRow);
         tree[data.id] = { max: -1, children: new Set() };
+        rowLength = row.length;
 
+        const subIds = api.getAllSubrows?.(data.id).map(x => x.id) ?? [0];
         subrows.forEach((subrow, i) => {
-            const id = `${data.id}-${i}`;
+            const id = `${data.id}-${subIds[i]}`;
             fragment.appendChild(constructTableSubrow(tableId, id, subrow, row.length, noSubtableCheckbox));
             tree[data.id].max = Math.max(tree[data.id].max, i);
             tree[data.id].children.add(id);
         });
         return [fragment, newRow];
     }
-    function createSubrow(data, rowId, copiedSubrowId) {
-        const [row, subrows, ...extra] = dataParser(data);
-        const noSubtableCheckbox = extra.length > 0;
-
-        tree[rowId].max += 1;
-        const newId = tree[rowId].max;
-
-        const subrow = subrows[typeof copiedSubrowId === 'number' ? api.indexSubrow(rowId, copiedSubrowId) : 0];
-        const tr = constructTableSubrow(tableId, `${rowId}-${newId}`, subrow, row.length, noSubtableCheckbox);
-        tree[rowId].children.add(`${rowId}-${newId}`);
-        return [tr, newId];
+    function createSubrow(subdata, rowId) {
+        const subrow = dataParserSubrow(subdata);
+        const id = `${rowId}-${subdata.id}`;
+        const tr = constructTableSubrow(tableId, id, subrow, rowLength, noSubtableCheckbox);
+        tree[rowId].children.add(id);
+        return tr;
+    }
+    function parseRowId(row) {
+        if (isSubrow(row)) {
+            return Number(row.id.split('-').at(-2));
+        }
+        return Number(row.id.split('-').at(-1));
     }
 
+    // Construct rows of table
     const table = cssGetFirst(`#${tableId} tbody`);
     const fragment = document.createDocumentFragment();
-
-    // Construct rows of table
     let maxId = -1;
     for (const data of api.getAll()) {
         fragment.appendChild(createRowAndSubrows(data)[0]);
@@ -2913,28 +3103,48 @@ function constructTableWithSubrows(tableId, api, templateData, dataParser, rowSy
     table.replaceChildren(fragment);
     AUTOINCREMENT[tableId] = maxId;
 
-    function parseRowId(row) {
-        if (isSubrow(row)) {
-            return Number(row.id.split('-').at(-2));
+    // Show already-checked subrows & refresh checkbox restrictions
+    const rowsToShow = Array.from(SUBROW_SELECTION[tableId] ?? []).map(id => id.slice('-')[0]);
+    if (rowsToShow.length > 0) {
+        toggleRowSelectionEnabled(false, tableId);
+        for (const id of new Set(rowsToShow)) {
+            toggleCellDetails(cssGetFirst(`#${tableId}-${id} .cell-details-button`));
         }
-        return Number(row.id.split('-').at(-1));
+    } else if (ROW_SELECTION[tableId]?.size > 0) {
+        toggleSubrowSelectionEnabled(false, tableId);
     }
 
     const operations = {
+        reorder: (list) => {
+            const newList = [];
+            const sublists = [];
+
+            let sublist = [];
+            for (const row of cssGetFirst(`#${tableId} tbody`).children) {
+                if (isSubrow(row)) {
+                    if (noSubtableCheckbox)
+                        continue;
+                    const [rowId, subrowId] = row.id.split('-').slice(-2).map(Number);
+                    sublist.push(api.getSubrow(rowId, subrowId));
+                } else {
+                    if (sublist.length > 0 && !noSubtableCheckbox) {
+                        sublists.push(sublist);
+                        sublist = [];
+                    }
+                    newList.push(api.get(parseRowId(row)));
+                }
+            }
+            sublists.push(sublist);
+            api.resetData(newList, noSubtableCheckbox ? undefined : sublists);
+        },
         rowAdd: (row, copyRow) => {
             AUTOINCREMENT[tableId] += 1;
             const id = AUTOINCREMENT[tableId];
 
-            let fragment, tr, data;
-            if (copyRow) {
-                assert(row, `No row specified to copy`);
-                data = { ...api.get(parseRowId(row)), id };
-                [fragment, tr] = createRowAndSubrows(data);
-            } else {
-                data = { id, ...templateData };
-                [fragment, tr] = createRowAndSubrows(data);
-            }
-            api.set(data);
+            const data = structuredClone(copyRow ? api.get(parseRowId(row)) : templateData);
+            data.id = id;
+            api.insert(data);
+            const [fragment, tr] = createRowAndSubrows(data);
 
             if (row) {
                 const anchor = table.children[row.sectionRowIndex + tree[parseRowId(row)].children.size];
@@ -2947,7 +3157,6 @@ function constructTableWithSubrows(tableId, api, templateData, dataParser, rowSy
             tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
         },
         rowDelete: (ids) => {
-            ids = ids.map(Number);
             const err = deleteChecker?.(ids);
             if (err)
                 return err;
@@ -2961,7 +3170,7 @@ function constructTableWithSubrows(tableId, api, templateData, dataParser, rowSy
                 cssGetId(`${tableId}-${id}`).remove();
                 api.delete(id);
                 ROW_SELECTION[tableId].delete(id);
-                if (AUTOINCREMENT[tableId] === id) {
+                if (AUTOINCREMENT[tableId] === Number(id)) {
                     AUTOINCREMENT[tableId] -= 1;
                 }
             }
@@ -3051,22 +3260,21 @@ function constructTableWithSubrows(tableId, api, templateData, dataParser, rowSy
             rows[middle].scrollIntoView({ behavior: 'smooth', block: 'center' });
         },
         subrowAdd: (subrow, copySubrow) => {
-            let tr, subrowId;
             let [rowId, copiedSubrowId] = subrow.id.split('-').slice(-2).map(Number);
-            if (copySubrow) {
-                const data = api.get(rowId);
-                [tr, subrowId] = createSubrow(data, rowId, copiedSubrowId);
-                api.insertSubrow(data, rowId, subrowId, copiedSubrowId);
-            } else {
-                if (!rowId) {
-                    // When deleting the last subrow, it is re-added, so a row is passed into `subrow`
-                    // So `[rowId, copiedSubrowId] = [NaN, actualRowId]`
-                    rowId = copiedSubrowId;
-                }
-                [tr, subrowId] = createSubrow(templateData, rowId);
-                api.insertSubrow(templateData, rowId, subrowId);
+            const subdata = structuredClone(copySubrow ? api.getSubrow(rowId, copiedSubrowId) : templateSubdata);
+            
+            // When deleting the last subrow, it is re-added, so a row is passed into `subrow`
+            // So `[rowId, copiedSubrowId] = [NaN, actualRowId]`
+            if (!copySubrow && isNaN(rowId)) {
+                rowId = copiedSubrowId;
             }
 
+            tree[rowId].max += 1;
+            const newId = tree[rowId].max;
+            subdata.id = newId;
+            api.insertSubrow(rowId, subdata);
+
+            const tr = createSubrow(subdata, rowId);
             subrow.after(tr);
             cssSetElement(tr, { display: subrow.style.display });
             tr.scrollIntoView({ behavior: 'smooth', block: 'center' });  
@@ -3201,8 +3409,7 @@ function constructAnnouncements() {
     }];
 
     const rowSyncer = (id, tds) => {
-        API.ANNOUNCEMENTS.set({
-            id,
+        API.ANNOUNCEMENTS.set(id, {
             type: tds[0].children[0].src.endsWith('alert-triangle.svg') ? 'alert' : 'announcement',
             text: parseInnerHTML(tds[2].innerHTML),
             from: tds[1].children[0].children[0].value,
@@ -3235,22 +3442,16 @@ function constructUpcomingEvents() {
         children: createInputsStartEnd(x, 'date', 'from', 'to')
     }, {
         element: 'td',
-        attributes: INPUT_ATTRIBUTES.default,
-        innerText: x.location
-    }, {
-        element: 'td',
         attributes: INPUT_ATTRIBUTES.asset,
         innerText: x.image
     }];
 
     const rowSyncer = (id, tds) => {
-        API.UPCOMING_EVENTS.set({
-            id,
+        API.UPCOMING_EVENTS.set(id, {
             eventId: Number(tds[0].children[0].children[0].children[1].value),
-            location: tds[2].innerText,
             from: tds[1].children[0].lastElementChild.value,
             until: tds[1].children[1].lastElementChild.value,
-            image: tds[3].innerText
+            image: tds[2].innerText
         })
     }
 
@@ -3305,8 +3506,7 @@ function constructFaq() {
     }];
 
     const rowSyncer = (id, tds) => {
-        API.FAQ.set({
-            id,
+        API.FAQ.set(id, {
             q: tds[0].children[0].innerText,
             a: parseInnerHTML(tds[0].children[1].innerHTML)
         });
@@ -3357,7 +3557,6 @@ function constructMembers() {
     };
 
     const rowSyncer = (id, tds) => {
-        const { instruments, roles, links } = API.MEMBERS.get(id);
         const joinedContainer = tds[1].children[0];
         const joinedYear = joinedContainer.lastElementChild.children[0].children[0].value;
         const joinedSeason = joinedContainer.children[0].value;
@@ -3365,29 +3564,22 @@ function constructMembers() {
         const leftSeason = leftContainer.children[0].value;
         const leftYear = leftContainer.lastElementChild.children[0].children[0].value;
         
-        API.MEMBERS.set({
-            id,
+        API.MEMBERS.set(id, {
             name: tds[0].innerText,
             joined: `${joinedSeason} ${joinedYear}`,
             left: leftSeason && leftYear ? `${leftSeason} ${leftYear}` : "",
-            instruments,
-            roles,
-            links
         })
     }
 
     const deleteChecker = (ids) => {
-        const music = API.MUSIC.getAll();
-        for (const x of music) {
-            for (const p of x.performances) {
-                const performers = new Set(Object.values(p.performers).flat());
-                const arrangers = new Set(p.arranger);
-                for (const id of ids) {
-                    if (performers.has(id)) {
-                        return `Cannot delete members who have performed (${API.MEMBERS.get(id).name} // ${x.name})`;
-                    } else if (arrangers.has(id)) {
-                        return `Cannot delete members who have arranged (${API.MEMBERS.get(id).name} // ${x.name})`;
-                    }
+        for (const [, , x, p] of API.MUSIC.iterateSubrows()) {
+            const performers = new Set(Object.values(p.performers).flat());
+            const arrangers = new Set(p.arranger);
+            for (const id of ids.map(Number)) {
+                if (performers.has(id)) {
+                    return `Cannot delete members who have performed (${API.MEMBERS.get(id).name} // ${x.name})`;
+                } else if (arrangers.has(id)) {
+                    return `Cannot delete members who have arranged (${API.MEMBERS.get(id).name} // ${x.name})`;
                 }
             }
         }
@@ -3419,8 +3611,57 @@ function constructMusicTable() {
         }]
     };
 
+    const dataParserSubrow = (p) => {
+        const arranger = p.arranger?.map(a => {
+            const name = API.MEMBERS.get(a)?.name;
+            return name ? [a, name] : [undefined, a];
+        }) ?? [];
+        const concerts = p.concerts?.map(c => {
+            const name = API.EVENTS.get(c)?.name;
+            return name ? [c, name] : [undefined, c]; // temporarily accept arbitary strings until data is fixed
+        }) ?? [];
+        const performerNames = getPerformerNames(p.performers ?? {});
+        const songType = p.songType === 'Large' ? 'Large Ensemble' : p.songType === 'Small' ? 'Small Ensemble' : 'External Group';
+        return createDatalist([
+            ['Concerts', {
+                element: 'td',
+                children: [createInputTags(concerts, 'Enter event...', 'event')]
+            }],
+            ['Online Recording', {
+                element: 'td',
+                attributes: INPUT_ATTRIBUTES.default,
+                innerText: p.link
+            }],
+            ['Sheet Music', {
+                element: 'td',
+                attributes: INPUT_ATTRIBUTES.default,
+                innerText: p.sheetMusic
+            }],
+            ['Song Type', {
+                element: 'td',
+                children: [createDropdown(songType, songTypes)]
+            }],
+            ['Arranger(s)', {
+                element: 'td',
+                children: [createInputTags(arranger, 'Enter arranger...', 'arranger')]
+            }],
+            ['Group Name', {
+                element: 'td',
+                attributes: INPUT_ATTRIBUTES.default,
+                innerText: p.group
+            }],
+            ['Performer(s)', {
+                element: 'td',
+                children: [createInputModalOpener('openModalPerformancePerformers(this)', performerNames)]
+            }]
+        ]);
+    }
+
     const dataParser = (x) => {
-        const performances = x.performances?.map(p => p.concerts?.map(c => API.EVENTS.get(c)?.start?.slice(0, 7) ?? c) ?? []).flat() ?? [];
+        const performances = Array.from(x.performances.values());
+        const performanceTimes = performances
+            .map(p => p.concerts.map(c => API.EVENTS.get(c)?.start?.slice(0, 7) ?? c))
+            .flat();
         const row = [{
             element: 'td',
             attributes: INPUT_ATTRIBUTES.default,
@@ -3438,76 +3679,28 @@ function constructMusicTable() {
             children: [createDropdown(x.mediaOrigin || '', mediaOrigins)]
         }, {
             element: 'td',
-            children: [createInputSubrowOpener(performances)]
+            children: [createInputSubrowOpener(performanceTimes)]
         }, {
             element: 'td',
             attributes: INPUT_ATTRIBUTES.default,
             innerText: x.reference
         }];
 
-        const subrows = x.performances.map(p => {
-            const arranger = p.arranger?.map(a => {
-                const name = API.MEMBERS.get(a)?.name;
-                return name ? [a, name] : [undefined, a];
-            }) ?? [];
-            const concerts = p.concerts?.map(c => {
-                const name = API.EVENTS.get(c)?.name;
-                return name ? [c, name] : [undefined, c]; // temporarily accept arbitary strings until data is fixed
-            }) ?? [];
-            const performerNames = getPerformerNames(p.performers ?? {});
-            const songType = p.songType === 'Large' ? 'Large Ensemble' : p.songType === 'Small' ? 'Small Ensemble' : 'External Group';
-            return createDatalist([
-                ['Concerts', {
-                    element: 'td',
-                    children: [createInputTags(concerts, 'Enter event...', 'event')]
-                }],
-                ['Online Recording', {
-                    element: 'td',
-                    attributes: INPUT_ATTRIBUTES.default,
-                    innerText: p.link
-                }],
-                ['Sheet Music', {
-                    element: 'td',
-                    attributes: INPUT_ATTRIBUTES.default,
-                    innerText: p.sheetMusic
-                }],
-                ['Song Type', {
-                    element: 'td',
-                    children: [createDropdown(songType, songTypes)]
-                }],
-                ['Arranger(s)', {
-                    element: 'td',
-                    children: [createInputTags(arranger, 'Enter arranger...', 'arranger')]
-                }],
-                ['Group Name', {
-                    element: 'td',
-                    attributes: INPUT_ATTRIBUTES.default,
-                    innerText: p.group
-                }],
-                ['Performer(s)', {
-                    element: 'td',
-                    children: [createInputModalOpener('openModalPerformancePerformers(this)', performerNames)]
-                }]
-            ]);
-        });
+        const subrows = performances.map(dataParserSubrow);
         return [row, subrows];
     };
 
     const rowSyncer = (id, row, subIds, subrows) => {
-        const music = API.MUSIC.get(id);
         if (row) {
-            API.MUSIC.set({
-                id,
+            API.MUSIC.set(id, {
                 name: row[0].innerText,
                 composer: row[1].innerText,
                 from: row[2].innerText,
                 mediaOrigin: row[3].children[0].value,
-                reference: row[5].innerText, 
-                performances: music.performances
+                reference: row[5].innerText,
             });
         } else {
-            const prev = new Set(music.performances.map(x => x.concerts).flat());
-            const subrow = music.performances.find(x => x.id === subIds);
+            const prev = new Set(API.MUSIC.getAllSubrows(id).map(x => x.concerts).flat());
             
             const trs = subrows.children[0].children;
             const concertTags = trs[0].lastElementChild.children[0];
@@ -3523,7 +3716,6 @@ function constructMusicTable() {
                 arranger,
                 link: trs[1].lastElementChild.innerText,
                 group: trs[5].lastElementChild.innerText,
-                performers: subrow?.performers
             });
 
             const curr = new Set(concerts);
@@ -3536,7 +3728,15 @@ function constructMusicTable() {
         }
     }
 
-    return constructTableWithSubrows('table-music', API.MUSIC, template, dataParser, rowSyncer);
+    return constructTableWithSubrows(
+        'table-music',
+        API.MUSIC,
+        template,
+        template.performances[0],
+        dataParser,
+        dataParserSubrow,
+        rowSyncer
+    );
 }
 
 
@@ -3588,47 +3788,45 @@ function constructEventTable() {
             innerHTML: x.description ? parseMarkdown(x.description) : ''
         }];
 
-        return [row, subrows, true];
+        return [row, subrows];
     };
 
     const rowSyncer = (id, row, subIds, subrows) => {
-        const event = API.EVENTS.get(id);
         if (row) {
-            API.EVENTS.set({
-                id,
+            API.EVENTS.set(id, {
                 type: row[0].children[0].value,
                 name: row[1].innerText,
                 location: row[2].innerText,
                 start: row[3].children[0].lastElementChild.value.replace('T', '|'),
                 end: row[3].lastElementChild.lastElementChild.value.replace('T', '|'),
-                setlist: event.setlist,
-                video: event.video,
                 gallery: row[6].innerText,
-                description: event.description
             });
         } else {
-            API.EVENTS.set({
-                ...event,
-                description: parseInnerHTML(subrows.innerHTML)
-            });
+            API.EVENTS.set(id, { description: parseInnerHTML(subrows.innerHTML) });
         }
     }
 
     const deleteChecker = (ids) => {
-        const music = API.MUSIC.getAll();
-        for (const x of music) {
-            for (const p of x.performances) {
-                const concerts = new Set(Object.values(p.concerts));
-                for (const id of ids) {
-                    if (concerts.has(id)) {
-                        return `Cannot delete events with performances (${API.EVENTS.get(id).name} // ${x.name})`;
-                    }
+        for (const [, , , p] of API.MUSIC.iterateSubrows()) {
+            const concerts = new Set(Object.values(p.concerts));
+            for (const id of ids.map(Number)) {
+                if (concerts.has(id)) {
+                    return `Cannot delete events with performances (${API.EVENTS.get(id).name} // ${x.name})`;
                 }
             }
         }
     }
 
-    return constructTableWithSubrows('table-events', API.EVENTS, template, dataParser, rowSyncer, deleteChecker);
+    return constructTableWithSubrows(
+        'table-events',
+        API.EVENTS,
+        template,
+        undefined,
+        dataParser,
+        undefined,
+        rowSyncer,
+        deleteChecker
+    );
 }
 
 
@@ -3798,11 +3996,11 @@ function openModalPerformancePerformers(element) {
 
     const instruments = API.INSTRUMENTS.getAll();
     const [id, subId] = getRowId(element);
-    const song = API.MUSIC.get(id);
-    const performers = song.performances.find(x => x.id === subId)?.performers ?? {};
+    const { name } = API.MUSIC.get(id);
+    const performers = API.MUSIC.getSubrow(id, subId).performers;
     
     // Title
-    cssGetFirst('#modal-performance-performers h2 span').innerText = `for ${song.name}`;
+    cssGetFirst('#modal-performance-performers h2 span').innerText = `for ${name}`;
 
     // Performer
     const table = cssGetFirst('#modal-performance-performers tbody');
@@ -3947,8 +4145,7 @@ function syncModalMemberTags() {
     };
 
     // Sync data
-    const member = API.MEMBERS.get(MODAL_INFO);
-    API.MEMBERS.set({ ...member, instruments, roles });
+    API.MEMBERS.set(MODAL_INFO, { instruments, roles });
 
     // Update row cell
     const allInstruments = API.INSTRUMENTS.getAll();
@@ -3980,8 +4177,7 @@ function syncModalMemberLinks() {
     cssSetElement(validation, { display: 'none' });
 
     // Sync data
-    const member = API.MEMBERS.get(MODAL_INFO);
-    API.MEMBERS.set({ ...member, links });
+    API.MEMBERS.set(MODAL_INFO, { links });
 
     // Update row cell
     const items = links.map(x => capitalize(x[0]));
@@ -4030,8 +4226,7 @@ function syncModalPerformancePerformers() {
 
     // Sync data
     const [id, subId] = MODAL_INFO;
-    const subrow = API.MUSIC.get(id).performances.find(x => x.id === subId);
-    API.MUSIC.setSubrow(id, subId, { ...subrow, performers: p });
+    API.MUSIC.setSubrow(id, subId, { performers: p });
 
     // Update new cell
     const items = getPerformerNames(p);
@@ -4060,8 +4255,7 @@ function syncModalConcertSetlist() {
     }   
 
     // Sync data
-    const event = API.EVENTS.get(MODAL_INFO);
-    API.EVENTS.set({ ...event, video, setlist })
+    API.EVENTS.set(MODAL_INFO, { video, setlist })
 
     closeModals();
 }

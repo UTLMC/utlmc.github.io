@@ -36,7 +36,7 @@ table {
 }
 select {
     font-family: 'Atkinson Hyperlegible';
-    font-size: 16px;
+    font-size: 14px;
     border: none;
     padding: 0 5px;
     border-radius: 20px;
@@ -238,14 +238,14 @@ menu li:before {
     transition: 0.2s;
 }
 #nav-home:before { background-image: url('assets/icons/home-filled.svg'); }
-#nav-tags:before { background-image: url('assets/icons/tag.svg'); }  /* https://www.flaticon.com/free-icon/price-tag_721550 */
+#nav-tags:before { background-image: url('assets/icons/tag.svg'); }
 #nav-bulletin:before { background-image: url('assets/icons/pin-filled.svg'); }
 #nav-links:before { background-image: url('assets/icons/embed.svg'); }
 #nav-images:before { background-image: url('assets/icons/image-filled.svg'); }
 #nav-members:before { background-image: url('assets/icons/users.svg'); }
 #nav-music:before { background-image: url('assets/icons/music-note.svg'); }
-#nav-events:before { background-image: url('assets/icons/events-filled.svg'); }  /* https://www.flaticon.com/free-icon/event_6904072 */
-#nav-faq:before { background-image: url('assets/icons/faq.svg'); }  /* https://www.flaticon.com/free-icon/faq_10042848 */
+#nav-events:before { background-image: url('assets/icons/events-filled.svg'); }
+#nav-faq:before { background-image: url('assets/icons/faq.svg'); }
 
 
 /*******************************
@@ -338,8 +338,77 @@ Input/output
     background-repeat: no-repeat;
     background-position: 50% 50%;
 }
-#export-button:before { background-image: url('assets/icons/download.png'); }  /* https://www.flaticon.com/free-icon/download_724933 */
-#upload-button:before { background-image: url('assets/icons/upload.png'); }
+#export-button:before { background-image: url('assets/icons/export.svg'); }
+#import-button:before { background-image: url('assets/icons/import.svg'); }
+
+#csv-to-js {
+    border: 2px dashed rgba(0, 0, 0, 0.2);
+}
+#csv-to-js legend {
+    font-family: 'DM Sans';
+    font-size: 16px;
+    font-weight: bold;
+    font-weight: rgba(0, 0, 0, 0.5);
+}
+#csv-to-js div {
+    display: grid;
+    gap: 5px 0;
+    grid-template-columns: 150px auto;
+}
+#csv-to-js div label {
+    font-family: 'DM Sans';
+}
+#csv-to-js div input[type="file"] {
+    font-family: 'Atkinson Hyperlegible';
+    font-size: 16px;
+}
+#csv-to-js div input[type="file"]::file-selector-button {
+    font-family: 'DM Sans';
+    font-size: 16px;
+    background-color: white;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: 0.1s;
+    margin-right: 10px;
+    padding: 0 10px;
+}
+#csv-to-js div input[type="file"]::file-selector-button:hover {
+    background-color: #dbbca3;
+}
+#csv-to-js div input[type="file"]::file-selector-button:active {
+    background-color: #d4b17c;
+    transition: 0s;
+}
+
+#parse-data-block {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+}
+#parse-data-validation {
+    font-size: 16px;
+    color: red;
+}
+#parse-data {
+    border: none;
+    font-size: 16px;
+    padding: 5px 10px;
+    font-family: 'DM Sans';
+    border-radius: 10px;
+    background-color: white;
+    transition: 0.1s;
+    width: 100px;
+    cursor: pointer;
+}
+#parse-data:hover {
+    background-color: #dbbca3;
+}
+#parse-data:active {
+    background-color: #d4b17c;
+    transition: 0s;
+}
 
 
 /*********************************************************************
@@ -535,6 +604,7 @@ Table
     display: flex;
     flex-direction: column;
     gap: 10px;
+    font-size: 16px;
 }
 .table-toolbar {
     list-style: none;
@@ -634,7 +704,7 @@ Table
     padding: 5px 10px;
 }
 .table td {
-    padding: 5px 10px;
+    padding: 3px 10px;
 }
 
 /* Ensure sticky table header is higher than other rows */
@@ -906,15 +976,19 @@ Table customization
 *********************************************************************/
 #table-events > div,
 #table-faq > div,
-#table-music > div {
+#table-music > div,
+#table-members > div {
     max-height: calc(100vh - 140px);
 }
-#table-members > div {
-    max-height: calc(100vh - 230px);
+
+/* Fix show/hide icon appearing on top of suggestion list */
+#table-music .subtable-row {
+    position: relative;
+    z-index: 2;
 }
 
 #table-events .subtable {
-    padding: 10px;
+    padding: 5px 10px;
     flex-direction: column;
     align-items: normal;
 }
@@ -968,15 +1042,32 @@ Table customization
 #table-upcoming-events thead tr th:nth-child(4) { min-width: 150px; }
 #table-upcoming-events thead tr th:nth-child(3) { min-width: 200px; }
 
-#table-members thead tr th:nth-child(2),
 #table-members thead tr th:nth-child(6) { min-width: 150px; }
 #table-members thead tr th:nth-child(3),
 #table-members thead tr th:nth-child(4) { min-width: 125px; }
 #table-members thead tr th:nth-child(5) { min-width: 300px; }
 
-#table-music thead tr th:nth-child(2),
-#table-music thead tr th:nth-child(3),
-#table-music thead tr th:nth-child(4) { min-width: 150px; }
+#table-members > div > table > thead > tr:not(.subtable-row) th:nth-child(2),
+#table-members > div > table > tbody > tr:not(.subtable-row) td:nth-child(2),
+#table-music > div > table > thead > tr:not(.subtable-row) th:nth-child(2),
+#table-music > div > table > thead > tr:not(.subtable-row) th:nth-child(3),
+#table-music > div > table > thead > tr:not(.subtable-row) th:nth-child(4),
+#table-music > div > table > tbody > tr:not(.subtable-row) td:nth-child(2),
+#table-music > div > table > tbody > tr:not(.subtable-row) td:nth-child(3),
+#table-music > div > table > tbody > tr:not(.subtable-row) td:nth-child(4) {
+    min-width: 150px;
+    max-width: min(20vw, 200px);
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+}
+#table-members > div > table > tbody > tr:not(.subtable-row) td:nth-child(2):focus,
+#table-music > div > table > tbody > tr:not(.subtable-row) td:nth-child(2):focus,
+#table-music > div > table > tbody > tr:not(.subtable-row) td:nth-child(3):focus,
+#table-music > div > table > tbody > tr:not(.subtable-row) td:nth-child(4):focus {
+    white-space: normal;
+}
+
 #table-music thead tr th:nth-child(6),
 #table-music tbody tr td:nth-child(6) { max-width: 200px; }
 
@@ -1108,6 +1199,7 @@ Modals
     padding-left: 0;
     width: 100%;
     gap: 15px;
+    font-size: 16px;
 }
 .modal-action-buttons li {
     flex-grow: 1;
@@ -1154,6 +1246,7 @@ Modal datalist
     width: 100%;
     overflow-y: auto;
     flex-grow: 1;
+    font-size: 16px;
 }
 .modal-datalist-preview {
     opacity: 0.5;

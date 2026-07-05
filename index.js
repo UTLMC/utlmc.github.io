@@ -774,9 +774,8 @@ async function injectHomeBulletin() {
         }));
     }
 
-    for (const { eventId, image, location: locationShort } of upcomingEvents) {
-        const { name: title, start, end, location: locationLong } = EVENTS[eventId];
-        const location = locationShort || locationLong;
+    for (const { eventId, image } of upcomingEvents) {
+        const { name: title, start, end, location } = EVENTS[eventId];
         const dateStart = parseDate(start);
         const dateEnd = parseDate(end);
 
