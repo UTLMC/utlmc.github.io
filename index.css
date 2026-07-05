@@ -2406,10 +2406,24 @@ Members table
     background-repeat: no-repeat;
     background-image: url('assets/icons/options.svg');
 }
-.toolbar-button {
+.toolbar-button, .toolbar-button-binary {
     display: flex;
     align-items: center;
     padding: 0 calc(8 * var(--px));
+}
+.toolbar-button-binary:before {
+    content: "";
+    display: inline-block;
+    width: calc(16 * var(--px));
+    height: calc(16 * var(--px));
+    margin-right: calc(5 * var(--px));
+    vertical-align: middle;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Crect x='1' y='1' width='14' height='14' rx='1.5' ry='1.5' fill='none' stroke='black' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+.toolbar-button-binary-checked:before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Crect x='1' y='1' width='14' height='14' rx='1.5' ry='1.5' fill='none' stroke='black' stroke-width='1.5'/%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 .toolbar-filter-dropdown {
     font-family: 'Atkinson Hyperlegible';
@@ -2979,7 +2993,6 @@ Events
 }
 #nav-events-sidebar {
     background-color: #1c4587;
-    transition: 0.4s;
     width: var(--sidebar-container-width);
     min-width: var(--sidebar-container-width);
     transition: 0.2s;

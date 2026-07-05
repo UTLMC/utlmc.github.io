@@ -201,6 +201,8 @@ function toggleTab(element) {
         return;
     }
 
+    YOUTUBE_CONCERT_VIDEO?.pauseVideo();
+
     let parent = element.parentElement;
     while (parent.nodeName !== 'MENU') {
         parent = parent.parentElement;
@@ -367,9 +369,9 @@ function videoStateChangeHandler(state) {
 
 // https://developers.google.com/youtube/iframe_api_reference
 let CURR_VIDEO_ID = 'TiStCNPn10s';
-let VIDEO;
+let YOUTUBE_CONCERT_VIDEO;
 function onYouTubeIframeAPIReady() {
-    VIDEO = new YT.Player('concert-video-embed', {
+    YOUTUBE_CONCERT_VIDEO = new YT.Player('concert-video-embed', {
         videoId: CURR_VIDEO_ID,
         width: "300",
         height: "200",
@@ -384,7 +386,7 @@ function loadYoutubeVideo(url) {
 
     if (match) {
         CURR_VIDEO_ID = match[1];
-        VIDEO?.cueVideoById({
+        YOUTUBE_CONCERT_VIDEO?.cueVideoById({
             videoId: CURR_VIDEO_ID,
         })
     } else {
@@ -398,14 +400,14 @@ function clearVideoChapter() {
 }
 
 function goToVideoChapter(element, seconds) {
-    if (!VIDEO) return;
+    if (!YOUTUBE_CONCERT_VIDEO) return;
 
     const className = 'concert-video-chapter-active';
     cssGetClass(className)[0]?.classList.remove(className);
     element.classList.add(className);
     
     if (seconds !== undefined) {
-        VIDEO.seekTo(seconds, true);
+        YOUTUBE_CONCERT_VIDEO.seekTo(seconds, true);
     }
 }
 
@@ -1323,7 +1325,7 @@ function toggleButtonMusicMediaOrigin(element) {
     updateMusicTable();
 }
 function toggleButtonMusicLinkType(element) {
-    element.innerText = TABLE_MUSIC.filters.filterSheetMusic ? 'All Link Types' : 'Has Sheet Music';
+    element.classList.toggle('toolbar-button-binary-checked');
     TABLE_MUSIC.filters.filterSheetMusic = !TABLE_MUSIC.filters.filterSheetMusic;
     updateMusicTable();
 }
@@ -1443,6 +1445,27 @@ function initMusicTable() {
 }
 
 /**
+ * Colour a concert tag based on the season it is in
+ */
+function getConcertTagStyle(event) {
+    if (!event) {
+        return;
+    }
+    const [month, day] = event.start.split('|')[0].split('-').slice(1).map(x => parseInt(x, 10));
+    let colour;
+    if ((month === 12 && day >= 21) || month < 3 || (month === 3 && day <= 21)) {
+        colour = '#2F6690'
+    } else if (month < 6 || (month === 6 && day <= 21)) {
+        colour = '#479130'
+    } else if (month < 9 || (month === 9 && day <= 21)) {
+        colour = '#b1a326';
+    } else {
+        colour = '#805620';
+    }
+    return { 'background-color': colour };
+}
+
+/**
  * Construct the HTML for a music table row given the
  * specific songVersion info (version) and generic song info (x)
  */
@@ -1486,10 +1509,14 @@ function constructMusicTableRow(version, x) {
             children: [{
                 element: 'p',
                 classes: ['tag-container'],
-                children: version.concerts.map(concert => ({
-                    element: 'span',
-                    innerText: EVENTS[parseInt(concert, 10)]?.name ?? concert
-                }))
+                children: version.concerts.map(concert => {
+                    const event = EVENTS[parseInt(concert, 10)];
+                    return {
+                        element: 'span',
+                        innerText: event?.name ?? concert,
+                        style: getConcertTagStyle(event)
+                    };
+                })
             }]
         }, {
             element: 'td',
@@ -1988,7 +2015,7 @@ function injectEventBody() {
 
     const navConcert = cssGetFirst('#event-body nav');
     const tabConcert = Array.from(cssGetClass('tab-concert'));
-    VIDEO?.pauseVideo();
+    YOUTUBE_CONCERT_VIDEO?.pauseVideo();
 
     // Concert widget
     if (type === 'Concert' && setlist) {
