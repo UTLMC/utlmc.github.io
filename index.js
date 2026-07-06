@@ -214,7 +214,6 @@ function toggleTab(element) {
     cssGetId(tabId).classList.add('tab-active');
     
     // Set URL hash
-
     if (tabId == 'tab-events') {
         window.location.hash = `events/${TABLE_EVENTS.active}`;
     } else {
@@ -515,7 +514,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Navigate to tab in hash
     const [page, eventId] = window.location.hash.substring(1).split("/");
-    id = parseInt(eventId, 10)
+    id = parseInt(eventId, 10);
     if (page === "events" && 0 <= eventId && eventId < EVENTS.length && !Number.isNaN(id)) {
         TABLE_EVENTS.active = id;
     } else {
