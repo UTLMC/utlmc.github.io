@@ -399,7 +399,6 @@ Input/output
     border-radius: 10px;
     background-color: white;
     transition: 0.1s;
-    width: 100px;
     cursor: pointer;
 }
 #parse-data:hover {
@@ -791,6 +790,17 @@ Inputs
     height: 15px;
     margin-left: 2px;
 }
+.input-plus {
+    cursor: pointer;
+    transition: 0.2s;
+}
+.input-plus:hover {
+    opacity: 0.3;
+}
+.input-plus:active {
+    transition: 0s;
+    opacity: 0.2;
+}
 .input input {
     font-family: 'Atkinson Hyperlegible';
     border: none;
@@ -1081,6 +1091,7 @@ Datalist
 *********************************************************************/
 .datalist {
     width: 100%;
+    font-size: 16px;
 }
 .datalist tbody {
     position: relative;
@@ -1125,6 +1136,7 @@ Bulletin page
     display: flex;
     flex-direction: row;
     gap: 15px;
+    font-size: 16px;
 }
 .current-event-description {
     border: 2px solid rgba(0, 0, 0, 0.1);

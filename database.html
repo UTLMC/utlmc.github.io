@@ -69,7 +69,7 @@
             </fieldset>
             
             <div id="parse-data-block">
-                <input type="button" id="parse-data" value="Export JS" onclick="parseData()">
+                <input type="button" id="parse-data" value="Convert CSVs to JS" onclick="parseData()">
                 <p id="parse-data-validation"></p>
             </div>
         </article>
@@ -846,7 +846,7 @@
             <h2>Tags <span>for John LMC</span></h2>
             <div class="input">
                 <div>
-                    <img src="assets/icons/add.svg" />
+                    <img src="assets/icons/add.svg" class="input-plus" onclick="clickInputPlus(this)" />
                     <input type="text" class="input-type-instrument" placeholder="Enter instrument..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="inputInput(event)" onkeydown="keyDownInput(event)" />
                 </div>
                 <ul class="input-suggestions" tabindex="0">
@@ -884,7 +884,7 @@
             </ul>
             <div class="input">
                 <div>
-                    <img src="assets/icons/add.svg" />
+                    <img src="assets/icons/add.svg" class="input-plus" onclick="clickInputPlus(this)" />
                     <input type="text" class="input-type-role" placeholder="Enter role..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="inputInput(event)" onkeydown="keyDownInput(event)" />
                 </div>
                 <ul class="input-suggestions" tabindex="0">

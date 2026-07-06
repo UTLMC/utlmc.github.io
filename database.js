@@ -226,6 +226,9 @@ function getMusicApi() {
             Object.assign(map.get(id).performances.get(subId), fields);
         },
         insert: (data) => {
+            if (String(data.performances) === '[object Object]') {
+                data.performances = new Map(data.performances.map(x => [x.id, x]));
+            }
             map.set(data.id, data);
             MUSIC.push(data);
         },
@@ -315,8 +318,9 @@ function setCurrentEvent(kv) {
     for (const key in kv) {
         if (typeof kv[key] === 'object') {
             for (const keykey in kv[key]) {
-                CURRENT_EVENT[key][keykey] = kv[key][keykey]
+                CURRENT_EVENT[key][keykey] = kv[key][keykey];
             }
+            continue;
         }
         CURRENT_EVENT[key] = kv[key];
     }
@@ -1368,37 +1372,49 @@ function clickXButton(element) {
     }
 }
 
-// Handles creating/deleting rows when a TD is edited (e.g. member links)
-function editTd(element, value) {
-    const tr = element.parentElement;
-    const tds = Array.from(tr.querySelectorAll('td[contenteditable="plaintext-only"]'));
+function keyDownTd(event) {
+    if (event.key !== 'Enter')
+        return;
+    const td = event.target;
+    event.preventDefault();
+    td.blur();
+}
 
-    if (tr.classList.contains('modal-datalist-preview')) { 
-        // Add new row if TD content is edited
-        if (element.innerText !== value)  {
-            // Store and unset "default" TD values of preview row
-            const oldValues = [];
-            for (const td of tds) {
-                if (td === element) {
-                    oldValues.push(value);
-                } else {
-                    oldValues.push(td.innerText);
-                    td.innerText = '';   
-                }
+// Handles creating/deleting rows when a TD is edited (e.g. member links)
+function blurTd(element) {
+    const tr = element.parentElement;
+    const tds = Array.from(tr.children).slice(1);
+    
+    if (!tr.classList.contains('modal-datalist-preview')) {
+        // Remove row if content is all empty
+        if (tds.every(td => {
+            if (td.children[0]?.nodeName === 'SELECT') {
+                return true;
+            } else if (td.getAttribute('contenteditable')) {
+                return !td.innerText;
             }
-            // Copy preview row
-            const newRow = tr.cloneNode(true);
-            newRow.classList.remove('modal-datalist-preview');
-            tr.before(newRow);
-            // Restore "default" TD values
-            tds.forEach((x, i) => x.innerText = oldValues[i]);
-        }
-    } else {
-        // Delete row if all TDs empty
-        if (tds.every(x => !x.innerText)) {
+        })) {
             tr.remove();
         }
+        return;
     }
+
+    const placeholder = element.getAttribute('data-placeholder');
+    if (element.innerText === placeholder)
+        return;
+
+    // Create new row if content differs from placeholder
+    const temp = element.innerText;
+    element.innerText = placeholder;
+    const newRow = tr.cloneNode(true);
+    tr.after(newRow);
+    tr.classList.remove('modal-datalist-preview');
+    for (const td of tds) {
+        if (td !== element && td.getAttribute('contenteditable')) {
+            td.innerText = '';
+        }
+    }
+    element.innerText = temp;
 }
 
 /**
@@ -1507,11 +1523,18 @@ function editInput(input, inputContainer, newValue, id, canonicalValue) {
     }
 }
 
-function keyDownInput(event) {
-    if (event.key !== 'Enter') {
-        return;
+function clickInputPlus(element) {
+    keyDownInput(element);
+}
+function keyDownInput(eventOrElement) {
+    let input;
+    if (eventOrElement.key) {
+        if (eventOrElement.key !== 'Enter')
+            return;
+        input = eventOrElement.target;
+    } else {
+        input = eventOrElement.nextElementSibling;
     }
-    const input = event.target;
     const inputContainer = input.parentElement.parentElement;
     const newValue = input.value;
     if (!newValue) {
@@ -2806,7 +2829,7 @@ function createInputTags(tags, placeholder, suggestionType) {
         }]
     }
 }
-function createInputModalOpener(onclick, items, disabled) {
+function createInputModalOpener(onclick, items, disabled, disabledMessage) {
     const classes = ['cell-details-button'];
     if (disabled) {
         classes.push('cell-details-button-disabled');
@@ -2822,7 +2845,7 @@ function createInputModalOpener(onclick, items, disabled) {
             classes,
             attributes: {
                 src: `assets/icons/edit.svg`,
-                onclick: disabled ? '' : onclick
+                onclick: disabled ? `setHelperText("${disabledMessage}")` : onclick
             }
         }]
     }
@@ -3153,7 +3176,9 @@ function constructTableWithSubrows(tableId, api, templateData, templateSubdata, 
                 table.appendChild(fragment);
             }
 
-            toggleCellDetails(tr.querySelector('.cell-details img[src="assets/icons/hide.svg"]'));
+            if (!noSubtableCheckbox) {
+                toggleCellDetails(tr.querySelector('.cell-details img[src="assets/icons/hide.svg"]'));
+            }
             tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
         },
         rowDelete: (ids) => {
@@ -3607,7 +3632,8 @@ function constructMusicTable() {
         performances: [{
             concerts: [],
             performers: {},
-            songType: 'Small'
+            songType: 'Small',
+            id: 0
         }]
     };
 
@@ -3756,6 +3782,8 @@ function constructEventTable() {
     const eventTypes = ['Concert', 'Workshop', 'Other', 'External'];
 
     const dataParser = (x) => {
+        const noSetlist = !x.setlist || x.setlist.length === 0;
+        const noSetlistMessage = `'${x.name}' has no setlist. Add songs to it first in the music tab.`;
         const row = [{
             element: 'td',
             children: [createDropdown(x.type, eventTypes)]
@@ -3772,7 +3800,7 @@ function constructEventTable() {
             children: createInputsStartEnd(x, 'datetime-local', 'start', 'end')
         }, {
             element: 'td',
-            children: [createInputModalOpener('openModalConcertSetlist(this)', undefined, !x.setlist || x.setlist.length === 0)]
+            children: [createInputModalOpener('openModalConcertSetlist(this)', undefined, noSetlist, noSetlistMessage)]
         }, {
             element: 'td',
             children: [createInputSubrowOpener()]
@@ -3928,6 +3956,20 @@ function openModalMemberTags(element) {
     }
     container.replaceChildren(fragment);
 }
+
+function createEditableTd(placeholder, text) {
+    return {
+        element: 'td',
+        attributes: {
+            ...INPUT_ATTRIBUTES.default,
+            onkeydown: 'keyDownTd(event)',
+            'data-placeholder': placeholder,
+            onblur: `${INPUT_ATTRIBUTES.default.onblur}; blurTd(this)`
+        },
+        innerText: text
+    }
+}
+
 function openModalMemberLinks(element) {
     openModal('modal-member-links');
 
@@ -3940,6 +3982,8 @@ function openModalMemberLinks(element) {
     cssGetFirst('#modal-member-links h2 span').innerText = `for ${member.name}`;
 
     // Links
+    const usernameInput = 'Enter username...';
+    const linkInput = 'Enter link...';
     const datalist = cssGetFirst('#datalist-modal-member-links tbody');
     const fragment = document.createDocumentFragment();
     for (const [socialMedia, username, url] of member.links ?? []) {
@@ -3951,15 +3995,7 @@ function openModalMemberLinks(element) {
             }, {
                 element: 'td',
                 children: [createDropdown(capitalize(socialMedia), socialMediaOptions)]
-            }, {
-                element: 'td',
-                attributes: INPUT_ATTRIBUTES.default,
-                innerText: username
-            }, {
-                element: 'td',
-                attributes: INPUT_ATTRIBUTES.default,
-                innerText: url
-            }]
+            }, createEditableTd(usernameInput, username), createEditableTd(linkInput, url)]
         }));
     }
 
@@ -3973,21 +4009,8 @@ function openModalMemberLinks(element) {
         }, {
             element: 'td',
             children: [createDropdown(undefined, socialMediaOptions)]
-        }, {
-            element: 'td',
-            attributes: {
-                ...INPUT_ATTRIBUTES.default,
-                onblur: `${INPUT_ATTRIBUTES.default.onblur}; editTd(this, "Enter username...")`
-            },
-            innerText: 'Enter username...'
-        }, {
-            element: 'td',
-            attributes: {
-                ...INPUT_ATTRIBUTES.default,
-                onblur: `${INPUT_ATTRIBUTES.default.onblur}; editTd(this, "Enter link...")`
-            },
-            innerText: 'Enter link...'
-        }]
+        }, createEditableTd(usernameInput, usernameInput), createEditableTd(linkInput, linkInput)
+        ]
     }));
     datalist.replaceChildren(fragment);
 }

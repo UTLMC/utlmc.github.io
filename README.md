@@ -5,11 +5,11 @@ This is the website for Light Music Club (LMC), a branch of the University of To
 ## Non-Technical Guide
 
 To make changes to the website, in most cases you can:
-1) Go to the [database page](utlmc.github.io/database)
+1) Go to the [database page](https://utlmc.github.io/database)
 2) Use the UI and make edits
 3) Click the "Export Data" button and save the file as `data.js` in your computer (it must be that exact name)
 4) Go back to this [Github repository](https://github.com/UTLMC/utlmc.github.io), log in, click `Add file -> Upload files`, upload `data.js`, and press `Commit changes`.
-5) Wait 1-2 minutes for the [website](utlmc.github.io/database) to update, then check that your changes worked as intended.
+5) Wait 1-2 minutes for the [website](https://utlmc.github.io/database) to update, then check that your changes worked as intended.
 
 To keep a clean version history, please batch your changes as much as possible instead of constantly making little changes.
 
