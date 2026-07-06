@@ -216,7 +216,11 @@ function toggleTab(element) {
     cssGetId(tabId).classList.add('tab-active');
     
     // Set URL hash
-    window.location.hash = tabId.endsWith('home') ? '#' : `#${tabId.slice(4)}`;
+    if (tabId == 'tab-events') {
+        window.location.hash = `events/${TABLE_EVENTS.active}`;
+    } else {
+        window.location.hash = tabId.endsWith('home') ? '#' : `#${tabId.slice(4)}`;
+    }
 
     // Close mobile menu
     if (window.getComputedStyle(cssGetId('nav-page-mobile')).display !== 'none') {
@@ -282,7 +286,10 @@ function toggleEventTab(element, id) {
     }
     oldActiveElement?.classList.remove(navActiveClass);
     element.classList.add(navActiveClass);
+
     TABLE_EVENTS.active = id;
+    window.location.hash = `events/${TABLE_EVENTS.active}`;
+
     injectEventBody();
     // setTimeout(() => {
     //     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -504,12 +511,19 @@ window.addEventListener('DOMContentLoaded', () => {
     injectMembers();
     injectFAQ();
     injectCarousel();
-    updateEventsSidebar();
-    injectEventBody();
     updateMusicTable();
 
     // Navigate to tab in hash
-    const page = window.location.hash.substring(1);
+    const [page, eventId] = window.location.hash.substring(1).split("/");
+    id = parseInt(eventId, 10);
+    if (page === "events" && 0 <= eventId && eventId < EVENTS.length && !Number.isNaN(id)) {
+        TABLE_EVENTS.active = id;
+    } else {
+        TABLE_EVENTS.active = EVENTS.length - 1;
+    }
+
+    updateEventsSidebar();
+    injectEventBody();
     if (page.length > 0) {
         toggleTab(`nav-${page}`);
     }
