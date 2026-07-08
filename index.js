@@ -181,9 +181,13 @@ function toggleHeaderHamburger() {
         }
     }
 }
+function goToUpcomingEvent(id) {
+    TABLE_EVENTS.active = id;
+    navigateToTab('events');
+    toggleEventTab(cssGetId(`event-tab-${id}`), id);
+}
 function navigateToTab(name) {
     toggleTab(`nav-${name}`);
-    window.location.hash = name.endsWith('home') ? '#' : `#${name}`;
 }
 function toggleTab(element) {
     // If input is a string (i.e. from loading the URL with a hash), treat it like a class
@@ -193,7 +197,9 @@ function toggleTab(element) {
         window.scrollTo(0, 0);
     }
     const navId = Array.from(element.classList)[0];
+    const id = navId.slice(4);
     const desktopNav = cssGetFirst(`#nav-page-desktop .${navId}`);
+    cssGetFirst('html').scrollTop = 0;
 
     // No effect on clicking the same tab on mobile
     if (desktopNav.classList.contains('nav-active')) {
@@ -212,14 +218,14 @@ function toggleTab(element) {
     desktopNav.classList.add('nav-active');
     
     cssGetClass('tab-active')[0].classList.remove('tab-active');
-    const tabId = `tab-${navId.slice(4)}`;
+    const tabId = `tab-${id}`;
     cssGetId(tabId).classList.add('tab-active');
-    
+
     // Set URL hash
-    if (tabId == 'tab-events') {
+    if (id == 'events') {
         window.location.hash = `events/${TABLE_EVENTS.active}`;
     } else {
-        window.location.hash = tabId.endsWith('home') ? '#' : `#${tabId.slice(4)}`;
+        window.location.hash = id === 'home' ? '#' : `#${id}`;
     }
 
     // Close mobile menu
@@ -423,8 +429,12 @@ function goToVideoChapter(element, seconds) {
 Mouse events
 *********************************************************************/
 function scrollHorizontally(event) {
-    const { target, deltaX, deltaY } = event;
+    let { target, deltaX, deltaY } = event;
     
+    if (target.nodeName === 'LI') {
+        target = target.parentElement;
+    }
+
     // Don't scroll horizontally if there's nothing to scroll
     if (target.scrollWidth <= target.getBoundingClientRect().width + 1) {
         return;
@@ -505,7 +515,7 @@ window.addEventListener('mousemove', (event) => {
         MOUSE_DOWN = false;
     }
 });
-window.addEventListener('DOMContentLoaded', () => {  
+window.addEventListener('DOMContentLoaded', () => {
     injectHomeEvent();
     injectHomeBulletin();
     injectMembers();
@@ -515,8 +525,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Navigate to tab in hash
     const [page, eventId] = window.location.hash.substring(1).split("/");
-    id = parseInt(eventId, 10);
-    if (page === "events" && 0 <= eventId && eventId < EVENTS.length && !Number.isNaN(id)) {
+    const id = parseInt(eventId, 10);
+    if (page === "events" && 0 <= id && id < EVENTS.length) {
         TABLE_EVENTS.active = id;
     } else {
         TABLE_EVENTS.active = EVENTS.length - 1;
@@ -797,6 +807,10 @@ async function injectHomeBulletin() {
 
         containerUpcoming.appendChild(construct({
             element: 'li',
+            attributes: {
+                onclick: `goToUpcomingEvent(${eventId})`,
+                onmousewheel: `scrollHorizontally(event)`
+            },
             style: {
                 'background-image': `url('${image}')`
             },
@@ -1652,7 +1666,7 @@ async function injectFAQ() {
             classes: ['details-hidden'],
             children: [{
                 element: 'summary',
-                attributes: { 'onclick': 'toggleDetailsSummary(event)' },
+                attributes: { onclick: 'toggleDetailsSummary(event)' },
                 children: [{
                     element: 'h4',
                     innerText: faq.q
@@ -1761,6 +1775,7 @@ function initEventSidebarHeightAdjuster() {
 function createEventRow(event) {
     return construct({
         element: 'li',
+        id: `event-tab-${event.id}`,
         attributes: { onclick: `toggleEventTab(this, ${event.id})`},
         children: [{
             element: 'span',
@@ -1775,8 +1790,19 @@ function createEventRow(event) {
 const updateEventsSidebar = (() => {
     initEventSidebarHeightAdjuster();
 
+    // Hide events if they're a current event that's not visible yet
+    const now = new Date();
+    const invisibleEvents = new Set();
+    for (const event of UPCOMING_EVENTS) {
+        if (parseDate(event.from) > now) {
+            invisibleEvents.add(event.eventId);
+        }
+    }
+
     const sidebar = cssGetId('nav-events');
-    const sortedEvents = EVENTS.toSorted((a, b) => b.end.localeCompare(a.end));
+    const sortedEvents = EVENTS
+        .filter(x => !invisibleEvents.has(x.id))
+        .toSorted((a, b) => b.end.localeCompare(a.end));
 
     const elements = {};
     return async () => {
@@ -2041,7 +2067,7 @@ function injectEventBody() {
 
     // Event title
     cssGetFirst('#event-title h3').innerHTML = `${name} <span>// ${startDate}</span>`;
-    cssGetFirst('#event-title p').innerText = `${fromTo} @ ${location || '???'}`;
+    cssGetFirst('#event-title p').innerHTML = `${fromTo} @ ${location || '???'} <span class="event-type-tag-${type.toLowerCase()}">${type}</span>`;
     
     // Event description
     const eventDescription = cssGetId('event-description');

@@ -171,6 +171,7 @@ Data
 function getDataApi(list) {
     let map = new Map(list.map(x => [x.id, x]));
     return {
+        length: () => list.length,
         getAll: () => list,
         get: (id) => map.get(id),
         set: (id, fields) => {
@@ -215,6 +216,7 @@ function getMusicApi() {
     }));
 
     return {
+        length: () => MUSIC.length,
         getAll: () => MUSIC,
         get: (id) => map.get(id),
         getAllSubrows: (id) => Array.from(map.get(id).performances.values()),
@@ -431,16 +433,40 @@ function toggleTab(element, forceRefresh) {
             constructTagTab();
         } else if (id === 'bulletin') {
             constructCurrentEvent();
-            TABLE_OPERATIONS['table-announcements'] = constructAnnouncements();
-            TABLE_OPERATIONS['table-upcoming-events'] = constructUpcomingEvents();
+            if (TABLE_OPERATIONS['table-announcements']) {
+                TABLE_OPERATIONS['table-announcements'].init();
+            } else {
+                TABLE_OPERATIONS['table-announcements'] = constructAnnouncements();
+            }
+            if (TABLE_OPERATIONS['table-upcoming-events']) {
+                TABLE_OPERATIONS['table-upcoming-events'].init();
+            } else {
+                TABLE_OPERATIONS['table-upcoming-events'] = constructUpcomingEvents();
+            }
         } else if (id === 'members') {
-            TABLE_OPERATIONS['table-members'] = constructMembers();
+            if (TABLE_OPERATIONS['table-members']) {
+                TABLE_OPERATIONS['table-members'].init();
+            } else {
+                TABLE_OPERATIONS['table-members'] = constructMembers();
+            }
         } else if (id === 'music') {
-            TABLE_OPERATIONS['table-music'] = constructMusicTable();
+            if (TABLE_OPERATIONS['table-music']) {
+                TABLE_OPERATIONS['table-music'].init();
+            } else {
+                TABLE_OPERATIONS['table-music'] = constructMusicTable();
+            }
         } else if (id === 'events') {
-            TABLE_OPERATIONS['table-events'] = constructEventTable();
+            if (TABLE_OPERATIONS['table-events']) {
+                TABLE_OPERATIONS['table-events'].init();
+            } else {
+                TABLE_OPERATIONS['table-events'] = constructEventTable();
+            }
         } else if (id === 'faq') {
-            TABLE_OPERATIONS['table-faq'] = constructFaq();
+            if (TABLE_OPERATIONS['table-faq']) {
+                TABLE_OPERATIONS['table-faq'].init();
+            } else {
+                TABLE_OPERATIONS['table-faq'] = constructFaq();
+            }
         }
     }, 0);
 
@@ -550,6 +576,25 @@ Table row/subrow selection
 - Selections are stored in (SUB)ROW_SELECTION
 - Subrows and rows cannot be simultaneously selected
 *********************************************************************/
+function clickAggregateCheckbox(element) {
+    const tableId = element.closest('.table').id;
+    if (!ROW_SELECTION[tableId]) {
+        ROW_SELECTION[tableId] = new Set();
+    }
+    if (element.checked) {
+        for (const row of cssGetAll(`#${tableId} > div > table > tbody > tr:not(.subtable-row)`)) {
+            ROW_SELECTION[tableId].add(row.id.split('-').at(-1));
+            row.querySelector('td:first-child input').checked = true;
+        }
+        toggleSubrowSelectionEnabled(false, tableId);
+    } else {
+        ROW_SELECTION[tableId].clear();
+        for (const row of cssGetAll(`#${tableId} > div > table > tbody > tr:not(.subtable-row)`)) {
+            row.querySelector('td:first-child input').checked = false;
+        }
+        toggleSubrowSelectionEnabled(true, tableId);
+    }
+}
 function toggleRowSelect(event, element) {
     const button = element.children[0];
     if (button.disabled) {
@@ -599,16 +644,25 @@ function onRowSelect(checked, rowId, tableId) {
         ROW_SELECTION[tableId] = new Set();
     }
     const set = ROW_SELECTION[tableId];
+    const aggregatedCheckbox = cssGetFirst(`#${tableId} .aggregate-checkbox`);
 
     if (checked) {
         if (set.size === 0) {
             toggleSubrowSelectionEnabled(false, tableId);
+            aggregatedCheckbox.indeterminate = true;
+        } else if (set.size === TABLE_OPERATIONS[tableId].length() - 1) {
+            aggregatedCheckbox.indeterminate = false;
+            aggregatedCheckbox.checked = true;
         }
         set.add(rowId);
     } else {
         set.delete(rowId);
         if (set.size === 0) {
             toggleSubrowSelectionEnabled(true, tableId);
+            aggregatedCheckbox.indeterminate = false;
+            aggregatedCheckbox.checked = false;
+        } else {
+            aggregatedCheckbox.indeterminate = true;
         }
     }
     updateTableToolbar(ROW_SELECTION, tableId);
@@ -636,6 +690,7 @@ function onSubrowSelect(checked, subrowId, rowId, tableId) {
 }
 
 function toggleRowSelectionEnabled(on, tableId) {
+    cssGetFirst(`#${tableId} .aggregate-checkbox`).disabled = !on;
     for (const row of cssGetAll(`#${tableId} > div > table > tbody > tr:not(.subtable-row) > td:first-child > input`)) {
         row.disabled = !on;
     }
@@ -1075,12 +1130,6 @@ function onDrop(element) {
         element.parentElement.after(CURR_DRAGGING);
     } else {
         element.parentElement.before(CURR_DRAGGING);
-    }
-
-    // Refresh setlist numbers
-    const n = Math.max(2, String(tbody.children.length).length);
-    for (let i = 0; i < tbody.children.length; i++) {
-        tbody.children[i].children[1].children[0].innerText = String(i + 1).padStart(n, '0');
     }
 }
 
@@ -2972,20 +3021,26 @@ function constructTable(tableId, api, templateData, dataParser, rowSyncer, delet
         return Number(element.id.split('-').at(-1));
     }
 
-    // Construct rows of table
-    const table = cssGetFirst(`#${tableId} tbody`);
-    const fragment = document.createDocumentFragment();
-    let maxId = -1;
-    for (const data of api.getAll()) {
-        const row = dataParser(data);
-        fragment.appendChild(constructTableRow(tableId, data.id, row));
-        maxId = Math.max(data.id, maxId);
-    }
-    table.replaceChildren(fragment);
-    AUTOINCREMENT[tableId] = maxId;
-
-    return {
+    const scroller = cssGetId(tableId).lastElementChild;
+    const table = scroller.children[0].lastElementChild;
+    let scrollPosition = 0;
+    const operations = {
+        length: () => api.length(),
+        init: () => {
+            const fragment = document.createDocumentFragment();
+            let maxId = -1;
+            for (const data of api.getAll()) {
+                const row = dataParser(data);
+                fragment.appendChild(constructTableRow(tableId, data.id, row));
+                maxId = Math.max(data.id, maxId);
+            }
+            table.replaceChildren(fragment);
+            AUTOINCREMENT[tableId] = maxId;
+            scroller.scrollTop = scrollPosition;
+        },
         reorder: () => {
+            scrollPosition = scroller.scrollTop;
+
             const newList = [];
             for (const row of cssGetFirst(`#${tableId} tbody`).children) {
                 newList.push(api.get(parseRowId(row)));
@@ -3066,6 +3121,8 @@ function constructTable(tableId, api, templateData, dataParser, rowSyncer, delet
             rows[middle].scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }
+    operations.init();
+    return operations;
 }
 
 /**
@@ -3115,30 +3172,37 @@ function constructTableWithSubrows(tableId, api, templateData, templateSubdata, 
         return Number(row.id.split('-').at(-1));
     }
 
-    // Construct rows of table
-    const table = cssGetFirst(`#${tableId} tbody`);
-    const fragment = document.createDocumentFragment();
-    let maxId = -1;
-    for (const data of api.getAll()) {
-        fragment.appendChild(createRowAndSubrows(data)[0]);
-        maxId = Math.max(data.id, maxId);
-    }
-    table.replaceChildren(fragment);
-    AUTOINCREMENT[tableId] = maxId;
-
-    // Show already-checked subrows & refresh checkbox restrictions
-    const rowsToShow = Array.from(SUBROW_SELECTION[tableId] ?? []).map(id => id.slice('-')[0]);
-    if (rowsToShow.length > 0) {
-        toggleRowSelectionEnabled(false, tableId);
-        for (const id of new Set(rowsToShow)) {
-            toggleCellDetails(cssGetFirst(`#${tableId}-${id} .cell-details-button`));
-        }
-    } else if (ROW_SELECTION[tableId]?.size > 0) {
-        toggleSubrowSelectionEnabled(false, tableId);
-    }
-
+    const scroller = cssGetId(tableId).lastElementChild;
+    const table = scroller.children[0].lastElementChild;
+    let scrollPosition = 0;
     const operations = {
+        length: () => api.length(),
+        init: () => {
+            // Construct rows of table
+            const fragment = document.createDocumentFragment();
+            let maxId = -1;
+            for (const data of api.getAll()) {
+                fragment.appendChild(createRowAndSubrows(data)[0]);
+                maxId = Math.max(data.id, maxId);
+            }
+            table.replaceChildren(fragment);
+            AUTOINCREMENT[tableId] = maxId;
+            scroller.scrollTop = scrollPosition;
+
+            // Show already-checked subrows & refresh checkbox restrictions
+            const rowsToShow = Array.from(SUBROW_SELECTION[tableId] ?? []).map(id => id.slice('-')[0]);
+            if (rowsToShow.length > 0) {
+                toggleRowSelectionEnabled(false, tableId);
+                for (const id of new Set(rowsToShow)) {
+                    toggleCellDetails(cssGetFirst(`#${tableId}-${id} .cell-details-button`));
+                }
+            } else if (ROW_SELECTION[tableId]?.size > 0) {
+                toggleSubrowSelectionEnabled(false, tableId);
+            }
+        },
         reorder: (list) => {
+            scrollPosition = scroller.scrollTop;
+
             const newList = [];
             const sublists = [];
 
@@ -3387,6 +3451,7 @@ function constructTableWithSubrows(tableId, api, templateData, templateSubdata, 
             rows[middle].scrollIntoView({ behavior: 'smooth', block: 'center' });
         },
     };
+    operations.init();
     return operations;
 }
 
