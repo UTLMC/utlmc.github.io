@@ -1162,8 +1162,9 @@
         <div id="modal-concert-setlist" class="modal">
             <h2>Setlist <span>for End of Fall 2025 Concert</span></h2>
             <ul id="concert-setlist-types">
-                <li id='concert-setlist-type-no-video' class='concert-setlist-types-active' onclick="toggleConcertSetlistType(this)">No Video</li>
+                <li id='concert-setlist-type-no-video' class='concert-setlist-type-active' onclick="toggleConcertSetlistType(this)">No Video</li>
                 <li id='concert-setlist-type-one-video' onclick="toggleConcertSetlistType(this)">Concert Video</li>
+                <li id='concert-setlist-type-videos' onclick="toggleConcertSetlistType(this)">Concert Playlist</li>
             </ul>
             <div id='concert-setlist-video' class="input">
                 <img src="assets/icons/logos/youtube.svg" />
@@ -1182,6 +1183,7 @@
                             </td>
                             <td>Song 1</td>
                             <td class="concert-setlist-timestamp" contenteditable="plaintext-only" onblur="validateInputTimestamp(this)">??:??</td>
+                            <td class="concert-setlist-song-video" contenteditable="plaintext-only"></td>
                         </tr>
                         <tr>
                             <td draggable="true" ondragstart="onDragStart(this)" ondragend="onDragEnd(this)" ondragenter="onDragEnter(this)" ondragleave="onDragLeave(this)" ondragover="onDragOver(event)" ondrop="onDrop(this)">
@@ -1193,6 +1195,7 @@
                             </td>
                             <td>Song 2</td>
                             <td class="concert-setlist-timestamp" contenteditable="plaintext-only" onblur="validateInputTimestamp(this)">??:??</td>
+                            <td class="concert-setlist-song-video" contenteditable="plaintext-only"></td>
                         </tr>
                         <tr>
                             <td draggable="true" ondragstart="onDragStart(this)" ondragend="onDragEnd(this)" ondragenter="onDragEnter(this)" ondragleave="onDragLeave(this)" ondragover="onDragOver(event)" ondrop="onDrop(this)">
@@ -1204,6 +1207,7 @@
                             </td>
                             <td>Song 3</td>
                             <td class="concert-setlist-timestamp" contenteditable="plaintext-only" onblur="validateInputTimestamp(this)">??:??</td>
+                            <td class="concert-setlist-song-video" contenteditable="plaintext-only"></td>
                         </tr>
                         <tr>
                             <td draggable="true" ondragstart="onDragStart(this)" ondragend="onDragEnd(this)" ondragenter="onDragEnter(this)" ondragleave="onDragLeave(this)" ondragover="onDragOver(event)" ondrop="onDrop(this)">
@@ -1215,6 +1219,7 @@
                             </td>
                             <td>Song 4</td>
                             <td class="concert-setlist-timestamp" contenteditable="plaintext-only" onblur="validateInputTimestamp(this)">??:??</td>
+                            <td class="concert-setlist-song-video" contenteditable="plaintext-only"></td>
                         </tr>
                     </tbody>
                 </table>

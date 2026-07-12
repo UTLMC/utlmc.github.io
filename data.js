@@ -6242,7 +6242,9 @@ const EVENTS = [
         "type": "External",
         "name": "Genshiken Festival 2024",
         "location": "",
-        "description": ["A one-day anime convention organized by students from a variety of Ontario University Anime Clubs"],
+        "description": [
+            "A one-day anime convention organized by students from a variety of Ontario University Anime Clubs"
+        ],
         "start": "2024-03-23|00:00",
         "end": "2024-03-23|23:59",
         "setlist": [
@@ -6256,7 +6258,9 @@ const EVENTS = [
         "type": "Concert",
         "name": "UT-SAMA 20th Anniversary Event",
         "location": "UTSU Student Commons",
-        "description": [""],
+        "description": [
+            ""
+        ],
         "start": "2024-04-04|00:00",
         "end": "2024-04-04|23:59",
         "video": "https://youtu.be/ob0COvRRvDI",
@@ -6279,7 +6283,9 @@ const EVENTS = [
         "type": "Concert",
         "name": "October 2024 Concert",
         "location": "The Cat's Eye",
-        "description": [""],
+        "description": [
+            ""
+        ],
         "start": "2024-10-04|19:30",
         "end": "2024-10-04|20:30",
         "video": "https://youtu.be/JtuPSpsSQYk",
@@ -6304,7 +6310,9 @@ const EVENTS = [
         "type": "Concert",
         "name": "End of Fall 2024 Concert",
         "location": "The Cat's Eye",
-        "description": ["This is a dscription I guess"],
+        "description": [
+            ""
+        ],
         "start": "2025-01-24|19:00",
         "end": "2025-01-24|20:30",
         "video": "https://youtu.be/TiStCNPn10s",
@@ -6334,7 +6342,9 @@ const EVENTS = [
         "type": "Workshop",
         "name": "Chord Theory Workshop 2025",
         "location": "",
-        "description": ["???", "WOWOWOW"],
+        "description": [
+            "???"
+        ],
         "start": "2025-02-13|00:00",
         "end": "2025-02-13|23:59",
         "link": "",
@@ -6345,7 +6355,9 @@ const EVENTS = [
         "type": "Workshop",
         "name": "Music Production Workshop 2025",
         "location": "OISE 2279",
-        "description": ["???"],
+        "description": [
+            "???"
+        ],
         "start": "2025-02-27|00:00",
         "end": "2025-02-27|23:59",
         "link": "https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo",
@@ -6356,7 +6368,9 @@ const EVENTS = [
         "type": "Other",
         "name": "Blind Test 2025",
         "location": "OISE C-154",
-        "description": ["???"],
+        "description": [
+            "???"
+        ],
         "start": "2025-03-08|00:00",
         "end": "2025-03-08|23:59",
         "link": "https://www.youtube.com/embed/0CJ_9BmtAXY?si=CkvUDq2PFXzWXjRj",
@@ -6366,7 +6380,9 @@ const EVENTS = [
         "type": "Concert",
         "name": "End of Winter 2025 Concert",
         "location": "OISE G-162",
-        "description": ["???"],
+        "description": [
+            "???"
+        ],
         "start": "2025-04-07|19:00",
         "end": "2025-04-07|20:30",
         "video": "https://youtu.be/k1CZLnxSWDc",
@@ -6454,7 +6470,9 @@ const EVENTS = [
         "type": "Workshop",
         "name": "Arranging Workshop 2025",
         "location": "OISE C-154",
-        "description": ["???"],
+        "description": [
+            "???"
+        ],
         "start": "2025-11-09|00:00",
         "end": "2025-11-09|23:59",
         "link": "https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo",
@@ -6464,7 +6482,9 @@ const EVENTS = [
         "type": "External",
         "name": "RCAG Studio Night 2025",
         "location": "",
-        "description": ["???"],
+        "description": [
+            "???"
+        ],
         "start": "2025-11-13|00:00",
         "end": "2025-11-13|23:59",
         "setlist": [
@@ -6477,7 +6497,9 @@ const EVENTS = [
         "type": "Concert",
         "name": "End of Fall 2025 Concert",
         "location": "OISE G-162",
-        "description": ["???"],
+        "description": [
+            "???"
+        ],
         "start": "2025-11-29|18:00",
         "end": "2025-11-29|21:00",
         "video": "https://youtu.be/wuObU4_nbtI",
@@ -6585,7 +6607,9 @@ const EVENTS = [
         "type": "External",
         "name": "Hemoglobal Connect Benefit Concert 2026",
         "location": "Trinity-St. Paul's United Church",
-        "description": ["???"],
+        "description": [
+            "???"
+        ],
         "start": "2026-01-23|18:00",
         "end": "2026-01-23|20:00"
     },
@@ -6594,7 +6618,9 @@ const EVENTS = [
         "type": "Workshop",
         "name": "Sound Equipment Workshop 2026",
         "location": "OISE 5240",
-        "description": ["???"],
+        "description": [
+            "???"
+        ],
         "start": "2026-01-30|16:30",
         "end": "2026-01-30|??:??",
         "link": "https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv"
@@ -6604,13 +6630,24 @@ const EVENTS = [
         "type": "Concert",
         "name": "Tunes & Treats 2026 Concert",
         "location": "OISE C-154",
-        "description": ["???"],
+        "description": [
+            "???"
+        ],
         "start": "2026-03-06|18:00",
         "end": "2026-03-06|21:00",
         "setlist": [
-            74,
-            75,
-            76,
+            [
+                74,
+                "youtu.be/FQG_6O1DpPI"
+            ],
+            [
+                75,
+                "youtu.be/yLPmJX9PT-s"
+            ],
+            [
+                76,
+                "youtu.be/tWwNLzy9S44"
+            ],
             77,
             78,
             79,
@@ -6639,7 +6676,9 @@ const EVENTS = [
         "type": "Concert",
         "name": "Succession 2026 Concert",
         "location": "OISE G-162",
-        "description": ["???"],
+        "description": [
+            "???"
+        ],
         "start": "2026-04-05|17:00",
         "end": "2026-04-05|20:00",
         "setlist": [

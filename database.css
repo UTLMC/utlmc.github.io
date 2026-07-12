@@ -1304,6 +1304,15 @@ Modal datalist
     color: #999999;
 } 
 
+#datalist-modal-member-links .modal-datalist-preview td:nth-child(3):empty:before {
+    content: 'Enter username...';
+    cursor: text;
+}
+#datalist-modal-member-links .modal-datalist-preview td:nth-child(4):empty:before {
+    content: 'Enter link...';
+    cursor: text;
+}
+
 
 /*********************************************************************
 Modal setlist
@@ -1315,33 +1324,33 @@ Modal setlist
     flex-direction: row;
 }
 #concert-setlist-types li {
-    width: 50%;
     text-align: center;
     font-family: 'DM Sans';
     transition: 0.1s;
     user-select: none;
+    flex-grow: 1;
 }
-#concert-setlist-types li:not(.concert-setlist-types-active) {
+#concert-setlist-types li:not(.concert-setlist-type-active) {
     cursor: pointer;
 }
-#concert-setlist-types li:not(.concert-setlist-types-active):hover {
+#concert-setlist-types li:not(.concert-setlist-type-active):hover {
     opacity: 0.5;
 }
-#concert-setlist-types li:not(.concert-setlist-types-active):active {
+#concert-setlist-types li:not(.concert-setlist-type-active):active {
     opacity: 0.2;
     transition: 0s;
 }
 #concert-setlist-video {
     display: none;  /* toggles to flex */
 }
-.concert-setlist-timestamp {
+.concert-setlist-timestamp, .concert-setlist-song-video {
     display: none;
 }
-.concert-setlist-types-active {
+.concert-setlist-type-active {
     font-weight: bold;
     border-style: inset;
     border: none;
-    border-bottom: 5px solid #ffd966ff;
+    border-bottom: 4px solid #ffd966ff;
 }
 
 .setlist-id {
@@ -1377,10 +1386,29 @@ Modal setlist
     color: rgb(177, 177, 177);
     text-align: center;
 }
-.draggable-list tr td:last-child {
-    width: 60px;
+.draggable-list tr td:nth-child(4),
+.draggable-list tr td:nth-child(5) {
     text-align: right;
     padding: 3px 10px;
+}
+.draggable-list tr td:nth-child(4):empty:before {
+    content: '??:??';
+    opacity: 0.3;
+    cursor: text;
+}
+.draggable-list tr td:nth-child(5):empty:before {
+    content: 'youtube.com/watch?...';
+    opacity: 0.3;
+    cursor: text;
+}
+.draggable-list tr td:nth-child(5) {
+    max-width: 0px;
+    min-width: 190px;
+    white-space: nowrap;
+    overflow: clip;
+}
+.draggable-list tr td:nth-child(5):focus {
+    white-space: normal;
 }
 .draggable-list td {
     padding: 3px;

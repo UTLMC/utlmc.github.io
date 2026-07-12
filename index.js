@@ -364,7 +364,12 @@ function videoStateChangeHandler(state) {
     // Started to play => 1
     if (data === 1) {
         const { setlist } = EVENTS[TABLE_EVENTS.active];
-        const timestamps = setlist.map(x => x[1]);
+        const timestamps = setlist.filter(x => Array.isArray(x)).map(x => x[1]);
+        
+        // Playlists
+        if (typeof timestamps[0] !== 'number') {
+            return;
+        }
 
         VIDEO_POLL = setInterval(() => {
             const time = target.getCurrentTime();  // in seconds
@@ -372,9 +377,8 @@ function videoStateChangeHandler(state) {
             if (i === -1) {
                 clearVideoChapter();
             } else {
-                goToVideoChapter(cssGetId('concert-video-chapters').children[i], undefined)
+                openVideoChapter(cssGetId('concert-video-chapters').children[i]);
             }
-
         }, 1000);
     } else if (VIDEO_POLL) {
         clearInterval(VIDEO_POLL);
@@ -395,18 +399,19 @@ function onYouTubeIframeAPIReady() {
     });
 }
 
-function loadYoutubeVideo(url) {
+function parseYoutubeVideo(url) {
     const regex = /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
     const match = url.match(regex);
 
     if (match) {
-        CURR_VIDEO_ID = match[1];
-        YOUTUBE_CONCERT_VIDEO?.cueVideoById({
-            videoId: CURR_VIDEO_ID,
-        })
+        return match[1];
     } else {
         throw new Error(`Couldn't parse youtube URL ${url}.`);
     }
+}
+function loadYoutubeVideo(url) {
+    CURR_VIDEO_ID = parseYoutubeVideo(url);
+    YOUTUBE_CONCERT_VIDEO?.cueVideoById({ videoId: CURR_VIDEO_ID })
 }
 
 function clearVideoChapter() {
@@ -414,16 +419,16 @@ function clearVideoChapter() {
     cssGetClass(className)[0]?.classList.remove(className);
 }
 
-function goToVideoChapter(element, seconds) {
-    if (!YOUTUBE_CONCERT_VIDEO) return;
-
+function openVideoChapter(element) {
     const className = 'concert-video-chapter-active';
     cssGetClass(className)[0]?.classList.remove(className);
     element.classList.add(className);
-    
-    if (seconds !== undefined) {
-        YOUTUBE_CONCERT_VIDEO.seekTo(seconds, true);
-    }
+}
+function goToVideoChapter(element, seconds) {
+    if (!YOUTUBE_CONCERT_VIDEO) return;
+
+    openVideoChapter(element);    
+    YOUTUBE_CONCERT_VIDEO.seekTo(seconds, true);
 }
 
 
@@ -523,7 +528,9 @@ window.addEventListener('DOMContentLoaded', () => {
     injectMembers();
     injectFAQ();
     injectCarousel();
-    updateMusicTable();
+    setTimeout(() => {
+        updateMusicTable();
+    }, 0);
 
     // Navigate to tab in hash
     const [page, eventId] = window.location.hash.substring(1).split("/");
@@ -770,10 +777,11 @@ async function injectHomeCurrentEvent() {
     const now = new Date();
 
     // Only concerts are supported right now
-    if (typeof(CURRENT_EVENT.id) !== 'number' || now > parseDate(CURRENT_EVENT.hideAfter) || now < parseDate(CURRENT_EVENT.hideBefore)) {
+    if (typeof CURRENT_EVENT.id !== 'number' || now > parseDate(CURRENT_EVENT.hideAfter) || now < parseDate(CURRENT_EVENT.hideBefore)) {
         cssSetId('section-home-event', { display: 'none' });
+    } else {
+        injectHomeConcert(now);
     }
-    injectHomeConcert(now);
 }
 
 
@@ -1176,11 +1184,12 @@ function getExecTeam() {
     const now = new Date();
     let currYear = now.getMonth() >= 8 ? now.getFullYear() : now.getFullYear() - 1;
 
+    const membersWithYears = MEMBERS.filter(x => x.roles?.some(role => ROLES[role].includes("(")));
     const isExecForYear = (x, year) => x.roles?.some(role => ROLES[role].includes(String(year).slice(2)));
-    let execTeam = MEMBERS.filter(x => isExecForYear(x, currYear));
+    let execTeam = membersWithYears.filter(x => isExecForYear(x, currYear));
     while (execTeam.length === 0) {
         currYear -= 1;
-        execTeam = MEMBERS.filter(x => isExecForYear(x, currYear));
+        execTeam = membersWithYears.filter(x => isExecForYear(x, currYear));
         if (currYear === 2022) {
             throw new Error("WTF");
         }
@@ -1976,27 +1985,45 @@ function getPerformers(setlist) {
     }).flat();
 }
 
-function constructVideoTimestamps(setlist) {
-    const concertVideoChapters = cssGetId('concert-video-chapters');
-    const timestamps = setlist.map((x, i) => [x, i + 1]).filter(x => Array.isArray(x[0]));
-
-    if (timestamps?.length === 0) {
-        cssSetElement(concertVideoChapters, { display: 'none' });
-        return;
-    }
-    cssSetElement(concertVideoChapters, { display: '' });
-    
-    fragment = document.createDocumentFragment();
-    timestamps.forEach(([[songId, seconds], i]) => {
+function constructVideoChapters(data) {
+    const fragment = document.createDocumentFragment();
+    data.forEach(([songId, onclick, i]) => {
         fragment.appendChild(construct({
             element: 'li',
-            attributes: {
-                onclick: `goToVideoChapter(this, ${seconds})`
-            },
+            attributes: { onclick },
             innerHTML: `<span>${String(i).padStart(2, '0')} //</span> ${MUSIC[songId].name}`
         }))
     });
-    concertVideoChapters.replaceChildren(fragment);      
+    return fragment;
+}
+
+function constructVideoTimestamps(setlist) {
+    const concertVideoChapters = cssGetId('concert-video-chapters');
+    const timestamps = setlist
+        .filter(Array.isArray)
+        .map(([songId, seconds], i) => [songId, `goToVideoChapter(this, ${seconds})`, i + 1]);
+
+    if (timestamps?.length === 0) {
+        return cssSetElement(concertVideoChapters, { display: 'none' });
+    }
+    cssSetElement(concertVideoChapters, { display: '' });
+    concertVideoChapters.replaceChildren(constructVideoChapters(timestamps));      
+}
+
+function loadYoutubePlaylist(setlist) {
+    const concertVideoChapters = cssGetId('concert-video-chapters');
+    const videos = setlist
+        .filter(Array.isArray)
+        .map(([songId, url], i) => [songId, `loadYoutubeVideo('${url}'); openVideoChapter(this)`, i + 1]);
+    
+    if (videos?.length === 0) {
+        return cssSetElement(concertVideoChapters, { display: 'none' });
+    }
+    cssSetElement(concertVideoChapters, { display: '' });
+    concertVideoChapters.replaceChildren(constructVideoChapters(videos));
+    if (videos?.length > 0) {
+        concertVideoChapters.children[0].onclick();
+    }
 }
 
 function injectEventBodyConcert(id, setlist, video, gallery, poster) {
@@ -2008,8 +2035,13 @@ function injectEventBodyConcert(id, setlist, video, gallery, poster) {
 
     // Setlist inner tab
     let fragment = document.createDocumentFragment();
+    let hasSetlistInfo = false;
     setlist.forEach((info, i) => {
-        const setlistId = Array.isArray(info) ? info[0] : info;
+        let setlistId = info;
+        if (Array.isArray(info)) {
+            hasSetlistInfo = true;
+            setlistId = info[0];
+        }
         fragment.appendChild(constructSetlistTabSong(MUSIC[setlistId], i, id));
     })
     cssGetId('concert-items').replaceChildren(fragment);
@@ -2028,6 +2060,9 @@ function injectEventBodyConcert(id, setlist, video, gallery, poster) {
         cssSetElement(navConcertVideo, { display: '' });
         loadYoutubeVideo(video);
         constructVideoTimestamps(setlist);
+    } else if (hasSetlistInfo) {
+        cssSetElement(navConcertVideo, { display: '' });
+        loadYoutubePlaylist(setlist);
     } else {
         cssSetElement(navConcertVideo, { display: 'none' });
         

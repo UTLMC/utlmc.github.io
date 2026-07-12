@@ -81,7 +81,7 @@ function secondsToTimestamp(seconds) {
     if (seconds < 60 * 60) {
         const m = String(Math.floor(seconds / 60));
         const s = String(seconds % 60);
-        return `${m.padStart(2, '0')}:${s.padStart(2, '0')}`;
+        return `${m}:${s.padStart(2, '0')}`;
     }
     const h = String(Math.floor(seconds / 3600));
     const m = String(Math.floor((seconds % 3600) / 60));
@@ -162,6 +162,14 @@ function reassignObject(oldObj, newObj) {
 function reassignList(oldList, newList) {
     oldList.length = 0;
     oldList.push(...newList);
+}
+function parseYoutubeVideo(url) {
+    const regex = /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const match = url.match(regex);
+
+    if (match) {
+        return `youtu.be/${match[1]}`;
+    }
 }
 
 
@@ -506,13 +514,18 @@ function toggleCellDetails(element) {
 
 // Concert setlist modal, toggle video type
 function toggleConcertSetlistType(element) {
-    setActiveClass(element, 'concert-setlist-types-active');
+    setActiveClass(element, 'concert-setlist-type-active');
     
     const videoDisplay = element.id === 'concert-setlist-type-one-video' ? 'flex' : 'none';
     cssSetId('concert-setlist-video', { display: videoDisplay });
 
-    const cellDisplay = element.id === 'concert-setlist-type-one-video' ? 'table-cell' : 'none';
+    let cellDisplay = element.id === 'concert-setlist-type-one-video' ? 'table-cell' : 'none';
     for (const element of cssGetClass('concert-setlist-timestamp')) {
+        cssSetElement(element, { display: cellDisplay });
+    }
+
+    cellDisplay = element.id === 'concert-setlist-type-videos' ? 'table-cell' : 'none';
+    for (const element of cssGetClass('concert-setlist-song-video')) {
         cssSetElement(element, { display: cellDisplay });
     }
 }
@@ -1319,7 +1332,6 @@ function getSuggestionIfExists(inputContainer, input, newValue) {
     return [id, value];
 }
 
-// TODO: When deleting an event from current event, it doesn't actually delete it internally
 
 /*********************************************************************
 Inputs
@@ -1456,13 +1468,13 @@ function blurTd(element) {
         return;
     }
 
-    const placeholder = element.getAttribute('data-placeholder');
-    if (element.innerText === placeholder)
+    if (!element.innerText) {
         return;
+    }
 
-    // Create new row if content differs from placeholder
+    // Create new row if content is edited
     const temp = element.innerText;
-    element.innerText = placeholder;
+    element.innerText = '';
     const newRow = tr.cloneNode(true);
     tr.after(newRow);
     tr.classList.remove('modal-datalist-preview');
@@ -1882,7 +1894,7 @@ function validateInputTimestamp(element) {
     value = value.replace(/[\r\n]+/g, '').trim();
 
     const timestampRegex = /^(?:\?\?:\?\?|\d+:[0-5]\d:[0-5]\d|(?:[0-5]?\d):[0-5]\d)$/;
-    value = timestampRegex.test(value) ? value : '??:??';
+    value = timestampRegex.test(value) ? value : '';
     element.innerText = value;
     syncData(element);
 }
@@ -1976,7 +1988,13 @@ function minify(x) {
 }
 
 function sanityCheckData() {
+    const outreachOptions = new Set(['discord', 'instagram']);
+    const year = getExpectedSchoolYear();
+    let hasExecsForYear = false;
+    let hasOutreach = false;
+
     const notPerformed = new Set();
+    const roles = API.ROLES.getAll();
     for (const member of API.MEMBERS.getAll()) {
         if (member.left) {
             const [joinedM, joinedY] = member.joined.split(' ');
@@ -1991,7 +2009,18 @@ function sanityCheckData() {
             console.warn(`Member '${member.name}' (#${member.id}) has no tags`);
         }
         notPerformed.add(member.id);
+        if (member.roles.some(x => roles[x].includes("(") && roles[x].includes(`${String(year).slice(-2)}`))) {
+            hasExecsForYear = true;
+            if (member.links.some(x => outreachOptions.has(x[0]))) {
+                hasOutreach = true;
+            }
+        }
     }
+    if (!hasExecsForYear)
+        return `No members found with an executive tag for current school year ${year}`;
+    if (!hasOutreach)
+        return `No executives for current school year ${year} have outreach contacts (accepted: ${Array.from(outreachOptions).join(', ')})`;
+
     for (const [id, subId, music, p] of API.MUSIC.iterateSubrows()) {
         if (!p.link && !(p.concerts?.length > 0))
             return `Performance of '${music.name}' (#${id}) in subrow #${subId} has no link or concert`;
@@ -2388,6 +2417,23 @@ function roleSorter(a, b) {
     return i;
 }
 
+function getExpectedSchoolYear() {
+    const now = new Date();
+    return now.getMonth() >= 8 ? now.getFullYear() : now.getFullYear() - 1;
+}
+function getCurrentSchoolYear(indices, members) {
+    let year = getExpectedSchoolYear();
+
+    const memberswithYears = members.filter(row => row[indices['Roles']].includes("("))
+    while (!memberswithYears.some(row => row[indices['Roles']].includes(String(year).slice(2)))) {
+        year -= 1;
+        if (year === 2022) {
+            throw new Error("WTF");
+        }
+    } 
+    return year;
+}
+
 async function uploadMembers(element) {
     if (element.files.length === 0) {
         throw new Error(`No members CSV uploaded`);
@@ -2421,14 +2467,7 @@ async function uploadMembers(element) {
     ));
 
     // Get current year
-    const now = new Date();
-    let year = now.getMonth() >= 8 ? now.getFullYear() : now.getFullYear() - 1;
-    while (!members.some(row => row[indices['Roles']].includes(String(year).slice(2)))) {
-        year -= 1;
-        if (year === 2022) {
-            throw new Error("WTF");
-        }
-    }
+    const year = getCurrentSchoolYear(indices, members);
 
     let allRoles = members.map(row => row[indices['Roles']]?.split(',').map(x => x.trim()).filter(x => x).flat() ?? []).flat();
     allRoles = Array.from(new Set(allRoles)).sort(roleSorter);
@@ -2501,6 +2540,12 @@ async function uploadMusic(element) {
     return parsed;
 }
 
+function parseSetlistInfo(info) {
+    const url = parseYoutubeVideo(info)
+    if (url) return url;
+    return timestampToSeconds(info);
+}
+
 async function uploadPerformances(element, memberData, discords, musicData, eventData) {
     if (element.files.length === 0) {
         throw new Error(`No performances CSV uploaded`);
@@ -2565,7 +2610,7 @@ async function uploadPerformances(element, memberData, discords, musicData, even
             let concertName = concert;
             let p1, p2;
 
-            // <name> [<setlist order>, <setlist timestamp>]
+            // <name> [<setlist order>, <setlist timestamp/video>]
             // <name> [<setlist order>]
             // Recording [<link>]
             if (concert.includes('[') && concert.includes(']')) {
@@ -2574,7 +2619,7 @@ async function uploadPerformances(element, memberData, discords, musicData, even
             
                 if (p1.includes(',')) {
                     [p1, p2] = p1.split(',').map(x => x.trim());
-                    p2 = timestampToSeconds(p2);
+                    p2 = parseSetlistInfo(p2);
                 }
             }
             if (p1) {
@@ -2668,7 +2713,7 @@ async function uploadEvents(element) {
             type: row[indices['Type']],
             name: row[indices['Name']],
             location: row[indices['Location']],
-            description: row[indices['Description']],
+            description: row[indices['Description']].split('\n'),
             start: row[indices['Start']].replace(', ', '|'),
             end: row[indices['End']].replace(', ', '|'),
         };
@@ -3628,13 +3673,13 @@ function constructUpcomingEvents() {
 }
 function constructCurrentEvent() {
     const currentEvent = getCurrentEvent();
-    const { name } = API.EVENTS.get(currentEvent.id);
+    const event = API.EVENTS.get(currentEvent.id);
     const { rvsp, tickets, hideBefore, hideAfter, location, preConcertDescription, postConcertDescription } = currentEvent;
 
     const container = cssGetId('current-event-id');
     const input = container.children[0].lastElementChild;
-    input.previousElementSibling.value = currentEvent.id;
-    input.value = name;
+    input.previousElementSibling.value = currentEvent.id ?? '';
+    input.value = event?.name ?? '';
 
     if (hideBefore) { cssGetId('current-event-visible-from').value = hideBefore.replace('|', 'T'); }
     if (hideAfter) { cssGetId('current-event-visible-until').value = hideAfter.replace('|', 'T'); }
@@ -4119,13 +4164,12 @@ function openModalMemberTags(element) {
     container.replaceChildren(fragment);
 }
 
-function createEditableTd(placeholder, text) {
+function createEditableRowTd(text) {
     return {
         element: 'td',
         attributes: {
             ...INPUT_ATTRIBUTES.default,
             onkeydown: 'keyDownTd(event)',
-            'data-placeholder': placeholder,
             onblur: `${INPUT_ATTRIBUTES.default.onblur}; blurTd(this)`
         },
         innerText: text
@@ -4144,8 +4188,6 @@ function openModalMemberLinks(element) {
     cssGetFirst('#modal-member-links h2 span').innerText = `for ${member.name}`;
 
     // Links
-    const usernameInput = 'Enter username...';
-    const linkInput = 'Enter link...';
     const datalist = cssGetFirst('#datalist-modal-member-links tbody');
     const fragment = document.createDocumentFragment();
     for (const [socialMedia, username, url] of member.links ?? []) {
@@ -4157,7 +4199,7 @@ function openModalMemberLinks(element) {
             }, {
                 element: 'td',
                 children: [createDropdown(capitalize(socialMedia), socialMediaOptions)]
-            }, createEditableTd(usernameInput, username), createEditableTd(linkInput, url)]
+            }, createEditableRowTd(username), createEditableRowTd(url)]
         }));
     }
 
@@ -4171,8 +4213,7 @@ function openModalMemberLinks(element) {
         }, {
             element: 'td',
             children: [createDropdown(undefined, socialMediaOptions)]
-        }, createEditableTd(usernameInput, usernameInput), createEditableTd(linkInput, linkInput)
-        ]
+        }, createEditableRowTd(''), createEditableRowTd('')]
     }));
     datalist.replaceChildren(fragment);
 }
@@ -4246,11 +4287,18 @@ function openModalConcertSetlist(element) {
     // Setlist
     const table = cssGetFirst('#concert-setlist tbody');
     const fragment = document.createDocumentFragment();
+    let songType = video ? 'timestamps' : undefined;
     setlist?.forEach((info, i) => {
         let songId = info;
-        let timestamp;
+        let songInfo;
         if (Array.isArray(info)) {
-            [songId, timestamp] = info;
+            [songId, songInfo] = info;
+            if (typeof songInfo === 'string') {
+                songType = 'videos';
+            } else {
+                songType = 'timestamps';
+                songInfo = secondsToTimestamp(songInfo);
+            }
         }
         const n = Math.max(2, String(setlist.length).length);
         const index = String(i + 1).padStart(n, '0');
@@ -4289,14 +4337,25 @@ function openModalConcertSetlist(element) {
                 element: 'td',
                 classes: ['concert-setlist-timestamp'],
                 attributes: INPUT_ATTRIBUTES.timestamp,
-                innerText: typeof(timestamp) === 'number' ? secondsToTimestamp(timestamp) : '??:??'
+                innerText: songType === 'timestamps' ? songInfo : ''
+            }, {
+                element: 'td',
+                classes: ['concert-setlist-song-video'],
+                attributes: INPUT_ATTRIBUTES.default,
+                innerText: songType === 'videos' ? songInfo : ''
             }]
         }))
     });
     table.replaceChildren(fragment);
 
     // Video
-    cssGetId(`concert-setlist-type-${video ? 'one' : 'no'}-video`).onclick();
+    if (songType === 'timestamps') {
+        cssGetId(`concert-setlist-type-one-video`).onclick();
+    } else if (songType === 'videos') {
+        cssGetId(`concert-setlist-type-videos`).onclick();
+    } else {
+        cssGetId(`concert-setlist-type-no-video`).onclick();
+    }
     cssGetFirst('#concert-setlist-video input').value = video || '';
 }
 
@@ -4421,29 +4480,49 @@ function syncModalPerformancePerformers() {
     closeModals();
 }
 function syncModalConcertSetlist() {
-    // Extract video
+    const mode = cssGetClass('concert-setlist-type-active')[0].id;
     const container = cssGetId('concert-setlist-video');
-    const validation = container.nextElementSibling.nextElementSibling;
-    const video = container.style.display === 'none' ? '' : container.lastElementChild.value;
+    const validation = container.parentElement.lastElementChild.previousElementSibling;
+
+    // Extract video
+    let video = mode === 'concert-setlist-type-one-video' ? container.lastElementChild.value : undefined;
+    if (video) {
+        const url = parseYoutubeVideo(video);
+        if (url) {
+            video = url;
+        }
+    }
     
-    // Extract setlist and timestamps
+    // Extract setlist
     const setlist = [];
     for (const tr of cssGetId('concert-setlist').children[0].children) {
         const id = Number(tr.children[1].children[1].innerText);
-        let timestamp;
-        if (tr.lastElementChild.style.display !== 'none') {
-            const value = tr.lastElementChild.innerText;
-            if (!value.includes("?")) {
-                timestamp = timestampToSeconds(value);
+
+        let info;
+        if (mode === 'concert-setlist-type-one-video') {
+            const value = tr.children[3].innerText;
+            if (value) {
+                info = timestampToSeconds(value);
+                if (!video) {
+                    cssSetElement(validation, { display: 'block' });
+                    validation.innerText = 'Video timestamps exist but no video link is given.';
+                    return;
+                }
+            }
+        } else if (mode === 'concert-setlist-type-videos') {
+            info = tr.children[4].innerText;
+            const url = parseYoutubeVideo(info);
+            if (url) {
+                info = url;
             }
         }
-        setlist.push(timestamp ? [id, timestamp] : id);
-    }   
+        setlist.push(info !== undefined && info !== '' ? [id, info] : id);
+    }
+    cssSetElement(validation, { display: '' });
+    validation.innerText = '';
 
     // Sync data
-    if (video) {
-        API.EVENTS.set(MODAL_INFO, { video, setlist })
-    }
+    API.EVENTS.set(MODAL_INFO, { video, setlist });
 
     closeModals();
 }
