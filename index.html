@@ -876,19 +876,32 @@
                             <p>5:00 − 9:00 pm @ OISE Auditorium</p>
                         </hgroup>
                     </div>
-
-                    <p id="event-description">This is a description.</p>
+                    
+                    <div id="event-description-container">
+                        <div id="event-description-body">
+                            <div id="event-description">
+                                <p>This is a description.</p>
+                            </div>
+                            <iframe id="event-description-iframe" loading="lazy" class='event-description-embed-drive' ></iframe>
+                            <p id="event-description-link"></p>
+                        </div>                    
+                        <img id="event-description-img" />
+                    </div>
                     
                     <nav>
                         <menu id="nav-concert">
-                            <li id="nav-concert-setlist" class="nav-concert-active" onclick="toggleConcertTab(this)">Setlist</li>
-                            <li id="nav-concert-performers" onclick="toggleConcertTab(this)">Performers</li>
+                            <li id="nav-concert-poster" class="nav-concert-active" onclick="toggleConcertTab(this)">Poster</li>
+                            <li id="nav-concert-setlist" onclick="toggleConcertTab(this)">Setlist</li>
+                            <li id="nav-concert-performers" onclick="toggleConcertTab(this)">Credits</li>
                             <li id="nav-concert-video" onclick="toggleConcertTab(this)">Video</li>
                             <li id="nav-concert-gallery"><a href="#" target="_blank">Gallery</a></li>
                         </menu>
                     </nav>
 
-                    <article id="tab-concert-setlist" class="tab-concert tab-concert-active">
+                    <article id="tab-concert-poster" class="tab-concert tab-concert-active">
+                        <img src="" />
+                    </article>
+                    <article id="tab-concert-setlist" class="tab-concert">
                         <ul id="concert-items">
                             <!-- <li class="concert-item">
                                 <hgroup>
@@ -955,11 +968,11 @@
                 <div class="embed-grid">
                     <div>
                         <h1>Materials</h1>
-                        <iframe loading="lazy" class='embed-drive-grid' src="https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo#grid" title="Google drive folder" allowfullscreen></iframe>
+                        <iframe loading="lazy" class='embed-drive-grid' src="https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo#list"></iframe>
                     </div>
                     <div>
                         <h1>Sheet Music Archive</h1>
-                        <iframe loading="lazy" class='embed-drive-grid' src="https://drive.google.com/embeddedfolderview?id=17yYRfvu0f_EVc3kDF3RAV5SjsN3OaF0K#grid" title="Google drive folder" allowfullscreen></iframe>
+                        <iframe loading="lazy" class='embed-drive-grid' src="https://drive.google.com/embeddedfolderview?id=17yYRfvu0f_EVc3kDF3RAV5SjsN3OaF0K#grid"></iframe>
                     </div>                
                 </div>
             </section>

@@ -3089,11 +3089,6 @@ Events
     gap: calc(20 * var(--px));
     transition: 0.2s;
 }
-@media screen and (min-width: 900px) {
-    #event-body {
-        min-height: 100vh;
-    }
-}
 #event-header {
     display: flex;
     flex-direction: row;
@@ -3159,9 +3154,32 @@ Events
     filter: drop-shadow(0 0 5px rgba(150, 150, 255, 0.5));
 }
 
-#event-description {
+#event-description-container {
     color: rgb(222, 222, 222);
+    display: flex;
+    flex-direction: row;
+    gap: calc(20 * var(--px));
 }
+#event-description-body, #event-description {
+    display: flex;
+    flex-direction: column;
+    gap: calc(10 * var(--px));
+    width: 100%;
+}
+#event-description-img {
+    object-fit: contain;
+    object-position: top;
+    max-height: 100%;
+    max-width: 50%;
+}
+#event-description-iframe {
+    width: 100%;
+    background-color: white;
+    border: none;
+    border-radius: calc(10 * var(--px));
+    min-height: max(50%, 400px);
+}
+
 
 
 /*******************************
@@ -3203,6 +3221,16 @@ Concert widget
 #tab-concert-setlist, #tab-concert-performers {
     padding: calc(20 * var(--px));
     background-color: rgba(0, 0, 0, 0.15);
+}
+#tab-concert-poster {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+#tab-concert-poster img {
+    max-width: 100%;
+    max-height: min(100%, 80vh);
+    object-fit: contain;
 }
 #concert-items {
     display: grid;
@@ -3415,30 +3443,60 @@ Concert widget
     font-size: calc(16 * var(--px));
     letter-spacing: -1px;
 }
-
-@media screen and (max-width: 1100px) {
-    #tab-concert-video {
-        flex-direction: column;
-        height: auto;
-    }
-    #concert-video-embed {
-        width: 100%;
-        height: max(70vh, calc(400 * var(--px)));
-    }
-    #concert-video-chapters {
-        width: 100%;
-        height: auto;
-        display: grid;
-        grid-template-rows: 1fr 1fr 1fr;
-        grid-auto-flow: column;
-    }
-    #concert-video-chapters li {
-        min-width: calc(300 * var(--px));
+@media screen and (max-width: 1200px) {
+    #section-events:not(.section-events-no-sidebar) {
+        /* Sync with code in block below */
+        #tab-concert-video {
+            flex-direction: column;
+            height: auto;
+        }
+        #concert-video-embed {
+            width: 100%;
+            height: max(70vh, calc(400 * var(--px)));
+        }
+        #concert-video-chapters {
+            width: 100%;
+            height: auto;
+            display: grid;
+            grid-template-rows: 1fr 1fr 1fr;
+            grid-auto-flow: column;
+        }
+        #concert-video-chapters li {
+            min-width: calc(300 * var(--px));
+        }
+        #event-description-container {
+            flex-direction: column-reverse;
+            align-items: center;
+        }
+        #event-description-img {
+            max-width: 100%;
+            max-height: 50vh;
+        }
     }
 }
 @media screen and (max-width: 900px) {
     #section-events {
         flex-direction: column;
+
+        /* Sync with code in block above */
+        #tab-concert-video {
+            flex-direction: column;
+            height: auto;
+        }
+        #concert-video-embed {
+            width: 100%;
+            height: max(70vh, calc(400 * var(--px)));
+        }
+        #concert-video-chapters {
+            width: 100%;
+            height: auto;
+            display: grid;
+            grid-template-rows: 1fr 1fr 1fr;
+            grid-auto-flow: column;
+        }
+        #concert-video-chapters li {
+            min-width: calc(300 * var(--px));
+        }
     }
     #nav-events-sidebar, #nav-events-sidebar .toolbar, #nav-events {
         width: 100%;
@@ -3473,9 +3531,15 @@ Concert widget
         margin-top: 0;
     }
 }
+@media screen and (max-width: 400px) {
+    #nav-concert {
+        gap: calc(20 * var(--px));
+        letter-spacing: -0.5px;
+    }
+}
 @media screen and (max-width: 350px) {
     #nav-concert {
-        gap: calc(15 * var(--px));
+        gap: calc(10 * var(--px));
         letter-spacing: -1px;
     }
 }

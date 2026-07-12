@@ -36,12 +36,8 @@ const TAGS = {
 };
 
 const CURRENT_EVENT = {
-    id: 1,
-    links: {
-        poster: 'assets/images/posters/poster 2026-04.webp',
-        rvsp: '#',
-        setlist: 'https://lmc.moe/setlist',
-    },
+    id: 2,
+    rvsp: '#',
     hideBefore: '2025-01-01|12:24',
     hideAfter: '2026-08-01|00:00',
     location: '252 Bloor Street West (OISE C-162)',
@@ -68,7 +64,7 @@ const ANNOUNCEMENTS = [
     },
     {
         type: 'announcement',
-        text: 'The LMC is opening for its 3rd year this 2025-2026 Fall-Winter term! Our first meeting is at XX:XX pm at XXXX on Sept. XX. Come get a better idea of our club. No instruments needed. Click [this link](https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform) to become a member!',
+        text: 'The LMC is opening for its 3rd year this 2025-2026 Fall-Winter term! Our first meeting is at XX:XX pm at XXXX on Sept. XX. Come get a better idea of our club. No instruments needed. Click <a href="https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform" target="_blank">this link</a> to become a member!',
         from: '2025-01-01',
     }
 ].map((x, i) => ({...x, id: i}));
@@ -1243,7 +1239,9 @@ const MUSIC = [
         "composer": "Aimer",
         "from": "Demon Slayer",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=tLQLa6lM3Us&pp",
+        "references": [
+            "https://www.youtube.com/watch?v=tLQLa6lM3Us&pp"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -1283,7 +1281,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     2
                 ],
                 "sheetMusic": "#",
@@ -1297,7 +1295,9 @@ const MUSIC = [
         "composer": "Kana Hanazawa",
         "from": "Bakemonogatari",
         "mediaOrigin": "Anime",
-        "reference": "https://youtu.be/uKxyLmbOc0Q?si=-Zun1LXR44xKox1Z",
+        "references": [
+            "https://youtu.be/uKxyLmbOc0Q?si=-Zun1LXR44xKox1Z"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -1337,7 +1337,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     9
                 ],
                 "sheetMusic": "#",
@@ -1351,7 +1351,9 @@ const MUSIC = [
         "composer": "Masayuki Suzuki ft. Airi Suzuki",
         "from": "Kaguya-sama: Love is War",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=2Od7QCsyqkE&pp",
+        "references": [
+            "https://www.youtube.com/watch?v=2Od7QCsyqkE&pp"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -1391,7 +1393,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     3
                 ],
                 "sheetMusic": "#",
@@ -1405,7 +1407,9 @@ const MUSIC = [
         "composer": "Bart Howard",
         "from": "Neon Genesis Evangelion",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=w2xi6Qjv8mw",
+        "references": [
+            "https://www.youtube.com/watch?v=w2xi6Qjv8mw"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -1442,7 +1446,9 @@ const MUSIC = [
         "name": "Moonlight Stage",
         "composer": "GYARI",
         "mediaOrigin": "Vocaloid",
-        "reference": "https://www.youtube.com/watch?v=TTk6C8ADgcU",
+        "references": [
+            "https://www.youtube.com/watch?v=TTk6C8ADgcU"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -1478,7 +1484,9 @@ const MUSIC = [
         "composer": "Dave Rogers",
         "from": "Initial D",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=UT7O7FyUbxA&pp",
+        "references": [
+            "https://www.youtube.com/watch?v=UT7O7FyUbxA&pp"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -1506,7 +1514,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     0
                 ],
                 "songType": "Small"
@@ -1519,7 +1527,9 @@ const MUSIC = [
         "composer": "Milet",
         "from": "Frieren: Beyond Journey's End",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=r105CzDvoo0&pp",
+        "references": [
+            "https://www.youtube.com/watch?v=r105CzDvoo0&pp"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -1552,7 +1562,9 @@ const MUSIC = [
         "composer": "M2U",
         "from": "Deemo",
         "mediaOrigin": "Video Game",
-        "reference": "https://youtu.be/39EzeqzlwVY?si=vcJtk6j0CIhS97K-",
+        "references": [
+            "https://youtu.be/39EzeqzlwVY?si=vcJtk6j0CIhS97K-"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -1575,7 +1587,9 @@ const MUSIC = [
         "composer": "Mili",
         "from": "Library Of Ruina",
         "mediaOrigin": "Video Game",
-        "reference": "https://www.youtube.com/watch?v=Dca9gJyjoAg&pp",
+        "references": [
+            "https://www.youtube.com/watch?v=Dca9gJyjoAg&pp"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -1605,7 +1619,9 @@ const MUSIC = [
         "id": 9,
         "name": "Droit dans le soleil",
         "composer": "Détroit",
-        "reference": "https://youtu.be/MoXNwGKA8cg?si=oVC4CrezCIxnvGie",
+        "references": [
+            "https://youtu.be/MoXNwGKA8cg?si=oVC4CrezCIxnvGie"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -1638,7 +1654,9 @@ const MUSIC = [
         "composer": "Shirō Sagisu",
         "from": "Neon Genesis Evangelion",
         "mediaOrigin": "Anime",
-        "reference": "https://youtu.be/hoKluzn07eQ?si=QRBOh6tGD1CbTn5M",
+        "references": [
+            "https://youtu.be/hoKluzn07eQ?si=QRBOh6tGD1CbTn5M"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -1671,7 +1689,9 @@ const MUSIC = [
         "composer": "Laszlo Vincze",
         "from": "Chicken Police",
         "mediaOrigin": "Video Game",
-        "reference": "https://youtu.be/9KA-sZSU5iQ?si=aC2VUNUSpc5aAZDG",
+        "references": [
+            "https://youtu.be/9KA-sZSU5iQ?si=aC2VUNUSpc5aAZDG"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -1701,7 +1721,9 @@ const MUSIC = [
         "composer": "Toby Fox",
         "from": "Undertale",
         "mediaOrigin": "Video Game",
-        "reference": "https://www.youtube.com/watch?v=XJ9XtKJHvjQ",
+        "references": [
+            "https://www.youtube.com/watch?v=XJ9XtKJHvjQ"
+        ],
         "performances": [
             {
                 "concerts": [],
@@ -1717,7 +1739,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     9
                 ],
                 "songType": "Small",
@@ -1731,7 +1753,9 @@ const MUSIC = [
         "composer": "Toby Fox",
         "from": "Undertale",
         "mediaOrigin": "Video Game",
-        "reference": "https://www.youtube.com/watch?v=qeDIZCc6Cyo",
+        "references": [
+            "https://www.youtube.com/watch?v=qeDIZCc6Cyo"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -1773,7 +1797,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     9
                 ],
                 "sheetMusic": "#",
@@ -1787,7 +1811,9 @@ const MUSIC = [
         "composer": "CODA",
         "from": "JoJo's Bizarre Adventure",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=hmpJqJLsR48",
+        "references": [
+            "https://www.youtube.com/watch?v=hmpJqJLsR48"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -1829,7 +1855,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     3
                 ],
                 "sheetMusic": "#",
@@ -1843,7 +1869,9 @@ const MUSIC = [
         "composer": "Cö shu Nie",
         "from": "The Promised Neverland",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=6WNk9yMNovs",
+        "references": [
+            "https://www.youtube.com/watch?v=6WNk9yMNovs"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -1888,7 +1916,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     2
                 ],
                 "sheetMusic": "#",
@@ -1902,7 +1930,9 @@ const MUSIC = [
         "composer": "ALI",
         "from": "Beastars",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=u5heWZ9occg",
+        "references": [
+            "https://www.youtube.com/watch?v=u5heWZ9occg"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -1931,7 +1961,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     "OpticWattz"
                 ],
                 "songType": "Small"
@@ -1942,7 +1972,9 @@ const MUSIC = [
         "id": 17,
         "name": "But Not for Me",
         "composer": "Chet Baker",
-        "reference": "https://www.youtube.com/watch?v=R_f_mMJAezM",
+        "references": [
+            "https://www.youtube.com/watch?v=R_f_mMJAezM"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -1973,7 +2005,9 @@ const MUSIC = [
         "composer": "Akeboshi",
         "from": "Naruto",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=WqGOaOHu5uY",
+        "references": [
+            "https://www.youtube.com/watch?v=WqGOaOHu5uY"
+        ],
         "performances": [
             {
                 "concerts": [],
@@ -1992,7 +2026,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     9
                 ],
                 "songType": "Small",
@@ -2020,7 +2054,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 1,
-                "arranger": [
+                "arrangers": [
                     9
                 ],
                 "sheetMusic": "#",
@@ -2034,7 +2068,9 @@ const MUSIC = [
         "composer": "Rocky Chack",
         "from": "Spice and Wolf",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=hO5KQgFjIxI",
+        "references": [
+            "https://www.youtube.com/watch?v=hO5KQgFjIxI"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2065,7 +2101,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     3
                 ],
                 "songType": "Small"
@@ -2078,7 +2114,9 @@ const MUSIC = [
         "composer": "Dawid Podsiadło",
         "from": "Cyberpunk Edgerunners",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=yBuHEV44s3Y",
+        "references": [
+            "https://www.youtube.com/watch?v=yBuHEV44s3Y"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2110,7 +2148,9 @@ const MUSIC = [
         "id": 21,
         "name": "Midnight Rendez-Vous",
         "composer": "CASIOPEA",
-        "reference": "https://www.youtube.com/watch?v=4Hvvltt7d-U",
+        "references": [
+            "https://www.youtube.com/watch?v=4Hvvltt7d-U"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2136,7 +2176,9 @@ const MUSIC = [
         "id": 22,
         "name": "From the Start",
         "composer": "Laufey",
-        "reference": "https://www.youtube.com/watch?v=lSD_L-xic9o",
+        "references": [
+            "https://www.youtube.com/watch?v=lSD_L-xic9o"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2170,7 +2212,10 @@ const MUSIC = [
         "composer": "TK from Ling Tosite Sigure",
         "from": "Tokyo Ghoul",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=Fve_lHIPa-I, https://www.youtube.com/watch?v=sEQf5lcnj_o",
+        "references": [
+            "https://www.youtube.com/watch?v=Fve_lHIPa-I",
+            "https://www.youtube.com/watch?v=sEQf5lcnj_o"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2182,7 +2227,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     "Animenz"
                 ],
                 "sheetMusic": "#",
@@ -2195,7 +2240,9 @@ const MUSIC = [
         "id": 24,
         "name": "world.execute(me); (Key Ingredient ver.)",
         "composer": "Mili",
-        "reference": "https://www.youtube.com/watch?v=JB5gfmWQzSA",
+        "references": [
+            "https://www.youtube.com/watch?v=JB5gfmWQzSA"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2210,7 +2257,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     2
                 ],
                 "songType": "Small"
@@ -2223,7 +2270,9 @@ const MUSIC = [
         "composer": "ENOZ",
         "from": "The Melancholy of Haruhi Suzumiya",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=5QNaSMiZ_-o",
+        "references": [
+            "https://www.youtube.com/watch?v=5QNaSMiZ_-o"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2258,7 +2307,10 @@ const MUSIC = [
         "composer": "Asian Kung-Fu Generation",
         "from": "Erased",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=PiIAVnFX2eo, https://www.youtube.com/watch?v=_v_Voe5KD1M",
+        "references": [
+            "https://www.youtube.com/watch?v=PiIAVnFX2eo",
+            "https://www.youtube.com/watch?v=_v_Voe5KD1M"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2293,7 +2345,10 @@ const MUSIC = [
         "composer": "Asian Kung-Fu Generation",
         "from": "Bocchi the Rock",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=E5O0mCrUdAM, https://www.youtube.com/watch?v=rDTFSD9K9dA",
+        "references": [
+            "https://www.youtube.com/watch?v=E5O0mCrUdAM",
+            "https://www.youtube.com/watch?v=rDTFSD9K9dA"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2328,7 +2383,9 @@ const MUSIC = [
         "composer": "Oasis",
         "from": "Higashi no Eden",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=L5BDyjgbjPU",
+        "references": [
+            "https://www.youtube.com/watch?v=L5BDyjgbjPU"
+        ],
         "performances": [
             {
                 "concerts": [],
@@ -2350,7 +2407,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     9
                 ],
                 "songType": "Small",
@@ -2364,7 +2421,9 @@ const MUSIC = [
         "composer": "Tatsuya Kitani",
         "from": "Go! Go! Loser Ranger",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=O3ZYjfMqAsc",
+        "references": [
+            "https://www.youtube.com/watch?v=O3ZYjfMqAsc"
+        ],
         "performances": [
             {
                 "concerts": [],
@@ -2389,7 +2448,10 @@ const MUSIC = [
         "composer": "Laura Shigihara",
         "from": "Plants vs. Zombies",
         "mediaOrigin": "Video Game",
-        "reference": "https://www.youtube.com/watch?v=lr4vi_XAjQQ, https://www.youtube.com/watch?v=qVhEcqUU4TI",
+        "references": [
+            "https://www.youtube.com/watch?v=lr4vi_XAjQQ",
+            "https://www.youtube.com/watch?v=qVhEcqUU4TI"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2436,7 +2498,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     3,
                     9
                 ],
@@ -2450,7 +2512,9 @@ const MUSIC = [
         "name": "Rubato",
         "composer": "Yorushika",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=3J5uLk1DJV0",
+        "references": [
+            "https://www.youtube.com/watch?v=3J5uLk1DJV0"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2484,7 +2548,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     1
                 ],
                 "songType": "Small"
@@ -2497,7 +2561,9 @@ const MUSIC = [
         "composer": "Christopher Larkin",
         "from": "Hollow Knight",
         "mediaOrigin": "Video Game",
-        "reference": "https://www.youtube.com/watch?v=RVyJmhiJjA8",
+        "references": [
+            "https://www.youtube.com/watch?v=RVyJmhiJjA8"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2532,7 +2598,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     35
                 ],
                 "songType": "Small"
@@ -2545,7 +2611,9 @@ const MUSIC = [
         "composer": "Atsushi Kitajoh",
         "from": "Persona 3",
         "mediaOrigin": "Video Game",
-        "reference": "https://www.youtube.com/watch?v=2KuWjZD6PBA",
+        "references": [
+            "https://www.youtube.com/watch?v=2KuWjZD6PBA"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2580,7 +2648,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     2
                 ],
                 "songType": "Small"
@@ -2593,7 +2661,9 @@ const MUSIC = [
         "composer": "ACE+",
         "from": "Xenoblade Chronicles",
         "mediaOrigin": "Video Game",
-        "reference": "https://youtu.be/Jln_KBWFvfw?si=AV1oPH5PuyghLSO6",
+        "references": [
+            "https://youtu.be/Jln_KBWFvfw?si=AV1oPH5PuyghLSO6"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2617,7 +2687,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     9
                 ],
                 "songType": "Small",
@@ -2631,7 +2701,9 @@ const MUSIC = [
         "composer": "Yoko Kanno",
         "from": "Sakamichi no Apollon",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=gDzi8N3BYMw",
+        "references": [
+            "https://www.youtube.com/watch?v=gDzi8N3BYMw"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2656,7 +2728,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     13
                 ],
                 "songType": "Small"
@@ -2667,7 +2739,9 @@ const MUSIC = [
         "id": 36,
         "name": "Beaches of Maceio",
         "composer": "Kaizyu (Original Piece)",
-        "reference": "https://www.youtube.com/watch?v=aVASIbpXAWs",
+        "references": [
+            "https://www.youtube.com/watch?v=aVASIbpXAWs"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2699,7 +2773,10 @@ const MUSIC = [
         "id": 37,
         "name": "My Way",
         "composer": "Jacques Revaux, Gilles Thibaut, & Claude François",
-        "reference": "https://www.youtube.com/watch?v=eKN7ffwEBmg, https://www.youtube.com/watch?v=qjpRSREHX1Y",
+        "references": [
+            "https://www.youtube.com/watch?v=eKN7ffwEBmg",
+            "https://www.youtube.com/watch?v=qjpRSREHX1Y"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2728,7 +2805,9 @@ const MUSIC = [
         "composer": "Kessoku Band",
         "from": "Bocchi the Rock",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=q-bCp4MxuYU",
+        "references": [
+            "https://www.youtube.com/watch?v=q-bCp4MxuYU"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2761,7 +2840,9 @@ const MUSIC = [
         "name": "Black Sheep",
         "composer": "Metric",
         "from": "Scott Pilgrim vs. the World",
-        "reference": "https://www.youtube.com/watch?v=1xcSDYy3Dl4",
+        "references": [
+            "https://www.youtube.com/watch?v=1xcSDYy3Dl4"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2794,7 +2875,9 @@ const MUSIC = [
         "id": 40,
         "name": "La Sentinelle",
         "composer": "Luke",
-        "reference": "https://www.youtube.com/watch?v=0NUqL1bvAis",
+        "references": [
+            "https://www.youtube.com/watch?v=0NUqL1bvAis"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2824,7 +2907,9 @@ const MUSIC = [
         "name": "Doom Crossing: Eternal Horizons",
         "composer": "The Chalkeaters",
         "mediaOrigin": "Video Game",
-        "reference": "https://www.youtube.com/watch?v=U4lz8MN6MQA",
+        "references": [
+            "https://www.youtube.com/watch?v=U4lz8MN6MQA"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2857,7 +2942,9 @@ const MUSIC = [
         "composer": "JO☆STARS",
         "from": "JoJo's Bizarre Adventure",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=BPyQM7FmG8g",
+        "references": [
+            "https://www.youtube.com/watch?v=BPyQM7FmG8g"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2884,7 +2971,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     3
                 ],
                 "songType": "Small"
@@ -2897,7 +2984,9 @@ const MUSIC = [
         "composer": "Ho-kago Tea Time",
         "from": "K-On!",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=mpb2pQtGb5A",
+        "references": [
+            "https://www.youtube.com/watch?v=mpb2pQtGb5A"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2933,7 +3022,9 @@ const MUSIC = [
         "id": 44,
         "name": "Bremen",
         "composer": "Yorushika",
-        "reference": "https://youtu.be/BuBjSciSdO8?si=QsZHQbZb4B7PaNUi",
+        "references": [
+            "https://youtu.be/BuBjSciSdO8?si=QsZHQbZb4B7PaNUi"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -2971,7 +3062,9 @@ const MUSIC = [
         "composer": "Supercell",
         "from": "Bakemonogatari",
         "mediaOrigin": "Anime",
-        "reference": "https://youtu.be/jpV5jeFlt_E?si=GADr3m-yMBZS5QQ-",
+        "references": [
+            "https://youtu.be/jpV5jeFlt_E?si=GADr3m-yMBZS5QQ-"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3009,7 +3102,9 @@ const MUSIC = [
         "composer": "Roselia",
         "from": "BanG Dream!",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=gZqpgrL6JTI",
+        "references": [
+            "https://www.youtube.com/watch?v=gZqpgrL6JTI"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3047,7 +3142,9 @@ const MUSIC = [
         "composer": "ALI feat. AKLO",
         "from": "Jujustu Kaisen",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/channel/UCnYvfe8YHnRRly5SCA8mP5A",
+        "references": [
+            "https://www.youtube.com/watch?v=tLsJQ5srVQA"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3091,7 +3188,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     2
                 ],
                 "sheetMusic": "#",
@@ -3105,7 +3202,9 @@ const MUSIC = [
         "composer": "Deep Cut",
         "from": "Splatoon 3",
         "mediaOrigin": "Video Game",
-        "reference": "https://www.youtube.com/watch?v=DtMOAvOWTvY",
+        "references": [
+            "https://www.youtube.com/watch?v=DtMOAvOWTvY"
+        ],
         "performances": [
             {
                 "concerts": [],
@@ -3133,7 +3232,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     9
                 ],
                 "songType": "Small",
@@ -3145,7 +3244,9 @@ const MUSIC = [
         "id": 49,
         "name": "Naimononedari",
         "composer": "KANA-BOON",
-        "reference": "https://www.youtube.com/watch?v=R2OvE1oX_fs",
+        "references": [
+            "https://www.youtube.com/watch?v=R2OvE1oX_fs"
+        ],
         "performances": [
             {
                 "concerts": [],
@@ -3165,6 +3266,9 @@ const MUSIC = [
         "id": 50,
         "name": "Dreamer",
         "composer": "Laufey",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3190,7 +3294,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     3
                 ],
                 "songType": "Small"
@@ -3203,7 +3307,9 @@ const MUSIC = [
         "composer": "Hidetoshi Satō",
         "from": "Neon Genesis Evangelion",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=CZQ1pTMAXN0",
+        "references": [
+            "https://www.youtube.com/watch?v=CZQ1pTMAXN0"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3225,7 +3331,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     3
                 ],
                 "songType": "Small"
@@ -3277,7 +3383,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 1,
-                "arranger": [
+                "arrangers": [
                     3
                 ],
                 "sheetMusic": "#",
@@ -3289,7 +3395,9 @@ const MUSIC = [
         "id": 52,
         "name": "AM4:50",
         "composer": "downt",
-        "reference": "https://www.youtube.com/watch?v=Gnn7dhnWito",
+        "references": [
+            "https://www.youtube.com/watch?v=Gnn7dhnWito"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3323,7 +3431,9 @@ const MUSIC = [
         "id": 53,
         "name": "artsick",
         "composer": "tricot",
-        "reference": "https://www.youtube.com/watch?v=G9xfiwX803U",
+        "references": [
+            "https://www.youtube.com/watch?v=G9xfiwX803U"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3358,7 +3468,9 @@ const MUSIC = [
         "composer": "Zutomayo",
         "from": "The Promised Neverland",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=258qUAI7rck",
+        "references": [
+            "https://www.youtube.com/watch?v=258qUAI7rck"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3379,7 +3491,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     55
                 ],
                 "songType": "Small"
@@ -3392,7 +3504,9 @@ const MUSIC = [
         "composer": "Yoko Kanno",
         "from": "Cowboy Bebop",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=EL-D9LrFJd4",
+        "references": [
+            "https://www.youtube.com/watch?v=EL-D9LrFJd4"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3424,7 +3538,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     27
                 ],
                 "songType": "Small"
@@ -3437,7 +3551,9 @@ const MUSIC = [
         "composer": "Mitsuharu Fukuyama",
         "from": "Yakuza",
         "mediaOrigin": "Video Game",
-        "reference": "https://www.youtube.com/watch?v=g3jCAyPai2Y",
+        "references": [
+            "https://www.youtube.com/watch?v=g3jCAyPai2Y"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3475,7 +3591,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     27
                 ],
                 "songType": "Small"
@@ -3486,7 +3602,9 @@ const MUSIC = [
         "id": 57,
         "name": "Roki",
         "composer": "Mikito-P",
-        "reference": "https://www.youtube.com/watch?v=Xg-qfsKN2_E",
+        "references": [
+            "https://www.youtube.com/watch?v=Xg-qfsKN2_E"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3521,7 +3639,9 @@ const MUSIC = [
         "composer": "Ho-kago Tea Time",
         "from": "K-On!",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=ba0juE9ROCg",
+        "references": [
+            "https://www.youtube.com/watch?v=ba0juE9ROCg"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3558,7 +3678,9 @@ const MUSIC = [
         "composer": "Tenmon",
         "from": "Link Click",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=l8ormx3BVTI",
+        "references": [
+            "https://www.youtube.com/watch?v=l8ormx3BVTI"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3580,7 +3702,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     27
                 ],
                 "songType": "Small"
@@ -3591,7 +3713,9 @@ const MUSIC = [
         "id": 60,
         "name": "Just the Two of Us",
         "composer": "Bill Withers, William Salter, & Ralph MacDonald",
-        "reference": "https://www.youtube.com/watch?v=Uw5OLnN7UvM",
+        "references": [
+            "https://www.youtube.com/watch?v=Uw5OLnN7UvM"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3619,7 +3743,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     3
                 ],
                 "songType": "Small"
@@ -3632,7 +3756,9 @@ const MUSIC = [
         "composer": "Zutomayo",
         "from": "Drifting Home",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=OxcnK1s2Fww",
+        "references": [
+            "https://www.youtube.com/watch?v=OxcnK1s2Fww"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3666,7 +3792,9 @@ const MUSIC = [
         "composer": "Daoko",
         "from": "Fireworks",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=-tKVN2mAKRI",
+        "references": [
+            "https://www.youtube.com/watch?v=-tKVN2mAKRI"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3708,7 +3836,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     2
                 ],
                 "sheetMusic": "#",
@@ -3722,7 +3850,9 @@ const MUSIC = [
         "composer": "Furui Riho",
         "from": "City the Animation",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=JxyACq69HgA",
+        "references": [
+            "https://www.youtube.com/watch?v=JxyACq69HgA"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3760,7 +3890,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     3
                 ],
                 "sheetMusic": "#",
@@ -3773,7 +3903,9 @@ const MUSIC = [
         "name": "Love Like You",
         "composer": "Aivi & Surasshu ft. Rebecca Sugar",
         "from": "Steven Universe",
-        "reference": "https://www.youtube.com/watch?v=9vPYLsjVc-M",
+        "references": [
+            "https://www.youtube.com/watch?v=9vPYLsjVc-M"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3805,6 +3937,9 @@ const MUSIC = [
         "id": 65,
         "name": "Autumn Leaves",
         "composer": "Joseph Kosma",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3842,7 +3977,9 @@ const MUSIC = [
         "composer": "Radwimps & Kazuma Jinnouchi ft. Toaka",
         "from": "Suzume",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=Xs0Lxif1u9E",
+        "references": [
+            "https://www.youtube.com/watch?v=Xs0Lxif1u9E"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3863,7 +4000,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     9
                 ],
                 "songType": "Small"
@@ -3876,7 +4013,9 @@ const MUSIC = [
         "composer": "Go Ichinose, Hitomi Sato & Hiromitsu Maeba",
         "from": "Pokemon Legends: Arceus",
         "mediaOrigin": "Video Game",
-        "reference": "https://www.youtube.com/watch?v=0yqm7vrCp-g&t=7s",
+        "references": [
+            "https://www.youtube.com/watch?v=0yqm7vrCp-g&t=7s"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3901,7 +4040,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     9
                 ],
                 "songType": "Small"
@@ -3912,7 +4051,9 @@ const MUSIC = [
         "id": 68,
         "name": "Parfum d'étoiles",
         "composer": "Ichiko Aoba",
-        "reference": "https://www.youtube.com/channel/UCcwOodzn176V5S11rufTUgA",
+        "references": [
+            "https://www.youtube.com/watch?v=G3_WW8XRqes"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3933,7 +4074,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     9
                 ],
                 "songType": "Small"
@@ -3946,7 +4087,10 @@ const MUSIC = [
         "composer": "Toby Fox",
         "from": "Deltarune",
         "mediaOrigin": "Video Game",
-        "reference": "https://www.youtube.com/watch?v=cNG0Ay3B3Mk, https://www.youtube.com/watch?v=7f1RK1m7qvc",
+        "references": [
+            "https://www.youtube.com/watch?v=cNG0Ay3B3Mk",
+            "https://www.youtube.com/watch?v=7f1RK1m7qvc"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -3977,7 +4121,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     9
                 ],
                 "songType": "Small"
@@ -3989,7 +4133,9 @@ const MUSIC = [
         "name": "Sayonara, Mata Itsuka!",
         "composer": "Kenshi Yonezu",
         "from": "The Tiger and Her Wings",
-        "reference": "https://www.youtube.com/watch?v=-wb2PAx6aEs",
+        "references": [
+            "https://www.youtube.com/watch?v=-wb2PAx6aEs"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4018,7 +4164,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     9
                 ],
                 "songType": "Small"
@@ -4031,7 +4177,10 @@ const MUSIC = [
         "composer": "μ's",
         "from": "Love Live! School Idol Project",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=OzGVz1ClxIc, https://www.youtube.com/watch?v=Z4KmL4KI0cQ",
+        "references": [
+            "https://www.youtube.com/watch?v=OzGVz1ClxIc",
+            "https://www.youtube.com/watch?v=Z4KmL4KI0cQ"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4043,7 +4192,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     "Animenz"
                 ],
                 "sheetMusic": "#",
@@ -4057,7 +4206,9 @@ const MUSIC = [
         "composer": "Zutomayo",
         "from": "Dandadan",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=IeyCdm9WwXM",
+        "references": [
+            "https://www.youtube.com/watch?v=IeyCdm9WwXM"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4101,7 +4252,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     2
                 ],
                 "sheetMusic": "#",
@@ -4115,7 +4266,9 @@ const MUSIC = [
         "composer": "Goose House",
         "from": "Your Lie in April",
         "mediaOrigin": "Anime",
-        "reference": "https://www.youtube.com/watch?v=c6rCRy6SrtU",
+        "references": [
+            "https://www.youtube.com/watch?v=c6rCRy6SrtU"
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4172,7 +4325,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     9
                 ],
                 "sheetMusic": "#",
@@ -4184,6 +4337,9 @@ const MUSIC = [
         "id": 74,
         "name": "Misty",
         "composer": "Erroll Garner",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4216,6 +4372,9 @@ const MUSIC = [
         "id": 75,
         "name": "Mr. Eclectic",
         "composer": "Laufey",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4245,6 +4404,9 @@ const MUSIC = [
         "id": 76,
         "name": "Isn't She Lovely",
         "composer": "Stevie Wonder",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4280,6 +4442,9 @@ const MUSIC = [
         "id": 77,
         "name": "Hit the Road Jack",
         "composer": "Ray Charles",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4303,7 +4468,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     3
                 ],
                 "songType": "Small"
@@ -4314,6 +4479,9 @@ const MUSIC = [
         "id": 78,
         "name": "September",
         "composer": "Earth, Wind & Fire",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4342,6 +4510,9 @@ const MUSIC = [
         "id": 79,
         "name": "Somewhere Only We Know",
         "composer": "Keane",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4371,6 +4542,9 @@ const MUSIC = [
         "name": "What It Sounds Like",
         "composer": "HUNTR/X",
         "from": "KPop Demon Hunters",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4393,6 +4567,9 @@ const MUSIC = [
         "id": 81,
         "name": "Landslide (Tiny Habits ver.)",
         "composer": "Fleetwood Mac",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4418,6 +4595,9 @@ const MUSIC = [
         "id": 82,
         "name": "Layla",
         "composer": "Yostudomenoddy",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4450,6 +4630,9 @@ const MUSIC = [
         "composer": "Mili",
         "from": "Library of Ruina",
         "mediaOrigin": "Video Game",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4474,6 +4657,9 @@ const MUSIC = [
         "composer": "Mili",
         "from": "Library of Ruina",
         "mediaOrigin": "Video Game",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4496,6 +4682,9 @@ const MUSIC = [
         "id": 85,
         "name": "Concerto 1",
         "composer": "Peter Wang (Original Piece)",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4517,6 +4706,9 @@ const MUSIC = [
         "composer": "Kent Watari",
         "from": "Link Click",
         "mediaOrigin": "Anime",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4537,7 +4729,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     27
                 ],
                 "songType": "Small"
@@ -4550,6 +4742,9 @@ const MUSIC = [
         "composer": "Takahiro Obata",
         "from": "The Promised Neverland",
         "mediaOrigin": "Anime",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4570,7 +4765,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     27
                 ],
                 "songType": "Small"
@@ -4582,6 +4777,9 @@ const MUSIC = [
         "name": "ODDS&ENDS",
         "composer": "ryo (supercell) ft. Hatsune Miku",
         "mediaOrigin": "Vocaloid",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4615,6 +4813,9 @@ const MUSIC = [
         "name": "Moonsetter",
         "composer": "Toby Fox",
         "from": "Homestuck",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4632,7 +4833,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     9
                 ],
                 "songType": "Small"
@@ -4645,6 +4846,9 @@ const MUSIC = [
         "composer": "Taro Umebayashi",
         "from": "Yuri!!! on ICE",
         "mediaOrigin": "Anime",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4668,7 +4872,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     9
                 ],
                 "songType": "Small"
@@ -4681,6 +4885,9 @@ const MUSIC = [
         "composer": "Ho-kago Tea Time",
         "from": "K-On!",
         "mediaOrigin": "Anime",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4700,6 +4907,9 @@ const MUSIC = [
         "id": 92,
         "name": "Bartender",
         "composer": "Ngọt",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4732,6 +4942,9 @@ const MUSIC = [
         "id": 93,
         "name": "Mất Tích",
         "composer": "Ngọt",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4764,6 +4977,9 @@ const MUSIC = [
         "id": 94,
         "name": "Mơ Làm Ma",
         "composer": "Ngọt ft. Thỏ Traum",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4795,6 +5011,9 @@ const MUSIC = [
         "composer": "Kubo Yurika, Minase Inori, Seto Asami, Tanezaki Atsumi, Touyama Nao, & Uchida Maaya",
         "from": "Rascal Does Not Dream of Bunny Girl Senpai",
         "mediaOrigin": "Anime",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4834,7 +5053,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     3
                 ],
                 "songType": "Large"
@@ -4847,6 +5066,9 @@ const MUSIC = [
         "composer": "Unison Square Garden",
         "from": "Kekkai Sensen",
         "mediaOrigin": "Anime",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4877,6 +5099,9 @@ const MUSIC = [
         "composer": "Kensuke Ushio",
         "from": "Chainsaw Man Movie: Reze Arc",
         "mediaOrigin": "Anime",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4896,6 +5121,9 @@ const MUSIC = [
         "id": 98,
         "name": "Dawn in the Adan",
         "composer": "Ichiko Aoba",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4922,6 +5150,9 @@ const MUSIC = [
         "id": 99,
         "name": "Scarz",
         "composer": "Novulent",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4953,6 +5184,9 @@ const MUSIC = [
         "composer": "Linked Horizon",
         "from": "Attack on Titan",
         "mediaOrigin": "Anime",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -4988,7 +5222,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     27,
                     77
                 ],
@@ -5000,6 +5234,9 @@ const MUSIC = [
         "id": 101,
         "name": "That's Why I Quit Music",
         "composer": "Yorushika",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5031,6 +5268,9 @@ const MUSIC = [
         "id": 102,
         "name": "Itte",
         "composer": "Yorushika",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5064,6 +5304,9 @@ const MUSIC = [
         "composer": "Koji Kondo",
         "from": "Super Mario Sunshine",
         "mediaOrigin": "Video Game",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5105,7 +5348,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     "8-Bit Big Band"
                 ],
                 "group": "LMC Jazz Group",
@@ -5117,6 +5360,9 @@ const MUSIC = [
         "id": 104,
         "name": "Jinsei wa Yume Darake (Ma Vie, Mes Rêves)",
         "composer": "Sheena Ringo",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5155,7 +5401,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     3
                 ],
                 "group": "LMC Jazz Group",
@@ -5169,6 +5415,9 @@ const MUSIC = [
         "composer": "Naoto Kubo",
         "from": "Super Mario Odyssey",
         "mediaOrigin": "Video Game",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5207,7 +5456,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     "Brandon Douglas"
                 ],
                 "group": "LMC Jazz Group",
@@ -5221,6 +5470,9 @@ const MUSIC = [
         "composer": "Aimer",
         "from": "Fate/Stay Night: Unlimited Blade Works",
         "mediaOrigin": "Anime",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5253,6 +5505,9 @@ const MUSIC = [
         "name": "Love Trial",
         "composer": "40mP ft. Hatsune Miku",
         "mediaOrigin": "Vocaloid",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5286,6 +5541,9 @@ const MUSIC = [
         "composer": "centimillimental",
         "from": "Given",
         "mediaOrigin": "Anime",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5316,6 +5574,9 @@ const MUSIC = [
         "composer": "Yugo Kanno",
         "from": "Jojo's Bizarre Adventure",
         "mediaOrigin": "Anime",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5357,7 +5618,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     27
                 ],
                 "songType": "Large"
@@ -5370,6 +5631,9 @@ const MUSIC = [
         "composer": "Darren Korb",
         "from": "Hades II",
         "mediaOrigin": "Video Game",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5401,6 +5665,9 @@ const MUSIC = [
         "id": 111,
         "name": "Plastic Love",
         "composer": "Mariya Takeuchi",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5446,7 +5713,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     9
                 ],
                 "songType": "Large"
@@ -5459,6 +5726,9 @@ const MUSIC = [
         "composer": "Ryo Nagamatsu",
         "from": "Wii Sports Resort",
         "mediaOrigin": "Video Game",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5497,7 +5767,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     13
                 ],
                 "songType": "Large"
@@ -5510,6 +5780,9 @@ const MUSIC = [
         "composer": "Kenji Hiramatsu",
         "from": "Xenoblade Chronicles 2: Torna ~ The Golden Country",
         "mediaOrigin": "Video Game",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5539,7 +5812,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     9
                 ],
                 "songType": "Small"
@@ -5552,6 +5825,9 @@ const MUSIC = [
         "composer": "ACE+",
         "from": "Xenoblade Chronicles",
         "mediaOrigin": "Video Game",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5566,7 +5842,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     9
                 ],
                 "songType": "Small"
@@ -5579,6 +5855,9 @@ const MUSIC = [
         "composer": "Yuka Tsujiyoko & Yoshito Sekigawa",
         "from": "Paper Mario: The Thousand-Year Door",
         "mediaOrigin": "Video Game",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5626,7 +5905,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     9
                 ],
                 "songType": "Small"
@@ -5639,6 +5918,9 @@ const MUSIC = [
         "composer": "DYLZAL",
         "from": "Undertale Yellow",
         "mediaOrigin": "Video Game",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5662,7 +5944,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     13
                 ],
                 "songType": "Small"
@@ -5673,6 +5955,9 @@ const MUSIC = [
         "id": 117,
         "name": "Kẻ Thù",
         "composer": "Ngọt",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5702,6 +5987,9 @@ const MUSIC = [
         "id": 118,
         "name": "Kokudou Slope",
         "composer": "Kinoko Teikoku",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5731,6 +6019,9 @@ const MUSIC = [
         "id": 119,
         "name": "Last Train at 25 O'Clock",
         "composer": "Lamp",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5775,6 +6066,9 @@ const MUSIC = [
         "name": "Moudoku ga Osou",
         "composer": "Hifumi ft. Hatsune Miku",
         "mediaOrigin": "Vocaloid",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5804,6 +6098,9 @@ const MUSIC = [
         "name": "Aishite Aishite Aishite",
         "composer": "Kikuo ft. Hatsune Miku",
         "mediaOrigin": "Vocaloid",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5852,7 +6149,7 @@ const MUSIC = [
                     ]
                 },
                 "id": 0,
-                "arranger": [
+                "arrangers": [
                     2
                 ],
                 "songType": "Large"
@@ -5865,6 +6162,9 @@ const MUSIC = [
         "composer": "SiM",
         "from": "Attack on Titan",
         "mediaOrigin": "Anime",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5898,6 +6198,9 @@ const MUSIC = [
         "composer": "Ai Furihata, Aguri Ōnishi, & Wakana Okuma",
         "from": "Love Live!",
         "mediaOrigin": "Anime",
+        "references": [
+            ""
+        ],
         "performances": [
             {
                 "concerts": [
@@ -5939,7 +6242,7 @@ const EVENTS = [
         "type": "External",
         "name": "Genshiken Festival 2024",
         "location": "",
-        "description": "A one-day anime convention organized by students from a variety of Ontario University Anime Clubs",
+        "description": ["A one-day anime convention organized by students from a variety of Ontario University Anime Clubs"],
         "start": "2024-03-23|00:00",
         "end": "2024-03-23|23:59",
         "setlist": [
@@ -5953,7 +6256,7 @@ const EVENTS = [
         "type": "Concert",
         "name": "UT-SAMA 20th Anniversary Event",
         "location": "UTSU Student Commons",
-        "description": "",
+        "description": [""],
         "start": "2024-04-04|00:00",
         "end": "2024-04-04|23:59",
         "video": "https://youtu.be/ob0COvRRvDI",
@@ -5976,10 +6279,11 @@ const EVENTS = [
         "type": "Concert",
         "name": "October 2024 Concert",
         "location": "The Cat's Eye",
-        "description": "",
+        "description": [""],
         "start": "2024-10-04|19:30",
         "end": "2024-10-04|20:30",
         "video": "https://youtu.be/JtuPSpsSQYk",
+        "poster": 'assets/images/posters/poster 2024-10.webp',
         "setlist": [
             3,
             9,
@@ -5992,14 +6296,15 @@ const EVENTS = [
             8,
             2,
             10
-        ]
+        ],
+        "link": "https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv"
     },
     {
         "id": 3,
         "type": "Concert",
         "name": "End of Fall 2024 Concert",
         "location": "The Cat's Eye",
-        "description": "",
+        "description": ["This is a dscription I guess"],
         "start": "2025-01-24|19:00",
         "end": "2025-01-24|20:30",
         "video": "https://youtu.be/TiStCNPn10s",
@@ -6029,35 +6334,39 @@ const EVENTS = [
         "type": "Workshop",
         "name": "Chord Theory Workshop 2025",
         "location": "",
-        "description": "???",
+        "description": ["???", "WOWOWOW"],
         "start": "2025-02-13|00:00",
-        "end": "2025-02-13|23:59"
+        "end": "2025-02-13|23:59",
+        "link": "",
+        "poster": "https://media.tenor.com/nDYDbjcSDZMAAAAe/gru-gun-point.png"
     },
     {
         "id": 5,
         "type": "Workshop",
         "name": "Music Production Workshop 2025",
         "location": "OISE 2279",
-        "description": "???",
+        "description": ["???"],
         "start": "2025-02-27|00:00",
-        "end": "2025-02-27|23:59"
+        "end": "2025-02-27|23:59",
+        "link": "https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo",
+        "poster": "https://media.tenor.com/nDYDbjcSDZMAAAAe/gru-gun-point.png"
     },
     {
         "id": 6,
         "type": "Other",
         "name": "Blind Test 2025",
         "location": "OISE C-154",
-        "description": "???",
+        "description": ["???"],
         "start": "2025-03-08|00:00",
         "end": "2025-03-08|23:59",
-        "video": "https://www.youtube.com/watch?v=0CJ_9BmtAXY"
+        "link": "https://www.youtube.com/embed/0CJ_9BmtAXY?si=CkvUDq2PFXzWXjRj",
     },
     {
         "id": 7,
         "type": "Concert",
         "name": "End of Winter 2025 Concert",
         "location": "OISE G-162",
-        "description": "???",
+        "description": ["???"],
         "start": "2025-04-07|19:00",
         "end": "2025-04-07|20:30",
         "video": "https://youtu.be/k1CZLnxSWDc",
@@ -6145,16 +6454,17 @@ const EVENTS = [
         "type": "Workshop",
         "name": "Arranging Workshop 2025",
         "location": "OISE C-154",
-        "description": "???",
+        "description": ["???"],
         "start": "2025-11-09|00:00",
-        "end": "2025-11-09|23:59"
+        "end": "2025-11-09|23:59",
+        "link": "https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo",
     },
     {
         "id": 9,
         "type": "External",
         "name": "RCAG Studio Night 2025",
         "location": "",
-        "description": "???",
+        "description": ["???"],
         "start": "2025-11-13|00:00",
         "end": "2025-11-13|23:59",
         "setlist": [
@@ -6167,7 +6477,7 @@ const EVENTS = [
         "type": "Concert",
         "name": "End of Fall 2025 Concert",
         "location": "OISE G-162",
-        "description": "???",
+        "description": ["???"],
         "start": "2025-11-29|18:00",
         "end": "2025-11-29|21:00",
         "video": "https://youtu.be/wuObU4_nbtI",
@@ -6275,7 +6585,7 @@ const EVENTS = [
         "type": "External",
         "name": "Hemoglobal Connect Benefit Concert 2026",
         "location": "Trinity-St. Paul's United Church",
-        "description": "???",
+        "description": ["???"],
         "start": "2026-01-23|18:00",
         "end": "2026-01-23|20:00"
     },
@@ -6284,17 +6594,17 @@ const EVENTS = [
         "type": "Workshop",
         "name": "Sound Equipment Workshop 2026",
         "location": "OISE 5240",
-        "description": "???",
+        "description": ["???"],
         "start": "2026-01-30|16:30",
         "end": "2026-01-30|??:??",
-        "gallery": "https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv"
+        "link": "https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv"
     },
     {
         "id": 13,
         "type": "Concert",
         "name": "Tunes & Treats 2026 Concert",
         "location": "OISE C-154",
-        "description": "???",
+        "description": ["???"],
         "start": "2026-03-06|18:00",
         "end": "2026-03-06|21:00",
         "setlist": [
@@ -6320,14 +6630,16 @@ const EVENTS = [
             92,
             93,
             94
-        ]
+        ],
+        "poster": "assets/images/posters/poster 2026-03.jpg",
+        "link": "https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv"
     },
     {
         "id": 14,
         "type": "Concert",
         "name": "Succession 2026 Concert",
         "location": "OISE G-162",
-        "description": "???",
+        "description": ["???"],
         "start": "2026-04-05|17:00",
         "end": "2026-04-05|20:00",
         "setlist": [

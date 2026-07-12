@@ -289,6 +289,7 @@ Input/output
     display: none;
     color: #9c6644;
     letter-spacing: -0.5px;
+    word-wrap: break-word;
 }
 #container-io {
     display: flex;
@@ -762,6 +763,25 @@ Table
     justify-content: normal;
 }
 
+.td-link:not(.td-link-link):before {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+    margin-bottom: -3px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: text;
+}
+.td-link:focus:before {
+    display: none;
+}
+.td-link-embed-drive:before, .td-link-embed-youtube:before { opacity: 0.2 }
+.td-link-embed-drive:before, .td-link-link-drive:before { background-image: url('assets/icons/logos/drive.svg'); }
+.td-link-embed-youtube:before, .td-link-link-youtube:before { background-image: url('assets/icons/logos/youtube-monochrome.svg'); }
+
 
 /*********************************************************************
 Inputs
@@ -1022,11 +1042,17 @@ Table customization
     justify-content: flex-end;
 }
 
-#table-music > div > table > tbody > tr:not(.subtable-row) > td:last-child,
-#table-events > div > table > tbody > tr:not(.subtable-row) > td:last-child {
+#table-music > div > table > tbody > tr:not(.subtable-row) td:nth-child(7),
+#table-events > div > table > tbody > tr:not(.subtable-row) td:nth-child(8),
+#table-events > div > table > tbody > tr:not(.subtable-row) td:nth-child(9) {
     white-space: nowrap;
-    overflow: hidden;
-    max-width: 0px;
+    overflow: clip;
+    max-width: 100px;
+}
+#table-music > div > table > tbody > tr:not(.subtable-row) td:nth-child(7):focus,
+#table-events > div > table > tbody > tr:not(.subtable-row) td:nth-child(8):focus,
+#table-events > div > table > tbody > tr:not(.subtable-row) td:nth-child(9):focus {
+    white-space: normal;
 }
 
 .table-announcements-icon {
@@ -1070,6 +1096,7 @@ Table customization
     text-align: left;
     overflow: hidden;
     white-space: nowrap;
+    text-overflow: ellipsis;
 }
 #table-members > div > table > tbody > tr:not(.subtable-row) td:nth-child(2):focus,
 #table-music > div > table > tbody > tr:not(.subtable-row) td:nth-child(2):focus,
@@ -1322,6 +1349,7 @@ Modal setlist
 }
 
 .draggable-list-container {
+    font-size: 16px;
     width: 100%;
     overflow-y: auto;
 }
@@ -1352,13 +1380,13 @@ Modal setlist
 .draggable-list tr td:last-child {
     width: 60px;
     text-align: right;
-    padding: 5px 10px;
+    padding: 3px 10px;
 }
 .draggable-list td {
-    padding: 5px;
+    padding: 3px;
 }
 .draggable-list img {
-    height: 14px;
+    height: 12px;
 }
 .draggable-list-active {
     opacity: 0.5;

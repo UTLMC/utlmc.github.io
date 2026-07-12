@@ -52,11 +52,13 @@ function cssGetAll(query) {
         throw new Error(`Invalid query ${query}`);
     return result;
 }
-function cssSetId(id, properties) {
-    const element = cssGetId(id);
+function cssSetElement(element, properties) {
     for (const key in properties) {
         element.style.setProperty(key, properties[key]);
     }
+}
+function cssSetId(id, properties) {
+    cssSetElement(cssGetId(id), properties);
 }
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -244,7 +246,7 @@ function toggleTab(element) {
     } else {
         startColor = '#20124d';
     }
-    footer.style.setProperty('background', `linear-gradient(to bottom in oklab, ${startColor}, #045962)`);
+    cssSetElement(footer, { background: `linear-gradient(to bottom in oklab, ${startColor}, #045962)` });
 }
 function toggleDetailsSummary(event) {
     event.preventDefault();  // Prevent instant show/hide from <summary>
@@ -297,9 +299,9 @@ function toggleEventTab(element, id) {
     window.location.hash = `events/${TABLE_EVENTS.active}`;
 
     injectEventBody();
-    // setTimeout(() => {
-    //     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    // }, 200);
+    setTimeout(() => {
+        element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+    }, 0);
 }
 function toggleConcertTab(element) {
     genericToggleTab(element, 'concert');
@@ -516,7 +518,7 @@ window.addEventListener('mousemove', (event) => {
     }
 });
 window.addEventListener('DOMContentLoaded', () => {
-    injectHomeEvent();
+    injectHomeCurrentEvent();
     injectHomeBulletin();
     injectMembers();
     injectFAQ();
@@ -558,7 +560,7 @@ window.addEventListener('resize', () => {
     fixTablePersonnelWidth();
 
     if (window.innerWidth < 900) {
-        cssGetId('nav-events-sidebar').style.setProperty('height', ``);
+        cssSetId('nav-events-sidebar', { height: '' });
     }
 })
 window.addEventListener('click', handleClick);
@@ -640,27 +642,28 @@ function updateCarousel() {
     const targetHeight = 0.5 * window.innerHeight;
     const minWidth = width * targetHeight / height;
 
-    if (captionRight) {
-        caption.style.setProperty('text-align', 'right');
-        caption.style.setProperty('left', 'auto');
-        caption.style.setProperty('right', 'max(35px, 6vw)');
-        caption.style.setProperty('transform', 'rotate(-3deg)');
-    } else {
-        caption.style.setProperty('text-align', 'left');
-        caption.style.setProperty('right', 'auto');
-        caption.style.setProperty('left', 'max(35px, 6vw)');
-        caption.style.setProperty('transform', 'rotate(3deg)');
-    }
+    cssSetElement(caption, captionRight ? { 
+        'text-align': 'right',
+        left: 'auto',
+        right: 'max(35px, 6vw)',
+        transform: 'rotate(-3deg)'
+    } : {
+        'text-align': 'left',
+        right: 'auto',
+        left: 'max(35px, 6vw)',
+        transform: 'rotate(3deg)'
+    });
 
     // Wide screen -> force wide image dimensions
     if (minHeight >= targetHeight) {
-        carouselContainer.style.setProperty('height', `${minHeight}px`);    
-        carousel.style.setProperty('height', `${height * scale}px`);
-        carousel.style.setProperty('margin-top', `-${y0 * scale}px`);
+        cssSetElement(carouselContainer, { height: `${minHeight}px` });
+        cssSetElement(carousel, {
+            height: `${height * scale}px`,
+            'margin-top': `-${y0 * scale}px`
+        });
 
         if (captionTopOnMobile) {
-            caption.style.setProperty('bottom', 'max(20px, 2vw)');
-            caption.style.setProperty('top', 'auto');
+            cssSetElement(caption, { bottom: 'max(20px, 2vw)', top: 'auto' });
         }
 
     // As screen width decreases, extra vertical space is added to image
@@ -672,25 +675,33 @@ function updateCarousel() {
         const topShare = topRaw / totalRaw;
         const extraTop = extraVisible * topShare;
 
-        carouselContainer.style.setProperty('height', `${targetHeight}px`);
-        carousel.style.setProperty('height', `${height * scale}px`);
-        carousel.style.setProperty('margin-top', `-${(y0 * scale) - extraTop}px`);
+        cssSetElement(carouselContainer, { height: `${targetHeight}px` });
+        cssSetElement(carousel, {
+            height: `${height * scale}px`,
+            'margin-top': `-${(y0 * scale) - extraTop}px`
+        });
 
         if (captionTopOnMobile) {
-            caption.style.setProperty('bottom', 'max(20px, 2vw)');
-            caption.style.setProperty('top', 'auto');
+            cssSetElement(caption, {
+                bottom: 'max(20px, 2vw)',
+                top: 'auto'
+            });
         }
     
     // Mobile screen -> zoom in to cover screen
     } else {
-        carouselContainer.style.setProperty('height', `${targetHeight}px`);
-        carousel.style.setProperty('height', `${targetHeight}px`);
-        carousel.style.setProperty('object-position', `${captionXPosition} 50%`);
-        carousel.style.setProperty('margin-top', `0px`);
+        cssSetElement(carouselContainer, { height: `${targetHeight}px` });
+        cssSetElement(carousel, {
+            height: `${targetHeight}px`,
+            'object-position': `${captionXPosition} 50%`,
+            'margin-top': '0px'
+        });
 
         if (captionTopOnMobile) {
-            caption.style.setProperty('top', 'max(30px, 6.5vw)');
-            caption.style.setProperty('bottom', 'auto');   
+            cssSetElement(caption, {
+                top: 'max(30px, 6.5vw)',
+                bottom: 'auto'
+            });
         }
     }
 }
@@ -702,14 +713,15 @@ Home tab - current event promotion
 function injectHomeConcert(now) {
     const {
         id,
-        links: { poster, rvsp, setlist },
+        rvsp,
         location,
         tickets,
         preConcertDescription,
         postConcertDescription,
     } = CURRENT_EVENT;
 
-    const { name: title, start, end, video } = EVENTS[id];
+    const setlist = 'setlist.html';
+    const { name: title, start, end, video, poster } = EVENTS[id];
     const dateStart = parseDate(start);
     const dateEnd = parseDate(end);
 
@@ -720,7 +732,8 @@ function injectHomeConcert(now) {
     cssGetId('home-event-tickets').innerText = tickets;
 
     const text = now > dateEnd ? postConcertDescription : preConcertDescription;
-    const paragraphs = text.map(x => construct({ element: 'p', innerText: x }));
+    const emptyText = text.length === 0 || (text.length === 1 && !text[0]);
+    const paragraphs = emptyText ? [] : text.map(x => construct({ element: 'p', innerText: x }));
 
     // Render call-to-action buttons
     const buttons = construct({ element: 'div', id: 'home-event-buttons' });
@@ -753,17 +766,14 @@ function injectHomeConcert(now) {
     paragraphs.forEach(x => container.appendChild(x));
     container.appendChild(buttons);
 }
-async function injectHomeEvent() {
+async function injectHomeCurrentEvent() {
     const now = new Date();
 
     // Only concerts are supported right now
-    if (!CURRENT_EVENT || now > parseDate(CURRENT_EVENT.hideAfter) || now < parseDate(CURRENT_EVENT.hideBefore)) {
-        cssGetId('section-home-event').style.setProperty('display', 'none');
-    } else if (EVENTS[CURRENT_EVENT.id].type === 'Concert') {
-        injectHomeConcert(now);
-    } else {
-        throw new Error(EVENTS[CURRENT_EVENT.id].type);
+    if (typeof(CURRENT_EVENT.id) !== 'number' || now > parseDate(CURRENT_EVENT.hideAfter) || now < parseDate(CURRENT_EVENT.hideBefore)) {
+        cssSetId('section-home-event', { display: 'none' });
     }
+    injectHomeConcert(now);
 }
 
 
@@ -811,9 +821,7 @@ async function injectHomeBulletin() {
                 onclick: `goToUpcomingEvent(${eventId})`,
                 onmousewheel: `scrollHorizontally(event)`
             },
-            style: {
-                'background-image': `url('${image}')`
-            },
+            style: { 'background-image': `url('${image}')` },
             children: [{
                 element: 'hgroup',
                 children: [{
@@ -839,15 +847,15 @@ async function injectHomeBulletin() {
     
     // Formatting for edge cases (i.e. at least one of the two sections is blank)
     if (announcements.length === 0 && upcomingEvents.length === 0) {
-        sectionAnnouncements.style.setProperty('display', 'none');
-        sectionUpcoming.style.setProperty('display', 'none');
+        cssSetElement(sectionAnnouncements, { display: 'none' });
+        cssSetElement(sectionUpcoming, { display: 'none' });
     } else if (announcements.length === 0) {
-        sectionAnnouncements.style.setProperty('display', 'none');
-        sectionUpcoming.style.setProperty('width', '100%');
+        cssSetElement(sectionAnnouncements, { display: 'none' });
+        cssSetElement(sectionUpcoming, { width: '100%' });
     } else if (upcomingEvents.length === 0) {
-        sectionAnnouncements.style.setProperty('width', '100%');
+        cssSetElement(sectionAnnouncements, { width: '100%' });
         sectionAnnouncements.classList.add('section-announcements-full');
-        sectionUpcoming.style.setProperty('display', 'none');
+        cssSetElement(sectionUpcoming, { display: 'none' });
     }
 }
 
@@ -1385,8 +1393,8 @@ function extractPerformanceInfo(p) {
         concerts: p.concerts ?? [],
         songType: p.songType
     };
-    if (p.arranger) {
-        data.arranger = parseArrangers(p.arranger);
+    if (p.arrangers) {
+        data.arrangers = parseArrangers(p.arrangers);
     }
     if (p.link) {
         data.link = [p.link];
@@ -1398,7 +1406,7 @@ function extractPerformanceInfo(p) {
         data.sheetMusic = p.sheetMusic;
         key = data.sheetMusic;
     } else {
-        key = `${data.instrumentation.join('|')}|${data.arranger}`;
+        key = `${data.instrumentation.join('|')}|${data.arrangers}`;
     }
     return [key, data];
 }
@@ -1438,21 +1446,21 @@ function initMusicTable() {
         for (const p of x.performances.slice(1)) {
             let existingSong = songVersions[p.sheetMusic];
             const existingInstrumentation = existingSong?.instrumentation.join('|');
-            const existingArranger = existingSong?.arranger;
+            const existingArrangers = existingSong?.arrangers;
 
             const instrumentation = getInstrumentationFromPerformers(p.performers).join('|');
-            const arranger = parseArrangers(p.arranger);
+            const arrangers = parseArrangers(p.arrangers);
             
             if (p.sheetMusic && existingSong) {
                 if (existingInstrumentation !== instrumentation) {
                     throw new Error(`[${x.name}] Expected performances with same sheet music to have same instrumentation`);
                 }
-                if (existingArranger !== arranger) {
+                if (existingArrangers !== arrangers) {
                     throw new Error(`[${x.name}] Expected performances with same sheet music to have same arranger`);
                 }
                 appendToSongVersion(existingSong, p);
-            } else if (existingInstrumentation === instrumentation && existingArranger === arranger) {
-                existingSong = songVersions[`${instrumentation}|${arranger}`];
+            } else if (existingInstrumentation === instrumentation && existingArranger === arrangers) {
+                existingSong = songVersions[`${instrumentation}|${arrangers}`];
                 appendToSongVersion(existingSong, p);
             } else {
                 const [key, performanceInfo] = extractPerformanceInfo(p);
@@ -1482,13 +1490,13 @@ function getConcertTagStyle(event) {
     const [month, day] = event.start.split('|')[0].split('-').slice(1).map(x => parseInt(x, 10));
     let colour;
     if ((month === 12 && day >= 21) || month < 3 || (month === 3 && day <= 21)) {
-        colour = '#2F6690'
+        colour = '#256596'
     } else if (month < 6 || (month === 6 && day <= 21)) {
-        colour = '#479130'
+        colour = '#35a54d'
     } else if (month < 9 || (month === 9 && day <= 21)) {
         colour = '#b1a326';
     } else {
-        colour = '#805620';
+        colour = '#63523d';
     }
     return { 'background-color': colour };
 }
@@ -1499,7 +1507,7 @@ function getConcertTagStyle(event) {
  */
 function constructMusicTableRow(version, x) {
     const links = [
-        ['table-music-archive-reference', x.reference],
+        ...x.references?.map(ref => ['table-music-archive-reference', ref]) ?? [],
         ...version.link?.map(x => ['table-music-archive-recording',  x]) ?? [],
         ['table-music-archive-sheet-music', version.sheetMusic]
     ].filter(link => !!link[1]);
@@ -1514,7 +1522,7 @@ function constructMusicTableRow(version, x) {
             innerText: x.composer
         }, {
             element: 'td',
-            innerText: version.arranger
+            innerText: version.arrangers
         }, {
             element: 'td',
             innerText: x.from
@@ -1606,7 +1614,7 @@ function filterOutMusicRow(version, x) {
 
     if (TABLE_MUSIC.filters.title    && !isSubstring(x.name, TABLE_MUSIC.filters.title)) return true;
     if (TABLE_MUSIC.filters.composer && !isSubstring(x.composer, TABLE_MUSIC.filters.composer)) return true;
-    if (TABLE_MUSIC.filters.arranger && (!version.arranger || !isSubstring(version.arranger, TABLE_MUSIC.filters.arranger))) return true;
+    if (TABLE_MUSIC.filters.arranger && (!version.arrangers || !isSubstring(version.arrangers, TABLE_MUSIC.filters.arranger))) return true;
     if (TABLE_MUSIC.filters.from     && (!x.from || !isSubstring(x.from, TABLE_MUSIC.filters.from))) return true;
     
     if (TABLE_MUSIC.filters.performed && !version.concerts.some(id => (
@@ -1755,21 +1763,16 @@ function initEventSidebarHeightAdjuster() {
     const padding = parseInt(bodyStyle.padding, 10);
 
     const observer = new ResizeObserver(entries => {
-        if (window.innerWidth < 900) {
-            container.style.setProperty('height', ``);
-            return;
-        }
-        for (let entry of entries) {
-            if (!entry.target.classList.contains('tab-concert-active')) {
-                continue;
-            }
-            let height = Array.from(body.children).slice(0, 3).map(x => x.scrollHeight).reduce((a, b) => a + b + gap)
-            height += gap + entry.target.scrollHeight + padding * 2;
-            container.style.setProperty('height', `${Math.max(height, window.innerHeight)}px`);
-            break;
-        }
+        if (window.innerWidth < 900)
+            return cssSetElement(container, { height: `` });
+        
+        const children = Array.from(body.children).filter(x => !x.style.display.includes('none'));
+        const heights = children.map(x => x.scrollHeight);
+        const height = heights.reduce((a, b) => a + b + gap) + padding * 2;
+        cssSetElement(container, { height: `${Math.max(height, window.innerHeight)}px` });
     });
-    Array.from(cssGetClass('tab-concert')).forEach(x => observer.observe(x));
+    observer.observe(cssGetId('event-body'));
+    observer.observe(cssGetId('event-description-container'));
 }
 
 function createEventRow(event) {
@@ -1859,9 +1862,9 @@ function constructSetlistTabSongItem(performanceInfo, song, i) {
     }, {
         element: 'p',
         innerHTML: `<span>by</span> ${song.composer}`
-    }, performanceInfo.arranger ? {
+    }, performanceInfo.arrangers ? {
         element: 'p',
-        innerHTML: `<span>arranged by</span> ${performanceInfo.arranger.map(x => MEMBERS[x]?.name ?? x).join(', ')}`
+        innerHTML: `<span>arranged by</span> ${performanceInfo.arrangers.map(x => MEMBERS[x]?.name ?? x).join(', ')}`
     } : undefined, song.from ? {
         element: 'p',
         innerHTML: `<span>from</span> ${song.from}`
@@ -1978,10 +1981,10 @@ function constructVideoTimestamps(setlist) {
     const timestamps = setlist.map((x, i) => [x, i + 1]).filter(x => Array.isArray(x[0]));
 
     if (timestamps?.length === 0) {
-        concertVideoChapters.style.setProperty('display', 'none');
+        cssSetElement(concertVideoChapters, { display: 'none' });
         return;
     }
-    concertVideoChapters.style.setProperty('display', '');
+    cssSetElement(concertVideoChapters, { display: '' });
     
     fragment = document.createDocumentFragment();
     timestamps.forEach(([[songId, seconds], i]) => {
@@ -1996,12 +1999,12 @@ function constructVideoTimestamps(setlist) {
     concertVideoChapters.replaceChildren(fragment);      
 }
 
-function injectEventBodyConcert(id, setlist, video, gallery) {
+function injectEventBodyConcert(id, setlist, video, gallery, poster) {
     const navConcert = cssGetFirst('#event-body nav');
     const tabConcert = Array.from(cssGetClass('tab-concert'));
 
-    navConcert.style.setProperty('display', '');
-    tabConcert.forEach(x => x.style.setProperty('display', ''));
+    cssSetElement(navConcert, { display: '' });
+    tabConcert.forEach(x => cssSetElement(x, { display: '' }));
 
     // Setlist inner tab
     let fragment = document.createDocumentFragment();
@@ -2022,11 +2025,11 @@ function injectEventBodyConcert(id, setlist, video, gallery) {
     // Video inner tab
     const navConcertVideo = cssGetId('nav-concert-video');
     if (video) {
-        navConcertVideo.style.setProperty('display', '');
+        cssSetElement(navConcertVideo, { display: '' });
         loadYoutubeVideo(video);
         constructVideoTimestamps(setlist);
     } else {
-        navConcertVideo.style.setProperty('display', 'none');
+        cssSetElement(navConcertVideo, { display: 'none' });
         
         // If video tab is focused & switched to a videoless concert, switch to setlist inner tab 
         if (navConcertVideo.classList.contains('nav-concert-active')) {
@@ -2034,18 +2037,49 @@ function injectEventBodyConcert(id, setlist, video, gallery) {
         }
     }
 
+    // Image
+    const navConcertPoster = cssGetId('nav-concert-poster');
+    if (poster) {
+        cssSetElement(navConcertPoster, { display: '' });
+        cssGetId('tab-concert-poster').children[0].src = poster;
+    } else {
+        cssSetElement(navConcertPoster, { display: 'none' });
+
+        // If poster tab is focused & switched to a videoless concert, switch to setlist inner tab 
+        if (navConcertPoster.classList.contains('nav-concert-active')) {
+            toggleConcertTab(cssGetId('nav-concert-setlist'));
+        }
+    }
+
     // Gallery inner tab
     const navConcertGallery = cssGetId('nav-concert-gallery');
     if (gallery) {
-        navConcertGallery.href = gallery;
-        navConcertGallery.style.setProperty('display', '');
+        navConcertGallery.children[0].href = gallery;
+        cssSetElement(navConcertGallery, { display: '' });
     } else {
-        navConcertGallery.style.setProperty('display', 'none');
+        cssSetElement(navConcertGallery, { display: 'none' });
     }
 }
 
+// Keep in sync with the function in database.js
+function parseEventLink(link) {
+    let linkType;
+    if (link?.startsWith('https://drive.google.com/embeddedfolderview?id=')) {
+        linkType = 'embed-drive';
+    } else if (link?.includes('drive.google.com')) {
+        linkType = 'link-drive';
+    } else if (link?.startsWith('https://www.youtube.com/embed/')) {
+        linkType = 'embed-youtube';
+    } else if (link?.includes('youtube') || link?.includes('youtu.be')) {
+        linkType = 'link-youtube';
+    } else if (link) {
+        linkType = 'link';
+    }
+    return linkType;
+}
+
 function injectEventBody() {
-    const { id, name, type, location, description, start, end, setlist, video, gallery } = EVENTS[TABLE_EVENTS.active];
+    const { id, name, type, location, description, start, end, setlist, video, poster, link } = EVENTS[TABLE_EVENTS.active];
 
     const [startDate] = start.split('|');
     const [endDate] = end.split('|');
@@ -2058,11 +2092,11 @@ function injectEventBody() {
     YOUTUBE_CONCERT_VIDEO?.pauseVideo();
 
     // Concert widget
-    if (type === 'Concert' && setlist) {
-        injectEventBodyConcert(id, setlist, video, gallery);
+    if (setlist) {
+        injectEventBodyConcert(id, setlist, video, link, poster);
     } else {
-        navConcert.style.setProperty('display', 'none');
-        tabConcert.forEach(x => x.style.setProperty('display', 'none'));
+        cssSetElement(navConcert, { display: 'none' });
+        tabConcert.forEach(x => cssSetElement(x, { display: 'none' }));
     }
 
     // Event title
@@ -2070,12 +2104,41 @@ function injectEventBody() {
     cssGetFirst('#event-title p').innerHTML = `${fromTo} @ ${location || '???'} <span class="event-type-tag-${type.toLowerCase()}">${type}</span>`;
     
     // Event description
-    const eventDescription = cssGetId('event-description');
+    const desc = cssGetId('event-description');
     if (description) {
-        eventDescription.style.setProperty('display', '');
-        eventDescription.innerText = description;
+        cssSetElement(desc, { display: '' });
+        const fragment = document.createDocumentFragment();
+        description.forEach(x => fragment.appendChild(construct({ element: 'p', innerText: x })));
+        desc.replaceChildren(fragment);
     } else {
-        eventDescription.style.setProperty('display', 'none');
+        cssSetElement(desc, { display: 'none' });
+    }
+
+    const descEmbed = cssGetId('event-description-iframe');
+    const descLink = cssGetId('event-description-link');
+    const descImg = cssGetId('event-description-img');
+    if (setlist) {
+        cssSetElement(descEmbed, { display: 'none' });
+        cssSetElement(descLink, { display: 'none' });
+        cssSetElement(descImg, { display: 'none' });
+        return;
+    }
+    const linkType = parseEventLink(link);
+    cssSetElement(descEmbed, { display: linkType?.startsWith('embed') ? '' : 'none' });
+    cssSetElement(descLink, { display: linkType?.startsWith('link') ? '' : 'none' });
+    cssSetElement(descImg, { display: poster ? '' : 'none' });
+
+    if (linkType?.startsWith('embed')) {
+        descEmbed.setAttribute('src', link);
+    } else if (linkType === 'link-youtube') {
+        descLink.innerHTML = `<a href="${link}" target="_blank">Youtube Link</a>`;
+    } else if (linkType === 'link-drive') {
+        descLink.innerHTML = `<a href="${link}" target="_blank">Google Drive Link</a>`;
+    } else if (linkType === 'link') {
+        descLink.innerHTML = `<a href="${link}" target="_blank">Link</a>`;
+    }
+    if (poster) {
+        descImg.src = poster;
     }
 }
 

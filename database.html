@@ -46,6 +46,7 @@
             <h2>Instructions</h2>
             <p>This website is an editor for handling LMC data for use in <a href="index.html" target="_blank">the LMC website</a>. If what you need to change is not documented here, contact one of the developers to make the edit.</p>
             <p>Changes made here are <b>not automatically reflected</b> in the website. You must export the data as a file and overwrite the existing data file manually on <a href="https://github.com/UTLMC/utlmc.github.io" target="_blank">Github</a>. The data file must be called <code>data.js</code> and placed in the same folder as this page (<code>database.html</code>). Make sure to keep backups when making large changes, as undo/auto-saving is not implemented.</p>
+            <p>Side-note: It's possible in some fields to add rich text (e.g. bold, italic) and links (e.g. [text](URL))</p>
             
             <h2>CSV to JS</h2>
             <p>The Google Sheets database is convenient but doesn't enforce consistent naming conventions, so try to avoid editing data there. It does however contain links to member Discords. This website deliberately avoids extracting Discords of non-execs for the current year to avoid revealing more personal information than strictly necessary (current year = the latest year of any tag that has a year in it).</p>
@@ -272,7 +273,7 @@
                                 <div>
                                     <img src="assets/icons/events-filled.svg" />
                                     <input type="hidden" value="0" />
-                                    <input type="text" class="input-type-concert" placeholder="Select by name..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="inputInput(event)" onkeydown="keyDownInput(event)" />
+                                    <input type="text" class="input-type-event" placeholder="Select by name..." onfocus="focusInput(event)" onblur="blurInput(event)" oninput="inputInput(event)" onkeydown="keyDownInput(event)" />
                                 </div>
                                 <ul class="input-suggestions" tabindex="0">
                                     <li onclick="clickSuggestion(this)">
@@ -302,12 +303,6 @@
                     <tr>
                         <td>Tickets</td>
                         <td contenteditable="plaintext-only" onblur="validateInput(this)" id="current-event-tickets">$5, pay in-person</td>
-                        <td>Poster</td>
-                        <td contenteditable="plaintext-only" onblur="validateInputAsset(this)" id="current-event-poster">assets/images/posters/poster 2026-04.webp</td>
-                    </tr>
-                    <tr>
-                        <td>Setlist</td>
-                        <td contenteditable="plaintext-only" onblur="validateInput(this)" id="current-event-setlist">https://lmc.moe/setlist</td>
                         <td>RVSP</td>
                         <td contenteditable="plaintext-only" onblur="validateInput(this)" id="current-event-rvsp">#</td>
                     </tr>
@@ -535,7 +530,7 @@
                                 <th>From</th>
                                 <th>Media Origin</th>
                                 <th>Performances</th>
-                                <th>Reference</th>
+                                <th>References</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -754,7 +749,8 @@
                                 <th>Date</th>
                                 <th>Setlist</th>
                                 <th>Description</th>
-                                <th>Gallery</th>
+                                <th>Poster</th>
+                                <th>Link</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1223,6 +1219,7 @@
                     </tbody>
                 </table>
             </div>
+            <p class="validation-text"></p>
             <ul class="modal-action-buttons">
                 <li onclick="closeModals()">Back</li>
                 <li onclick="syncModalConcertSetlist(this)">Confirm</li>

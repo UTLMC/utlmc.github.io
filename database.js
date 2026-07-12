@@ -317,15 +317,7 @@ function getCurrentEvent() {
     return CURRENT_EVENT;
 }
 function setCurrentEvent(kv) {
-    for (const key in kv) {
-        if (typeof kv[key] === 'object') {
-            for (const keykey in kv[key]) {
-                CURRENT_EVENT[key][keykey] = kv[key][keykey];
-            }
-            continue;
-        }
-        CURRENT_EVENT[key] = kv[key];
-    }
+    Object.assign(CURRENT_EVENT, kv);
 }
 
 function getTags() {
@@ -432,10 +424,10 @@ function toggleTab(element, forceRefresh) {
         if (id === 'tags') {
             constructTagTab();
         } else if (id === 'bulletin') {
-            constructCurrentEvent();
             if (TABLE_OPERATIONS['table-announcements']) {
                 TABLE_OPERATIONS['table-announcements'].init();
             } else {
+                constructCurrentEvent();
                 TABLE_OPERATIONS['table-announcements'] = constructAnnouncements();
             }
             if (TABLE_OPERATIONS['table-upcoming-events']) {
@@ -594,6 +586,7 @@ function clickAggregateCheckbox(element) {
         }
         toggleSubrowSelectionEnabled(true, tableId);
     }
+    updateTableToolbar(ROW_SELECTION, tableId);
 }
 function toggleRowSelect(event, element) {
     const button = element.children[0];
@@ -644,7 +637,12 @@ function onRowSelect(checked, rowId, tableId) {
         ROW_SELECTION[tableId] = new Set();
     }
     const set = ROW_SELECTION[tableId];
-    const aggregatedCheckbox = cssGetFirst(`#${tableId} .aggregate-checkbox`);
+    let aggregatedCheckbox;
+    try {
+        aggregatedCheckbox = cssGetFirst(`#${tableId} .aggregate-checkbox`);
+    } catch {
+        aggregatedCheckbox = {};
+    }
 
     if (checked) {
         if (set.size === 0) {
@@ -1321,6 +1319,7 @@ function getSuggestionIfExists(inputContainer, input, newValue) {
     return [id, value];
 }
 
+// TODO: When deleting an event from current event, it doesn't actually delete it internally
 
 /*********************************************************************
 Inputs
@@ -1345,7 +1344,7 @@ function focusInput(event) {
     updateInputSuggestion(event, true);
 }
 
-let BLUR_AFTER_INPUT_EDIT = false;
+let BLUR_DUE_TO_INPUT_EDIT = false;
 function blurInput(event) {
     const input = event.target;
     const inputContainer = input.parentElement.parentElement;
@@ -1359,23 +1358,30 @@ function blurInput(event) {
     toggleShowInputSuggestion(suggestions, false);
     closeNewTagButton(inputContainer);
 
-    if (!INPUT_CHANGED) {
-        INPUT_CHANGED = false;
+    if (!INPUT_CHANGED)
         return;
+    INPUT_CHANGED = false;
+
+    // Clearing input hidden before sync
+    const isRegularInput = !isInputAndTaglist(inputContainer) && !isTaglistButton(inputContainer);
+    if (isRegularInput && !newValue) {
+        input.previousElementSibling.value = '';
     }
 
     syncData(input);
 
-    if (BLUR_AFTER_INPUT_EDIT)
+    if (BLUR_DUE_TO_INPUT_EDIT)
         return;
-
+    
     const row = inputContainer.closest('tr');
     if (!row)
         return;
 
+    // promote row if editing a preview row
+    // or trigger editInput if the value was changed for a regular input
     const isPreviewRow = row.classList.contains('modal-datalist-preview');
     if (newValue) {
-        if (isPreviewRow || (!isInputAndTaglist(inputContainer) && !isTaglistButton(inputContainer))) {  // e.g. modal performances
+        if (isPreviewRow || isRegularInput) {  // e.g. modal performances
             const [id, canonicalValue] = getSuggestionIfExists(inputContainer, input, newValue);
             return editInput(input, inputContainer, newValue, id, canonicalValue);
         }
@@ -1383,11 +1389,13 @@ function blurInput(event) {
         return;
     }
 
+    // delete row if it is now empty
     // e.g. performances modal
     const rowInputsEmpty = Array.from(row.querySelectorAll('input:not([type="hidden"])')).every(x => !x.value);
     const rowTagsEmpty = Array.from(row.querySelectorAll('.taglist')).every(x => x.children.length === 1);
-    if (!isPreviewRow && rowInputsEmpty && rowTagsEmpty)
+    if (!isPreviewRow && rowInputsEmpty && rowTagsEmpty) {
         setTimeout(() => { row.remove(); }, 0);
+    }
 }
 
 function clickXButton(element) {
@@ -1530,6 +1538,9 @@ function isTaglistButton(inputContainer) {
  */
 function editInput(input, inputContainer, newValue, id, canonicalValue) {
     input.value = '';
+    if (input.previousElementSibling.type === 'hidden') {
+        input.previousElementSibling.value = '';
+    }
     const strictness = inputStrictness(input);
     if (strictness === 2 && typeof id !== 'number') {
         return;
@@ -1593,7 +1604,7 @@ function keyDownInput(eventOrElement) {
     const [id, canonicalValue] = getSuggestionIfExists(inputContainer, input, newValue);
     editInput(input, inputContainer, newValue, id, canonicalValue);
     setTimeout(() => {
-        BLUR_AFTER_INPUT_EDIT = true;
+        BLUR_DUE_TO_INPUT_EDIT = true;
         input.blur();
         expandNewTagButton(inputContainer);
         input.focus();
@@ -1601,7 +1612,7 @@ function keyDownInput(eventOrElement) {
         // current/upcoming event, performances modal
         if (!isInputAndTaglist(inputContainer) && !isTaglistButton(inputContainer))
             input.blur();
-        BLUR_AFTER_INPUT_EDIT = false;
+        BLUR_DUE_TO_INPUT_EDIT = false;
     }, 0);
 }
 function clickSuggestion(element) {
@@ -1612,14 +1623,14 @@ function clickSuggestion(element) {
     const id = extractSuggestionId(element);
     editInput(input, inputContainer, newValue, id, newValue);
     setTimeout(() => {
-        BLUR_AFTER_INPUT_EDIT = true;
+        BLUR_DUE_TO_INPUT_EDIT = true;
         input.blur();
         input.focus();
         
         // current/upcoming event, performances modal
         if (!isInputAndTaglist(inputContainer) && !isTaglistButton(inputContainer))
             input.blur();
-        BLUR_AFTER_INPUT_EDIT = false;
+        BLUR_DUE_TO_INPUT_EDIT = false;
     }, 0);
 }
 
@@ -1701,19 +1712,33 @@ Input syncing
 *********************************************************************/
 function parseInnerHTML(text) {
     const paragraphs = [];
-    text = text.replaceAll('<br>', '');
-    let i = text.indexOf('<div>');
+
+    let i = text.search('<div>|<br>');
     while (i >= 0) {
         if (i === 0) {
-            const j = text.indexOf('</div>');
-            paragraphs.push(text.slice(i + 5, j));
-            text = text.slice(j + 6);
+            if (text.startsWith('<br>')) {
+                paragraphs.push('');
+                text = text.slice(4);
+            } else {
+                const j = text.indexOf('</div>');
+                let line = text.slice(i + 5, j);
+                if (line.endsWith('<br>')) {
+                    line = line.slice(0, -4);
+                }
+                paragraphs.push(...line.split("<br>"));
+                text = text.slice(j + 6);
+            }
         } else {
-            paragraphs.push(text.slice(0, i));
-            text = text.slice(i)
+            const line = text.slice(0, i);
+            paragraphs.push(line);
+            text = text.slice(i);
+            if (text.startsWith('<br>')) {
+                text = text.slice(4);
+            }
         }
-        i = text.indexOf('<div>');
+        i = text.search('<div>|<br>');
     }
+    if (text) paragraphs.push(...text.split("<br>"));
     return paragraphs;
 }
 function syncCurrentEvent(element) {
@@ -1721,18 +1746,18 @@ function syncCurrentEvent(element) {
         setCurrentEvent({ hideBefore: element.value.replace("T", "|") });
     } else if (element.id === 'current-event-visible-until') {
         setCurrentEvent({ hideAfter: element.value.replace("T", "|") });
-    } else if (element.id === 'current-event-poster') {
-        setCurrentEvent({ links: { poster: element.innerText }});
     } else if (element.id === 'current-event-rvsp') {
-        setCurrentEvent({ links: { rvsp: element.innerText }});
-    } else if (element.id === 'current-event-setlist') {
-        setCurrentEvent({ links: { setlist: element.innerText }});
+        setCurrentEvent({ rvsp: element.innerText });
     } else if (element.id === 'current-event-tickets') {
         setCurrentEvent({ tickets: element.innerText });
     } else if (element.id === 'current-event-location') {
         setCurrentEvent({ location: element.innerText });
     } else if (cssGetId('current-event-id').contains(element)) {
-        setCurrentEvent({ id: Number(element.previousElementSibling.value) });
+        const hidden = element.previousElementSibling;
+        if (!element.value) {
+            hidden.value = '';
+        }
+        setCurrentEvent({ id: hidden.value ? Number(hidden.value) : undefined });
     } else {
         console.warn(element);
         throw new Error("WHUH");
@@ -1803,10 +1828,14 @@ function parseMarkdown(text) {
     );
     return text;
 }
-function validateInput(element) {
-    let value = element.innerText;
-    value = value.replace(/[\r\n]+/g, '').trim();
-    element.innerText = value;
+function validateInput(element, richText) {
+    const field = richText ? 'innerHTML' : 'innerText';
+    let value = element[field];
+    value = value.replaceAll(/\n|\r|<br>/g, '').trim();
+    if (richText) {
+        value = parseMarkdown(value);
+    }
+    element[field] = value;
     syncData(element);
 }
 function validateMultilineInput(element) {
@@ -1815,6 +1844,19 @@ function validateMultilineInput(element) {
     value = parseMarkdown(value);
     element.innerHTML = value;
     syncData(element);
+}
+function validateAsset(link, allowExternal) {
+    if (link.includes('://')) {
+        if (!allowExternal) {
+            return `'${link}' is an external link. If this asset will be reused often, download it as a local asset instead.`;
+        }
+    } else if (!/^.+\.[a-zA-Z]+$/.test(link)) {
+        return `'${link}' is not a proper path to a file.`;
+    } else if (!link.endsWith('.webp')) {
+        return `'${link}' is not a WEBP file. Please convert it to a WEBP to optimize for size and loading time.`;
+    } else if (!link.startsWith('assets/images')) {
+        return `'${link}' should be moved inside assets/images.`;
+    }
 }
 function validateInputAsset(element) {
     let value = element.innerText;
@@ -1827,14 +1869,9 @@ function validateInputAsset(element) {
         return;
     }
     cssSetElement(validation, { display: 'block' });
-    if (value.includes('://')) {
-        validation.innerText = `'${value}' is an external link. If this asset will be reused often in the future, please download it and use it as a local asset instead.`;
-    } else if (!/^.+\.[a-zA-Z]+$/.test(value)) {
-        validation.innerText = `'${value}' is not a proper path to a file.`;
-    } else if (!value.endsWith('.webp')) {
-        validation.innerText = `'${value}' is not a WEBP file. Please convert it to a WEBP to optimize for size and loading time.`;
-    } else if (!value.startsWith('assets/images')) {
-        validation.innerText = `'${value}' should be moved inside assets/images.`;
+    const err = validateAsset(value);
+    if (err) {
+        validation.innerText = err;
     } else {
         cssSetElement(validation, { display: 'none' });
     }
@@ -1857,6 +1894,15 @@ function validateInputYear(element, optional) {
     const value = parseInt(element.value, 10);
     const currYear = (new Date()).getFullYear();
     element.value = isNaN(value) ? (optional ? '' : currYear) : clamp(value, 2023, currYear + 10);
+    syncData(element);
+}
+function validateInputLinks(element) {
+    element.innerHTML = element.innerHTML.split("<br>").filter(x => !!x).map(x => x.trim()).join("<br>");
+    syncData(element);
+}
+function validateInputEventLink(element) {
+    const linkType = parseEventLink(element.innerText.trim());
+    element.className = linkType ? `td-link td-link-${linkType}` : '';
     syncData(element);
 }
 
@@ -1951,6 +1997,8 @@ function sanityCheckData() {
             return `Performance of '${music.name}' (#${id}) in subrow #${subId} has no link or concert`;
         if (!p.performers || Object.values(p.performers).length === 0)
             return `No performers for '${music.name}' (#${id}) in subrow #${subId}`;
+        if (p.references?.some(x => x.includes('spotify.com')))
+            return `Spotify reference link in '${music.name}'. Please use a website with publicly-accessible songs.`
         Object.values(p.performers).forEach(x => {
             const i = parseInt(x, 10);
             if (!isNaN(i)) {
@@ -1965,10 +2013,28 @@ function sanityCheckData() {
         });
         console.warn(`${notPerformed.size} member(s) found with no performances:\n${members.join('\n')}`)
     }
+
     for (const event of API.EVENTS.getAll()) {
         if (event.type === 'Concert' && event.setlist.length === 0) {
             console.warn(`Concert '${event.name}' (#${event.id}) has nothing in its setlist`);
         }
+        if (event.poster) {
+            const err = validateAsset(event.poster);
+            if (err) return `Event '${event.name}' (#${event.id}): ${err}`;
+        }
+    }
+    
+    const event = API.EVENTS.get(getCurrentEvent().id);
+    if (event && !event.poster) {
+        return `Current event '${event.name}' (#${event.id}) has no poster image`;
+    }
+
+    for (const upcoming of API.UPCOMING_EVENTS.getAll()) {
+        if (typeof upcoming.eventId !== 'number') {
+            return `Upcoming event in row #${upcoming.id} has no event`;
+        }
+        const err = validateAsset(upcoming.image, true);
+        if (err) return `Upcoming event '${event.name}' (#${event.id}): ${err}`;
     }
 }
 
@@ -2076,7 +2142,7 @@ function remapForeignKeyIndices() {
     music.forEach((song, i) => {
         for (const p of song.performances) {
             p.concerts = p.concerts.map(ind => newEventIndices[ind] ?? ind);  // temporary
-            p.arranger = p.arranger?.map(ind => newMemberIndices[ind] ?? ind);
+            p.arrangers = p.arrangers?.map(ind => newMemberIndices[ind] ?? ind);
             p.performers = Object.fromEntries(
                 Object.entries(p.performers).map(([instrument, members]) => [
                     newInstrumentIndices[instrument],
@@ -2409,7 +2475,7 @@ async function uploadMusic(element) {
     }
 
     // Map column to row index
-    const rows = new Set(['Name', 'Artist', 'From', 'Media Origin', 'Reference']);
+    const rows = new Set(['Name', 'Artist', 'From', 'Media Origin', 'References']);
     const indices = {};
     for (let i = 0; i < data[0].length; i++) {
         if (rows.has(data[0][i])) {
@@ -2420,7 +2486,7 @@ async function uploadMusic(element) {
     const parsed = data.slice(1).map((row, i) => {
         const from = row[indices['From']];
         const mediaOrigin = row[indices['Media Origin']];
-        const reference = row[indices['Reference']];
+        const references = row[indices['References']].split('\n');
         const data = {
             id: i,
             name: row[indices['Name']],
@@ -2428,7 +2494,7 @@ async function uploadMusic(element) {
         }
         if (from) { data.from = from }
         if (mediaOrigin) { data.mediaOrigin = mediaOrigin }
-        if (reference) { data.reference = reference }
+        if (references) { data.references = references }
         return data;
     });
     
@@ -2452,7 +2518,7 @@ async function uploadPerformances(element, memberData, discords, musicData, even
     }
 
     // Map column to row index
-    const rows = new Set(['Name', 'Arranger', 'Sheet Music', 'Concerts', 'Song Type', 'Group', 'Instrumentation', 'Performers']);
+    const rows = new Set(['Name', 'Arrangers', 'Sheet Music', 'Concerts', 'Song Type', 'Group', 'Instrumentation', 'Performers']);
     const indices = {};
     for (let i = 0; i < header.length; i++) {
         if (rows.has(header[i])) {
@@ -2548,11 +2614,11 @@ async function uploadPerformances(element, memberData, discords, musicData, even
             performers: Object.fromEntries(instrumentation.map((x, i) => [x, performers[i] ?? ['']])),
             id: musicData[name].performances.length
         }
-        const arranger = row[indices['Arranger']]
+        const arrangers = row[indices['Arrangers']]
         const sheetMusic = row[indices['Sheet Music']];
         const group = row[indices['Group']];
         const songType = row[indices['Song Type']];
-        if (arranger) { newData.arranger = arranger.split(',').map(x => discordToId(x.trim())); };
+        if (arrangers) { newData.arrangers = arrangers.split(',').map(x => discordToId(x.trim())); };
         if (sheetMusic) { newData.sheetMusic = sheetMusic };
         if (group) { newData.group = group };
         if (songType) { newData.songType = songType };
@@ -2588,7 +2654,7 @@ async function uploadEvents(element) {
     }
 
     // Map column to row index 
-    const rows = new Set(['Name', 'Type', 'Start', 'End', 'Location', 'Description', 'Gallery', 'Video']);
+    const rows = new Set(['Name', 'Type', 'Start', 'End', 'Location', 'Description', 'Link', 'Poster', 'Concert Video']);
     const indices = {};
     for (let i = 0; i < header.length; i++) {
         if (rows.has(header[i])) {
@@ -2606,10 +2672,10 @@ async function uploadEvents(element) {
             start: row[indices['Start']].replace(', ', '|'),
             end: row[indices['End']].replace(', ', '|'),
         };
-        const gallery = row[indices['Gallery']];
-        if (gallery) result.gallery = gallery;
-        const video = row[indices['Video']];
-        if (video) result.video = video;
+        for (const [fieldName, colName] of [['link', 'Link'], ['video', 'Concert Video'], ['poster', 'Poster']]) {
+            const value = row[indices[colName]];
+            if (value) result[fieldName] = value;
+        }
         return result;
     }) 
     return parsed;
@@ -2742,7 +2808,11 @@ function createRowCheckbox(checked) {
 const INPUT_ATTRIBUTES = {
     default: {
         contenteditable: 'plaintext-only',
-        onblur: 'validateInput(this)',
+        onblur: 'validateInput(this, false)',
+    },
+    defaultRichText: {
+        contenteditable: 'true',
+        onblur: 'validateInput(this, true)'
     },
     multiline: {
         contenteditable: 'true',
@@ -2755,6 +2825,14 @@ const INPUT_ATTRIBUTES = {
     timestamp: {
         contenteditable: 'plaintext-only',
         onblur: 'validateInputTimestamp(this)'
+    },
+    links: {
+        contenteditable: 'plaintext-only',
+        onblur: 'validateInputLinks(this)'
+    },
+    eventLink: {
+        contenteditable: 'plaintext-only',
+        onblur: 'validateInputEventLink(this)'
     }
 }
 function createDropdown(value, options) {
@@ -3494,14 +3572,14 @@ function constructAnnouncements() {
         children: createInputsStartEnd(x, 'date', 'from', 'until')
     }, {
         element: 'td',
-        attributes: INPUT_ATTRIBUTES.multiline,
-        innerHTML: parseMarkdown(x.text)
+        attributes: INPUT_ATTRIBUTES.defaultRichText,
+        innerHTML: x.text
     }];
 
     const rowSyncer = (id, tds) => {
         API.ANNOUNCEMENTS.set(id, {
             type: tds[0].children[0].src.endsWith('alert-triangle.svg') ? 'alert' : 'announcement',
-            text: parseInnerHTML(tds[2].innerHTML),
+            text: tds[2].innerHTML.trim(),
             from: tds[1].children[0].children[0].value,
             until: tds[1].children[1].children[0].value
         })
@@ -3537,8 +3615,9 @@ function constructUpcomingEvents() {
     }];
 
     const rowSyncer = (id, tds) => {
+        const eventId = tds[0].children[0].children[0].children[1].value;
         API.UPCOMING_EVENTS.set(id, {
-            eventId: Number(tds[0].children[0].children[0].children[1].value),
+            eventId: eventId ? Number(eventId) : undefined,
             from: tds[1].children[0].lastElementChild.value,
             until: tds[1].children[1].lastElementChild.value,
             image: tds[2].innerText
@@ -3550,7 +3629,7 @@ function constructUpcomingEvents() {
 function constructCurrentEvent() {
     const currentEvent = getCurrentEvent();
     const { name } = API.EVENTS.get(currentEvent.id);
-    const { links: { poster, rvsp, setlist }, tickets, hideBefore, hideAfter, location, preConcertDescription, postConcertDescription } = currentEvent;
+    const { rvsp, tickets, hideBefore, hideAfter, location, preConcertDescription, postConcertDescription } = currentEvent;
 
     const container = cssGetId('current-event-id');
     const input = container.children[0].lastElementChild;
@@ -3561,9 +3640,7 @@ function constructCurrentEvent() {
     if (hideAfter) { cssGetId('current-event-visible-until').value = hideAfter.replace('|', 'T'); }
     cssGetId('current-event-location').innerText = location;
     cssGetId('current-event-tickets').innerText = tickets;
-    cssGetId('current-event-poster').innerText = poster;
     cssGetId('current-event-rvsp').innerText = rvsp;
-    cssGetId('current-event-setlist').innerText = setlist;
 }
 
 
@@ -3587,11 +3664,7 @@ function constructFaq() {
             element: 'div',
             classes: ['table-faq-a'],
             attributes: INPUT_ATTRIBUTES.multiline,
-            innerHTML: parseMarkdown(a[0]),
-            children: a.slice(1).map(x => ({
-                element: 'div',
-                innerHTML: parseMarkdown(x)
-            }))
+            innerHTML: a.join("<br>")
         }]
     }];
 
@@ -3664,7 +3737,7 @@ function constructMembers() {
     const deleteChecker = (ids) => {
         for (const [, , x, p] of API.MUSIC.iterateSubrows()) {
             const performers = new Set(Object.values(p.performers).flat());
-            const arrangers = new Set(p.arranger);
+            const arrangers = new Set(p.arrangers);
             for (const id of ids.map(Number)) {
                 if (performers.has(id)) {
                     return `Cannot delete members who have performed (${API.MEMBERS.get(id).name} // ${x.name})`;
@@ -3703,7 +3776,7 @@ function constructMusicTable() {
     };
 
     const dataParserSubrow = (p) => {
-        const arranger = p.arranger?.map(a => {
+        const arrangers = p.arrangers?.map(a => {
             const name = API.MEMBERS.get(a)?.name;
             return name ? [a, name] : [undefined, a];
         }) ?? [];
@@ -3734,7 +3807,7 @@ function constructMusicTable() {
             }],
             ['Arranger(s)', {
                 element: 'td',
-                children: [createInputTags(arranger, 'Enter arranger...', 'arranger')]
+                children: [createInputTags(arrangers, 'Enter arranger...', 'arranger')]
             }],
             ['Group Name', {
                 element: 'td',
@@ -3773,8 +3846,8 @@ function constructMusicTable() {
             children: [createInputSubrowOpener(performanceTimes)]
         }, {
             element: 'td',
-            attributes: INPUT_ATTRIBUTES.default,
-            innerText: x.reference
+            attributes: INPUT_ATTRIBUTES.links,
+            innerHTML: x.references.join("<br>")
         }];
 
         const subrows = performances.map(dataParserSubrow);
@@ -3788,7 +3861,7 @@ function constructMusicTable() {
                 composer: row[1].innerText,
                 from: row[2].innerText,
                 mediaOrigin: row[3].children[0].value,
-                reference: row[5].innerText,
+                references: row[5].innerHTML.split("<br>"),
             });
         } else {
             const prev = new Set(API.MUSIC.getAllSubrows(id).map(x => x.concerts).flat());
@@ -3797,14 +3870,14 @@ function constructMusicTable() {
             const concertTags = trs[0].lastElementChild.children[0];
             const arrangerTags = trs[4].lastElementChild.children[0];
             const concerts = Array.from(concertTags.children).slice(0, -1).map(x => extractId(x.children[1].innerText));
-            const arranger = Array.from(arrangerTags.children).slice(0, -1).map(x => extractId(x.children[1].innerText));
+            const arrangers = Array.from(arrangerTags.children).slice(0, -1).map(x => extractId(x.children[1].innerText));
             
             API.MUSIC.setSubrow(id, subIds, {
                 id: subIds,
                 concerts,
                 songType: trs[3].lastElementChild.children[0].value,
                 sheetMusic: trs[2].lastElementChild.innerText,
-                arranger,
+                arrangers,
                 link: trs[1].lastElementChild.innerText,
                 group: trs[5].lastElementChild.innerText,
             });
@@ -3834,6 +3907,23 @@ function constructMusicTable() {
 /*********************************************************************
 Data injection - Event table
 *********************************************************************/
+// Keep in sync with the function in index.js
+function parseEventLink(link) {
+    let linkType;
+    if (link?.startsWith('https://drive.google.com/embeddedfolderview?id=')) {
+        linkType = 'embed-drive';
+    } else if (link?.includes('drive.google.com')) {
+        linkType = 'link-drive';
+    } else if (link?.startsWith('https://www.youtube.com/embed/')) {
+        linkType = 'embed-youtube';
+    } else if (link?.includes('youtube') || link?.includes('youtu.be')) {
+        linkType = 'link-youtube';
+    } else if (link) {
+        linkType = 'link';
+    }
+    return linkType;
+}
+
 function constructEventTable() {
     const ymdhs = getTemplateDateString(true);
     const template = {
@@ -3847,6 +3937,7 @@ function constructEventTable() {
     const eventTypes = ['Concert', 'Workshop', 'Other', 'External'];
 
     const dataParser = (x) => {
+        const linkType = parseEventLink(x.link);
         const noSetlist = !x.setlist || x.setlist.length === 0;
         const noSetlistMessage = `'${x.name}' has no setlist. Add songs to it first in the music tab.`;
         const row = [{
@@ -3872,13 +3963,18 @@ function constructEventTable() {
         }, {
             element: 'td',
             attributes: INPUT_ATTRIBUTES.default,
-            innerText: x.gallery
+            innerText: x.poster
+        }, {
+            element: 'td',
+            attributes: INPUT_ATTRIBUTES.eventLink,
+            classes: linkType ? ['td-link', `td-link-${linkType}`] : [],
+            innerText: x.link
         }];
         
         const subrows = [{
             element: 'div',
             attributes: INPUT_ATTRIBUTES.multiline,
-            innerHTML: x.description ? parseMarkdown(x.description) : ''
+            innerHTML: x.description.join("<br>")
         }];
 
         return [row, subrows];
@@ -3892,7 +3988,8 @@ function constructEventTable() {
                 location: row[2].innerText,
                 start: row[3].children[0].lastElementChild.value.replace('T', '|'),
                 end: row[3].lastElementChild.lastElementChild.value.replace('T', '|'),
-                gallery: row[6].innerText,
+                poster: row[6].innerText,
+                link: row[7].innerText,
             });
         } else {
             API.EVENTS.set(id, { description: parseInnerHTML(subrows.innerHTML) });
@@ -4326,6 +4423,7 @@ function syncModalPerformancePerformers() {
 function syncModalConcertSetlist() {
     // Extract video
     const container = cssGetId('concert-setlist-video');
+    const validation = container.nextElementSibling.nextElementSibling;
     const video = container.style.display === 'none' ? '' : container.lastElementChild.value;
     
     // Extract setlist and timestamps
@@ -4343,7 +4441,9 @@ function syncModalConcertSetlist() {
     }   
 
     // Sync data
-    API.EVENTS.set(MODAL_INFO, { video, setlist })
+    if (video) {
+        API.EVENTS.set(MODAL_INFO, { video, setlist })
+    }
 
     closeModals();
 }
