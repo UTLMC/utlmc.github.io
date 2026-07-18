@@ -310,12 +310,12 @@
             </table>
             <p class="validation-text"></p>
 
-            <div id="current-event-description-container">
-                <hgroup id="preconcert-description" class="current-event-description">
+            <div id="large-textarea-container">
+                <hgroup id="preconcert-description" class="large-textarea">
                     <h3>Pre-Concert Description</h3>
                     <div contenteditable="true" onblur="validateMultilineInput(this)">The LMC returns this April for its regularly-scheduled end of winter concert, featuring 3 hours of music, XX songs played by XX of our talented musicians!</div>
                 </hgroup>
-                <hgroup id="postconcert-description" class="current-event-description">
+                <hgroup id="postconcert-description" class="large-textarea">
                     <h3>Post-Concert Description</h3>
                     <div contenteditable="true" onblur="validateMultilineInput(this)">Thank you to all performers and audience for a successful April concert! The next season of LMC operations will begin in September 2026.</div>
                 </hgroup>
@@ -323,15 +323,84 @@
         </article>
         <article id="tab-links">
             <h1>Links</h1>
-            <h2>Header 1</h2>
-            <p>Sample text</p>
+            <h2>Forms and Embeds</h2>
+            <table class="datalist" id="datalist-links">
+                <tbody>
+                    <tr>
+                        <td>New Member Form</td>
+                        <td contenteditable="plaintext-only" onblur="validateInput(this)" id="rehearsals-form-new-member">http</td>
+                        <td>Sheet Music Embed</td>
+                        <td contenteditable="plaintext-only" onblur="validateInput(this)" id="rehearsals-embed-sheet-music">http</td>
+                    </tr>
+                    <tr>
+                        <td>UT-SAMA Membership Form</td>
+                        <td contenteditable="plaintext-only" onblur="validateInput(this)" id="rehearsals-form-utsama">http</td>
+                        <td>Schedule Embed</td>
+                        <td contenteditable="plaintext-only" onblur="validateInput(this)" id="rehearsals-embed-schedule">http</td>
+                    </tr>
+                    <tr>
+                        <td>Song Playlist Link</td>
+                        <td contenteditable="plaintext-only" onblur="validateInput(this)" id="rehearsals-link-playlist">http</td>
+                        <td>Large Ensemble Location Embed</td>
+                        <td contenteditable="plaintext-only" onblur="validateInput(this)" id="rehearsals-embed-large-ensemble-location">http</td>
+                    </tr>
+                </tbody>
+            </table>
+            <hgroup id="large-ensemble-description" class="large-textarea">
+                <h3>Large Ensemble Description</h3>
+                <div contenteditable="true" onblur="validateMultilineInput(this)">The LMC returns this April for its regularly-scheduled end of winter concert, featuring 3 hours of music, XX songs played by XX of our talented musicians!</div>
+            </hgroup>
+            
+            <h2>Resources</h2>
+            <div class="table" id="table-resources">
+                <ul class="table-toolbar">
+                    <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>
+                    <li class="table-toolbar-remove table-toolbar-disabled" onclick="tableToolbarRemove(this)"></li>
+                    <li class="table-toolbar-move-up table-toolbar-disabled" onclick="tableToolbarMoveUp(this)"></li>
+                    <li class="table-toolbar-move-down table-toolbar-disabled" onclick="tableToolbarMoveDown(this)"></li>
+                    <li class="table-toolbar-move-top table-toolbar-disabled" onclick="tableToolbarMoveTop(this)"></li>
+                    <li class="table-toolbar-move-bottom table-toolbar-disabled" onclick="tableToolbarMoveBottom(this)"></li>
+                    <li class="table-toolbar-copy table-toolbar-disabled" onclick="tableToolbarCopy(this)"></li>
+                </ul>
+                <div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" class="aggregate-checkbox" onclick="clickAggregateCheckbox(this)" /></th>
+                                <th>Type</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="table-resources-0">
+                                <td onclick="toggleRowSelect(event, this)">
+                                    <input type="checkbox" class="checkbox" />
+                                </td>
+                                <td>
+                                    <select>
+                                        <option>LMC</option>
+                                        <option>General</option>
+                                        <option>Arranging</option>
+                                        <option>Music Theory</option>
+                                        <option>Music Production</option>
+                                    </select>
+                                </td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">Name</td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">Description</td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">https://www.youtube.com/watch?v=tLQLa6lM3Us&pp</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </article>
         <article id="tab-images">
             <h1>Images</h1>
         </article>
         <article id="tab-members">
             <h1>Members</h1>
-
             <div class="table" id="table-members">
                 <ul class="table-toolbar">
                     <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>

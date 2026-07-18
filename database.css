@@ -1004,10 +1004,7 @@ Datalist tags
 /*********************************************************************
 Table customization
 *********************************************************************/
-#table-events > div,
-#table-faq > div,
-#table-music > div,
-#table-members > div {
+.table > div {
     max-height: calc(100vh - 140px);
 }
 
@@ -1032,7 +1029,10 @@ Table customization
 #table-events tbody tr td:last-child,
 #table-events thead tr th:last-child,
 #table-faq tbody tr td:last-child,
-#table-faq thead tr th:last-child {
+#table-faq thead tr th:last-child,
+#table-resources thead tr th:nth-child(3),
+#table-resources thead tr th:nth-child(4),
+#table-resources thead tr th:last-child {
     text-align: left;
 }
 
@@ -1044,14 +1044,17 @@ Table customization
 
 #table-music > div > table > tbody > tr:not(.subtable-row) td:nth-child(7),
 #table-events > div > table > tbody > tr:not(.subtable-row) td:nth-child(8),
-#table-events > div > table > tbody > tr:not(.subtable-row) td:nth-child(9) {
+#table-events > div > table > tbody > tr:not(.subtable-row) td:nth-child(9),
+#table-resources tbody tr td:last-child {
     white-space: nowrap;
     overflow: clip;
     max-width: 100px;
+    text-align: left;
 }
 #table-music > div > table > tbody > tr:not(.subtable-row) td:nth-child(7):focus,
 #table-events > div > table > tbody > tr:not(.subtable-row) td:nth-child(8):focus,
-#table-events > div > table > tbody > tr:not(.subtable-row) td:nth-child(9):focus {
+#table-events > div > table > tbody > tr:not(.subtable-row) td:nth-child(9):focus,
+#table-resources tbody tr td:last-child:focus {
     white-space: normal;
 }
 
@@ -1090,7 +1093,9 @@ Table customization
 #table-music > div > table > thead > tr:not(.subtable-row) th:nth-child(4),
 #table-music > div > table > tbody > tr:not(.subtable-row) td:nth-child(2),
 #table-music > div > table > tbody > tr:not(.subtable-row) td:nth-child(3),
-#table-music > div > table > tbody > tr:not(.subtable-row) td:nth-child(4) {
+#table-music > div > table > tbody > tr:not(.subtable-row) td:nth-child(4),
+#table-resources tbody tr td:nth-child(3),
+#table-resources tbody tr td:nth-child(4) {
     min-width: 150px;
     max-width: min(20vw, 200px);
     text-align: left;
@@ -1101,7 +1106,9 @@ Table customization
 #table-members > div > table > tbody > tr:not(.subtable-row) td:nth-child(2):focus,
 #table-music > div > table > tbody > tr:not(.subtable-row) td:nth-child(2):focus,
 #table-music > div > table > tbody > tr:not(.subtable-row) td:nth-child(3):focus,
-#table-music > div > table > tbody > tr:not(.subtable-row) td:nth-child(4):focus {
+#table-music > div > table > tbody > tr:not(.subtable-row) td:nth-child(4):focus,
+#table-resources tbody tr td:nth-child(3):focus,
+#table-resources tbody tr td:nth-child(4):focus {
     white-space: normal;
 }
 
@@ -1111,6 +1118,8 @@ Table customization
 #table-events thead tr th:nth-child(3),
 #table-events thead tr th:nth-child(4) { min-width: 150px; }
 #table-events thead tr th:nth-child(5) { min-width: 260px; }
+
+#table-resources tbody tr td:nth-child(2) { width: 170px; }
 
 
 /*********************************************************************
@@ -1134,10 +1143,10 @@ Datalist
 .datalist tr td:first-child {
     text-wrap: nowrap;
 }
-.datalist tr:first-child td:last-child {
+.subtable .datalist tr:first-child td:last-child {
     border-radius: 0 15px 0 0;
 }
-.datalist tr:last-child td:last-child {
+.subtable .datalist tr:last-child td:last-child {
     border-radius: 0 0 15px 0;
 }
 .datalist tr td:nth-child(odd) {
@@ -1148,29 +1157,50 @@ Datalist
     width: 125px;
 }
 
+#tab-bulletin h2:not(:first-of-type), #tab-links h2:not(:first-of-type) {
+    margin-top: 20px;
+}
+#datalist-current-event tr td:nth-child(2),
+#datalist-links tr td:nth-child(2) {
+    border-right: 15px solid rgb(237, 224, 212);
+}
+#datalist-links tr td:nth-child(1) {
+    min-width: 220px;
+    max-width: 220px;
+    width: 220px;
+}
+#datalist-links tr td:nth-child(3) {
+    min-width: 270px;
+    max-width: 270px;
+    width: 270px;
+}
+#datalist-links tr td:nth-child(2n) {
+    max-width: 0;
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+#datalist-links tr td:nth-child(2n):focus {
+    white-space: normal;
+}
+
 
 /*********************************************************************
 Bulletin page
 *********************************************************************/
-#tab-bulletin h2:not(:first-of-type) {
-    margin-top: 20px;
-}
-#datalist-current-event tr td:nth-child(2) {
-    border-right: 15px solid rgb(237, 224, 212);
-}
-
-#current-event-description-container {
+#large-textarea-container {
     display: flex;
     flex-direction: row;
     gap: 15px;
-    font-size: 16px;
 }
-.current-event-description {
+.large-textarea {
     border: 2px solid rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     padding: 15px;
+    font-size: 16px;
 }
-.current-event-description h3 {
+.large-textarea h3 {
     font-weight: normal;
     font-family: 'DM Sans';
     font-size: 18px;

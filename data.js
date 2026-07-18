@@ -6788,21 +6788,6 @@ const FAQ = [
     },
 ].map((x, i) => ({...x, id: i}));
 
-const FORM_LINKS = {
-    // 'song-suggestion': '',
-    // 'song-voting': '',
-    // 'ideas-and-feedback': '',
-    // 'small-ensemble-registration': '',
-    // 'equipment-or-room-requests': '',
-    // 'online-project-assistance': '',
-    // 'new-member-registration': 'https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform'
-};
-
-const EMBED_LINKS = {
-    'embed-calendar': 'https://calendar.google.com/calendar/embed?src=utsama.lightmusicclub%40gmail.com&ctz=America%2FToronto',
-
-};
-
 const CAROUSEL = [
     {
         url: 'assets/images/carousel 2025-04.webp',
@@ -6835,3 +6820,119 @@ const CAROUSEL = [
         height: 1418
     },
 ];
+
+const LINKS = {
+    formUTSAMA: 'https://docs.google.com/forms/d/e/1FAIpQLSfWb-du-EgTdqi19aOW4tSGwe0i6YVbJp_AzfeVhxrHfowsPw/viewform',
+    formNewMember: 'https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform',
+    linkPlaylist: '#',
+    embedSheetMusic: 'https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo',
+    embedSchedule: 'https://calendar.google.com/calendar/embed?src=utsama.lightmusicclub%40gmail.com&ctz=America%2FToronto',
+    embedLargeEnsembleLocation: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1443.0128620829312!2d-79.39986402188697!3d43.66843482050036!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x882b35e3e82fb861%3A0xef695b0943f77b70!2sOISE%20Library!5e0!3m2!1sen!2sca!4v1756700291348!5m2!1sen!2sca',
+    descriptionLargeEnsemble: [
+        'Large ensemble rehearsals take place at the Ontario Institute for Studies in Education (OISE) at 252 Bloor Street West, in room C-154 underground.',
+        'The building is directly connected to the subway via the Bedford Road exit at St. George station, which leads to floor C. There is also vehicle parking and bicycle parking. See the <a href="https://www.oise.utoronto.ca/about/cao/OISEBuildingAccess" target="_blank">OISE website</a> for details and <a href="https://www.classfind.com/toronto/room/OIC154" target="_blank">this website</a> for visual directions.',
+        'LMC observes UofT time, with rehearsals starting 10 minutes after scheduled. The first 10 minutes should be used for setting up your instrument and warming up.'
+    ]
+};
+
+const RESOURCES = [{
+    type: 'LMC',
+    name: 'Sheet Music Archive',
+    description: 'All past large ensemble LMC music',
+    link: 'https://drive.google.com/drive/u/3/folders/1wguvdNtcvz-foduMNA7m-U_HUemQTCIo'
+}, {
+    type: 'LMC',
+    name: 'Materials',
+    description: 'Workshops, slides, etc.',
+    link: 'https://drive.google.com/drive/u/3/folders/1wguvdNtcvz-foduMNA7m-U_HUemQTCIo'
+}, {
+    type: 'General',
+    name: 'Tuner',
+    description: 'Intonation',
+    link: 'https://tuner.ninja/',
+}, {
+    type: 'General',
+    name: 'Metronome',
+    description: 'Timing',
+    link: 'https://www.musicca.com/metronome'
+}, {
+    type: 'General',
+    name: 'muted.io',
+    description: 'Miscellaneous tools and diagrams. Chords, intervals, fretboards, tuners, etc.',
+    link: 'https://muted.io/'
+}, {
+    type: 'General',
+    name: 'Musescore',
+    description: 'Online sheet music repository.',
+    link: 'https://musescore.com/'
+}, {
+    type: 'Arranging',
+    name: 'Vienna Symphonic Library',
+    description: 'Orchestra instrument wiki',
+    link: 'https://www.vsl.co.at/academy'
+}, {
+    type: 'Arranging',
+    name: 'Orchestration Online',
+    description: 'Orchestration video lessons',
+    link: 'https://www.youtube.com/@OrchestrationOnline/videos'
+}, {
+    type: 'Arranging',
+    name: 'Instrument Studies for Eyes and Ears',
+    description: 'Orchestra instrument audio guide',
+    link: 'https://isfee.music.indiana.edu/'
+}, {
+    type: 'Arranging',
+    name: 'Young Person’s Guide to the Orchestra',
+    description: 'Orchestral piece featuring all instruments',
+    link: 'https://www.youtube.com/watch?v=rbUbx9cJPX0'
+}, {
+    type: 'Arranging',
+    name: 'Drum-Writing Guide #1',
+    description: 'By 8-bit Music Theory',
+    link: 'https://www.youtube.com/watch?v=FoMmVlAvjmM'
+}, {
+    type: 'Arranging',
+    name: 'Drum-Writing Guide #2',
+    description: 'By 12tone',
+    link: 'https://www.youtube.com/watch?v=MdOV8I4n6v8'
+}, {
+    type: 'Music Theory',
+    name: 'Adam Neely',
+    description: 'Video essays, music theory',
+    link: 'https://www.youtube.com/@AdamNeely/videos'
+}, {
+    type: 'Music Theory',
+    name: 'Cadence Hira',
+    description: 'https://www.youtube.com/@CadenceHira/videos',
+    link: 'https://www.youtube.com/@CadenceHira/videos'
+}, {
+    type: 'Music Theory',
+    name: '8-bit Music Theory',
+    description: 'Analyses of video game music',
+    link: 'https://www.youtube.com/@8bitMusicTheory/videos'
+}, {
+    type: 'Music Theory',
+    name: '12tone',
+    description: 'Music theory',
+    link: 'https://www.youtube.com/@12tone/videos'
+}, {
+    type: 'Music Theory',
+    name: 'David Bruce',
+    description: 'Classical music and music theory',
+    link: 'https://www.youtube.com/@DBruce/videos'
+}, {
+    type: 'Music Theory',
+    name: 'Japanese Pop Music Cliches',
+    description: 'Music theory of J-pop music',
+    link: 'https://www.youtube.com/watch?v=-IyBwwMkw90'
+}, {
+    type: 'Music Production',
+    name: 'Jazen Sounds',
+    description: 'Tutorials on sound design & creating electronic music instruments',
+    link: 'https://www.youtube.com/@jazensounds453/videos'
+}, {
+    type: 'Music Production',
+    name: 'Synthet',
+    description: 'Short videos on music production in digital audio workstations',
+    link: 'https://www.youtube.com/@synthet7/videos'
+}].map((x, i) => ({...x, id: i}));

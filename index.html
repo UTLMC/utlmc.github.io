@@ -298,10 +298,10 @@
                     </ul>
                 </div>
             </section>
-            <iframe loading="lazy" class='embed-calendar' src="https://calendar.google.com/calendar/embed?src=utsama.lightmusicclub%40gmail.com&ctz=America%2FToronto" title="Google calendar" frameborder="0" scrolling="no"></iframe>
+            <iframe loading="lazy" class='embed-calendar' id='home-calendar' src="https://calendar.google.com/calendar/embed?src=utsama.lightmusicclub%40gmail.com&ctz=America%2FToronto" title="Google calendar" frameborder="0" scrolling="no"></iframe>
             <section id="section-outreach">
                 <h1>Work with Us</h3>
-                <p>Want to join LMC? See <a onclick="navigateToTab('get-involved')">here</a> for more info. For general inquiries, collaborations, performing with us, or any sort of partnership with LMC, please feel free to contact any of the LMC execs below:</p>
+                <p>Want to join LMC? See <a onclick="toggleTab('nav-get-involved')">here</a> for more info. For general inquiries, collaborations, performing with us, or any sort of partnership with LMC, please feel free to contact any of the LMC execs below:</p>
                 <div id="home-outreach">
                     <!-- <h4>Mike</h4>
                     <ul class="list-social-media">
@@ -721,107 +721,32 @@
 
         <!-- Rehearsals Page -->
         <article id="tab-rehearsals" class="tab">
-            <section class="section-default">
-                <h1>Under Construction</h1>
-            </section>
-            <section class="section-default-bg">
-                <h1>Sheet Music</h1>
-                <iframe loading="lazy" class='embed-drive-list' src="https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo#list" title="Google drive folder" allowfullscreen></iframe>
-            </section>
-            <section class="section-default">
-                <h1>Setlist</h1>
-                <div class="setlist-block">
-                    <details open class="details-hidden">
-                        <summary onclick="toggleDetailsSummary(event)">
-                            <hgroup class="tag-container">
-                                <h4>Piece 1</h4>
-                                <span>Fall</span>
-                            </hgroup>
-                            <div class="summary-triangle"></div>
-                        </summary>
-                        <div class="summary-body song-container">
-                            <nav class="nav-song">
-                                <menu>
-                                    <li class="nav-song-info nav-song-active" onclick="toggleSongTab(this)">Info</li>
-                                    <li class="nav-song-performers" onclick="toggleSongTab(this)">Performers</li>
-                                </menu>
-                            </nav>
-                            <article class="tab-song-info tab-song tab-song-active">
-                                <dl class="table-song-info">
-                                    <dt>Source</dt>
-                                    <dd>XX</dd>
-                                    <dt>Composer</dt>
-                                    <dd>XX</dd>
-                                    <dt>Arranger</dt>
-                                    <dd>XX</dd>
-                                    <dt>Reference Video(s)</dt>
-                                    <dd>Some link</dd>
-                                    <dt>Rehearsal Schedule</dt>
-                                    <dd>
-                                        <p>Tuesdays, 4:00 - 6:00 pm</p>
-                                        <p>Wednesdays, 4:00 - 6:00 pm</p>
-                                    </dd>
-                                    <dt>Rehearsal Location</dt>
-                                    <dd>OISE C415</dd>
-                                    <dt>Rehearsal Lead</dt>
-                                    <dd>@dude</dd>
-                                </dl>
-                            </article>
-                            <article class="tab-song-performers tab-song">
-                                <dl class="performer-instrument">
-                                    <dt>Flute</dt>
-                                    <dd>Me</dd>
-                                </dl>
-                                <dl class="performer-instrument">
-                                    <dt>Drums</dt>
-                                    <dd>Person 1, Person 2, Person 3</dd>
-                                </dl>
-                                <dl class="performer-instrument">
-                                    <dt>Voice</dt>
-                                    <dd>XXX, YYY</dd>
-                                </dl>
-                                <dl class="performer-instrument">
-                                    <dt>Violin</dt>
-                                    <dd>XYZ, ABC, DEF, GHI</dd>
-                                </dl>
-                                <dl class="performer-instrument">
-                                    <dt>Bass Guitar</dt>
-                                    <dd>I dunno, Someone, John Man</dd>
-                                </dl>
-                            </article>
-                        </div>
-                    </details>
-                </div>
-            </section>
-            <section class="section-default">
-                <div class="card-normal">
-                    <h1>Forms</h1>
-                    <div class="card-button-container">
-                        <a class="card-button" target="_blank">
-                            <div class="card-button-icon" id="icon-song-suggestion"></div>
-                            <span>Song Suggestion</span>
-                        </a>
-                        <a class="card-button" target="_blank">
-                            <div class="card-button-icon" id="icon-song-voting"></div>
-                            <span>Song Voting</span>
-                        </a>
-                        <a class="card-button" target="_blank">
-                            <div class="card-button-icon" id="icon-ideas-and-feedback"></div>
-                            <span>Ideas and Feedback</span>
-                        </a>
-                    </div>
-                </div>
-            </section>
-            <section class="section-default-bg">
-                <h1>Location</h1>
-                <div class="col-divider">
-                    <div class="row-divider">
-                        <p>Large ensemble rehearsals take place at the Ontario Institute for Studies in Education (OISE) at 252 Bloor Street West, in room C154 underground.</p>
+            <section id="section-rehearsal-location">
+                <div id="rehearsal-intro-block">
+                    <hgroup id="rehearsal-intro">
+                        <h1>Rehearsals</h1>
+                        <!-- <p>Large ensemble rehearsals take place at the Ontario Institute for Studies in Education (OISE) at 252 Bloor Street West, in room C154 underground.</p>
                         <p>The building is directly connected to the subway via the Bedford Road exit at St. George station, which leads to floor C. There is also vehicle parking and bicycle parking. See the <a href="https://www.oise.utoronto.ca/about/cao/OISEBuildingAccess" target="_blank">OISE website</a> for details.</p>
-                        <p>We have historically performed concerts at the OISE Auditorium and the <a href="https://www.thecatseye.ca/" target="_blank">Cat's Eye</a> in the Goldring Student Centre (150 Charles Street West) at Victoria College.</p>
-                    </div>
-                    <iframe class="embed-maps" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1443.0128620829312!2d-79.39986402188697!3d43.66843482050036!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x882b35e3e82fb861%3A0xef695b0943f77b70!2sOISE%20Library!5e0!3m2!1sen!2sca!4v1756700291348!5m2!1sen!2sca" allowfullscreen="" loading="lazy"></iframe>
+                        <p>LMC observes UofT time, with rehearsals starting 10 minutes after scheduled. The first 10 minutes should be used for setting up your instrument and warming up.</p> -->
+                    </hgroup>
+                    <iframe id="rehearsal-location-embed" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1443.0128620829312!2d-79.39986402188697!3d43.66843482050036!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x882b35e3e82fb861%3A0xef695b0943f77b70!2sOISE%20Library!5e0!3m2!1sen!2sca!4v1756700291348!5m2!1sen!2sca" allowfullscreen="" loading="lazy"></iframe>
                 </div> 
+            </section>
+            <section id="section-rehearsal-links">
+                <iframe loading="lazy" id='rehearsal-drive-embed' src="https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo#list" title="Google drive folder" allowfullscreen></iframe>
+                <div id="rehearsal-link-buttons">
+                    <a id="rehearsal-button-playlist" target="_blank">
+                        <img src="assets/icons/logos/youtube.svg" />
+                        <p>Youtube Playlist</p>
+                    </a>
+                    <a id="rehearsal-button-utsama" target="_blank">
+                        <img src="assets/icons/logos/utsama-winter-discord.webp" />
+                        <p>UT-SAMA Membership</p>
+                    </a>
+                </div>
+            </section>
+            <section id="section-rehearsal-calendar">
+                <iframe loading="lazy" class='embed-calendar' src="https://calendar.google.com/calendar/embed?src=utsama.lightmusicclub%40gmail.com&ctz=America%2FToronto&mode=WEEK" title="Google calendar" frameborder="0" scrolling="no"></iframe>
             </section>
         </article>
 
@@ -939,7 +864,6 @@
                             <li onclick="goToVideoChapter(this, 100)" class="concert-video-chapter-active"><span>01 //</span> Something 1</li>
                             <li onclick="goToVideoChapter(this, 100)"><span>02 //</span> Something 2</li>
                         </ul>
-                        <!-- <iframe class="embed-youtube" loading="lazy" src="https://www.youtube.com/embed/k1CZLnxSWDc?si=YTR2aZ5pTpb4E0Ft" title="YouTube video player" frameborder="0" allow="picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
                     </article>
 
                     <article id="tab-concert-performers" class="tab-concert">
@@ -961,181 +885,62 @@
 
         <!-- Resources Page -->
         <article id="tab-resources" class="tab">
-            <section class="section-default">
-                <h1>Under Construction</h1>
-            </section>
-            <section class="section-default-bg">
-                <div class="embed-grid">
-                    <div>
-                        <h1>Materials</h1>
-                        <iframe loading="lazy" class='embed-drive-grid' src="https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo#list"></iframe>
-                    </div>
-                    <div>
-                        <h1>Sheet Music Archive</h1>
-                        <iframe loading="lazy" class='embed-drive-grid' src="https://drive.google.com/embeddedfolderview?id=17yYRfvu0f_EVc3kDF3RAV5SjsN3OaF0K#grid"></iframe>
-                    </div>                
+            <section id="section-resources-links">
+                <h1>Resources</h1>
+                <div id="resource-link-container">
+                    <nav>
+                        <menu id="nav-link">
+                            <li id="nav-link-lmc" class="nav-link-active" onclick="toggleLinkTab(this)">LMC</li>
+                            <li id="nav-link-general" onclick="toggleLinkTab(this)">General</li>
+                            <li id="nav-link-arranging" onclick="toggleLinkTab(this)">Arranging</li>
+                            <li id="nav-link-music-theory" onclick="toggleLinkTab(this)">Music Theory</li>
+                            <li id="nav-link-music-production" onclick="toggleLinkTab(this)">Music Production</li>
+                        </menu>
+                    </nav>
+                    <article id="tab-link-lmc" class="tab-link tab-link-active">
+                        <dl class="table-hyperlinks">
+                            <!--
+                            <dt><a href="https://drive.google.com/drive/u/3/folders/1wguvdNtcvz-foduMNA7m-U_HUemQTCIo" target="_blank">Sheet Music Archive</a></dt>
+                            <dd>All past large ensemble LMC music</dd>
+                            -->
+                        </dl>
+                    </article>
+                    <article id="tab-link-general" class="tab-link">
+                        <dl class="table-hyperlinks"></dl>
+                    </article>
+                    <article id="tab-link-arranging" class="tab-link">
+                        <dl class="table-hyperlinks"></dl>
+                    </article>
+                    <article id="tab-link-music-theory" class="tab-link">
+                        <dl class="table-hyperlinks"></dl>
+                    </article>
+                    <article id="tab-link-music-production" class="tab-link">
+                        <dl class="table-hyperlinks"></dl>
+                    </article>
                 </div>
             </section>
-            <section class="section-default">
-                <h1>Links</h1>
-                <p>If there're any resources that you want to add, please contact XX.</p>
-                <div>
-                    <div class="table-hyperlinks-container">
-                        <div class="table-hyperlinks-icon" id="icon-practice"></div>
-                        <dl class="table-hyperlinks">
-                            <dt><a href="https://tuner.ninja/" target="_blank">Tuner</a></dt>
-                            <dd></dd>
-                            <dt><a href="https://www.musicca.com/metronome" target="_blank">Metronome</a></dt>
-                            <dd></dd>
-                            <dt><a href="https://www.youtube.com/@NahreSol/videos" target="_blank">Nahre Sol</a></dt>
-                            <dd>Pianist, piano practice exercises</dd>
-                            <dt><a href="https://www.youtube.com/@tonebasePiano/videos" target="_blank">tonebase Piano</a></dt>
-                            <dd>Piano piece documentaries, miscellaneous lessons</dd>
-                            <dt><a href="https://muted.io/" target="_blank">muted.io</a></dt>
-                            <dd>Miscellaneous tools & diagrams. Chords, intervals, fretboards, tuners, etc.</dd>
-                            <dt><a href="https://musescore.com/" target="_blank">Musescore</a></dt>
-                            <dd>Online sheet music repository. Find arranging inspiration or music to play.</dd>
-                            <dt><a href="https://github.com/JoshuaKasa/SCASO" target="_blank">SCASO</a></dt>
-                            <dd>Musescore to PDF. Requires knowledge of Python and the command-line.</dd>
-                        </dl>
-                    </div>
-                    <div class="table-hyperlinks-container">
-                        <div class="table-hyperlinks-icon" id="icon-arrangement"></div>
-                        <dl class="table-hyperlinks">
-                            <dt><a href="https://www.vsl.co.at/academy" target="_blank">Vienna Symphonic Library</a></dt>
-                            <dd>Orchestra instrument samples, notation, history, playing techiques, blends</dd>
-                            <dt><a href="https://www.youtube.com/@OrchestrationOnline/videos" target="_blank">Orchestration Online</a></dt>
-                            <dd>In-depth orchestration lessons, examples, tips</dd>
-                            <dt><a href="https://isfee.music.indiana.edu/" target="_blank">Instrument Studies for Eyes and Ears</a></dt>
-                            <dd>Orchestra instrument sounds, samples, and writing guides</dd>
-                            <dt><a href="https://www.youtube.com/watch?v=rbUbx9cJPX0" target="_blank">Young Person’s Guide to the Orchestra</a></dt>
-                            <dd>Orchestral piece featuring all instruments separately</dd>
-                            <dt>Drumkit Guides <a href="https://www.youtube.com/watch?v=FoMmVlAvjmM" target="_blank">#1</a>, <a href="https://www.youtube.com/watch?v=MdOV8I4n6v8" target="_blank">#2</a></dt>
-                            <dd>Guide to drum notation and common patterns</dd>
-                        </dl>
-                    </div>
-                    <div class="table-hyperlinks-container">
-                        <div class="table-hyperlinks-icon" id="icon-music-theory"></div>
-                        <dl class="table-hyperlinks">
-                            <dt><a href="https://www.youtube.com/@AdamNeely" target="_blank">Adam Neely</a></dt>
-                            <dd>Bassist, video essays of music theory concepts, analyses of modern artists, polyrhythms</dd>
-                            <dt><a href="https://www.youtube.com/@CadenceHira/videos" target="_blank">Cadence Hira</a></dt>
-                            <dd>Music theory concepts explained through video game music</dd>
-                            <dt><a href="https://www.youtube.com/@8bitMusicTheory/videos" target="_blank">8-bit Music Theory</a></dt>
-                            <dd>Analyses of individual pieces of video game music</dd>
-                            <dt><a href="https://www.youtube.com/@12tone/videos" target="_blank">12Tone</a></dt>
-                            <dd>Music theory, rock music analyses</dd>
-                            <dt><a href="https://www.youtube.com/@DBruce" target="_blank">David Bruce</a></dt>
-                            <dd>Classical music analyses and music theory</dd>
-                            <dt><a href="https://www.youtube.com/@Tantacrul/videos" target="_blank">Tantacrul</a></dt>
-                            <dd>Documentaries of classical composers & music composition software</dd>
-                        </dl>
-                    </div>
-                    <div class="table-hyperlinks-container">
-                        <div class="table-hyperlinks-icon" id="icon-audio-production"></div>
-                        <dl class="table-hyperlinks">
-                            <dt><a href="https://www.youtube.com/@jazensounds453/videos" target="_blank">Jazen Sounds</a></dt>
-                            <dd>Tutorials on sound design & creating electronic music instruments</dd>
-                            <dt><a href="https://www.youtube.com/@synthet7/videos" target="_blank">Synthet</a></dt>
-                            <dd>Short videos on music production in digital audio workstations</dd>
-                        </dl>
-                    </div>
-                </div>
+            <section id="section-resources-assets">
+                <h1>Assets</h1>
+                <ul id="resources-asset-list">
+                    <!-- <li>
+                        <img src="assets/icons/events.svg" />
+                        <a href="https://www.flaticon.com/free-icon/event_839888" target="_blank">Events</a>
+                        <a href="https://www.flaticon.com/free-icon/music-player_500148" target="_blank">Event Music Note</a>
+                    </li> -->
+                </ul>
             </section>
-            <section class="section-default-bg">
+            <section id="section-resources-credits">
                 <h1>Credits</h1>
-                <div class="table-hyperlinks-container">
-                    <dl class="table-hyperlinks">
-                        <dt>Icons</dt>
-                        <dd>
-                            <p>
-                                <a href="https://www.flaticon.com/free-icon/announcement_2417835" target="_blank">Megaphone</a>,
-                                <a href="https://www.flaticon.com/free-icon/attention_4440466" target="_blank">Alert Triangle</a>, 
-                                <a href="https://www.flaticon.com/free-icon/constitution_5622624" target="_blank">New Member Form</a>,
-                                <a href="https://www.flaticon.com/free-icon/music-note_651717" target="_blank">Music Note</a>,
-                                <a href="https://www.flaticon.com/free-icon/vote_4322041" target="_blank">Vote</a>,
-                                <a href="https://www.flaticon.com/free-icon/feedback_813419" target="_blank">Feedback</a>,
-                                <a href="https://www.flaticon.com/free-icon/puzzle_3037619" target="_blank">Puzzle</a>,
-                                <a href="https://www.flaticon.com/free-icon/music-stand_7470869" target="_blank">Music Stand</a>,
-                                <a href="https://www.flaticon.com/free-icon/treble-clef_5376625" target="_blank">Music Staff</a>,
-                                <a href="https://www.flaticon.com/free-icon/music_15711175" target="_blank">Waveform</a>,
-                                <a href="https://www.svgrepo.com/svg/399420/globe-alt-o" target="_blank">Personal Website</a>,
-                                <a href="https://www.flaticon.com/free-icon/event_839888" target="_blank">Events</a>,
-                                <a href="https://www.flaticon.com/free-icon/music-player_500148" target="_blank">Event Music Note</a>,
-                                <a href="https://www.flaticon.com/free-icon/bubble-chat_2076218" target="_blank">Get Involved</a>,
-                                <a href="https://www.flaticon.com/free-icon/home_1946436" target="_blank">Home</a>,
-                                <a href="https://www.flaticon.com/free-icon/musical-note_727248" target="_blank">Small Ensemble</a>,
-                                <a href="https://www.flaticon.com/free-icon/image_6499527" target="_blank">Gallery</a>,
-                                <a href="https://www.flaticon.com/free-icon/piccolo_11622264" target="_blank">Piccolo</a>,
-                                <a href="https://www.flaticon.com/free-icon/flute_1913298" target="_blank">Flute</a>,
-                                <a href="https://www.flaticon.com/free-icon/clarinet_8332438" target="_blank">Clarinet</a>,
-                                <a href="https://www.flaticon.com/free-icon/oboe_8332508" target="_blank">Oboe</a>,
-                                <a href="https://www.flaticon.com/free-icon/bassoon_1913373" target="_blank">Bassoon</a>,
-                                <a href="https://www.flaticon.com/free-icon/saxophone_4521280" target="_blank">Saxophone</a>,
-                                <a href="https://www.flaticon.com/free-icon/trumpet_3791304" target="_blank">Trumpet</a>,
-                                <a href="https://www.flaticon.com/free-icon/french-horn_1913321" target="_blank">French Horn</a>,
-                                <a href="https://www.flaticon.com/free-icon/trombone_8332429" target="_blank">Trombone</a>,
-                                <a href="https://www.flaticon.com/free-icon/tuba_3100434" target="_blank">Tuba</a>,
-                                <a href="https://www.flaticon.com/free-icon/violin_836803" target="_blank">Violin</a>,
-                                <a href="https://www.flaticon.com/free-icon/cello_836813" target="_blank">Cello</a>,
-                                <a href="https://www.flaticon.com/free-icon/guitar_836801" target="_blank">Acoustic Guitar</a>,
-                                <a href="https://www.flaticon.com/free-icon/ukelele_2990504" target="_blank">Ukulele</a>,
-                                <a href="https://www.flaticon.com/free-icon/electric-guitar_836809" target="_blank">Electric Guitar</a>,
-                                <a href="https://www.flaticon.com/free-icon/bass_836835" target="_blank">Bass Guitar</a>,
-                                <a href="https://www.flaticon.com/free-icon/piano_836806" target="_blank">Piano</a>,
-                                <a href="https://www.flaticon.com/free-icon/microphone_2168463" target="_blank">Microphone</a>,
-                                <a href="https://www.flaticon.com/free-icon/drums_836750" target="_blank">Drums</a>,
-                                <a href="https://www.flaticon.com/free-icon/bagpipes_7468049" target="_blank">Bagpipes</a>,
-                                <a href="https://www.flaticon.com/free-icon/accordion_2542871" target="_blank">Accordion</a>,
-                                <a href="https://www.flaticon.com/free-icon/theremin_3100503" target="_blank">Theremin</a>,
-                                <a href="https://www.flaticon.com/free-icon/recorder_4311261" target="_blank">Recorder</a>,
-                                <a href="https://www.flaticon.com/free-icon/harmonica_5030739" target="_blank">Harmonica</a>,
-                                <a href="https://www.flaticon.com/free-icon/sigma_10480273" target="_blank">Total</a>,
-                                <a href="https://www.flaticon.com/free-icon/image_6489396" target="_blank">Artist</a>,
-                                <a href="https://www.flaticon.com/free-icon/video-player_6933179" target="_blank">Video</a>,
-                                <a href="https://www.flaticon.com/free-icon/time_3240587" target="_blank">Time</a>,
-                                <a href="https://www.flaticon.com/free-icon/location_535188" target="_blank">Location</a>,
-                                <a href="https://www.flaticon.com/free-icon/ticket_7411135" target="_blank">Ticket</a>,
-                                <a href="https://www.flaticon.com/free-icon/sparkling_15893294" target="_blank">Sparkle</a>,
-                                <a href="https://www.flaticon.com/free-icon/star_7334113" target="_blank">Sparkles</a>,
-                                <a href="https://www.flaticon.com/free-icon/playlist_11305499" target="_blank">Setlist</a>,
-                                <a href="https://www.flaticon.com/free-icon/group_3394785" target="_blank">Users</a>,
-                                <a href="https://www.flaticon.com/free-icon/thumbtacks_2672101" target="_blank">Pin</a>,
-                                <a href="https://www.greenhoe.com/products/bass-trombones/gc5-series/" target="_blank">Trombone Silhouette</a>,
-                                <a href="https://www.toptal.com/designers/subtlepatterns/japanese-asanoha/" target="_blank">Asanoha Pattern</a>,
-                                <a href="https://www.theinstrumentplace.com/parts-of-the-violin" target="_blank">Violin Silhouette</a>,
-                                <a href="https://www.flaticon.com/free-icon/settings_992668" target="_blank">Options</a>,
-                                <a href="https://www.flaticon.com/free-icon/swap_7133490" target="_blank">Swap</a>,
-                                <a href="https://www.flaticon.com/free-icon/edit_5996991" target="_blank">Edit</a>,
-                                <a href="https://unsplash.com/illustrations/cherry-blossoms-on-a-dark-branch-with-red-sun-sAzDNMQRe9E" target="_blank">Cherry Blossom</a>,
-                                <a href="https://www.flaticon.com/free-icon/price-tag_721550" target="_blank">Filled Tag</a>,
-                                <a href="https://www.flaticon.com/free-icon/event_6904072" target="_blank">Filled Events</a>,
-                                <a href="https://www.flaticon.com/free-icon/faq_10042848" target="_blank">FAQ</a>,
-                                <a href="https://www.flaticon.com/free-icon/download_724933" target="_blank">Download</a>,
-                                <a href="https://www.flaticon.com/free-icon/upload_725008" target="_blank">Upload</a>
-                            </p>
-                        </dd>
-                        <dt>Website</dt>
-                        <dd>
-                            <p>trngl, Eeeric</p>
-                        </dd>
-                        <dt>Website Domain</dt>
-                        <dd>
-                            <p>Raekye</p>
-                        </dd>
-                        <dt>Photos</dt>
-                        <dd>
-                            <p>yssadalawatatlo</p>
-                        </dd>
-                        <dt>Art</dt>
-                        <dd>
-                            <p><em>Keychain (home):</em> neutrino._.</p>
-                            <p><em>Art (get involved):</em> seoby</p>
-                        </dd>
-                        <dt>Logo</dt>
-                        <dd>Amako</dd>
-                    </dl>
-                </div>
+                <dl>
+                    <dt>Developers</dt>
+                    <dd>
+                        <p>trngl, Eeeric</p>
+                    </dd>
+                    <dt>Website Domain</dt>
+                    <dd>
+                        <p>Raekye</p>
+                    </dd>
+                </dl>
             </section>
         </article>
 
@@ -1166,7 +971,7 @@
                         <h1>Play with LMC</h1>
                         <p>Anyone interested in joining LMC is asked to join the Discord server and fill out the signup form below. We use form data for administrative and networking purposes.</p>
                         <p>If you’re interested in collaborating with LMC as an organization, feel free to contact us through <a href="mailto:utsama.lightmusicclub@gmail.com">email</a> or <a href="https://www.instagram.com/utsama_lmc/" target="_blank">instagram</a> or message any LMC exec directly.</p>
-                        <a class="get-involved-button" href="https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform" target="_blank">
+                        <a class="get-involved-button" id="new-member-form-button" href="https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform" target="_blank">
                             <img src="assets/icons/signup.svg" />
                             <span>New Member Registration</span>
                         </a>

@@ -185,12 +185,10 @@ function toggleHeaderHamburger() {
 }
 function goToUpcomingEvent(id) {
     TABLE_EVENTS.active = id;
-    navigateToTab('events');
+    toggleTab('nav-events');
     toggleEventTab(cssGetId(`event-tab-${id}`), id);
 }
-function navigateToTab(name) {
-    toggleTab(`nav-${name}`);
-}
+let MANUALLY_CLICKING_TAB = false;
 function toggleTab(element) {
     // If input is a string (i.e. from loading the URL with a hash), treat it like a class
     if (typeof element === 'string') {
@@ -201,7 +199,6 @@ function toggleTab(element) {
     const navId = Array.from(element.classList)[0];
     const id = navId.slice(4);
     const desktopNav = cssGetFirst(`#nav-page-desktop .${navId}`);
-    cssGetFirst('html').scrollTop = 0;
 
     // No effect on clicking the same tab on mobile
     if (desktopNav.classList.contains('nav-active')) {
@@ -209,13 +206,10 @@ function toggleTab(element) {
         return;
     }
 
+    cssGetFirst('html').scrollTop = 0;
     YOUTUBE_CONCERT_VIDEO?.pauseVideo();
 
-    let parent = element.parentElement;
-    while (parent.nodeName !== 'MENU') {
-        parent = parent.parentElement;
-    }
-
+    // Toggle tab CSS
     cssGetClass('nav-active')[0].classList.remove('nav-active');
     desktopNav.classList.add('nav-active');
     
@@ -224,11 +218,13 @@ function toggleTab(element) {
     cssGetId(tabId).classList.add('tab-active');
 
     // Set URL hash
+    MANUALLY_CLICKING_TAB = true;
     if (id == 'events') {
         window.location.hash = `events/${TABLE_EVENTS.active}`;
     } else {
         window.location.hash = id === 'home' ? '#' : `#${id}`;
     }
+    MANUALLY_CLICKING_TAB = false;
 
     // Close mobile menu
     if (window.getComputedStyle(cssGetId('nav-page-mobile')).display !== 'none') {
@@ -238,10 +234,12 @@ function toggleTab(element) {
     // Set footer gradient colour
     const footer = cssGetFirst('footer');
     let startColor;
-    if (['nav-about'].includes(navId)) {
+    if (navId === 'nav-about') {
         startColor = '#351c75';
         fixTablePersonnelWidth();
-    } else if (['nav-get-involved'].includes(navId)) {
+    } else if (navId === 'nav-resources') {
+        startColor = '#351c75';
+    } else if (navId === 'nav-get-involved') {
         startColor = '#000';
     } else {
         startColor = '#20124d';
@@ -250,11 +248,7 @@ function toggleTab(element) {
 }
 function toggleDetailsSummary(event) {
     event.preventDefault();  // Prevent instant show/hide from <summary>
-    let element = event.srcElement;
-    while (element.nodeName !== 'DETAILS') {
-        element = element.parentElement;
-    }
-    
+    const element = event.srcElement.closest('details');    
     const name = 'details-hidden';
     if (element.classList.contains(name)) {
         element.classList.remove(name);
@@ -312,6 +306,9 @@ function toggleConcertTab(element) {
         tag.src = "https://www.youtube.com/iframe_api";
         document.head.appendChild(tag);
     }
+}
+function toggleLinkTab(element) {
+    genericToggleTab(element, 'link');
 }
 function toggleCarousel(next) {
     CURR_CAROUSEL = (CURR_CAROUSEL + (next ? 1 : -1) + CAROUSEL.length) % CAROUSEL.length;
@@ -522,16 +519,7 @@ window.addEventListener('mousemove', (event) => {
         MOUSE_DOWN = false;
     }
 });
-window.addEventListener('DOMContentLoaded', () => {
-    injectHomeCurrentEvent();
-    injectHomeBulletin();
-    injectMembers();
-    injectFAQ();
-    injectCarousel();
-    setTimeout(() => {
-        updateMusicTable();
-    }, 0);
-
+function toggleTabFromUrl(detectHome) {
     // Navigate to tab in hash
     const [page, eventId] = window.location.hash.substring(1).split("/");
     const id = parseInt(eventId, 10);
@@ -540,18 +528,32 @@ window.addEventListener('DOMContentLoaded', () => {
     } else {
         TABLE_EVENTS.active = EVENTS.length - 1;
     }
-
     updateEventsSidebar();
     injectEventBody();
     if (page.length > 0) {
         toggleTab(`nav-${page}`);
+    } else if (detectHome) {
+        toggleTab(`nav-home`);
     }
+}
+window.addEventListener('popstate', () => {
+    if (!MANUALLY_CLICKING_TAB) {
+        toggleTabFromUrl(true);
+    }
+});
+window.addEventListener('DOMContentLoaded', () => {
+    injectHomeCurrentEvent();
+    injectHomeBulletin();
+    injectCarousel();
+    setTimeout(() => {
+        injectMembers();
+        injectFAQ();
+        updateMusicTable();
+        injectLinks();
+        injectResources();
+    }, 0);
 
-    // Set embed calendar mode
-    const mode = window.innerWidth > 700 ? 'MONTH' : 'AGENDA';
-    for (const element of cssGetClass('embed-calendar')) {
-        element.src = `${element.src}&mode=${mode}`;
-    }
+    toggleTabFromUrl();
 
     // Set home greeting header text based on time of day
     const h = new Date().getHours();
@@ -2179,40 +2181,296 @@ function injectEventBody() {
 
 
 /*********************************************************************
-Export
+Rehearsals
 *********************************************************************/
-function stringToCSV(str, title) {
-    const encodedUri = encodeURI("data:text/csv;charset=utf-8," + str);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `${title}.csv`);
-    link.click();
-    link.remove();
+function injectLinks() {
+    cssGetId('new-member-form-button').setAttribute('href', LINKS.formNewMember);
+    cssGetId('rehearsal-button-utsama').setAttribute('href', LINKS.formUTSAMA);
+    cssGetId('new-member-form-button').setAttribute('href', LINKS.linkPlaylist);
+
+    cssGetId('rehearsal-drive-embed').src = `${LINKS.embedSheetMusic}#list`;
+    cssGetId('rehearsal-location-embed').src = LINKS.embedLargeEnsembleLocation;
+
+    cssGetId('section-rehearsal-calendar').children[0].src = `${LINKS.embedSchedule}&mode=WEEK`;
+    const mode = window.innerWidth > 700 ? 'MONTH' : 'AGENDA';
+    cssGetId('home-calendar').src = `${LINKS.embedSchedule}&mode=${mode}`;
+
+    const container = cssGetId('rehearsal-intro');
+    for (const p of LINKS.descriptionLargeEnsemble) {
+        container.appendChild(construct({ element: 'p', innerHTML: p }));
+    }
 }
-function exportMembers() {
-    const headers = ['id', 'name', 'joined', 'left', 'tags', 'socialMedia'];
-    function formatMember(x) {
-        const socialMedia = [];
-        for (const [key, value] of Object.entries(x.socialMedia)) {
-            socialMedia.push(`${key}: ${value[0]}`);
+
+function injectResources() {
+    const fragments = {};
+    for (const resource of RESOURCES) {
+        if (!fragments[resource.type]) {
+            fragments[resource.type] = document.createDocumentFragment();
         }
-        return [`${x.id}`, x.name, x.joined, x.left, `"${x.tags.join(', ')}"`, `${socialMedia.join(', ')}`].join(',');
+        fragments[resource.type].appendChild(construct({
+            element: 'dt',
+            children: [{
+                element: 'a',
+                attributes: { 
+                    href: resource.link,
+                    target: '_blank'
+                },
+                innerText: resource.name
+            }]
+        }));
+        fragments[resource.type].appendChild(construct({
+            element: 'dd',
+            innerText: resource.description
+        }));
     }
-    const header = headers.join(',');
-    const csv = `${header}\n${MEMBERS.map(formatMember).join('\n')}`;
-    stringToCSV(csv, 'members');    
-}
-function exportPersonnel() {
-    const tags = Object.keys(TAGS).filter(x => !x.includes('Executive')).sort();
-    function formatMember(x) {
-        const row = [x.id, x.name];
-        const xTags = new Set(x.tags);
-        row.push(...tags.map(x => xTags.has(x) ? 'X' : null));
-        return row.join(',')
+    const kv = [
+        ['lmc', 'LMC'],
+        ['general', 'General'],
+        ['arranging', 'Arranging'],
+        ['music-theory', 'Music Theory'],
+        ['music-production', 'Music Production']
+    ]
+    for (const [id, key] of kv) {
+        if (fragments[key]) {
+            cssGetId(`tab-link-${id}`).children[0].appendChild(fragments[key]);
+        }
     }
-    const header = `id,name,${tags.join(',')}`;
-    const csv = `${header}\n${MEMBERS.map(formatMember).join('\n')}`;
-    stringToCSV(csv, 'personnel');
+
+    const assets = [{
+        url: 'assets/icons/megaphone.svg',
+        text: [['Megaphone', 'https://www.flaticon.com/free-icon/announcement_2417835']],
+    }, {
+        url: 'assets/icons/alert-triangle.svg',
+        text: [['Alert Triangle', 'https://www.flaticon.com/free-icon/attention_4440466']]
+    }, {
+        url: 'assets/icons/music-notes.svg',
+        text: [['Music Notes', 'https://www.flaticon.com/free-icon/music-note_651717']],
+        invert: true
+    }, {
+        url: 'assets/icons/music-staff.svg',
+        text: [['Music Staff', 'https://www.flaticon.com/free-icon/treble-clef_5376625']],
+        invert: true
+    }, {
+        url: 'assets/icons/globe.svg',
+        text: [['Website', 'https://www.svgrepo.com/svg/399420/globe-alt-o']]
+    }, {
+        url: 'assets/icons/events.svg',
+        text: [['Events', 'https://www.flaticon.com/free-icon/event_839888'],
+               ['Music Note', 'https://www.flaticon.com/free-icon/music-player_500148']],
+        invert: true
+    }, {
+        url: 'assets/icons/events-filled.svg',
+        text: [['Filled Events', 'https://www.flaticon.com/free-icon/event_6904072']],
+        invert: true
+    }, {
+        url: 'assets/icons/get involved.svg',
+        text: [['Get Involved', 'https://www.flaticon.com/free-icon/bubble-chat_2076218']],
+        invert: true
+    }, {
+        url: 'assets/icons/home.svg',
+        text: [['Home', 'https://www.flaticon.com/free-icon/home_1946436']],
+        invert: true
+    }, {
+        url: 'assets/icons/music-note.svg',
+        text: [['Music Note', 'https://www.flaticon.com/free-icon/musical-note_727248']],
+        invert: true
+    }, {
+        url: 'assets/icons/image.svg',
+        text: [['Image', 'https://www.flaticon.com/free-icon/image_6499527']],
+        invert: true
+    }, {
+        url: 'assets/icons/time.svg',
+        text: [['Time', 'https://www.flaticon.com/free-icon/time_3240587']],
+    }, {
+        url: 'assets/icons/location.svg',
+        text: [['Location', 'https://www.flaticon.com/free-icon/location_535188']]
+    }, {
+        url: 'assets/icons/ticket.svg',
+        text: [['Ticket', 'https://www.flaticon.com/free-icon/ticket_7411135']]
+    }, {
+        url: 'assets/icons/pin.svg',
+        text: [['Pin', 'https://www.flaticon.com/free-icon/thumbtacks_2672101']],
+        invert: true
+    }, {
+        url: 'assets/icons/options.svg',
+        text: [['Options', 'https://www.flaticon.com/free-icon/settings_992668']],
+        invert: true
+    }, {
+        url: 'assets/icons/signup.svg',
+        text: [['Signup', 'https://www.flaticon.com/free-icon/constitution_5622624']],
+        invert: true
+    }, {
+        url: 'assets/icons/instruments/piccolo.png',
+        text: [['Piccolo', 'https://www.flaticon.com/free-icon/piccolo_11622264']]
+    }, {
+        url: 'assets/icons/instruments/flute.png',
+        text: [['Flute', 'https://www.flaticon.com/free-icon/flute_1913298']]
+    }, {
+        url: 'assets/icons/instruments/clarinet.png',
+        text: [['Clarinet', 'https://www.flaticon.com/free-icon/clarinet_8332438']]
+    }, {
+        url: 'assets/icons/instruments/oboe.png',
+        text: [['Oboe', 'https://www.flaticon.com/free-icon/oboe_8332508']]
+    }, {
+        url: 'assets/icons/instruments/bassoon.png',
+        text: [['Bassoon', 'https://www.flaticon.com/free-icon/bassoon_1913373']]
+    }, {
+        url: 'assets/icons/instruments/saxophone.png',
+        text: [['Saxophone', 'https://www.flaticon.com/free-icon/saxophone_4521280']]
+    }, {
+        url: 'assets/icons/instruments/trumpet.png',
+        text: [['Trumpet', 'https://www.flaticon.com/free-icon/trumpet_3791304']]
+    }, {
+        url: 'assets/icons/instruments/french horn.png',
+        text: [['French Horn', 'https://www.flaticon.com/free-icon/french-horn_1913321']]
+    }, {
+        url: 'assets/icons/instruments/trombone.png',
+        text: [['Trombone', 'https://www.flaticon.com/free-icon/trombone_8332429']]
+    }, {
+        url: 'assets/icons/instruments/tuba.png',
+        text: [['Tuba','https://www.flaticon.com/free-icon/tuba_3100434']]
+    }, {
+        url: 'assets/icons/instruments/violin.png',
+        text: [['Violin', 'https://www.flaticon.com/free-icon/violin_836803']]
+    }, {
+        url: 'assets/icons/instruments/cello.png',
+        text: [['Cello', 'https://www.flaticon.com/free-icon/cello_836813']]
+    }, {
+        url: 'assets/icons/instruments/acoustic guitar.png',
+        text: [['Acoustic Guitar', 'https://www.flaticon.com/free-icon/guitar_836801']]
+    }, {
+        url: 'assets/icons/instruments/ukulele.png',
+        text: [['Ukulele', 'https://www.flaticon.com/free-icon/ukelele_2990504']]
+    }, {
+        url: 'assets/icons/instruments/electric guitar.png',
+        text: [['Electric Guitar', 'https://www.flaticon.com/free-icon/electric-guitar_836809']]
+    }, {
+        url: 'assets/icons/instruments/bass guitar.png',
+        text: [['Bass Guitar', 'https://www.flaticon.com/free-icon/bass_836835']]
+    }, {
+        url: 'assets/icons/instruments/piano.png',
+        text: [['Piano', 'https://www.flaticon.com/free-icon/piano_836806']]
+    }, {
+        url: 'assets/icons/instruments/voice.png',
+        text: [['Voice', 'https://www.flaticon.com/free-icon/microphone_2168463']]
+    }, {
+        url: 'assets/icons/instruments/drums.png',
+        text: [['Drums', 'https://www.flaticon.com/free-icon/drums_836750']]
+    }, {
+        url: 'assets/icons/instruments/bagpipes.png',
+        text: [['Bagpipes', 'https://www.flaticon.com/free-icon/bagpipes_7468049']]
+    }, {
+        url: 'assets/icons/instruments/accordion.png',
+        text: [['Accordion', 'https://www.flaticon.com/free-icon/accordion_2542871']]
+    }, {
+        url: 'assets/icons/instruments/theremin.png',
+        text: [['Theremin', 'https://www.flaticon.com/free-icon/theremin_3100503']]
+    }, {
+        url: 'assets/icons/instruments/recorder.png',
+        text: [['Recorder', 'https://www.flaticon.com/free-icon/recorder_4311261']]
+    }, {
+        url: 'assets/icons/instruments/harmonica.png',
+        text: [['Harmonica', 'https://www.flaticon.com/free-icon/harmonica_5030739']]
+    }, {
+        url: 'assets/icons/sum.svg',
+        text: [['Sum', 'https://www.flaticon.com/free-icon/sigma_10480273']],
+        invert: true
+    }, {
+        url: 'assets/icons/image-filled.svg',
+        text: [['Image Filled', 'https://www.flaticon.com/free-icon/image_6489396']],
+        invert: true
+    }, {
+        url: 'assets/icons/video.svg',
+        text: [['Video', 'https://www.flaticon.com/free-icon/video-player_6933179']],
+        invert: true
+    }, {
+        url: 'assets/icons/sparkle.svg',
+        text: [['Sparkle', 'https://www.flaticon.com/free-icon/sparkling_15893294']]
+    }, {
+        url: 'assets/icons/sparkles.svg',
+        text: [['Sparkles', 'https://www.flaticon.com/free-icon/star_7334113']]
+    }, {
+        url: 'assets/icons/setlist.svg',
+        text: [['Setlist', 'https://www.flaticon.com/free-icon/playlist_11305499']],
+        invert: true
+    }, {
+        url: 'assets/icons/users.svg',
+        text: [['Users', 'https://www.flaticon.com/free-icon/group_3394785']],
+        invert: true
+    }, {
+        url: 'assets/icons/swap.svg',
+        text: [['Swap', 'https://www.flaticon.com/free-icon/swap_7133490']],
+        invert: true
+    }, {
+        url: 'assets/icons/edit.svg',
+        text: [['Edit', 'https://www.flaticon.com/free-icon/edit_5996991']],
+        invert: true
+    }, {
+        url: 'assets/icons/pin-filled.svg',
+        text: [['Pin Filled', 'https://www.flaticon.com/free-icon/price-tag_721550']],
+        invert: true
+    }, {
+        url: 'assets/icons/faq.svg',
+        text: [['FAQ', 'https://www.flaticon.com/free-icon/faq_10042848']],
+        invert: true
+    }, {
+        url: 'assets/icons/import.svg',
+        text: [['Import', 'https://www.flaticon.com/free-icon/download_724933']],
+        invert: true
+    }, {
+        url: 'assets/icons/export.svg',
+        text: [['Export', 'https://www.flaticon.com/free-icon/upload_725008']],
+        invert: true
+    }, {
+        url: 'assets/images/trombone.svg',
+        text: [['Trombone', 'https://www.greenhoe.com/products/bass-trombones/gc5-series/']],
+        invert: true
+    }, {
+        url: 'assets/images/asanoha.webp',
+        text: [['Asanoha', 'https://www.toptal.com/designers/subtlepatterns/japanese-asanoha/']]
+    }, {
+        url: 'assets/images/violin.svg',
+        text: [['Violin', 'https://www.theinstrumentplace.com/parts-of-the-violin']],
+        invert: true
+    }, {
+        url: 'assets/images/cherry-blossom.svg',
+        text: [['Cherry Blossom', 'https://unsplash.com/illustrations/cherry-blossoms-on-a-dark-branch-with-red-sun-sAzDNMQRe9E']]
+    }, {
+        url: 'assets/icons/logos/lmc.webp',
+        text: ['LMC Logo', '(amako)']
+    }, {
+        url: 'assets/images/keychain-1.webp',
+        text: ['Keychain', '(neutrino._.)']
+    }, {
+        url: 'assets/images/image-1.webp',
+        text: ['Art', '(seoby)']
+    }];
+    // assets - remember to add lmc logo + art
+    const assetList = cssGetId('resources-asset-list');
+    const fragment = document.createDocumentFragment();
+    for (const asset of assets) {
+        fragment.appendChild(construct({
+            element: 'li',
+            children: [{
+                element: 'img',
+                attributes: { src: asset.url },
+                style: asset.invert ? { filter: 'invert(1)' } : {}
+            }, ...asset.text.map(x => {
+                if (Array.isArray(x)) {
+                    const [name, link] = x;
+                    return {
+                        element: 'a',
+                        attributes: {
+                            href: link,
+                            target: '_blank'
+                        },
+                        innerText: name
+                    };
+                } else {
+                    return { element: 'p', innerText: x };
+                }
+            })]
+        }))
+    }
+    assetList.appendChild(fragment);
 }
-// exportMembers();
-// exportTags();

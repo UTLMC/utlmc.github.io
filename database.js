@@ -315,10 +315,11 @@ const API = {
     ANNOUNCEMENTS: getDataApi(ANNOUNCEMENTS),
     UPCOMING_EVENTS: getDataApi(UPCOMING_EVENTS),
     FAQ: getDataApi(FAQ),
+    RESOURCES: getDataApi(RESOURCES),
     EVENTS: getEventsApi(),
     MUSIC: getMusicApi(),
     INSTRUMENTS: getEnumApi(INSTRUMENTS),
-    ROLES: getEnumApi(ROLES)
+    ROLES: getEnumApi(ROLES),
 }
 
 function getCurrentEvent() {
@@ -326,6 +327,12 @@ function getCurrentEvent() {
 }
 function setCurrentEvent(kv) {
     Object.assign(CURRENT_EVENT, kv);
+}
+function getLinks() {
+    return LINKS;
+}
+function setLinks(kv) {
+    Object.assign(LINKS, kv);
 }
 
 function getTags() {
@@ -466,6 +473,13 @@ function toggleTab(element, forceRefresh) {
                 TABLE_OPERATIONS['table-faq'].init();
             } else {
                 TABLE_OPERATIONS['table-faq'] = constructFaq();
+            }
+        } else if (id === 'links') {
+            if (TABLE_OPERATIONS['table-resources']) {
+                TABLE_OPERATIONS['table-resources'].init();
+            } else {
+                constructLinks();
+                TABLE_OPERATIONS['table-resources'] = constructResourcesTable();
             }
         }
     }, 0);
@@ -658,12 +672,12 @@ function onRowSelect(checked, rowId, tableId) {
     }
 
     if (checked) {
-        if (set.size === 0) {
-            toggleSubrowSelectionEnabled(false, tableId);
-            aggregatedCheckbox.indeterminate = true;
-        } else if (set.size === TABLE_OPERATIONS[tableId].length() - 1) {
+        if (set.size === TABLE_OPERATIONS[tableId].length() - 1) {
             aggregatedCheckbox.indeterminate = false;
             aggregatedCheckbox.checked = true;
+        } else if (set.size === 0) {
+            toggleSubrowSelectionEnabled(false, tableId);
+            aggregatedCheckbox.indeterminate = true;
         }
         set.add(rowId);
     } else {
@@ -1804,16 +1818,39 @@ function refreshInputModalOpener(td, items) {
     p.innerHTML = `${items.map(x => `<span>${x}</span>`).join(' · ')} <span class="count">(${items.length})</span>`;
 }
 
+function syncLinks(element) {
+    cssGetId('rehearsals-form-utsama').innerText ||= '#';
+    cssGetId('rehearsals-form-new-member').innerText ||= '#';
+    cssGetId('rehearsals-link-playlist').innerText ||= '#';
+    cssGetId('rehearsals-embed-schedule').innerText ||= '#';
+    cssGetId('rehearsals-embed-sheet-music').innerText ||= '#';
+
+    setLinks({
+        formUTSAMA: cssGetId('rehearsals-form-utsama').innerText,
+        formNewMember: cssGetId('rehearsals-form-new-member').innerText,
+        linkPlaylist: cssGetId('rehearsals-link-playlist').innerText,
+        embedSchedule: cssGetId('rehearsals-embed-schedule').innerText,
+        embedSheetMusic: cssGetId('rehearsals-embed-sheet-music').innerText,
+        embedLargeEnsembleLocation: cssGetId('rehearsals-embed-large-ensemble-location').innerText
+    });
+}
+function syncEnsembleDescription() {
+    const text = cssGetId('large-ensemble-description').lastElementChild;
+    setLinks({ descriptionLargeEnsemble: parseInnerHTML(text.innerHTML) })
+}
+
 function syncData(element) {
-    if (element.closest('.modal')) {
+    if (element.closest('.modal'))
         return;
-    }
-    if (element.closest('#datalist-current-event')) {
+    if (element.closest('#datalist-current-event'))
         return syncCurrentEvent(element);
-    }
-    if (element.closest('#current-event-description-container')) {
+    if (element.closest('#large-textarea-container'))
         return syncCurrentEventDescription(element);
-    }
+    if (element.closest('#datalist-links'))
+        return syncLinks(element);
+    if (element.closest('#large-ensemble-description'))
+        return syncEnsembleDescription();
+
     const tableId = element.closest('.table').id;
     if (!tableId) {
         console.warn(element);
@@ -2065,6 +2102,13 @@ function sanityCheckData() {
         const err = validateAsset(upcoming.image, true);
         if (err) return `Upcoming event '${event.name}' (#${event.id}): ${err}`;
     }
+
+    for (const resource of API.RESOURCES.getAll()) {
+        if (!resource.name)
+            return `Resource in row #${resource.id} has no name`;
+        if (!resource.link)
+            return `Resource '${resource.name}' (#${resource.id}) has no link`;
+    }
 }
 
 function getExportCodeTemplate(data) {
@@ -2087,6 +2131,10 @@ const MUSIC = ${minify(data.music)}.map((x, i) => ({...x, id: i}));
 const EVENTS = ${minify(data.events)}.map((x, i) => ({...x, id: i}));
 
 const FAQ = ${minify(data.faq)}.map((x, i) => ({...x, id: i}));
+
+const RESOURCES = ${minify(data.resources)}.map((x, i) => ({...x, id: i}));
+
+const LINKS = ${minify(data.links)};
 
 const CAROUSEL = [
     {
@@ -2204,6 +2252,8 @@ function exportData() {
         tags: getTags(),
         roles,
         instruments,
+        links: getLinks(),
+        resources: API.RESOURCES.getAll(),
         currentEvent: getCurrentEvent(),
         announcements: API.ANNOUNCEMENTS.getAll(),
         upcomingEvents: API.UPCOMING_EVENTS.getAll(),
@@ -2406,9 +2456,9 @@ function roleSorter(a, b) {
     if (!groupA || !groupB) {
         return a.localeCompare(b);
     } else if (!groupA) {
-        return 1;
-    } else if (!groupB) {
         return -1;
+    } else if (!groupB) {
+        return 1;
     }
     const i = groupA.localeCompare(groupB);
     if (i === 0) {
@@ -2769,6 +2819,8 @@ async function parseData() {
             tags: getTags(),
             roles,
             instruments,
+            links: getLinks(),
+            resources: API.RESOURCES.getAll(),
             currentEvent: getCurrentEvent(),
             announcements: API.ANNOUNCEMENTS.getAll(),
             upcomingEvents: API.UPCOMING_EVENTS.getAll(),
@@ -3692,6 +3744,12 @@ function constructCurrentEvent() {
 /*********************************************************************
 Data injection - FAQ table
 *********************************************************************/
+function renderInnerHTML(paragraphs) {
+    if (paragraphs?.length === 1 && paragraphs[0] === '') {
+        return '<br>';
+    }
+    return paragraphs?.map(x => `<div>${x}</div>`).join("");
+}
 function constructFaq() {
     const template = {
         q: 'Placeholder',
@@ -3709,7 +3767,7 @@ function constructFaq() {
             element: 'div',
             classes: ['table-faq-a'],
             attributes: INPUT_ATTRIBUTES.multiline,
-            innerHTML: a.join("<br>")
+            innerHTML: renderInnerHTML(a)
         }]
     }];
 
@@ -3892,7 +3950,7 @@ function constructMusicTable() {
         }, {
             element: 'td',
             attributes: INPUT_ATTRIBUTES.links,
-            innerHTML: x.references.join("<br>")
+            innerHTML: renderInnerHTML(x.references)
         }];
 
         const subrows = performances.map(dataParserSubrow);
@@ -4019,7 +4077,7 @@ function constructEventTable() {
         const subrows = [{
             element: 'div',
             attributes: INPUT_ATTRIBUTES.multiline,
-            innerHTML: x.description.join("<br>")
+            innerHTML: renderInnerHTML(x.description)
         }];
 
         return [row, subrows];
@@ -4062,6 +4120,68 @@ function constructEventTable() {
         rowSyncer,
         deleteChecker
     );
+}
+
+
+/*********************************************************************
+Data injection - Links
+*********************************************************************/
+function constructLinks() {
+    const {
+        formUTSAMA = '#',
+        formNewMember = '#',
+        linkPlaylist = '#',
+        embedSchedule = '#',
+        embedSheetMusic = '#',
+        embedLargeEnsembleLocation = '#',
+        descriptionLargeEnsemble
+    } = getLinks();
+
+    cssGetId('rehearsals-form-utsama').innerText = formUTSAMA;
+    cssGetId('rehearsals-form-new-member').innerText = formNewMember;
+    cssGetId('rehearsals-link-playlist').innerText = linkPlaylist;
+    cssGetId('rehearsals-embed-schedule').innerText = embedSchedule;
+    cssGetId('rehearsals-embed-sheet-music').innerText = embedSheetMusic;
+    cssGetId('rehearsals-embed-large-ensemble-location').innerText = embedLargeEnsembleLocation;
+    const text = cssGetId('large-ensemble-description').lastElementChild;
+    text.innerHTML = renderInnerHTML(descriptionLargeEnsemble);
+}
+
+function constructResourcesTable() {
+    const template = {
+        type: 'LMC',
+        name: 'Placeholder',
+        description: 'Placeholder',
+        link: 'Link'
+    };
+    const resourceTypes = ['LMC', 'General', 'Arranging', 'Music Theory', 'Music Production'];
+    const dataParser = (x) => {
+        return [{
+            element: 'td',
+            children: [createDropdown(x.type, resourceTypes)]
+        }, {
+            element: 'td',
+            attributes: INPUT_ATTRIBUTES.default,
+            innerText: x.name
+        }, {
+            element: 'td',
+            attributes: INPUT_ATTRIBUTES.default,
+            innerText: x.description
+        }, {
+            element: 'td',
+            attributes: INPUT_ATTRIBUTES.default,
+            innerText: x.link
+        }]
+    };
+    const rowSyncer = (id, tds) => {
+        API.RESOURCES.set(id, {
+            type: tds[0].children[0].value,
+            name: tds[1].innerText,
+            description: tds[2].innerText,
+            link: tds[3].innerText
+        });
+    };
+    return constructTable('table-resources', API.RESOURCES, template, dataParser, rowSyncer);
 }
 
 
