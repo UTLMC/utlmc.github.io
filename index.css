@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Zilla+Slab:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Geologica:wght@100..900&family=Nanum+Brush+Script:wght@400&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Zilla+Slab:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Geologica:wght@100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
 /*
 PNG to SVG conversion:
 https://www.vectorization.org/
@@ -981,10 +981,11 @@ Home page image carousel
     width: 100vw;
     overflow: hidden;
     position: relative;
-    height: max(50vh, 30vw);  /* Lower cumulative layout shift (CLS) on mobile */
+    height: max(55vh, 33vw);
 }
 .carousel {
     width: 100vw;
+    height: 100%;
     object-fit: cover;
     user-select: none;
     display: none;
@@ -997,7 +998,7 @@ Home page image carousel
     display: block;
     width: 200%;
     height: 200%;
-    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,1) 70%);
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,1) 60%);
     border-radius: 50%;
     position: absolute;
     top: -50%;
@@ -1038,19 +1039,18 @@ Home page image carousel
 
 #carousel-caption {
     position: absolute;
-    color: white;
+    color: rgba(255, 255, 255, 0.5);
     z-index: 2;
-    text-shadow: 0px 0px max(10px, 2vw) rgba(0, 0, 0, 1);
-    font-family: "Nanum Brush Script";
-    font-size: max(35px, 6vw);
-    line-height: max(23px, 4vw);
-    opacity: 0.9;
-
-    transform: rotate(-3deg);
-    right: max(35px, 6vw);
-    left: auto;
-    bottom: max(20px, 2vw);
+    filter: drop-shadow(0 0 10px black) drop-shadow(0 0 10px black) drop-shadow(0 0 10px black);
+    width: 40%;
+    font-size: max(15px, 1.5vw);
+    line-height: 0.9;
     text-align: right;
+    bottom: max(10px, 1vw);
+    right: max(20px, 2vw);
+    font-family: 'DM Sans';
+    font-style: italic;
+    user-select: none;
 }
 
 
@@ -2208,6 +2208,7 @@ Exec team
 .exec-team-card img {
     width: min(calc(190 * var(--px)), 30vw);
     height: min(calc(190 * var(--px)), 30vw);
+    background-image: url('assets/images/asanoha.webp');
 }
 .exec-team-card h4 {
     font-family: 'Geologica';
@@ -3762,6 +3763,7 @@ Rehearsals tab
     justify-content: center;
 }
 #rehearsal-link-buttons a {
+    text-decoration: none;
     background-color: white;
     color: black;
     height: calc(142 * var(--px));
@@ -3979,3 +3981,44 @@ Resources tab
     margin-left: 0;
     color: rgb(150, 150, 200);
 }
+
+
+/*******************************
+Gallery tab
+*******************************/
+#section-gallery {
+    width: var(--section-fullscreen-width);
+    margin: var(--section-spacing) 0;
+    display: flex;
+    flex-direction: column;
+    gap: calc(15 * var(--px));
+}
+#section-gallery h1 {
+    text-align: center;
+}
+#gallery-container {
+    list-style: none;
+    padding-left: 0;
+    column-count: 3;
+    column-gap: calc(15 * var(--px));
+}
+#gallery-container li {
+    display: inline-block;
+    width: 100%;
+    break-inside: avoid;
+    margin-bottom: calc(15 * var(--px));
+}
+#gallery-container li img {
+    width: 100%;
+    border-radius: calc(8 * var(--px));
+}
+
+@media screen and (width > 1800px) {
+    #gallery-container { column-count: 4; }
+} 
+@media screen and (max-width: 1300px) {
+    #gallery-container { column-count: 2; }
+} 
+@media screen and (max-width: 650px) {
+    #gallery-container { column-count: 1; }
+} 

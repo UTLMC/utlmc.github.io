@@ -179,8 +179,8 @@ Data
 function getDataApi(list) {
     let map = new Map(list.map(x => [x.id, x]));
     return {
-        length: () => list.length,
-        getAll: () => list,
+        length: () => map.size,
+        getAll: () => Array.from(map.values()),
         get: (id) => map.get(id),
         set: (id, fields) => {
             Object.assign(map.get(id), fields);
@@ -224,8 +224,8 @@ function getMusicApi() {
     }));
 
     return {
-        length: () => MUSIC.length,
-        getAll: () => MUSIC,
+        length: () => map.size,
+        getAll: () => Array.from(map.values()),
         get: (id) => map.get(id),
         getAllSubrows: (id) => Array.from(map.get(id).performances.values()),
         getSubrow: (id, subId) => map.get(id).performances.get(subId),
@@ -316,6 +316,8 @@ const API = {
     UPCOMING_EVENTS: getDataApi(UPCOMING_EVENTS),
     FAQ: getDataApi(FAQ),
     RESOURCES: getDataApi(RESOURCES),
+    GALLERY: getDataApi(GALLERY),
+    CAROUSEL: getDataApi(CAROUSEL),
     EVENTS: getEventsApi(),
     MUSIC: getMusicApi(),
     INSTRUMENTS: getEnumApi(INSTRUMENTS),
@@ -333,6 +335,17 @@ function getLinks() {
 }
 function setLinks(kv) {
     Object.assign(LINKS, kv);
+}
+
+function getExecPictures() {
+    return EXEC_PICTURES;
+}
+function setExecPictures(kv, replace) {
+    if (replace) {
+        reassignObject(EXEC_PICTURES, kv);
+    } else {
+        Object.assign(EXEC_PICTURES, kv);
+    }
 }
 
 function getTags() {
@@ -408,6 +421,13 @@ function reorderTabContent(id) {
         TABLE_OPERATIONS['table-upcoming-events'].reorder();
     } else if (['members', 'music', 'events', 'faq'].includes(id)) {
         TABLE_OPERATIONS[`table-${id}`].reorder();
+    } else if (id === 'links') {
+        TABLE_OPERATIONS['table-resources'].reorder();
+    } else if (id === 'images') {
+        TABLE_OPERATIONS['table-carousel'].reorder();
+        TABLE_OPERATIONS['table-gallery'].reorder();
+    } else if (id !== 'home' && id !== 'tags') {
+        throw new Error(id);
     }
 }
 
@@ -420,9 +440,17 @@ function destroyTabContent(id) {
         cssGetFirst('#table-upcoming-events tbody').replaceChildren();
     } else if (['members', 'music', 'events', 'faq'].includes(id)) {
         cssGetFirst(`#table-${id} tbody`).replaceChildren();
+    } else if (id === 'links') {
+        cssGetFirst(`#table-resources tbody`).replaceChildren();
+    } else if (id === 'images') {
+        cssGetFirst(`#table-carousel tbody`).replaceChildren();
+        cssGetFirst(`#table-gallery tbody`).replaceChildren();
+    } else if (id !== 'home') {
+        throw new Error(id);
     }
 }
 
+const TABLE_OPERATIONS = {};
 function toggleTab(element, forceRefresh) {
     const id = `${element.id.substring(4)}`;
     const active = cssGetClass('tab-active')[0];
@@ -481,6 +509,17 @@ function toggleTab(element, forceRefresh) {
                 constructLinks();
                 TABLE_OPERATIONS['table-resources'] = constructResourcesTable();
             }
+        } else if (id === 'images') {
+            if (TABLE_OPERATIONS['table-carousel']) {
+                TABLE_OPERATIONS['table-carousel'].init();
+                TABLE_OPERATIONS['table-gallery'].init();
+            } else {
+                TABLE_OPERATIONS['table-carousel'] = constructCarouselTable();
+                TABLE_OPERATIONS['table-gallery'] = constructGalleryTable();
+                constructExecPictures();
+            }
+        } else if (id !== 'home') {
+            throw new Error(id);
         }
     }, 0);
 
@@ -613,7 +652,7 @@ function clickAggregateCheckbox(element) {
         }
         toggleSubrowSelectionEnabled(true, tableId);
     }
-    updateTableToolbar(ROW_SELECTION, tableId);
+    updateTableToolbar(false, tableId);
 }
 function toggleRowSelect(event, element) {
     const button = element.children[0];
@@ -664,33 +703,19 @@ function onRowSelect(checked, rowId, tableId) {
         ROW_SELECTION[tableId] = new Set();
     }
     const set = ROW_SELECTION[tableId];
-    let aggregatedCheckbox;
-    try {
-        aggregatedCheckbox = cssGetFirst(`#${tableId} .aggregate-checkbox`);
-    } catch {
-        aggregatedCheckbox = {};
-    }
 
     if (checked) {
-        if (set.size === TABLE_OPERATIONS[tableId].length() - 1) {
-            aggregatedCheckbox.indeterminate = false;
-            aggregatedCheckbox.checked = true;
-        } else if (set.size === 0) {
+        if (set.size === 0) {
             toggleSubrowSelectionEnabled(false, tableId);
-            aggregatedCheckbox.indeterminate = true;
         }
         set.add(rowId);
     } else {
         set.delete(rowId);
         if (set.size === 0) {
             toggleSubrowSelectionEnabled(true, tableId);
-            aggregatedCheckbox.indeterminate = false;
-            aggregatedCheckbox.checked = false;
-        } else {
-            aggregatedCheckbox.indeterminate = true;
         }
     }
-    updateTableToolbar(ROW_SELECTION, tableId);
+    updateTableToolbar(false, tableId);
 }
 
 let SUBROW_SELECTION = {};
@@ -711,7 +736,7 @@ function onSubrowSelect(checked, subrowId, rowId, tableId) {
             toggleRowSelectionEnabled(true, tableId);
         }
     }
-    updateTableToolbar(SUBROW_SELECTION, tableId);
+    updateTableToolbar(true, tableId);
 }
 
 function toggleRowSelectionEnabled(on, tableId) {
@@ -734,7 +759,8 @@ function isSubrow(tr) {
     return tr?.classList.contains('subtable-row');
 }
 
-function updateTableToolbar(set, tableId) {
+function updateTableToolbar(isSubrow, tableId) {
+    const set = isSubrow ? SUBROW_SELECTION : ROW_SELECTION;
     const setSize = set[tableId].size;
     const className = 'table-toolbar-disabled';
 
@@ -754,6 +780,28 @@ function updateTableToolbar(set, tableId) {
     toggleClassBy(`#${tableId} .table-toolbar-move-top`, setSize >= 1);
     toggleClassBy(`#${tableId} .table-toolbar-move-bottom`, setSize >= 1);
     toggleClassBy(`#${tableId} .table-toolbar-copy`, setSize === 1);
+
+    if (!isSubrow) {
+        updateAggregatedCheckbox(tableId, setSize);
+    }
+}
+function updateAggregatedCheckbox(tableId, setSize) {
+    let aggregatedCheckbox;
+    try {
+        aggregatedCheckbox = cssGetFirst(`#${tableId} .aggregate-checkbox`);
+    } catch {
+        aggregatedCheckbox = {};
+    }
+
+    if (setSize === TABLE_OPERATIONS[tableId].length()) {
+        aggregatedCheckbox.indeterminate = false;
+        aggregatedCheckbox.checked = true;
+    } else if (setSize > 0) {
+        aggregatedCheckbox.indeterminate = true;
+    } else {
+        aggregatedCheckbox.indeterminate = false;
+        aggregatedCheckbox.checked = false;
+    }
 }
 
 function getTableToolbarContext(element, asSelectionList) {
@@ -782,13 +830,23 @@ function tableToolbarAdd(element) {
     if (element.classList.contains('table-toolbar-disabled'))
         return;
     const [tableId, isSubrow, selectedElement] = getTableToolbarContext(element);
-    TABLE_OPERATIONS[tableId][isSubrow ? 'subrowAdd' : 'rowAdd'](selectedElement);
+    const err = TABLE_OPERATIONS[tableId][isSubrow ? 'subrowAdd' : 'rowAdd'](selectedElement);
+    if (err) {
+        setHelperText(err);
+    } else {
+        updateTableToolbar(isSubrow, tableId);
+    }
 }
 function tableToolbarCopy(element) {
     if (element.classList.contains('table-toolbar-disabled'))
         return;
     const [tableId, isSubrow, selectedElement] = getTableToolbarContext(element);
-    TABLE_OPERATIONS[tableId][isSubrow ? 'subrowAdd' : 'rowAdd'](selectedElement, true);
+    const err = TABLE_OPERATIONS[tableId][isSubrow ? 'subrowAdd' : 'rowAdd'](selectedElement, true);
+    if (err) {
+        setHelperText(err);
+    } else {
+        updateTableToolbar(isSubrow, tableId);
+    }
 }
 function tableToolbarRemove(element) {
     if (element.classList.contains('table-toolbar-disabled'))
@@ -799,7 +857,7 @@ function tableToolbarRemove(element) {
     if (err) {
         setHelperText(err);
     } else {
-        updateTableToolbar(isSubrow ? SUBROW_SELECTION : ROW_SELECTION, tableId);
+        updateTableToolbar(isSubrow, tableId);
     }
 }
 function tableToolbarMoveUp(element) {
@@ -825,6 +883,34 @@ function tableToolbarMoveBottom(element) {
         return;
     const [tableId, isSubrow] = getTableToolbarContext(element);
     TABLE_OPERATIONS[tableId][isSubrow ? 'subrowMoveToEnd' : 'rowMoveToEnd'](false);
+}
+
+
+/*********************************************************************
+Image anchor point picker
+*********************************************************************/
+let IMAGE_ANCHOR;
+function imageAnchorDown(element) {
+    IMAGE_ANCHOR = element;
+    imageAnchorMove();
+}
+function imageAnchorMove() {
+    if (!IMAGE_ANCHOR) return;
+    const crosshair = IMAGE_ANCHOR.nextElementSibling;
+    const { top, left } = IMAGE_ANCHOR.getBoundingClientRect();
+    moveImageAnchor(IMAGE_ANCHOR, crosshair, MOUSE_X - left, MOUSE_Y - top);
+}
+function moveImageAnchor(img, crosshair, x, y) {
+    const { top, left, width, height } = img.getBoundingClientRect();
+    const offsetX = clamp(x, 0, width);
+    const offsetY = clamp(y, 0, height);
+
+    const { top: containerTop, left: containerLeft } = img.parentElement.getBoundingClientRect();
+    
+    cssSetElement(crosshair, {
+        left: `${left - containerLeft + offsetX - 1}px`,
+        top: `${top - containerTop + offsetY - 1}px`
+    });
 }
 
 
@@ -874,6 +960,8 @@ function onMouseMove(event) {
         updateColourFromPicker();
     } else if (PICKER_MODE === 'hue') {
         updateHueFromPicker();
+    } else if (IMAGE_ANCHOR) {
+        imageAnchorMove();
     }
     
     if (MODAL_INFO === undefined) {
@@ -884,6 +972,10 @@ function onMouseDown(down) {
     MOUSE_DOWN = down;
     if (!down) {
         PICKER_MODE = undefined;
+        if (IMAGE_ANCHOR !== undefined) {
+            syncData(IMAGE_ANCHOR);
+        }
+        IMAGE_ANCHOR = undefined;
     }
 }
 
@@ -1303,7 +1395,7 @@ const updateInputSuggestion = debounce(async (event) => {
         fragment.appendChild(element);
     }
     container.replaceChildren(fragment);
-    container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    container.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
 }, 0);
 
 function toggleShowInputSuggestion(suggestions, show) {
@@ -1838,6 +1930,11 @@ function syncEnsembleDescription() {
     const text = cssGetId('large-ensemble-description').lastElementChild;
     setLinks({ descriptionLargeEnsemble: parseInnerHTML(text.innerHTML) })
 }
+function syncExecPictures(element) {
+    const id = element.closest('li').id.split('-').at(-1);
+    console.log({ [id]: element.value });
+    setExecPictures({ [id]: element.value });
+}
 
 function syncData(element) {
     if (element.closest('.modal'))
@@ -1850,6 +1947,8 @@ function syncData(element) {
         return syncLinks(element);
     if (element.closest('#large-ensemble-description'))
         return syncEnsembleDescription();
+    if (element.closest('#exec-pictures'))
+        return syncExecPictures(element);
 
     const tableId = element.closest('.table').id;
     if (!tableId) {
@@ -1950,8 +2049,47 @@ function validateInputLinks(element) {
     syncData(element);
 }
 function validateInputEventLink(element) {
-    const linkType = parseEventLink(element.innerText.trim());
+    element.innerText = element.innerText.trim();
+    const linkType = parseEventLink(element.innerText);
     element.className = linkType ? `td-link td-link-${linkType}` : '';
+    syncData(element);
+}
+function validateInputEventPoster(element) {
+    element.innerText = element.innerText.trim();
+    const asset = element.innerText;
+    element.className = asset ? `td-img` : '';
+    if (asset) {
+        element.style.setProperty('--source', `url('${asset}'), url('${IMG_PLACEHOLDER}')`);
+    }
+    syncData(element);
+}
+function inputInputImage() {
+    INPUT_CHANGED = true;
+}
+function validateInputImage(element, event) {
+    if (event !== undefined && event.key !== 'Enter')
+        return;
+    if (event?.key === 'Enter') {
+        element.blur();
+    }
+
+    const img = element.closest('.input').previousElementSibling.querySelector('img');
+    if (!INPUT_CHANGED)
+        return;
+    INPUT_CHANGED = false;
+    img.src = element.value;
+    
+    // Move anchor to match new image dimensions
+    const crosshair = img.nextElementSibling;
+    if (crosshair) {
+        const id = Number(element.closest('tr').id.split('-').at(-1));
+        const [x, y] = API.CAROUSEL.get(id).anchor;
+        img.onload = () => {
+            const { width, height } = img.getBoundingClientRect();
+            moveImageAnchor(img, crosshair, x * width, y * height);
+        };
+    }
+    
     syncData(element);
 }
 
@@ -2108,6 +2246,27 @@ function sanityCheckData() {
             return `Resource in row #${resource.id} has no name`;
         if (!resource.link)
             return `Resource '${resource.name}' (#${resource.id}) has no link`;
+    }    
+
+    const execPictures = getExecPictures();
+    for (const id in execPictures) {
+        if (!execPictures[id]) continue;
+        const err = validateAsset(execPictures[id]);
+        if (err) {
+            return `Picture of '${API.MEMBERS.get(Number(id)).name}' (#${id}): ${err}`;
+        }
+    }
+
+    for (const img of API.GALLERY.getAll()) {
+        if (!img.link) continue;
+        const err = validateAsset(img.link);
+        if (err) return `Gallery table row #${img.id}: ${err}`;
+    }
+
+    for (const img of API.CAROUSEL.getAll()) {
+        if (!img.url) continue;
+        const err = validateAsset(img.url);
+        if (err) return `Carousel table row #${img.id}: ${err}`;
     }
 }
 
@@ -2136,38 +2295,11 @@ const RESOURCES = ${minify(data.resources)}.map((x, i) => ({...x, id: i}));
 
 const LINKS = ${minify(data.links)};
 
-const CAROUSEL = [
-    {
-        "url": "assets/images/carousel 2025-04.webp",
-        "caption": "End of Winter <br> Concert <b>2025/04</b>",
-        "yLims": [300, 1300],
-        "captionXPosition": "60%",
-        "captionRight": true,
-        "captionTopOnMobile": true,
-        "width": 3171,
-        "height": 1524
-    },
-    {
-        "url": "assets/images/carousel 2026-04.webp",
-        "caption": "Tunes & Treats <br> <b>2026/04</b>",
-        "yLims": [250, 1150],
-        "captionXPosition": "70%",
-        "captionRight": false,
-        "captionTopOnMobile": true,
-        "width": 2400,
-        "height": 1350
-    },
-    {
-        "url": "assets/images/carousel 2025-01.webp",
-        "caption": "End of Fall <br> Concert <b>2025/01</b>",
-        "yLims": [400, 1300],
-        "captionXPosition": "40%",
-        "captionRight": true,
-        "captionTopOnMobile": true,
-        "width": 2520,
-        "height": 1418
-    }
-];
+const CAROUSEL = ${minify(data.carousel)}.map((x, i) => ({...x, id: i}));
+
+const EXEC_PICTURES = ${minify(data.execPictures)};
+
+const GALLERY = ${minify(data.gallery)}.map((x, i) => ({...x, id: i}));
 `;
 }
 
@@ -2255,6 +2387,9 @@ function exportData() {
         links: getLinks(),
         resources: API.RESOURCES.getAll(),
         currentEvent: getCurrentEvent(),
+        carousel: API.CAROUSEL.getAll(),
+        gallery: API.GALLERY.getAll(),
+        execPictures: getExecPictures(),
         announcements: API.ANNOUNCEMENTS.getAll(),
         upcomingEvents: API.UPCOMING_EVENTS.getAll(),
         members,
@@ -2470,6 +2605,20 @@ function roleSorter(a, b) {
 function getExpectedSchoolYear() {
     const now = new Date();
     return now.getMonth() >= 8 ? now.getFullYear() : now.getFullYear() - 1;
+}
+function getCurrentSchoolYearFromAPI() {
+    let year = getExpectedSchoolYear();
+    const roles = API.ROLES.getAll();
+    const membersWithYears = API.MEMBERS.getAll().filter(x => x.roles.some(role => roles[role].includes("(")));
+    let execs = membersWithYears.filter(x => x.roles.some(role => roles[role].includes(String(year).slice(2))));
+    while (execs.length === 0) {
+        year -= 1;
+        if (year === 2022) {
+            throw new Error("WTF");
+        }
+        execs = membersWithYears.filter(x => x.roles.some(role => roles[role].includes(String(year).slice(2))));
+    }
+    return [year, execs];
 }
 function getCurrentSchoolYear(indices, members) {
     let year = getExpectedSchoolYear();
@@ -2822,6 +2971,9 @@ async function parseData() {
             links: getLinks(),
             resources: API.RESOURCES.getAll(),
             currentEvent: getCurrentEvent(),
+            carousel: API.CAROUSEL.getAll(),
+            gallery: API.GALLERY.getAll(),
+            execPictures: getExecPictures(),
             announcements: API.ANNOUNCEMENTS.getAll(),
             upcomingEvents: API.UPCOMING_EVENTS.getAll(),
             members: memberData,
@@ -2930,6 +3082,10 @@ const INPUT_ATTRIBUTES = {
     eventLink: {
         contenteditable: 'plaintext-only',
         onblur: 'validateInputEventLink(this)'
+    },
+    eventPoster: {
+        contenteditable: 'plaintext-only',
+        onblur: 'validateInputEventPoster(this)'
     }
 }
 function createDropdown(value, options) {
@@ -3188,10 +3344,11 @@ let AUTOINCREMENT = {};
  * - `dataParser (T => <td>[])`: Takes in your list item, outputs row HTML.
  * - `rowSyncer ((id, <td>[]) => void)`: Takes in row id & HTML, updates the API data 
  * - `deleteChecker (id => str)`: Takes in row id, return string if row can't be deleted safely. Optional
+ * - `maxRows: number`: Max number of rows allowed
  * 
  * Output is an object of table operations. 
  */
-function constructTable(tableId, api, templateData, dataParser, rowSyncer, deleteChecker) {
+function constructTable(tableId, api, templateData, dataParser, rowSyncer, deleteChecker, maxRows) {
     function parseRowId(element) {
         return Number(element.id.split('-').at(-1));
     }
@@ -3223,6 +3380,9 @@ function constructTable(tableId, api, templateData, dataParser, rowSyncer, delet
             api.resetData(newList);
         },
         rowAdd: (row, copyRow) => {
+            if (maxRows && api.length() >= maxRows) {
+                return `This table may not have more than ${maxRows} rows.`
+            }
             AUTOINCREMENT[tableId] += 1;
             const id = AUTOINCREMENT[tableId];
 
@@ -3234,7 +3394,7 @@ function constructTable(tableId, api, templateData, dataParser, rowSyncer, delet
             if (row) row.after(tr);
             else table.appendChild(tr);
 
-            tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            tr.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
         },
         rowDelete: (ids) => {
             const err = deleteChecker?.(ids);
@@ -3242,7 +3402,7 @@ function constructTable(tableId, api, templateData, dataParser, rowSyncer, delet
                 return err;
             for (const id of ids) {
                 cssGetId(`${tableId}-${id}`).remove();
-                api.delete(id);
+                api.delete(Number(id));
                 ROW_SELECTION[tableId].delete(id);
                 if (AUTOINCREMENT[tableId] === Number(id)) {
                     AUTOINCREMENT[tableId] -= 1;
@@ -3263,10 +3423,10 @@ function constructTable(tableId, api, templateData, dataParser, rowSyncer, delet
                 .forEach(x => fragment.appendChild(x));
             if (moveTop) {
                 table.prepend(fragment);
-                table.children[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                table.children[0].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
             } else {
                 table.appendChild(fragment);
-                table.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                table.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
             }
         },
         rowMove: (moveUp) => {
@@ -3293,7 +3453,7 @@ function constructTable(tableId, api, templateData, dataParser, rowSyncer, delet
                 }
             }
             const middle = Math.floor(rows.length / 2);
-            rows[middle].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            rows[middle].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
         }
     }
     operations.init();
@@ -3309,8 +3469,8 @@ function constructTable(tableId, api, templateData, dataParser, rowSyncer, delet
  * - `rowSyncer` syncs rows as well as individual subrows
  *     - (id, <td>[], subIds, <?>[]) => void (sync row and subrows)
  *     - (id, undefined, subId, <?>) => void (sync a subrow)
- */
-function constructTableWithSubrows(tableId, api, templateData, templateSubdata, dataParser, dataParserSubrow, rowSyncer, deleteChecker) {
+*/
+function constructTableWithSubrows(tableId, api, templateData, templateSubdata, dataParser, dataParserSubrow, rowSyncer, deleteChecker, maxRows) {
     const noSubtableCheckbox = !dataParserSubrow || !templateSubdata;
     let rowLength; 
     const tree = {};
@@ -3400,6 +3560,10 @@ function constructTableWithSubrows(tableId, api, templateData, templateSubdata, 
             api.resetData(newList, noSubtableCheckbox ? undefined : sublists);
         },
         rowAdd: (row, copyRow) => {
+            if (maxRows && api.length() >= maxRows) {
+                return `This table may not have more than ${maxRows} rows.`
+            }
+
             AUTOINCREMENT[tableId] += 1;
             const id = AUTOINCREMENT[tableId];
 
@@ -3418,7 +3582,7 @@ function constructTableWithSubrows(tableId, api, templateData, templateSubdata, 
             if (!noSubtableCheckbox) {
                 toggleCellDetails(tr.querySelector('.cell-details img[src="assets/icons/hide.svg"]'));
             }
-            tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            tr.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
         },
         rowDelete: (ids) => {
             const err = deleteChecker?.(ids);
@@ -3432,7 +3596,7 @@ function constructTableWithSubrows(tableId, api, templateData, templateSubdata, 
                 delete tree[id];
 
                 cssGetId(`${tableId}-${id}`).remove();
-                api.delete(id);
+                api.delete(Number(id));
                 ROW_SELECTION[tableId].delete(id);
                 if (AUTOINCREMENT[tableId] === Number(id)) {
                     AUTOINCREMENT[tableId] -= 1;
@@ -3469,10 +3633,10 @@ function constructTableWithSubrows(tableId, api, templateData, templateSubdata, 
                 });
             if (moveTop) {
                 table.prepend(fragment);
-                table.children[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                table.children[0].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
             } else {
                 table.appendChild(fragment);
-                lastRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                lastRow.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
             }
         },
         rowMove: (moveUp) => {
@@ -3521,7 +3685,7 @@ function constructTableWithSubrows(tableId, api, templateData, templateSubdata, 
                 }
             }
             const middle = Math.floor(rows.length / 2);
-            rows[middle].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            rows[middle].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
         },
         subrowAdd: (subrow, copySubrow) => {
             let [rowId, copiedSubrowId] = subrow.id.split('-').slice(-2).map(Number);
@@ -3541,7 +3705,7 @@ function constructTableWithSubrows(tableId, api, templateData, templateSubdata, 
             const tr = createSubrow(subdata, rowId);
             subrow.after(tr);
             cssSetElement(tr, { display: subrow.style.display });
-            tr.scrollIntoView({ behavior: 'smooth', block: 'center' });  
+            tr.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });  
         },
         subrowDelete: (ids) => {
             for (const id of ids) {
@@ -3597,7 +3761,7 @@ function constructTableWithSubrows(tableId, api, templateData, templateSubdata, 
                 }
             }
             const row = cssGetId(`${tableId}-${Array.from(SUBROW_SELECTION[tableId])[0]}`);
-            row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            row.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
         },
         subrowMove: (moveUp) => {
             const rows = Array.from(SUBROW_SELECTION[tableId])
@@ -3623,7 +3787,7 @@ function constructTableWithSubrows(tableId, api, templateData, templateSubdata, 
                 }
             }
             const middle = Math.floor(rows.length / 2);
-            rows[middle].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            rows[middle].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
         },
     };
     operations.init();
@@ -3748,7 +3912,7 @@ function renderInnerHTML(paragraphs) {
     if (paragraphs?.length === 1 && paragraphs[0] === '') {
         return '<br>';
     }
-    return paragraphs?.map(x => `<div>${x}</div>`).join("");
+    return paragraphs?.map(x => `<div>${parseMarkdown(x)}</div>`).join("");
 }
 function constructFaq() {
     const template = {
@@ -4027,6 +4191,7 @@ function parseEventLink(link) {
     return linkType;
 }
 
+const IMG_PLACEHOLDER = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22600%22%20height%3D%22400%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20600%20400%22%20preserveAspectRatio%3D%22none%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3Cstyle%20type%3D%22text%2Fcss%22%3E%0A%20%20%20%20%20%20%20%20%20%20%23holder%20text%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20fill%3A%20%23ffffff%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20font-family%3A%20sans-serif%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20font-size%3A%20300px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20font-weight%3A%20400%3B%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%3C%2Fstyle%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Cg%20id%3D%22holder%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23cccccc%22%3E%3C%2Frect%3E%0A%20%20%20%20%20%20%20%20%3Cg%3E%0A%20%20%20%20%20%20%20%20%20%20%3Ctext%20text-anchor%3D%22middle%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20dy%3D%22.3em%22%3E404%3C%2Ftext%3E%0A%20%20%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%3C%2Fsvg%3E';
 function constructEventTable() {
     const ymdhs = getTemplateDateString(true);
     const template = {
@@ -4065,8 +4230,10 @@ function constructEventTable() {
             children: [createInputSubrowOpener()]
         }, {
             element: 'td',
-            attributes: INPUT_ATTRIBUTES.default,
-            innerText: x.poster
+            attributes: INPUT_ATTRIBUTES.eventPoster,
+            classes: x.poster ? ['td-img'] : [],
+            style: x.poster ? { '--source': `url('${x.poster}'), url('${IMG_PLACEHOLDER}'` } : {},
+            innerText: x.poster,
         }, {
             element: 'td',
             attributes: INPUT_ATTRIBUTES.eventLink,
@@ -4239,7 +4406,144 @@ function constructTagTab() {
     }
 }
 
-const TABLE_OPERATIONS = {};
+
+/*********************************************************************
+Data injection - Images tab
+*********************************************************************/
+function createInputImage(link, anchor) {
+    const container = anchor ? x => [{
+        element: 'div',
+        classes: ['input-image-img-container'],
+        children: x
+    }] : x => x;
+    return {
+        element: 'div',
+        classes: ['input-image-img'],
+        children: container([{
+            element: 'img',
+            attributes: {
+                src: link,
+                onerror: `this.src = '${IMG_PLACEHOLDER}'`,
+                draggable: 'false',
+                ...anchor ? {
+                    onmousedown: 'imageAnchorDown(this)',
+                    onmousemove: 'imageAnchorMove()',
+                    onload: `loadImageAnchor(this, ${anchor[0]}, ${anchor[1]})`
+                } : {}
+            }
+        }, anchor ? {
+            element: 'div',
+            classes: ['input-image-crosshair']
+        } : undefined])
+    };
+}
+function createInputTextImage(value, placeholder) {
+    return {
+        element: 'div',
+        classes: ['input'],
+        children: [{
+            element: 'div',
+            children: [{
+                element: 'img',
+                attributes: { src: 'assets/icons/image-filled.svg' }
+            }, {
+                element: 'input',
+                attributes: {
+                    type: 'text',
+                    placeholder,
+                    oninput: 'inputInputImage()',
+                    onblur: 'validateInputImage(this)',
+                    onkeydown: 'validateInputImage(this, event)'
+                },
+                value
+            }]
+        }]
+    }
+}
+function constructExecPictures() {
+    const [year, execs] = getCurrentSchoolYearFromAPI();
+    cssGetId('exec-pictures-h2').innerText = `Exec Pictures (${year} - ${year + 1})`;
+    
+    const execPictures = getExecPictures();
+    const list = cssGetId('exec-pictures');
+    const fragment = document.createDocumentFragment();
+    for (const exec of execs) {
+        const link = execPictures[exec.id] ?? '';
+        const image = createInputImage(link);      
+        const input = createInputTextImage(link, 'assets/images/profile-pictures/...');
+        fragment.appendChild(construct({
+            element: 'li',
+            id: `exec-pictures-${exec.id}`,
+            children: [image, input, {
+                element: 'p',
+                innerText: `${exec.name} (#${exec.id})`
+            }]
+        }));
+    }
+    list.replaceChildren(fragment);
+    setExecPictures(Object.fromEntries(execs.map(x => [x.id, execPictures[x.id] ?? ''])), true);
+}
+// Run this in case data is exported before going in images tab and old data is used
+constructExecPictures();
+
+// Set crosshair position after images have loaded and we know the image dimensions
+function loadImageAnchor(img, x, y) {
+    const crosshair = img.nextElementSibling;
+    const { width, height } = img.getBoundingClientRect();
+    moveImageAnchor(img, crosshair, x * width, y * height);
+}
+function constructCarouselTable() {
+    const template = { url: '', caption: '', anchor: [0, 0] };
+    const dataParser = (x) => {
+        return [{
+            element: 'td',
+            children: [
+                createInputImage(x.url, x.anchor),
+                createInputTextImage(x.url, 'assets/images/carousel/...')
+            ]
+        }, {
+            element: 'td',
+            attributes: INPUT_ATTRIBUTES.defaultRichText,
+            innerHTML: x.caption
+        }]
+    };
+    const rowSyncer = (id, tds) => {
+        const crosshair = tds[0].querySelector('.input-image-crosshair');
+        const { left, top } = crosshair.style;
+        const { width, height } = crosshair.previousElementSibling.getBoundingClientRect();
+
+        API.CAROUSEL.set(id, {
+            url: tds[0].lastElementChild.children[0].lastElementChild.value,
+            caption: tds[1].innerHTML.trim(),
+            anchor: [(parseInt(left, 10) + 1) / width, (parseInt(top, 10) + 1) / height]
+        });
+    };
+
+    return constructTable('table-carousel', API.CAROUSEL, template, dataParser, rowSyncer, undefined, 8);
+}
+function constructGalleryTable() {
+    const template = { caption: '', link: '' };
+    const dataParser = (x) => {
+        return [{
+            element: 'td',
+            children: [
+                createInputImage(x.link),
+                createInputTextImage(x.link, 'assets/images/gallery/...')
+            ]
+        }, {
+            element: 'td',
+            attributes: INPUT_ATTRIBUTES.defaultRichText,
+            innerHTML: x.caption
+        }]
+    };
+    const rowSyncer = (id, tds) => {
+        API.GALLERY.set(id, {
+            link: tds[0].lastElementChild.children[0].lastElementChild.value,
+            caption: tds[1].innerHTML.trim()
+        });
+    };
+    return constructTable('table-gallery', API.GALLERY, template, dataParser, rowSyncer, undefined, 20);
+}
 
 
 /*********************************************************************

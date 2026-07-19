@@ -398,6 +398,137 @@
         </article>
         <article id="tab-images">
             <h1>Images</h1>
+
+            <h2 id="exec-pictures-h2">Exec Pictures</h2>
+            <ul id="exec-pictures">
+                <li id="exec-pictures-0">
+                    <div class="input-image-img">
+                        <img src="assets/images/asanoha.webp" />
+                    </div>
+                    <div class="input">
+                        <div>
+                            <img src="assets/icons/image-filled.svg" />
+                            <input type="text" placeholder="assets/images/profile-pictures/..." />
+                        </div>
+                    </div>
+                    <p>Name (#2)</p>
+                </li>
+                <li id="exec-pictures-1">
+                    <div class="input-image-img">
+                        <img src="assets/images/asanoha.webp" />
+                    </div>
+                    <div class="input input-image">
+                        <div>
+                            <img src="assets/icons/image-filled.svg" />
+                            <input type="text" placeholder="assets/images/profile-pictures/..." />
+                        </div>
+                    </div>
+                    <p>Name (#2)</p>
+                </li>
+                <li id="exec-pictures-2">
+                    <div class="input-image-img">
+                        <img src="assets/images/asanoha.webp" />
+                    </div>
+                    <div class="input">
+                        <div>
+                            <img src="assets/icons/image-filled.svg" />
+                            <input type="text" placeholder="assets/images/profile-pictures/..." />
+                        </div>
+                    </div>
+                    <p>Name (#2)</p>
+                </li>
+            </ul>
+
+            <h2>Carousel</h2>
+            <p>When carousel images adjust to the screen size, the crosshair (+) controls where the image is centered.</p>
+            <div class="table" id="table-carousel">
+                <ul class="table-toolbar">
+                    <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>
+                    <li class="table-toolbar-remove table-toolbar-disabled" onclick="tableToolbarRemove(this)"></li>
+                    <li class="table-toolbar-move-up table-toolbar-disabled" onclick="tableToolbarMoveUp(this)"></li>
+                    <li class="table-toolbar-move-down table-toolbar-disabled" onclick="tableToolbarMoveDown(this)"></li>
+                    <li class="table-toolbar-move-top table-toolbar-disabled" onclick="tableToolbarMoveTop(this)"></li>
+                    <li class="table-toolbar-move-bottom table-toolbar-disabled" onclick="tableToolbarMoveBottom(this)"></li>
+                    <li class="table-toolbar-copy table-toolbar-disabled" onclick="tableToolbarCopy(this)"></li>
+                </ul>
+                <div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" class="aggregate-checkbox" onclick="clickAggregateCheckbox(this)" /></th>
+                                <th>Image</th>
+                                <th>Caption</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="table-carousel-0">
+                                <td onclick="toggleRowSelect(event, this)">
+                                    <input type="checkbox" class="checkbox" />
+                                </td>
+                                <td>
+                                    <div class="input-image-img">
+                                        <div class="input-image-img-container">
+                                            <img src="assets/images/asanoha.webp" draggable="false" onmousedown="imageAnchorDown(this)" onmousemove="imageAnchorMove()" />
+                                            <div class="input-image-crosshair"></div>
+                                        </div>
+                                    </div>
+                                    <div class="input">
+                                        <div>
+                                            <img src="assets/icons/image-filled.svg" />
+                                            <input type="text" placeholder="assets/images/carousel/..." />
+                                        </div>
+                                    </div>
+                                </td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">Caption</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <h2>Gallery</h2>
+            <div class="table" id="table-gallery">
+                <ul class="table-toolbar">
+                    <li class="table-toolbar-add" onclick="tableToolbarAdd(this)"></li>
+                    <li class="table-toolbar-remove table-toolbar-disabled" onclick="tableToolbarRemove(this)"></li>
+                    <li class="table-toolbar-move-up table-toolbar-disabled" onclick="tableToolbarMoveUp(this)"></li>
+                    <li class="table-toolbar-move-down table-toolbar-disabled" onclick="tableToolbarMoveDown(this)"></li>
+                    <li class="table-toolbar-move-top table-toolbar-disabled" onclick="tableToolbarMoveTop(this)"></li>
+                    <li class="table-toolbar-move-bottom table-toolbar-disabled" onclick="tableToolbarMoveBottom(this)"></li>
+                    <li class="table-toolbar-copy table-toolbar-disabled" onclick="tableToolbarCopy(this)"></li>
+                </ul>
+                <div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" class="aggregate-checkbox" onclick="clickAggregateCheckbox(this)" /></th>
+                                <th>Image</th>
+                                <th>Caption</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="table-gallery-0">
+                                <td onclick="toggleRowSelect(event, this)">
+                                    <input type="checkbox" class="checkbox" />
+                                </td>
+                                <td>
+                                    <div class="input-image-img">
+                                        <img src="assets/images/asanoha.webp" />
+                                    </div>
+                                    <div class="input">
+                                        <div>
+                                            <img src="assets/icons/image-filled.svg" />
+                                            <input type="text" placeholder="assets/images/gallery/..." />
+                                        </div>
+                                    </div>
+                                </td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">Caption</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
         </article>
         <article id="tab-members">
             <h1>Members</h1>

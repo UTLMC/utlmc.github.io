@@ -210,10 +210,10 @@ function toggleTab(element) {
     YOUTUBE_CONCERT_VIDEO?.pauseVideo();
 
     // Toggle tab CSS
-    cssGetClass('nav-active')[0].classList.remove('nav-active');
+    cssGetClass('nav-active')[0]?.classList.remove('nav-active');
     desktopNav.classList.add('nav-active');
     
-    cssGetClass('tab-active')[0].classList.remove('tab-active');
+    cssGetClass('tab-active')[0]?.classList.remove('tab-active');
     const tabId = `tab-${id}`;
     cssGetId(tabId).classList.add('tab-active');
 
@@ -316,7 +316,6 @@ function toggleCarousel(next) {
     cssGetClass('carousel')[CURR_CAROUSEL].classList.add('carousel-active');
     
     cssGetId('carousel-caption').innerHTML = CAROUSEL[CURR_CAROUSEL].caption;
-    updateCarousel();
 }
 
 // Fix sizing issue on Firefox
@@ -542,16 +541,19 @@ window.addEventListener('popstate', () => {
     }
 });
 window.addEventListener('DOMContentLoaded', () => {
-    injectHomeCurrentEvent();
-    injectHomeBulletin();
-    injectCarousel();
-    setTimeout(() => {
-        injectMembers();
-        injectFAQ();
-        updateMusicTable();
-        injectLinks();
-        injectResources();
-    }, 0);
+    const [page] = window.location.hash.substring(1).split("/");
+    const execute = (ids, fn) => ids.includes(page) ? fn() : setTimeout(fn, 0); 
+    execute(['home', ''], () => {
+        injectHomeCurrentEvent();
+        injectHomeBulletin();
+        injectCarousel();
+    });
+    execute(['about'], injectMembers);
+    execute(['get-involved'], injectFAQ);
+    execute(['music-archive'], updateMusicTable);
+    execute(['rehearsals'], injectLinks);
+    execute(['resources'], injectResources);
+    execute(['gallery'], injectGallery);
 
     toggleTabFromUrl();
 
@@ -565,12 +567,7 @@ window.addEventListener('DOMContentLoaded', () => {
     cssGetId('home-banner').innerText = introBanner;
 });
 window.addEventListener('resize', () => {
-    updateCarousel();
     fixTablePersonnelWidth();
-
-    if (window.innerWidth < 900) {
-        cssSetId('nav-events-sidebar', { height: '' });
-    }
 })
 window.addEventListener('click', handleClick);
 
@@ -620,99 +617,26 @@ function construct(json) {
 Home tab - image carousel
 *********************************************************************/
 let CURR_CAROUSEL = 0;
-async function injectCarousel() {
+function injectCarousel() {
     const carouselContainer = cssGetId('section-carousel');
-    for (let i = 0; i < CAROUSEL.length; i++) {
+    CAROUSEL.forEach(({ url, anchor: [x, y] }, i) => {        
         const classes = ['carousel'];
         if (i == 0) {
             classes.push('carousel-active');
         }
+
         carouselContainer.appendChild(construct({
             element: 'img',
             classes,
+            style: { 'object-position': `${x * 100}% ${y * 100}%` },
             attributes: {
                 decoding: 'async',
                 loading: i === 0 ? 'eager' : 'lazy',
-                src: CAROUSEL[i].url
+                src: url
             }
         }));
-    }
-    cssGetId('carousel-caption').innerHTML = CAROUSEL[CURR_CAROUSEL].caption;
-    updateCarousel();
-}
-function updateCarousel() {
-    const carouselContainer = cssGetId('section-carousel');
-    const carousel = cssGetClass('carousel-active')[0];
-    const caption = cssGetId('carousel-caption');
-    const { captionRight, captionTopOnMobile, yLims: [y0, y1], captionXPosition, height, width } = CAROUSEL[CURR_CAROUSEL];
-
-    const scale = window.innerWidth / width;
-    const minHeight = (y1 - y0) * scale;
-    const targetHeight = 0.5 * window.innerHeight;
-    const minWidth = width * targetHeight / height;
-
-    cssSetElement(caption, captionRight ? { 
-        'text-align': 'right',
-        left: 'auto',
-        right: 'max(35px, 6vw)',
-        transform: 'rotate(-3deg)'
-    } : {
-        'text-align': 'left',
-        right: 'auto',
-        left: 'max(35px, 6vw)',
-        transform: 'rotate(3deg)'
     });
-
-    // Wide screen -> force wide image dimensions
-    if (minHeight >= targetHeight) {
-        cssSetElement(carouselContainer, { height: `${minHeight}px` });
-        cssSetElement(carousel, {
-            height: `${height * scale}px`,
-            'margin-top': `-${y0 * scale}px`
-        });
-
-        if (captionTopOnMobile) {
-            cssSetElement(caption, { bottom: 'max(20px, 2vw)', top: 'auto' });
-        }
-
-    // As screen width decreases, extra vertical space is added to image
-    } else if (window.innerWidth > minWidth ) {
-        const extraVisible = targetHeight - (y1 - y0) * scale;
-        const topRaw = y0;
-        const bottomRaw = height - y1;
-        const totalRaw = topRaw + bottomRaw;
-        const topShare = topRaw / totalRaw;
-        const extraTop = extraVisible * topShare;
-
-        cssSetElement(carouselContainer, { height: `${targetHeight}px` });
-        cssSetElement(carousel, {
-            height: `${height * scale}px`,
-            'margin-top': `-${(y0 * scale) - extraTop}px`
-        });
-
-        if (captionTopOnMobile) {
-            cssSetElement(caption, {
-                bottom: 'max(20px, 2vw)',
-                top: 'auto'
-            });
-        }
-    
-    // Mobile screen -> zoom in to cover screen
-    } else {
-        cssSetElement(carouselContainer, { height: `${targetHeight}px` });
-        cssSetElement(carousel, {
-            height: `${targetHeight}px`,
-            'object-position': `${captionXPosition} 50%`,
-            'margin-top': '0px'
-        });
-
-        if (captionTopOnMobile) {
-            cssSetElement(caption, {
-                top: 'max(30px, 6.5vw)',
-                bottom: 'auto'
-            });
-        }
-    }
+    cssGetId('carousel-caption').innerHTML = CAROUSEL[CURR_CAROUSEL].caption;
 }
 
 
@@ -775,7 +699,7 @@ function injectHomeConcert(now) {
     paragraphs.forEach(x => container.appendChild(x));
     container.appendChild(buttons);
 }
-async function injectHomeCurrentEvent() {
+function injectHomeCurrentEvent() {
     const now = new Date();
 
     // Only concerts are supported right now
@@ -790,7 +714,7 @@ async function injectHomeCurrentEvent() {
 /*********************************************************************
 Home tab - announcements + upcoming events
 *********************************************************************/
-async function injectHomeBulletin() {
+function injectHomeBulletin() {
     const sectionAnnouncements = cssGetId('section-announcements');
     const sectionUpcoming = cssGetId('section-upcoming-events');
     const containerAnnouncements = cssGetId('announcement-container');
@@ -1237,7 +1161,10 @@ function injectExecTeam(execTeam, year) {
             classes: ['exec-team-card'],
             children: [{
                 element: 'img',
-                attributes: { src: 'assets/images/asanoha.webp' }
+                attributes: {
+                    src: EXEC_PICTURES[x.id],
+                    onerror: `this.src = 'assets/images/asanoha.webp'`
+                }
             }, {
                 element: 'div',
                 children: [{
@@ -1309,7 +1236,7 @@ function injectHomeOutreach(execTeam) {
         });
 }
 
-async function injectMembers() {
+function injectMembers() {
     const [personnel, personnelRoles] = getPersonnel();
     injectPersonnel(personnel, personnelRoles);
     const [execTeam, year] = getExecTeam();
@@ -1675,7 +1602,7 @@ const updateMusicTable = (() => {
 /*********************************************************************
 Get involved tab - FAQ list
 *********************************************************************/
-async function injectFAQ() {
+function injectFAQ() {
     const container = cssGetId('faq-container');
     for (const faq of FAQ) {
         const paragraphs = faq.a.map(x => ({ element: 'p', innerHTML: parseMarkdown(x) }));
@@ -1902,7 +1829,9 @@ function constructSetlistTabSongItem(performanceInfo, song, i) {
                 children: [{
                     element: 'img',
                     attributes: {
-                        src: 'assets/icons/users.svg'
+                        src: 'assets/icons/users.svg',
+                        decoding: 'async',
+                        loading: 'lazy'
                     }
                 }, {
                     element: 'dl',
@@ -2201,6 +2130,10 @@ function injectLinks() {
     }
 }
 
+
+/*********************************************************************
+Resources
+*********************************************************************/
 function injectResources() {
     const fragments = {};
     for (const resource of RESOURCES) {
@@ -2236,224 +2169,18 @@ function injectResources() {
         }
     }
 
-    const assets = [{
-        url: 'assets/icons/megaphone.svg',
-        text: [['Megaphone', 'https://www.flaticon.com/free-icon/announcement_2417835']],
-    }, {
-        url: 'assets/icons/alert-triangle.svg',
-        text: [['Alert Triangle', 'https://www.flaticon.com/free-icon/attention_4440466']]
-    }, {
-        url: 'assets/icons/music-notes.svg',
-        text: [['Music Notes', 'https://www.flaticon.com/free-icon/music-note_651717']],
-        invert: true
-    }, {
-        url: 'assets/icons/music-staff.svg',
-        text: [['Music Staff', 'https://www.flaticon.com/free-icon/treble-clef_5376625']],
-        invert: true
-    }, {
-        url: 'assets/icons/globe.svg',
-        text: [['Website', 'https://www.svgrepo.com/svg/399420/globe-alt-o']]
-    }, {
-        url: 'assets/icons/events.svg',
-        text: [['Events', 'https://www.flaticon.com/free-icon/event_839888'],
-               ['Music Note', 'https://www.flaticon.com/free-icon/music-player_500148']],
-        invert: true
-    }, {
-        url: 'assets/icons/events-filled.svg',
-        text: [['Filled Events', 'https://www.flaticon.com/free-icon/event_6904072']],
-        invert: true
-    }, {
-        url: 'assets/icons/get involved.svg',
-        text: [['Get Involved', 'https://www.flaticon.com/free-icon/bubble-chat_2076218']],
-        invert: true
-    }, {
-        url: 'assets/icons/home.svg',
-        text: [['Home', 'https://www.flaticon.com/free-icon/home_1946436']],
-        invert: true
-    }, {
-        url: 'assets/icons/music-note.svg',
-        text: [['Music Note', 'https://www.flaticon.com/free-icon/musical-note_727248']],
-        invert: true
-    }, {
-        url: 'assets/icons/image.svg',
-        text: [['Image', 'https://www.flaticon.com/free-icon/image_6499527']],
-        invert: true
-    }, {
-        url: 'assets/icons/time.svg',
-        text: [['Time', 'https://www.flaticon.com/free-icon/time_3240587']],
-    }, {
-        url: 'assets/icons/location.svg',
-        text: [['Location', 'https://www.flaticon.com/free-icon/location_535188']]
-    }, {
-        url: 'assets/icons/ticket.svg',
-        text: [['Ticket', 'https://www.flaticon.com/free-icon/ticket_7411135']]
-    }, {
-        url: 'assets/icons/pin.svg',
-        text: [['Pin', 'https://www.flaticon.com/free-icon/thumbtacks_2672101']],
-        invert: true
-    }, {
-        url: 'assets/icons/options.svg',
-        text: [['Options', 'https://www.flaticon.com/free-icon/settings_992668']],
-        invert: true
-    }, {
-        url: 'assets/icons/signup.svg',
-        text: [['Signup', 'https://www.flaticon.com/free-icon/constitution_5622624']],
-        invert: true
-    }, {
-        url: 'assets/icons/instruments/piccolo.png',
-        text: [['Piccolo', 'https://www.flaticon.com/free-icon/piccolo_11622264']]
-    }, {
-        url: 'assets/icons/instruments/flute.png',
-        text: [['Flute', 'https://www.flaticon.com/free-icon/flute_1913298']]
-    }, {
-        url: 'assets/icons/instruments/clarinet.png',
-        text: [['Clarinet', 'https://www.flaticon.com/free-icon/clarinet_8332438']]
-    }, {
-        url: 'assets/icons/instruments/oboe.png',
-        text: [['Oboe', 'https://www.flaticon.com/free-icon/oboe_8332508']]
-    }, {
-        url: 'assets/icons/instruments/bassoon.png',
-        text: [['Bassoon', 'https://www.flaticon.com/free-icon/bassoon_1913373']]
-    }, {
-        url: 'assets/icons/instruments/saxophone.png',
-        text: [['Saxophone', 'https://www.flaticon.com/free-icon/saxophone_4521280']]
-    }, {
-        url: 'assets/icons/instruments/trumpet.png',
-        text: [['Trumpet', 'https://www.flaticon.com/free-icon/trumpet_3791304']]
-    }, {
-        url: 'assets/icons/instruments/french horn.png',
-        text: [['French Horn', 'https://www.flaticon.com/free-icon/french-horn_1913321']]
-    }, {
-        url: 'assets/icons/instruments/trombone.png',
-        text: [['Trombone', 'https://www.flaticon.com/free-icon/trombone_8332429']]
-    }, {
-        url: 'assets/icons/instruments/tuba.png',
-        text: [['Tuba','https://www.flaticon.com/free-icon/tuba_3100434']]
-    }, {
-        url: 'assets/icons/instruments/violin.png',
-        text: [['Violin', 'https://www.flaticon.com/free-icon/violin_836803']]
-    }, {
-        url: 'assets/icons/instruments/cello.png',
-        text: [['Cello', 'https://www.flaticon.com/free-icon/cello_836813']]
-    }, {
-        url: 'assets/icons/instruments/acoustic guitar.png',
-        text: [['Acoustic Guitar', 'https://www.flaticon.com/free-icon/guitar_836801']]
-    }, {
-        url: 'assets/icons/instruments/ukulele.png',
-        text: [['Ukulele', 'https://www.flaticon.com/free-icon/ukelele_2990504']]
-    }, {
-        url: 'assets/icons/instruments/electric guitar.png',
-        text: [['Electric Guitar', 'https://www.flaticon.com/free-icon/electric-guitar_836809']]
-    }, {
-        url: 'assets/icons/instruments/bass guitar.png',
-        text: [['Bass Guitar', 'https://www.flaticon.com/free-icon/bass_836835']]
-    }, {
-        url: 'assets/icons/instruments/piano.png',
-        text: [['Piano', 'https://www.flaticon.com/free-icon/piano_836806']]
-    }, {
-        url: 'assets/icons/instruments/voice.png',
-        text: [['Voice', 'https://www.flaticon.com/free-icon/microphone_2168463']]
-    }, {
-        url: 'assets/icons/instruments/drums.png',
-        text: [['Drums', 'https://www.flaticon.com/free-icon/drums_836750']]
-    }, {
-        url: 'assets/icons/instruments/bagpipes.png',
-        text: [['Bagpipes', 'https://www.flaticon.com/free-icon/bagpipes_7468049']]
-    }, {
-        url: 'assets/icons/instruments/accordion.png',
-        text: [['Accordion', 'https://www.flaticon.com/free-icon/accordion_2542871']]
-    }, {
-        url: 'assets/icons/instruments/theremin.png',
-        text: [['Theremin', 'https://www.flaticon.com/free-icon/theremin_3100503']]
-    }, {
-        url: 'assets/icons/instruments/recorder.png',
-        text: [['Recorder', 'https://www.flaticon.com/free-icon/recorder_4311261']]
-    }, {
-        url: 'assets/icons/instruments/harmonica.png',
-        text: [['Harmonica', 'https://www.flaticon.com/free-icon/harmonica_5030739']]
-    }, {
-        url: 'assets/icons/sum.svg',
-        text: [['Sum', 'https://www.flaticon.com/free-icon/sigma_10480273']],
-        invert: true
-    }, {
-        url: 'assets/icons/image-filled.svg',
-        text: [['Image Filled', 'https://www.flaticon.com/free-icon/image_6489396']],
-        invert: true
-    }, {
-        url: 'assets/icons/video.svg',
-        text: [['Video', 'https://www.flaticon.com/free-icon/video-player_6933179']],
-        invert: true
-    }, {
-        url: 'assets/icons/sparkle.svg',
-        text: [['Sparkle', 'https://www.flaticon.com/free-icon/sparkling_15893294']]
-    }, {
-        url: 'assets/icons/sparkles.svg',
-        text: [['Sparkles', 'https://www.flaticon.com/free-icon/star_7334113']]
-    }, {
-        url: 'assets/icons/setlist.svg',
-        text: [['Setlist', 'https://www.flaticon.com/free-icon/playlist_11305499']],
-        invert: true
-    }, {
-        url: 'assets/icons/users.svg',
-        text: [['Users', 'https://www.flaticon.com/free-icon/group_3394785']],
-        invert: true
-    }, {
-        url: 'assets/icons/swap.svg',
-        text: [['Swap', 'https://www.flaticon.com/free-icon/swap_7133490']],
-        invert: true
-    }, {
-        url: 'assets/icons/edit.svg',
-        text: [['Edit', 'https://www.flaticon.com/free-icon/edit_5996991']],
-        invert: true
-    }, {
-        url: 'assets/icons/pin-filled.svg',
-        text: [['Pin Filled', 'https://www.flaticon.com/free-icon/price-tag_721550']],
-        invert: true
-    }, {
-        url: 'assets/icons/faq.svg',
-        text: [['FAQ', 'https://www.flaticon.com/free-icon/faq_10042848']],
-        invert: true
-    }, {
-        url: 'assets/icons/import.svg',
-        text: [['Import', 'https://www.flaticon.com/free-icon/download_724933']],
-        invert: true
-    }, {
-        url: 'assets/icons/export.svg',
-        text: [['Export', 'https://www.flaticon.com/free-icon/upload_725008']],
-        invert: true
-    }, {
-        url: 'assets/images/trombone.svg',
-        text: [['Trombone', 'https://www.greenhoe.com/products/bass-trombones/gc5-series/']],
-        invert: true
-    }, {
-        url: 'assets/images/asanoha.webp',
-        text: [['Asanoha', 'https://www.toptal.com/designers/subtlepatterns/japanese-asanoha/']]
-    }, {
-        url: 'assets/images/violin.svg',
-        text: [['Violin', 'https://www.theinstrumentplace.com/parts-of-the-violin']],
-        invert: true
-    }, {
-        url: 'assets/images/cherry-blossom.svg',
-        text: [['Cherry Blossom', 'https://unsplash.com/illustrations/cherry-blossoms-on-a-dark-branch-with-red-sun-sAzDNMQRe9E']]
-    }, {
-        url: 'assets/icons/logos/lmc.webp',
-        text: ['LMC Logo', '(amako)']
-    }, {
-        url: 'assets/images/keychain-1.webp',
-        text: ['Keychain', '(neutrino._.)']
-    }, {
-        url: 'assets/images/image-1.webp',
-        text: ['Art', '(seoby)']
-    }];
-    // assets - remember to add lmc logo + art
     const assetList = cssGetId('resources-asset-list');
     const fragment = document.createDocumentFragment();
-    for (const asset of assets) {
+    for (const asset of ASSETS) {
         fragment.appendChild(construct({
             element: 'li',
             children: [{
                 element: 'img',
-                attributes: { src: asset.url },
+                attributes: {
+                    src: asset.url,
+                    decoding: 'async',
+                    loading: 'lazy'
+                },
                 style: asset.invert ? { filter: 'invert(1)' } : {}
             }, ...asset.text.map(x => {
                 if (Array.isArray(x)) {
@@ -2473,4 +2200,260 @@ function injectResources() {
         }))
     }
     assetList.appendChild(fragment);
+}
+
+const ASSETS = [{
+    url: 'assets/icons/megaphone.svg',
+    text: [['Megaphone', 'https://www.flaticon.com/free-icon/announcement_2417835']],
+}, {
+    url: 'assets/icons/alert-triangle.svg',
+    text: [['Alert Triangle', 'https://www.flaticon.com/free-icon/attention_4440466']]
+}, {
+    url: 'assets/icons/music-notes.svg',
+    text: [['Music Notes', 'https://www.flaticon.com/free-icon/music-note_651717']],
+    invert: true
+}, {
+    url: 'assets/icons/music-staff.svg',
+    text: [['Music Staff', 'https://www.flaticon.com/free-icon/treble-clef_5376625']],
+    invert: true
+}, {
+    url: 'assets/icons/globe.svg',
+    text: [['Globe', 'https://www.svgrepo.com/svg/399420/globe-alt-o']]
+}, {
+    url: 'assets/icons/events.svg',
+    text: [['Events', 'https://www.flaticon.com/free-icon/event_839888'],
+            ['Music Note', 'https://www.flaticon.com/free-icon/music-player_500148']],
+    invert: true
+}, {
+    url: 'assets/icons/events-filled.svg',
+    text: [['Filled Events', 'https://www.flaticon.com/free-icon/event_6904072']],
+    invert: true
+}, {
+    url: 'assets/icons/get involved.svg',
+    text: [['Get Involved', 'https://www.flaticon.com/free-icon/bubble-chat_2076218']],
+    invert: true
+}, {
+    url: 'assets/icons/home.svg',
+    text: [['Home', 'https://www.flaticon.com/free-icon/home_1946436']],
+    invert: true
+}, {
+    url: 'assets/icons/music-note.svg',
+    text: [['Music Note', 'https://www.flaticon.com/free-icon/musical-note_727248']],
+    invert: true
+}, {
+    url: 'assets/icons/image.svg',
+    text: [['Image', 'https://www.flaticon.com/free-icon/image_6499527']],
+    invert: true
+}, {
+    url: 'assets/icons/time.svg',
+    text: [['Time', 'https://www.flaticon.com/free-icon/time_3240587']],
+}, {
+    url: 'assets/icons/location.svg',
+    text: [['Location', 'https://www.flaticon.com/free-icon/location_535188']]
+}, {
+    url: 'assets/icons/ticket.svg',
+    text: [['Ticket', 'https://www.flaticon.com/free-icon/ticket_7411135']]
+}, {
+    url: 'assets/icons/pin.svg',
+    text: [['Pin', 'https://www.flaticon.com/free-icon/thumbtacks_2672101']],
+    invert: true
+}, {
+    url: 'assets/icons/options.svg',
+    text: [['Options', 'https://www.flaticon.com/free-icon/settings_992668']],
+    invert: true
+}, {
+    url: 'assets/icons/signup.svg',
+    text: [['Signup', 'https://www.flaticon.com/free-icon/constitution_5622624']],
+    invert: true
+}, {
+    url: 'assets/icons/instruments/piccolo.png',
+    text: [['Piccolo', 'https://www.flaticon.com/free-icon/piccolo_11622264']]
+}, {
+    url: 'assets/icons/instruments/flute.png',
+    text: [['Flute', 'https://www.flaticon.com/free-icon/flute_1913298']]
+}, {
+    url: 'assets/icons/instruments/clarinet.png',
+    text: [['Clarinet', 'https://www.flaticon.com/free-icon/clarinet_8332438']]
+}, {
+    url: 'assets/icons/instruments/oboe.png',
+    text: [['Oboe', 'https://www.flaticon.com/free-icon/oboe_8332508']]
+}, {
+    url: 'assets/icons/instruments/bassoon.png',
+    text: [['Bassoon', 'https://www.flaticon.com/free-icon/bassoon_1913373']]
+}, {
+    url: 'assets/icons/instruments/saxophone.png',
+    text: [['Saxophone', 'https://www.flaticon.com/free-icon/saxophone_4521280']]
+}, {
+    url: 'assets/icons/instruments/trumpet.png',
+    text: [['Trumpet', 'https://www.flaticon.com/free-icon/trumpet_3791304']]
+}, {
+    url: 'assets/icons/instruments/french horn.png',
+    text: [['French Horn', 'https://www.flaticon.com/free-icon/french-horn_1913321']]
+}, {
+    url: 'assets/icons/instruments/trombone.png',
+    text: [['Trombone', 'https://www.flaticon.com/free-icon/trombone_8332429']]
+}, {
+    url: 'assets/icons/instruments/tuba.png',
+    text: [['Tuba','https://www.flaticon.com/free-icon/tuba_3100434']]
+}, {
+    url: 'assets/icons/instruments/violin.png',
+    text: [['Violin', 'https://www.flaticon.com/free-icon/violin_836803']]
+}, {
+    url: 'assets/icons/instruments/cello.png',
+    text: [['Cello', 'https://www.flaticon.com/free-icon/cello_836813']]
+}, {
+    url: 'assets/icons/instruments/acoustic guitar.png',
+    text: [['Acoustic Guitar', 'https://www.flaticon.com/free-icon/guitar_836801']]
+}, {
+    url: 'assets/icons/instruments/ukulele.png',
+    text: [['Ukulele', 'https://www.flaticon.com/free-icon/ukelele_2990504']]
+}, {
+    url: 'assets/icons/instruments/electric guitar.png',
+    text: [['Electric Guitar', 'https://www.flaticon.com/free-icon/electric-guitar_836809']]
+}, {
+    url: 'assets/icons/instruments/bass guitar.png',
+    text: [['Bass Guitar', 'https://www.flaticon.com/free-icon/bass_836835']]
+}, {
+    url: 'assets/icons/instruments/piano.png',
+    text: [['Piano', 'https://www.flaticon.com/free-icon/piano_836806']]
+}, {
+    url: 'assets/icons/instruments/voice.png',
+    text: [['Voice', 'https://www.flaticon.com/free-icon/microphone_2168463']]
+}, {
+    url: 'assets/icons/instruments/drums.png',
+    text: [['Drums', 'https://www.flaticon.com/free-icon/drums_836750']]
+}, {
+    url: 'assets/icons/instruments/bagpipes.png',
+    text: [['Bagpipes', 'https://www.flaticon.com/free-icon/bagpipes_7468049']]
+}, {
+    url: 'assets/icons/instruments/accordion.png',
+    text: [['Accordion', 'https://www.flaticon.com/free-icon/accordion_2542871']]
+}, {
+    url: 'assets/icons/instruments/theremin.png',
+    text: [['Theremin', 'https://www.flaticon.com/free-icon/theremin_3100503']]
+}, {
+    url: 'assets/icons/instruments/recorder.png',
+    text: [['Recorder', 'https://www.flaticon.com/free-icon/recorder_4311261']]
+}, {
+    url: 'assets/icons/instruments/harmonica.png',
+    text: [['Harmonica', 'https://www.flaticon.com/free-icon/harmonica_5030739']]
+}, {
+    url: 'assets/icons/sum.svg',
+    text: [['Sum', 'https://www.flaticon.com/free-icon/sigma_10480273']],
+    invert: true
+}, {
+    url: 'assets/icons/image-filled.svg',
+    text: [['Image Filled', 'https://www.flaticon.com/free-icon/image_6489396']],
+    invert: true
+}, {
+    url: 'assets/icons/video.svg',
+    text: [['Video', 'https://www.flaticon.com/free-icon/video-player_6933179']],
+    invert: true
+}, {
+    url: 'assets/icons/sparkle.svg',
+    text: [['Sparkle', 'https://www.flaticon.com/free-icon/sparkling_15893294']]
+}, {
+    url: 'assets/icons/sparkles.svg',
+    text: [['Sparkles', 'https://www.flaticon.com/free-icon/star_7334113']]
+}, {
+    url: 'assets/icons/setlist.svg',
+    text: [['Setlist', 'https://www.flaticon.com/free-icon/playlist_11305499']],
+    invert: true
+}, {
+    url: 'assets/icons/users.svg',
+    text: [['Users', 'https://www.flaticon.com/free-icon/group_3394785']],
+    invert: true
+}, {
+    url: 'assets/icons/swap.svg',
+    text: [['Swap', 'https://www.flaticon.com/free-icon/swap_7133490']],
+    invert: true
+}, {
+    url: 'assets/icons/edit.svg',
+    text: [['Edit', 'https://www.flaticon.com/free-icon/edit_5996991']],
+    invert: true
+}, {
+    url: 'assets/icons/tag.svg',
+    text: [['Tag', 'https://www.flaticon.com/free-icon/price-tag_721550']],
+    invert: true
+}, {
+    url: 'assets/icons/faq.svg',
+    text: [['FAQ', 'https://www.flaticon.com/free-icon/faq_10042848']],
+    invert: true
+}, {
+    url: 'assets/icons/import.svg',
+    text: [['Import', 'https://www.flaticon.com/free-icon/download_724933']],
+    invert: true
+}, {
+    url: 'assets/icons/export.svg',
+    text: [['Export', 'https://www.flaticon.com/free-icon/upload_725008']],
+    invert: true
+}, {
+    url: 'assets/images/trombone.svg',
+    text: [['Trombone', 'https://www.greenhoe.com/products/bass-trombones/gc5-series/']],
+    invert: true
+}, {
+    url: 'assets/images/asanoha.webp',
+    text: [['Asanoha', 'https://www.toptal.com/designers/subtlepatterns/japanese-asanoha/']]
+}, {
+    url: 'assets/images/violin.svg',
+    text: [['Violin', 'https://www.theinstrumentplace.com/parts-of-the-violin']],
+    invert: true
+}, {
+    url: 'assets/images/cherry-blossom.svg',
+    text: [['Cherry Blossom', 'https://unsplash.com/illustrations/cherry-blossoms-on-a-dark-branch-with-red-sun-sAzDNMQRe9E']]
+}, {
+    url: 'assets/icons/logos/lmc.webp',
+    text: ['LMC Logo', '(amako)']
+}, {
+    url: 'assets/images/keychain-1.webp',
+    text: ['Keychain', '(neutrino._.)']
+}, {
+    url: 'assets/images/image-1.webp',
+    text: ['Art', '(seoby)']
+}, {
+    url: 'assets/icons/embed.svg',
+    text: [['Link', 'https://www.flaticon.com/free-icon/external-link_7268615']],
+    invert: true,
+}, {
+    url: 'assets/icons/group.svg',
+    text: [['Group', 'https://www.flaticon.com/free-icon/group_3085481']],
+    invert: true
+}, {
+    url: 'assets/icons/hide.svg',
+    text: [['Hide', 'https://www.flaticon.com/free-icon/invisible_565655']],
+    invert: true
+}, {
+    url: 'assets/icons/show.svg',
+    text: [['Show', 'https://www.flaticon.com/free-icon/visibility_565654']],
+    invert: true
+}, {
+    url: 'assets/icons/resources.svg',
+    text: [['Resources', 'https://www.flaticon.com/free-icon/square_10412636']],
+    invert: true
+}].sort((a, b) => a.url.localeCompare(b.url));
+
+
+/*********************************************************************
+Gallery
+*********************************************************************/
+function injectGallery() {
+    const container = cssGetId('gallery-container');
+    const fragment = document.createDocumentFragment();
+    for (const img of GALLERY) {
+        fragment.appendChild(construct({
+            element: 'li',
+            children: [{
+                element: 'img',
+                attributes: {
+                    src: img.link,
+                    decoding: 'async',
+                    loading: 'lazy'
+                }
+            }, img.caption ? {
+                element: 'p',
+                innerHTML: img.caption
+            } : undefined]
+        }));
+    }
+    container.appendChild(fragment);
 }

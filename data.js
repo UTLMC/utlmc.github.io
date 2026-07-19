@@ -6790,36 +6790,21 @@ const FAQ = [
 
 const CAROUSEL = [
     {
-        url: 'assets/images/carousel 2025-04.webp',
-        caption: 'End of Winter <br> Concert <b>2025/04</b>',
-        yLims: [300, 1300],
-        captionXPosition: '60%',
-        captionRight: true,
-        captionTopOnMobile: true,
-        width: 3171,
-        height: 1524
+        url: 'assets/images/carousel/carousel 2025-04.webp',
+        caption: 'End of Winter Concert <b>2025/04</b>',
+        anchor: [0.52, 0.6],
     },
     {
-        url: 'assets/images/carousel 2026-04.webp',
-        caption: 'Tunes & Treats <br> <b>2026/04</b>',
-        yLims: [250, 1150],
-        captionXPosition: '70%',
-        captionRight: false,
-        captionTopOnMobile: true,
-        width: 2400,
-        height: 1350
+        url: 'assets/images/carousel/carousel 2026-04.webp',
+        caption: 'Tunes & Treats <b>2026/04</b>',
+        anchor: [0.52, 0.5],
     },
     {
-        url: 'assets/images/carousel 2025-01.webp',
-        caption: 'End of Fall <br> Concert <b>2025/01</b>',
-        yLims: [400, 1300],
-        captionXPosition: '40%',
-        captionRight: true,
-        captionTopOnMobile: true,
-        width: 2520,
-        height: 1418
+        url: 'assets/images/carousel/carousel 2025-01.webp',
+        caption: 'End of Fall Concert <b>2025/01</b>',
+        anchor: [0.6, 0.7],
     },
-];
+].map((x, i) => ({...x, id: i}));
 
 const LINKS = {
     formUTSAMA: 'https://docs.google.com/forms/d/e/1FAIpQLSfWb-du-EgTdqi19aOW4tSGwe0i6YVbJp_AzfeVhxrHfowsPw/viewform',
@@ -6903,7 +6888,7 @@ const RESOURCES = [{
 }, {
     type: 'Music Theory',
     name: 'Cadence Hira',
-    description: 'https://www.youtube.com/@CadenceHira/videos',
+    description: 'Music theory concepts explained through video game music',
     link: 'https://www.youtube.com/@CadenceHira/videos'
 }, {
     type: 'Music Theory',
@@ -6935,4 +6920,27 @@ const RESOURCES = [{
     name: 'Synthet',
     description: 'Short videos on music production in digital audio workstations',
     link: 'https://www.youtube.com/@synthet7/videos'
+}].map((x, i) => ({...x, id: i}));
+
+const EXEC_PICTURES = {
+    1: 'adsdsadasda',
+    2: 'asdasd',
+    3: 'asda'
+};
+
+const GALLERY = [{
+    link: 'assets/images/carousel/carousel 2025-01.webp',
+    caption: 'Test 1'
+}, {
+    link: 'assets/images/carousel/carousel 2025-04.webp',
+    caption: 'Test 2'
+}, {
+    link: 'assets/images/carousel/carousel 2026-04.webp',
+    caption: 'Test 3'
+}, {
+    link: 'assets/images/carousel/carousel 2025-01.webp',
+    caption: 'Test 4'
+}, {
+    link: 'assets/images/carousel/carousel 2025-04.webp',
+    caption: 'Test 5'
 }].map((x, i) => ({...x, id: i}));
