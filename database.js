@@ -921,6 +921,12 @@ document.addEventListener('mousemove', onMouseMove);
 document.addEventListener('mousedown', () => onMouseDown(true));
 document.addEventListener('mouseup', () => onMouseDown(false));
 
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+        closeModals();
+    }
+});
+
 function setHelperText(text) {
     const helperText = cssGetId('helper-text');
     if (text) {
