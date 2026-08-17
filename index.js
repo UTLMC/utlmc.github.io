@@ -360,7 +360,7 @@ function videoStateChangeHandler(state) {
     // Started to play => 1
     if (data === 1) {
         const { setlist } = EVENTS[TABLE_EVENTS.active];
-        const timestamps = setlist.filter(x => Array.isArray(x)).map(x => x[1]);
+        const timestamps = setlist.filter(x => x.url).map(x => x.url);
         
         // Playlists
         if (typeof timestamps[0] !== 'number') {
@@ -643,30 +643,38 @@ function injectCarousel() {
 /*********************************************************************
 Home tab - current event promotion
 *********************************************************************/
-function injectHomeConcert(now) {
+function injectHomeCurrentEvent() {
+    const now = new Date();
+
+    const hideAfter = CURRENT_EVENT.hideAfter && now > parseDate(CURRENT_EVENT.hideAfter);
+    const hideBefore = CURRENT_EVENT.hideBefore && now < parseDate(CURRENT_EVENT.hideBefore);
+    if (typeof CURRENT_EVENT.id !== 'number' || hideAfter || hideBefore) {
+        return cssSetId('section-home-event', { display: 'none' });
+    }
+
     const {
         id,
         rvsp,
-        location,
+        setlistLink,
         tickets,
-        preConcertDescription,
-        postConcertDescription,
+        preEventDescription,
+        postEventDescription,
     } = CURRENT_EVENT;
 
-    const setlist = 'setlist.html';
-    const { name: title, start, end, video, poster } = EVENTS[id];
+    const { name: title, start, end, location, address, video, poster, type, setlist } = EVENTS[id];
+    const href = setlist?.length > 0 ? setlistLink : undefined;
     const dateStart = parseDate(start);
     const dateEnd = parseDate(end);
 
     cssGetFirst('#home-event-poster img').src = poster;
     cssGetFirst('#home-event-text hgroup h3').innerText = title;
     cssGetId('home-event-date').innerText = parseFromTo(dateStart, dateEnd);
-    cssGetId('home-event-location').innerText = location;
+    cssGetId('home-event-location').innerText = `${address} (${location})`;
     cssGetId('home-event-tickets').innerText = tickets;
 
-    const text = now > dateEnd ? postConcertDescription : preConcertDescription;
-    const emptyText = text.length === 0 || (text.length === 1 && !text[0]);
-    const paragraphs = emptyText ? [] : text.map(x => construct({ element: 'p', innerText: x }));
+    const text = now > dateEnd ? postEventDescription : preEventDescription;
+    const isTextEmpty = text.length === 0 || (text.length === 1 && !text[0]);
+    const paragraphs = isTextEmpty ? [] : text.map(x => construct({ element: 'p', innerText: x }));
 
     // Render call-to-action buttons
     const buttons = construct({ element: 'div', id: 'home-event-buttons' });
@@ -678,12 +686,12 @@ function injectHomeConcert(now) {
             attributes: { href: rvsp, target: '_blank' }
         }));
     }
-    if (setlist) {
+    if (href) {
         buttons.appendChild(construct({
             element: 'a',
             classes: ['home-event-button'],
             innerText: 'See the setlist',
-            attributes: { href: setlist, target: '_blank' }
+            attributes: { href, target: '_blank' }
         }));
     }
     if (video) {
@@ -698,16 +706,6 @@ function injectHomeConcert(now) {
     const container = cssGetId('home-event-text');
     paragraphs.forEach(x => container.appendChild(x));
     container.appendChild(buttons);
-}
-function injectHomeCurrentEvent() {
-    const now = new Date();
-
-    // Only concerts are supported right now
-    if (typeof CURRENT_EVENT.id !== 'number' || now > parseDate(CURRENT_EVENT.hideAfter) || now < parseDate(CURRENT_EVENT.hideBefore)) {
-        cssSetId('section-home-event', { display: 'none' });
-    } else {
-        injectHomeConcert(now);
-    }
 }
 
 
@@ -1700,7 +1698,7 @@ function initEventSidebarHeightAdjuster() {
     const gap = parseInt(bodyStyle.gap, 10);
     const padding = parseInt(bodyStyle.padding, 10);
 
-    const observer = new ResizeObserver(entries => {
+    const observer = new ResizeObserver(() => {
         if (window.innerWidth < 900)
             return cssSetElement(container, { height: `` });
         
@@ -1908,14 +1906,6 @@ function constructPerformersTab(performances) {
     }))
 }
 
-function getPerformers(setlist) {
-    return setlist.map(info => {
-        // Filter out timestamps
-        const id = Array.isArray(info) ? info[0] : info;
-        return MUSIC[id].performances.map(x => x.performers)
-    }).flat();
-}
-
 function constructVideoChapters(data) {
     const fragment = document.createDocumentFragment();
     data.forEach(([songId, onclick, i]) => {
@@ -1931,8 +1921,8 @@ function constructVideoChapters(data) {
 function constructVideoTimestamps(setlist) {
     const concertVideoChapters = cssGetId('concert-video-chapters');
     const timestamps = setlist
-        .filter(Array.isArray)
-        .map(([songId, seconds], i) => [songId, `goToVideoChapter(this, ${seconds})`, i + 1]);
+        .filter(x => x.seconds)
+        .map(({ id, seconds }, i) => [id, `goToVideoChapter(this, ${seconds})`, i + 1]);
 
     if (timestamps?.length === 0) {
         return cssSetElement(concertVideoChapters, { display: 'none' });
@@ -1944,8 +1934,8 @@ function constructVideoTimestamps(setlist) {
 function loadYoutubePlaylist(setlist) {
     const concertVideoChapters = cssGetId('concert-video-chapters');
     const videos = setlist
-        .filter(Array.isArray)
-        .map(([songId, url], i) => [songId, `loadYoutubeVideo('${url}'); openVideoChapter(this)`, i + 1]);
+        .filter(x => x.url)
+        .map(({ id, url }, i) => [id, `loadYoutubeVideo('${url}'); openVideoChapter(this)`, i + 1]);
     
     if (videos?.length === 0) {
         return cssSetElement(concertVideoChapters, { display: 'none' });
@@ -1967,19 +1957,21 @@ function injectEventBodyConcert(id, setlist, video, gallery, poster) {
     // Setlist inner tab
     let fragment = document.createDocumentFragment();
     let hasSetlistInfo = false;
-    setlist.forEach((info, i) => {
-        let setlistId = info;
-        if (Array.isArray(info)) {
+    const songs = [];
+    for (const { id: songId, url, seconds } of setlist) {
+        if (url !== undefined || seconds !== undefined) {
             hasSetlistInfo = true;
-            setlistId = info[0];
         }
-        fragment.appendChild(constructSetlistTabSong(MUSIC[setlistId], i, id));
-    })
+        if (songId >= 0) {
+            fragment.appendChild(constructSetlistTabSong(MUSIC[songId], songs.length, id));
+            songs.push(songId);
+        }
+    }
     cssGetId('concert-items').replaceChildren(fragment);
 
     // Performers inner tab
     fragment = document.createDocumentFragment();
-    const performers = getPerformers(setlist);
+    const performers = songs.map(id => MUSIC[id].performances.map(x => x.performers)).flat();
     constructPerformersTab(performers).forEach(x => {
         fragment.appendChild(x);
     });
@@ -2045,7 +2037,7 @@ function parseEventLink(link) {
 }
 
 function injectEventBody() {
-    const { id, name, type, location, description, start, end, setlist, video, poster, link } = EVENTS[TABLE_EVENTS.active];
+    const { id, name, type, location, address, description, start, end, setlist, video, poster, link } = EVENTS[TABLE_EVENTS.active];
 
     const [startDate] = start.split('|');
     const [endDate] = end.split('|');
@@ -2067,7 +2059,9 @@ function injectEventBody() {
 
     // Event title
     cssGetFirst('#event-title h3').innerHTML = `${name} <span>// ${startDate}</span>`;
-    cssGetFirst('#event-title p').innerHTML = `${fromTo} @ ${location || '???'} <span class="event-type-tag-${type.toLowerCase()}">${type}</span>`;
+    const tagPart = `<span class="event-type-tag event-type-tag-${type.toLowerCase()}">${type}</span>`
+    const addressPart = address ? ` <span class="event-address">(${address})</span>` : '';
+    cssGetFirst('#event-title p').innerHTML = `${fromTo} @ ${location || '???'}${addressPart} ${tagPart}`;
     
     // Event description
     const desc = cssGetId('event-description');
@@ -2115,7 +2109,12 @@ Rehearsals
 function injectLinks() {
     cssGetId('new-member-form-button').setAttribute('href', LINKS.formNewMember);
     cssGetId('rehearsal-button-utsama').setAttribute('href', LINKS.formUTSAMA);
-    cssGetId('new-member-form-button').setAttribute('href', LINKS.linkPlaylist);
+    
+    if (LINKS.linkPlaylist) {
+        cssGetId('rehearsal-button-playlist').setAttribute('href', LINKS.linkPlaylist);
+    } else {
+        cssSetId('rehearsal-button-playlist', { display: 'none' });
+    }
 
     cssGetId('rehearsal-drive-embed').src = `${LINKS.embedSheetMusic}#list`;
     cssGetId('rehearsal-location-embed').src = LINKS.embedLargeEnsembleLocation;

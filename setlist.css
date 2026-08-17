@@ -40,6 +40,7 @@ p {
 #setlist {
     background-image: linear-gradient(to bottom in oklab, rgb(59, 51, 73), rgb(45, 75, 77), rgb(17, 34, 31) calc(100% - 100px), rgb(17, 34, 31));
     padding-bottom: 100px;
+    overflow: clip;
 }
 #credits {
     background-color: rgb(17, 34, 31);
@@ -52,8 +53,6 @@ Title banner
 #intro-title-banner {
     background-color: rgba(141, 135, 228, 0.5);
     padding: 15px;
-}
-#intro-title-container {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -65,23 +64,25 @@ Title banner
     display: flex;
     flex-direction: row;
     position: relative;
+    justify-content: center;
 }
-#intro-title h1 {
+#title {
     font-size: 110px;
-    line-height: 80px;
+    line-height: 0.8;
     font-variant: small-caps;
     font-size-adjust: 0.4;
     margin: 0 15px;
-    position: relative;
-    z-index: 0;
+    text-align: center;
+    text-wrap: balance;
+    text-shadow: 8px 4px 0 rgba(255, 70, 132, 0.9);
 }
-#intro-title h1:after {
-    content: 'Succession';
-    position: absolute;
-    left: -9.2px;
-    z-index: -1;
-    letter-spacing: 1.9px;
-    color: rgba(255, 70, 132, 0.9);
+.title-lowercase {
+    font-size: 90px;
+    color: rgba(255, 70, 132, 0);
+}
+.title-ampersand {
+    font-size: 60px;
+    color: rgba(255, 70, 132, 0);
 }
 
 /* Icons */
@@ -99,41 +100,41 @@ Title banner
     filter: brightness(2) drop-shadow(5px 5px rgba(0, 0, 0, 0.3));
 }
 
-@media screen and (max-width: 600px) {
-    #intro-title-container {
-        transform: scale(0.8);
+.size-1 {
+    #title { font-size: 85px; }
+    .title-lowercase { font-size: 70px; }
+    .title-ampersand { font-size: 50px; }
+    #music-note-1, #music-note-2 { height: 70px; }
+}
+.size-2, .size-3 {
+    #title {
+        font-size: 60px;
+        text-shadow: 6px 3px 0 rgba(255, 70, 132, 0.9);
     }
-    #intro-title-banner {
-        padding: 0;
-    }
+    .title-lowercase { font-size: 50px; }
+    .title-ampersand { font-size: 40px; }
+    #music-note-1, #music-note-2 { height: 50px; }
     #music-note-1 {
-        position: absolute;
-        left: -70px;
-        bottom: -30px;
-        height: 70px;
-        filter: brightness(1.3) drop-shadow(-4px 4px rgba(0, 0, 0, 0.3));
+        filter: brightness(1.3) drop-shadow(-4px -4px rgba(0, 0, 0, 0.3));
     }
     #music-note-2 {
-        position: absolute;
-        right: -70px;
-        top: -40px;
-        height: 70px;
-        filter: brightness(2) drop-shadow(4px -4px rgba(0, 0, 0, 0.3));
+        filter: brightness(2) drop-shadow(4px 4px rgba(0, 0, 0, 0.3));
     }
 }
-@media screen and (max-width: 450px) {
-    #intro-title h1 {
-        font-size: 80px;
+.size-3 {
+    #title { margin: 0; }
+    #intro-title {
+        width: calc(100% - 100px);
     }
+    #music-note-1, #music-note-2 { position: absolute; }
     #music-note-1 {
-        left: -50px;
-        bottom: -20px;
-        height: 60px;
+        right: 100%;
+        bottom: -25px;
     }
     #music-note-2 {
-        right: -40px;
-        top: -30px;
-        height: 60px;
+        left: 100%;
+        top: -35px;
+        margin-left: 0;
     }
 }
 
@@ -177,7 +178,6 @@ Subtitle banner
     right: 0;
     background-position: left;
 }
-
 @media screen and (max-width: 600px) {
     #intro-subtitle h4 {
         font-size: 20px;
@@ -279,35 +279,6 @@ Location + time
 /*******************************
 Divider lines
 *******************************/
-.intro-hr {
-    --line-thickness: 3px;
-    --square-size: 10px;
-    --color: #9b90fd;
-
-    width: 80%;
-    height: var(--line-thickness);
-    background-color: var(--color);
-    border: none;
-    margin: 15px auto;
-    position: relative;
-    overflow: visible;
-}
-.intro-hr:before, .intro-hr:after {
-    content: "";
-    position: absolute;
-    width: var(--square-size);
-    height: var(--square-size);
-    background-color: var(--color);
-    top: 50%;
-    transform: translateY(-50%);
-}
-.intro-hr:before {
-    left: calc(var(--square-size) / -2);
-}
-.intro-hr:after {
-    right: calc(var(--square-size) / -2);
-}
-
 .setlist-hr {
     background-color: rgba(122, 122, 122, 0.5);
     height: 2px;
@@ -332,7 +303,6 @@ Affiliated logos
     padding: 0px 25px;
     margin-top: 32px;
     justify-content: center;
-    flex-wrap: wrap;
 }
 #intro-logos img {
     height: 80px;
@@ -353,7 +323,10 @@ Affiliated logos
 .intro-logo-container:nth-child(2) { background-image: url('assets/icons/paper-cutout-2.svg'); }
 .intro-logo-container:nth-child(3) { background-image: url('assets/icons/paper-cutout-3.svg'); }
 
-@media screen and (max-width: 350px) {
+@media screen and (max-width: 500px) {
+    #intro-logos {
+        gap: 0px 15px;
+    }
     #intro-logos img {
         height: 70px;
     }
@@ -361,10 +334,21 @@ Affiliated logos
         height: 100px;
     }
 }
-@media screen and (max-width: 300px) {
+@media screen and (max-width: 400px) {
+    #intro-logos img {
+        height: 60px;
+    }
+    .intro-logo-container {
+        height: 90px;
+    }
+    #intro-social-media {
+        gap: 10px !important;
+    }
+}
+@media screen and (max-width: 340px) {
     #intro-logos {
-        flex-direction: column;
-        gap: 15px;
+        flex-wrap: wrap;
+        gap: 0 15px;
     }
 }
 
@@ -398,10 +382,12 @@ Social media
 }
 #intro-social-media a:hover {
     filter: saturate(1) invert(0.2) brightness(1.2) drop-shadow(5px 5px rgba(0, 0, 0, 0.5));
+    transform: scale(1.1);
 }
 #intro-social-media a:active {
     filter: saturate(1) invert(0.2) brightness(1.4) drop-shadow(5px 5px 3px rgba(0, 0, 0, 0.7));
     transition: 0s;
+    transform: scale(1.2);
 }
 
 #intro-social-media a:nth-child(1) { background-image: url('assets/icons/paper-cutout-1.svg'); }
@@ -437,6 +423,68 @@ Section titles
 
 
 /*******************************
+Animations
+*******************************/
+.setlist-item.slide-in-left, .setlist-item.slide-in-right, .credits-group.slide-in-bottom {
+    opacity: 1;
+}
+.slide-in-left, .slide-in-right, .slide-in-bottom {
+    animation-duration: 0.3s;
+    animation-fill-mode: none;
+    animation-timing-function: ease-out;
+}
+.slide-in-bottom {
+    animation-duration: 0.5s;
+}
+.slide-in-left { animation-name: slide-in-left; }
+.slide-in-right { animation-name: slide-in-right; }
+.slide-in-bottom { animation-name: slide-in-bottom; }
+@keyframes slide-in-left {
+    0% {
+        opacity: 0;
+        transform: translateX(-100px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+}
+@keyframes slide-in-right {
+    0% {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+}
+@keyframes slide-in-bottom {
+    0% {
+        opacity: 0;
+        transform: translateY(100px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+}
+@keyframes screen-hider {
+    0% {
+        transform: scaleY(1);
+    }
+    50% {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scaleY(0);
+        opacity: 0;
+    }
+}
+
+
+/*******************************
 Setlist item
 *******************************/
 #section-setlist-title {
@@ -447,10 +495,10 @@ Setlist item
     display: flex;
     flex-direction: column;
     gap: 20px;
+    opacity: 0;
 }
 .setlist-intermission p {
     text-align: center;
-    font-family: 'Be Vietnam Pro';
     font-size: 30px;
     letter-spacing: 2px;
     font-weight: 300;
@@ -647,6 +695,7 @@ Credits tables
     padding: 50px;
 }
 .credits-group {
+    opacity: 0;
     break-inside: avoid;
     margin-bottom: 20px;
 }
@@ -697,4 +746,44 @@ Credits tables
     .credits-group span, #credits-execs {
         font-size: 14px;
     }
+}
+
+
+/*******************************
+Screen
+*******************************/
+#screen-hider {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    transform-origin: top;
+    background-color: black;
+    z-index: 1;
+    pointer-events: none;
+    animation-name: screen-hider;
+    animation-duration: 0.6s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-out;
+}
+#screen-404 {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-color: black;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+#screen-404 h1 {
+    font-size: 64px;
+    color: white;
+}
+#screen-404 p {
+    font-size: 20px;
+    color: white;
 }

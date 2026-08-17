@@ -845,7 +845,7 @@ Inputs
     transition: 0s;
     opacity: 0.2;
 }
-.input input {
+.input input, .summary-body input {
     font-family: 'Atkinson Hyperlegible';
     border: none;
     background-color: transparent;
@@ -853,6 +853,9 @@ Inputs
     font-size: 16px;
     flex-grow: 1;
     outline: none;
+}
+.summary-body input::placeholder {
+    color: rgba(0, 0, 0, 0.3);
 }
 .input input::placeholder {
     font-style: italic;
@@ -1075,8 +1078,8 @@ Table customization
 }
 
 #table-music > div > table > tbody > tr:not(.subtable-row) td:nth-child(7),
-#table-events > div > table > tbody > tr:not(.subtable-row) td:nth-child(8),
 #table-events > div > table > tbody > tr:not(.subtable-row) td:nth-child(9),
+#table-events > div > table > tbody > tr:not(.subtable-row) td:nth-child(10),
 #table-resources tbody tr td:last-child {
     white-space: nowrap;
     overflow: clip;
@@ -1084,8 +1087,8 @@ Table customization
     text-align: left;
 }
 #table-music > div > table > tbody > tr:not(.subtable-row) td:nth-child(7):focus,
-#table-events > div > table > tbody > tr:not(.subtable-row) td:nth-child(8):focus,
 #table-events > div > table > tbody > tr:not(.subtable-row) td:nth-child(9):focus,
+#table-events > div > table > tbody > tr:not(.subtable-row) td:nth-child(10):focus,
 #table-resources tbody tr td:last-child:focus {
     white-space: normal;
 }
@@ -1148,8 +1151,9 @@ Table customization
 #table-music tbody tr td:nth-child(6) { max-width: 200px; }
 
 #table-events thead tr th:nth-child(3),
-#table-events thead tr th:nth-child(4) { min-width: 150px; }
-#table-events thead tr th:nth-child(5) { min-width: 260px; }
+#table-events thead tr th:nth-child(4),
+#table-events thead tr th:nth-child(5) { min-width: 150px; }
+#table-events thead tr th:nth-child(6) { min-width: 260px; }
 
 #table-resources tbody tr td:nth-child(2) { width: 170px; }
 
@@ -1424,6 +1428,43 @@ Modal setlist
     width: 100%;
     overflow-y: auto;
 }
+
+.draggable-list tr {
+    position: relative;
+}
+.draggable-list-inserter {
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    height: 7px;
+    width: 100%;
+    cursor: cell;
+    z-index: 1;
+}
+.draggable-list-inserter:after {
+    transition: 0.1s;
+    display: inline-block;
+    position: absolute;
+    width: 100%;
+    bottom: 1px;
+    height: 1px;
+    content: '';
+    border-top: 2px dotted rgba(0, 0, 0, 0);
+}
+.draggable-list-inserter:hover:after {
+    border-top: 2px dotted rgba(0, 0, 0, 0.4);
+}
+.draggable-list-inserter:active:after {
+    border-top: 2px dotted rgba(0, 0, 0, 1);
+    transition: 0s;
+}
+.td-intermission p {
+    width: fit-content;
+    display: inline-block;
+    margin-right: 5px;
+}
+
 .draggable-list tr td:nth-child(1) img {
     pointer-events: none;
 }
@@ -1448,28 +1489,36 @@ Modal setlist
     color: rgb(177, 177, 177);
     text-align: center;
 }
-.draggable-list tr td:nth-child(4),
-.draggable-list tr td:nth-child(5) {
+.draggable-list tr.concert-setlist-intermission td:nth-child(3) {
+    opacity: 0.5;
+    font-style: italic;
+}
+.draggable-list tr td:nth-child(5),
+.draggable-list tr td:nth-child(6) {
     text-align: right;
+}
+.draggable-list tr td:nth-child(4),
+.draggable-list tr td:nth-child(5),
+.draggable-list tr td:nth-child(6) {
     padding: 3px 10px;
 }
-.draggable-list tr td:nth-child(4):empty:before {
-    content: '??:??';
+.draggable-list tr td:nth-child(4):before,
+.draggable-list tr td:nth-child(5):before,
+.draggable-list tr td:nth-child(6):before {
     opacity: 0.3;
     cursor: text;
 }
-.draggable-list tr td:nth-child(5):empty:before {
-    content: 'youtube.com/watch?...';
-    opacity: 0.3;
-    cursor: text;
-}
-.draggable-list tr td:nth-child(5) {
+.draggable-list tr:not(.concert-setlist-intermission) td:nth-child(4):empty:before { content: 'Setlist description...'; }
+.draggable-list tr:not(.concert-setlist-intermission) td:nth-child(5):empty:before { content: '??:??'; }
+.draggable-list tr:not(.concert-setlist-intermission) td:nth-child(6):empty:before { content: 'youtube.com/watch?...'; }
+
+.draggable-list tr td:nth-child(6) {
     max-width: 0px;
     min-width: 190px;
     white-space: nowrap;
     overflow: clip;
 }
-.draggable-list tr td:nth-child(5):focus {
+.draggable-list tr td:nth-child(6):focus {
     white-space: normal;
 }
 .draggable-list td {
@@ -1477,13 +1526,13 @@ Modal setlist
 }
 .draggable-list img {
     height: 12px;
+    vertical-align: -1px;
 }
 .draggable-list-active {
     opacity: 0.5;
 }
 .draggable-list-destination {
-    border-style: inset;
-    border: 1px solid black;
+    box-shadow: inset 0 0 1px 0px rgba(0, 0, 0, 1);
 }
 
 
@@ -1552,4 +1601,51 @@ Image inputs
     height: 12px;
     margin-top: -5px;
     background-color: white;
+}
+
+
+/*********************************************************************
+Dropdown
+*********************************************************************/
+details summary {
+    color: black;
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    cursor: pointer;
+    transition: 0.2s;
+    gap: 2px;
+    align-items: center;
+}
+details summary p {
+    font-weight: normal;
+    text-wrap: balance;
+    font-size: 16px;
+}
+.details-hidden summary {
+    filter: none;
+}
+details:not(.details-hidden) summary {
+    margin-bottom: 5px;
+}
+
+details .summary-body {
+    color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.05);
+    font-size: 16px;
+    padding: 10px;
+    transition: 0.3s;
+    height: auto;
+    width: 100%;
+    overflow: hidden;
+    interpolate-size: allow-keywords;
+    border-radius: 0px 0px 10px 10px;
+    display: grid;
+    grid-template-columns: 120px auto;
+}
+.details-hidden .summary-body {
+    padding: 0px 15px;
+    height: 0px;
+    margin-bottom: 0px;
+    display: none;
 }

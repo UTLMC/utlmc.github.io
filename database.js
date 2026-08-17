@@ -206,12 +206,12 @@ function getEventsApi() {
             if (!event.setlist) {
                 event.setlist = [];
             }
-            event.setlist.push(musicId);
+            event.setlist.push({ id: musicId });
         },
         removeFromSetlist(eventId, musicId) {
             // Scales poorly but we'll never have >100 songs per concert so who cares
             const event = api.get(eventId);
-            event.setlist = event.setlist.filter(x => x !== musicId);
+            event.setlist = event.setlist.filter(x => x.id !== musicId);
         }
     }
     return api;
@@ -516,8 +516,8 @@ function toggleTab(element, forceRefresh) {
             } else {
                 TABLE_OPERATIONS['table-carousel'] = constructCarouselTable();
                 TABLE_OPERATIONS['table-gallery'] = constructGalleryTable();
-                constructExecPictures();
             }
+            constructExecPictures();
         } else if (id !== 'home') {
             throw new Error(id);
         }
@@ -543,7 +543,7 @@ function closeModals(event) {
         element.querySelector('.validation-text')?.style.setProperty('display', '');
     }
     MODAL_INFO = undefined;
-    cssSetElement(cssGetId('modal-container'), { display: 'none' });
+    cssSetId('modal-container', { display: 'none' });
 }
 function openModal(id) {
     const modalContainer = cssGetId('modal-container');
@@ -761,6 +761,9 @@ function isSubrow(tr) {
 
 function updateTableToolbar(isSubrow, tableId) {
     const set = isSubrow ? SUBROW_SELECTION : ROW_SELECTION;
+    if (!set[tableId]) {
+        set[tableId] = new Set();
+    }
     const setSize = set[tableId].size;
     const className = 'table-toolbar-disabled';
 
@@ -1235,18 +1238,32 @@ function onDragOver(event) {
     event.preventDefault();
 }
 function onDrop(element) {
-    if (element === CURR_DRAGGING) {
+    const tr = element.parentElement;
+    if (tr === CURR_DRAGGING) {
         return;
     }
-    const tbody = element.parentElement.parentElement;
+    const tbody = tr.parentElement;
     const rows = [...tbody.children];
     const draggedIndex = rows.indexOf(CURR_DRAGGING);
-    const targetIndex = rows.indexOf(element.parentElement);
+    const targetIndex = rows.indexOf(tr);
 
     if (draggedIndex < targetIndex) {
-        element.parentElement.after(CURR_DRAGGING);
+        tr.after(CURR_DRAGGING);
     } else {
-        element.parentElement.before(CURR_DRAGGING);
+        tr.before(CURR_DRAGGING);
+    }
+
+    // Create/delete intermission adder
+    for (const row of [tr, CURR_DRAGGING, tbody.lastElementChild]) {
+        if (row.sectionRowIndex === tbody.children.length - 1) {
+            if (row.lastElementChild.classList.contains('draggable-list-inserter')) {
+                row.lastElementChild.remove();
+            }
+        } else {
+            if (!row.lastElementChild.classList.contains('draggable-list-inserter')) {
+                row.appendChild(construct(INTERMISSION_ADDER));
+            }
+        }
     }
 }
 
@@ -1542,6 +1559,8 @@ function clickXButton(element) {
             element.parentElement.parentElement.remove();
             syncData(modalDatalist);
         }, 0);
+    } else if (element.closest('#modal-concert-setlist')) {
+        setTimeout(() => { element.closest('tr').remove(); }, 0);
     } else {
         throw new Error('wtf');
     }
@@ -1868,8 +1887,8 @@ function syncCurrentEvent(element) {
         setCurrentEvent({ rvsp: element.innerText });
     } else if (element.id === 'current-event-tickets') {
         setCurrentEvent({ tickets: element.innerText });
-    } else if (element.id === 'current-event-location') {
-        setCurrentEvent({ location: element.innerText });
+    } else if (element.id === 'current-event-setlist') {
+        setCurrentEvent({ setlistLink: element.innerText });
     } else if (cssGetId('current-event-id').contains(element)) {
         const hidden = element.previousElementSibling;
         if (!element.value) {
@@ -1882,11 +1901,11 @@ function syncCurrentEvent(element) {
     }
 }
 function syncCurrentEventDescription(element) {
-    if (cssGetId('preconcert-description').contains(element))
-        return setCurrentEvent({ preConcertDescription: parseInnerHTML(element.innerHTML) });
+    if (cssGetId('pre-event-description').contains(element))
+        return setCurrentEvent({ preEventDescription: parseInnerHTML(element.innerHTML) });
     
-    if (cssGetId('postconcert-description').contains(element))
-        return setCurrentEvent({ postConcertDescription: parseInnerHTML(element.innerHTML) });
+    if (cssGetId('post-event-description').contains(element))
+        return setCurrentEvent({ postEventDescription: parseInnerHTML(element.innerHTML) });
     
     console.warn(element);
     throw new Error("HUH");
@@ -1932,7 +1951,6 @@ function syncEnsembleDescription() {
 }
 function syncExecPictures(element) {
     const id = element.closest('li').id.split('-').at(-1);
-    console.log({ [id]: element.value });
     setExecPictures({ [id]: element.value });
 }
 
@@ -2171,13 +2189,19 @@ function sanityCheckData() {
     const notPerformed = new Set();
     const roles = API.ROLES.getAll();
     for (const member of API.MEMBERS.getAll()) {
+        if (!member.name) {
+            return `Member in row #${member.id} has no name`;
+        }
+        if (member.instruments.length + member.roles.length === 0) {
+            return `Member '${member.name}' (#${member.id}) has no tags. Please add an instrument or role`;
+        }
         if (member.left) {
             const [joinedM, joinedY] = member.joined.split(' ');
             const [leftM, leftY] = member.left.split(' ');
             if (leftY < joinedY) {
                 return `Invalid joined/left year for member '${member.name}' (#${member.id})`;
             } else if (leftY === joinedY && leftM === 'Winter' && joinedM === 'Fall') {
-                return `Invalid joined/left time for member '${member.name}' (#${member.id})`;
+                return `Invalid joined/left season for member '${member.name}' (#${member.id})`;
             }
         }
         if (member.instruments.length === 0 && member.roles.length === 0) {
@@ -2197,8 +2221,12 @@ function sanityCheckData() {
         return `No executives for current school year ${year} have outreach contacts (accepted: ${Array.from(outreachOptions).join(', ')})`;
 
     for (const [id, subId, music, p] of API.MUSIC.iterateSubrows()) {
+        if (!music.name)
+            return `Song in row #${id} has no name`;
+        if (!music.composer)
+            return `Song '${music.name}' (#${id}) has no composer`;
         if (!p.link && !(p.concerts?.length > 0))
-            return `Performance of '${music.name}' (#${id}) in subrow #${subId} has no link or concert`;
+            return `Performance of '${music.name}' (#${id}) in subrow #${subId} has no online recording or concert`;
         if (!p.performers || Object.values(p.performers).length === 0)
             return `No performers for '${music.name}' (#${id}) in subrow #${subId}`;
         if (p.references?.some(x => x.includes('spotify.com')))
@@ -2219,8 +2247,20 @@ function sanityCheckData() {
     }
 
     for (const event of API.EVENTS.getAll()) {
+        if (!event.name)
+            return `Event in row #${id} has no name`;
+        if (!event.location)
+            return `Event '${event.name}' (#${event.id}) has no location`;
+        if (!event.start)
+            return `Event '${event.name}' (#${event.id}) has no start time`;
+        if (!event.end)
+            return `Event '${event.name}' (#${event.id}) has no end time`;
+        if (event.setlistTheme && !event.poster)
+            return `Event '${event.name}' (#${event.id}) has a setlist page, so it needs a poster image`;
+        if (event.setlistTheme && !event.address)
+            return `Event '${event.name}' (#${event.id}) has a setlist page, so it needs an address`;
         if (event.type === 'Concert' && event.setlist.length === 0) {
-            console.warn(`Concert '${event.name}' (#${event.id}) has nothing in its setlist`);
+            console.warn(`Concert '${event.name}' (#${event.id}) has an empty setlist`);
         }
         if (event.poster) {
             const err = validateAsset(event.poster);
@@ -2229,8 +2269,11 @@ function sanityCheckData() {
     }
     
     const event = API.EVENTS.get(getCurrentEvent().id);
-    if (event && !event.poster) {
-        return `Current event '${event.name}' (#${event.id}) has no poster image`;
+    if (event) {
+        if (!event.poster)
+            return `Current event '${event.name}' (#${event.id}) needs a poster image`;
+        if (!event.address)
+            return `Current event '${event.name}' (#${event.id}) needs an address`;
     }
 
     for (const upcoming of API.UPCOMING_EVENTS.getAll()) {
@@ -2246,7 +2289,7 @@ function sanityCheckData() {
             return `Resource in row #${resource.id} has no name`;
         if (!resource.link)
             return `Resource '${resource.name}' (#${resource.id}) has no link`;
-    }    
+    }
 
     const execPictures = getExecPictures();
     for (const id in execPictures) {
@@ -2268,6 +2311,18 @@ function sanityCheckData() {
         const err = validateAsset(img.url);
         if (err) return `Carousel table row #${img.id}: ${err}`;
     }
+
+    const links = getLinks();
+    if (!links.embedLargeEnsembleLocation)
+        return `Missing google maps embed link for large ensemble location`;
+    if (!links.embedSchedule)
+        return `Missing google calendar embed link for schedule`;
+    if (!links.embedSheetMusic)
+        return `Missing google drive embed link for sheet music`;
+    if (!links.formNewMember)
+        return `Missing new member form link`;
+    if (!links.formUTSAMA)
+        return `Missing UTSAMA membership form link`;
 }
 
 function getExportCodeTemplate(data) {
@@ -2322,6 +2377,17 @@ function remapForeignKeyIndices() {
         }
         newMemberIndices[member.id] = i;
     });
+
+    const music = structuredClone(API.MUSIC.getCanonical());
+    const newMusicIndices = { '-1': -1 };
+    music.forEach((song, i) => {
+        newMusicIndices[song.id] = i;
+        for (const p of song.performances) {
+            for (const instrument in p.performers) {
+                instrumentSet.add(Number(instrument));
+            }
+        }
+    });
     
     // Recreate instruments list
     const oldInstruments = API.INSTRUMENTS.getAll();
@@ -2346,9 +2412,7 @@ function remapForeignKeyIndices() {
     });
 
     // Remap member/event indices
-    const newMusicIndices = {};
-    const music = structuredClone(API.MUSIC.getCanonical());
-    music.forEach((song, i) => {
+    for (const song of music) {
         for (const p of song.performances) {
             p.concerts = p.concerts.map(ind => newEventIndices[ind] ?? ind);  // temporary
             p.arrangers = p.arrangers?.map(ind => newMemberIndices[ind] ?? ind);
@@ -2359,12 +2423,11 @@ function remapForeignKeyIndices() {
                 ])
             );
         }
-        newMusicIndices[song.id] = i;
-    });
+    };
 
     // Remap song indices
     for (const event of events) {
-        event.setlist = event.setlist?.map(i => newMusicIndices[i]);
+        event.setlist = event.setlist?.map(x => ({ ...x, id: newMusicIndices[x.id] }));
     }
 
     return { members, music, events, instruments: newInstruments, roles: newRoles };
@@ -2836,10 +2899,18 @@ async function uploadPerformances(element, memberData, discords, musicData, even
                     console.warn(`[${name}] ${concert}`)
                 } else {
                     // <name> [<p1>] or <name> [<p1>, <p2>]
-                    if (p2 !== undefined) {
-                        setlists[concertName][number] = [musicData[name].id, p2];
+                    if (p2 === undefined) {
+                        setlists[concertName][number] = { id: musicData[name].id };
                     } else {
-                        setlists[concertName][number] = musicData[name].id;
+                        if (typeof p2 === 'number') {
+                            setlists[concertName][number] = { id: musicData[name].id, seconds: p2 };
+                        } else {
+                            const url = parseYoutubeVideo(p2);
+                            if (!url) {
+                                throw new Error(p2);
+                            }
+                            setlists[concertName][number] = { id: musicData[name].id, url };
+                        }
                     }
                 }
             } else {
@@ -2847,7 +2918,7 @@ async function uploadPerformances(element, memberData, discords, musicData, even
                 if (!setlists[concertName]) {
                     setlists[concertName] = [];
                 }
-                setlists[concertName].push(musicData[name].id);
+                setlists[concertName].push({ id: musicData[name].id });
             }
             concertNames.push(concertName);
         }
@@ -2874,9 +2945,6 @@ async function uploadPerformances(element, memberData, discords, musicData, even
     musicData = Object.values(musicData);
 
     for (const name in setlists) {
-        if (Array.isArray(setlists[name])) {
-            continue;
-        }
         setlists[name] = Object.values(setlists[name]);
     }
 
@@ -3042,6 +3110,49 @@ const X_BUTTON = {
         onclick: 'clickXButton(this)',
     }
 }
+const INTERMISSION_ADDER = {
+    element: 'div',
+    classes: ['draggable-list-inserter'],
+    attributes: { onclick: `setlistAddIntermission(this)` }
+};
+const INTERMISSION = {
+    element: 'tr',
+    classes: ['concert-setlist-intermission'],
+    children: [{
+        element: 'td',
+        attributes: {
+            draggable: 'true',
+            ondragstart: 'onDragStart(this)',
+            ondragend: 'onDragEnd(this)',
+            ondragenter: 'onDragEnter(this)',
+            ondragleave: 'onDragLeave(this)',
+            ondragover: 'onDragOver(event)',
+            ondrop: 'onDrop(this)'
+        },
+        children: [{
+            element: 'img',
+            attributes: { src: 'assets/icons/draggable.svg' }
+        }]
+    }, {
+        element: 'td',
+    }, {
+        element: 'td',
+        classes: ['td-intermission'],
+        children: [{
+            element: 'p',
+            innerText: 'Intermission'
+        }, X_BUTTON]
+    }, {
+        element: 'td',
+        classes: ['concert-setlist-description'],
+    }, {
+        element: 'td',
+        classes: ['concert-setlist-timestamp'],
+    }, {
+        element: 'td',
+        classes: ['concert-setlist-song-video'],
+    }, INTERMISSION_ADDER]
+};
 function createRowCheckbox(checked) {
     const attributes = { type: 'checkbox' };
     if (checked) {
@@ -3840,7 +3951,7 @@ function constructAnnouncements() {
     const rowSyncer = (id, tds) => {
         API.ANNOUNCEMENTS.set(id, {
             type: tds[0].children[0].src.endsWith('alert-triangle.svg') ? 'alert' : 'announcement',
-            text: tds[2].innerHTML.trim(),
+            text: tds[2].innerHTML,
             from: tds[1].children[0].children[0].value,
             until: tds[1].children[1].children[0].value
         })
@@ -3890,7 +4001,7 @@ function constructUpcomingEvents() {
 function constructCurrentEvent() {
     const currentEvent = getCurrentEvent();
     const event = API.EVENTS.get(currentEvent.id);
-    const { rvsp, tickets, hideBefore, hideAfter, location, preConcertDescription, postConcertDescription } = currentEvent;
+    const { rvsp, tickets, hideBefore, hideAfter, setlistLink, preEventDescription, postEventDescription } = currentEvent;
 
     const container = cssGetId('current-event-id');
     const input = container.children[0].lastElementChild;
@@ -3899,7 +4010,7 @@ function constructCurrentEvent() {
 
     if (hideBefore) { cssGetId('current-event-visible-from').value = hideBefore.replace('|', 'T'); }
     if (hideAfter) { cssGetId('current-event-visible-until').value = hideAfter.replace('|', 'T'); }
-    cssGetId('current-event-location').innerText = location;
+    cssGetId('current-event-setlist').innerText = setlistLink;
     cssGetId('current-event-tickets').innerText = tickets;
     cssGetId('current-event-rvsp').innerText = rvsp;
 }
@@ -4221,6 +4332,10 @@ function constructEventTable() {
             innerText: x.location
         }, {
             element: 'td',
+            attributes: INPUT_ATTRIBUTES.default,
+            innerText: x.address
+        }, {
+            element: 'td',
             children: createInputsStartEnd(x, 'datetime-local', 'start', 'end')
         }, {
             element: 'td',
@@ -4256,10 +4371,11 @@ function constructEventTable() {
                 type: row[0].children[0].value,
                 name: row[1].innerText,
                 location: row[2].innerText,
-                start: row[3].children[0].lastElementChild.value.replace('T', '|'),
-                end: row[3].lastElementChild.lastElementChild.value.replace('T', '|'),
-                poster: row[6].innerText,
-                link: row[7].innerText,
+                address: row[3].innerText,
+                start: row[4].children[0].lastElementChild.value.replace('T', '|'),
+                end: row[4].lastElementChild.lastElementChild.value.replace('T', '|'),
+                poster: row[7].innerText,
+                link: row[8].innerText,
             });
         } else {
             API.EVENTS.set(id, { description: parseInnerHTML(subrows.innerHTML) });
@@ -4514,7 +4630,7 @@ function constructCarouselTable() {
 
         API.CAROUSEL.set(id, {
             url: tds[0].lastElementChild.children[0].lastElementChild.value,
-            caption: tds[1].innerHTML.trim(),
+            caption: tds[1].innerHTML,
             anchor: [(parseInt(left, 10) + 1) / width, (parseInt(top, 10) + 1) / height]
         });
     };
@@ -4539,7 +4655,7 @@ function constructGalleryTable() {
     const rowSyncer = (id, tds) => {
         API.GALLERY.set(id, {
             link: tds[0].lastElementChild.children[0].lastElementChild.value,
-            caption: tds[1].innerHTML.trim()
+            caption: tds[1].innerHTML
         });
     };
     return constructTable('table-gallery', API.GALLERY, template, dataParser, rowSyncer, undefined, 20);
@@ -4703,7 +4819,7 @@ function openModalConcertSetlist(element) {
     openModal('modal-concert-setlist');
 
     const id = getRowId(element);
-    const { name, setlist, video } = API.EVENTS.get(id);
+    const { name, setlist, video, type, setlistTheme, setlistStylizedTitle } = API.EVENTS.get(id);
 
     // Title
     cssGetFirst('#modal-concert-setlist h2 span').innerText = `for ${name}`;
@@ -4712,18 +4828,22 @@ function openModalConcertSetlist(element) {
     const table = cssGetFirst('#concert-setlist tbody');
     const fragment = document.createDocumentFragment();
     let songType = video ? 'timestamps' : undefined;
-    setlist?.forEach((info, i) => {
-        let songId = info;
-        let songInfo;
-        if (Array.isArray(info)) {
-            [songId, songInfo] = info;
-            if (typeof songInfo === 'string') {
-                songType = 'videos';
-            } else {
-                songType = 'timestamps';
-                songInfo = secondsToTimestamp(songInfo);
-            }
+
+    let i = 0;
+    for (let k = 0; k < setlist.length; k++) {
+        let { id: songId, url, seconds, setlistDescription } = setlist[k];
+        if (seconds !== undefined) {
+            songType = 'timestamps';
+        } else if (url) {
+            songType = 'videos';
         }
+        
+        // Intermission
+        if (songId === -1) {
+            fragment.appendChild(construct(INTERMISSION));
+            continue;
+        }
+
         const n = Math.max(2, String(setlist.length).length);
         const index = String(i + 1).padStart(n, '0');
 
@@ -4752,24 +4872,30 @@ function openModalConcertSetlist(element) {
                 }, {
                     element: 'span',
                     classes: ['setlist-id'],
-                    innerText: songId
+                    innerText: String(songId)
                 }]
             }, {
                 element: 'td',
                 innerText: API.MUSIC.get(songId).name
             }, {
                 element: 'td',
+                classes: ['concert-setlist-description'],
+                attributes: INPUT_ATTRIBUTES.defaultRichText,
+                innerText: setlistDescription
+            }, {
+                element: 'td',
                 classes: ['concert-setlist-timestamp'],
                 attributes: INPUT_ATTRIBUTES.timestamp,
-                innerText: songType === 'timestamps' ? songInfo : ''
+                innerText: seconds !== undefined ? secondsToTimestamp(seconds) : ''
             }, {
                 element: 'td',
                 classes: ['concert-setlist-song-video'],
                 attributes: INPUT_ATTRIBUTES.default,
-                innerText: songType === 'videos' ? songInfo : ''
-            }]
-        }))
-    });
+                innerText: url ?? ''
+            }, k < setlist.length - 1 ? INTERMISSION_ADDER : undefined]
+        }));
+        i += 1;
+    };
     table.replaceChildren(fragment);
 
     // Video
@@ -4781,6 +4907,48 @@ function openModalConcertSetlist(element) {
         cssGetId(`concert-setlist-type-no-video`).onclick();
     }
     cssGetFirst('#concert-setlist-video input').value = video || '';
+
+    if (setlistTheme) {
+        cssGetId('setlist-theme').value = setlistTheme;
+    } else {
+        cssGetId('setlist-theme').value = cssGetId('setlist-theme').children[0].innerText;
+    }
+    cssGetId('setlist-stylized-title').value = setlistStylizedTitle ?? '';
+    setShowSetlistPage(!!setlistTheme);
+}
+function setlistAddIntermission(element) {
+    const tr = element.parentElement;
+    const newTr = construct(INTERMISSION);
+    tr.after(newTr);
+    
+    const type = cssGetClass('concert-setlist-type-active')[0].id;
+    if (type !== 'concert-setlist-type-one-video') {
+        cssSetElement(newTr.querySelector('.concert-setlist-timestamp'), { display: 'none' });
+    }
+    if (type !== 'concert-setlist-type-videos') {
+        cssSetElement(newTr.querySelector('.concert-setlist-song-video'), { display: 'none' });
+    }
+    const showSetlistPage = cssGetId('checkbox-show-setlist-page').checked;
+    cssSetElement(newTr.querySelector('.concert-setlist-description'), { display: showSetlistPage ? '' : 'none' });
+}
+function toggleShowSetlistPage(event) {
+    event.preventDefault();
+    setShowSetlistPage(cssGetId('setlist-page-settings').classList.contains('details-hidden'));
+}
+function setShowSetlistPage(show) {
+    const checkbox = cssGetId('checkbox-show-setlist-page');
+    setTimeout(() => checkbox.checked = show, 0);
+
+    for (const td of cssGetAll('#concert-setlist td:nth-child(4)')) {
+        cssSetElement(td, { display: show ? 'table-cell'  : 'none' });
+    }
+
+    const element = cssGetId('setlist-page-settings');
+    if (show) {
+        element.classList.remove('details-hidden');
+    } else {
+        element.classList.add('details-hidden');
+    }
 }
 
 
@@ -4906,7 +5074,7 @@ function syncModalPerformancePerformers() {
 function syncModalConcertSetlist() {
     const mode = cssGetClass('concert-setlist-type-active')[0].id;
     const container = cssGetId('concert-setlist-video');
-    const validation = container.parentElement.lastElementChild.previousElementSibling;
+    const validation = container.parentElement.querySelector('.validation-text');
 
     // Extract video
     let video = mode === 'concert-setlist-type-one-video' ? container.lastElementChild.value : undefined;
@@ -4916,17 +5084,23 @@ function syncModalConcertSetlist() {
             video = url;
         }
     }
+
+    const showSetlistPage = cssGetId('checkbox-show-setlist-page').checked;
     
     // Extract setlist
     const setlist = [];
     for (const tr of cssGetId('concert-setlist').children[0].children) {
+        if (tr.classList.contains('concert-setlist-intermission')) {
+            setlist.push({ id: -1 });
+            continue;
+        }
         const id = Number(tr.children[1].children[1].innerText);
 
-        let info;
+        let url, seconds;
         if (mode === 'concert-setlist-type-one-video') {
-            const value = tr.children[3].innerText;
+            const value = tr.children[4].innerText;
             if (value) {
-                info = timestampToSeconds(value);
+                seconds = timestampToSeconds(value);
                 if (!video) {
                     cssSetElement(validation, { display: 'block' });
                     validation.innerText = 'Video timestamps exist but no video link is given.';
@@ -4934,19 +5108,21 @@ function syncModalConcertSetlist() {
                 }
             }
         } else if (mode === 'concert-setlist-type-videos') {
-            info = tr.children[4].innerText;
-            const url = parseYoutubeVideo(info);
-            if (url) {
-                info = url;
-            }
+            url = parseYoutubeVideo(tr.children[5].innerText);
         }
-        setlist.push(info !== undefined && info !== '' ? [id, info] : id);
+        let setlistDescription;
+        if (showSetlistPage) {
+            setlistDescription = tr.children[3].innerHTML;
+        }
+        setlist.push({ id, url, seconds, setlistDescription });
     }
+    const setlistTheme = cssGetId('setlist-theme').value;
+    const setlistStylizedTitle = cssGetId('setlist-stylized-title').value.trim().replaceAll(/\s+/g, ' ');
     cssSetElement(validation, { display: '' });
     validation.innerText = '';
 
     // Sync data
-    API.EVENTS.set(MODAL_INFO, { video, setlist });
+    API.EVENTS.set(MODAL_INFO, { video, setlist, setlistTheme, setlistStylizedTitle });
 
     closeModals();
 }

@@ -1,11 +1,6 @@
 /*********************************************************************
 Helper Functions
 *********************************************************************/
-function assert(condition, errorMessage) {
-    if (!condition) {
-        throw new Error(errorMessage);
-    }
-}
 function cssGetId(id) {
     const result = document.getElementById(id);
     if (!result)
@@ -28,453 +23,65 @@ function cssGetAll(query) {
     return result;
 }
 function cssSetId(id, properties) {
-    const element = cssGetId(id);
+    cssSetElement(cssGetId(id), properties);
+}
+function cssSetElement(element, properties) {
     for (const key in properties) {
         element.style.setProperty(key, properties[key]);
     }
 }
 
+/**
+ * Convert a date (new Date()) into a formatted HH:MM string
+ * includePeriod controls whether am/pm shows
+ */
+function formatTime(date, includePeriod = true) {
+  let hours = date.getHours();
+  const minutes = date.getMinutes();
+  const period = hours >= 12 ? "pm" : "am";
 
-/*********************************************************************
-Data
-*********************************************************************/
-const SONGS = [
-    {
-        name: 'Fukashigi no Karte',
-        by: 'fox capture plan',
-        from: 'Rascal Does Not Dream of Bunny Girl Senpai',
-        arranger: 'Michael Kim',
-        performers: {
-            'Vocals': ['Crystal Y.', 'Eric H.',  'Celina L.', 'Olivia Yip', 'Zachary Pang'],
-            'Violin': ['J. Mansia', 'Louis Miguel', 'Sean', 'Ze'],
-            'Clarinet': ['Benjamin L.'],
-            'Trombone': ['Efren Wang'],
-            'Accordion': ['Phillip Hsu'],
-            'Piano': ['Johnathan H.'],
-            'Bass': ['Leo'],
-            'Aux. Percussion': ['Sophia'],
-            'Drums': ['Cailyn']
-        }
-    },
-    {
-        name: 'Sugar Song to Bitter Step',
-        by: 'Unison Square Garden',
-        from: 'Kekkai Sensen',
-        performers: {
-            'Vocals': ['Kai (Kaedan Yu)'],
-            'Guitar': ['Han', 'Kae Nguyen'],
-            'Bass': ['Sophia'],
-            'Drums': ['Julian Gale']
-        }
-    },
-    {
-        name: 'In the Pool',
-        by: 'Kensuke Ushio',
-        from: 'Chainsaw Man Movie: Reze Arc',
-        performers: {
-            'Piano': ['Johnathan H.']
-        }
-    },
-    {
-        name: 'Dawn in the Adan',
-        by: 'Ichiko Aoba',
-        group: 'Bows 4 Belts',
-        performers: {
-            'Vocals': ['Fatima Gonsalves'],
-            'Piano': ['Fatima Gonsalves'],
-            'Guitar': ['Sofia Gondim']
-        }
-    },
-    {
-        name: 'Scarz',
-        by: 'Novulent',
-        group: 'Bows 4 Belts',
-        performers: {
-            'Vocals': ['Fatima Gonsalves'],
-            'Guitar': ['Sofia Gondim'],
-            'Bass': ['Fatima Gonsalves'],
-            'Drums': ['Julian Gale']
-        }
-    },
-    {
-        name: 'Shinzo wo Sasageyo!',
-        by: 'Linked Horizon',
-        from: 'Attack on Titan',
-        arranger: 'Rylen Fong & Hana',
-        performers: {
-            'Vocals': ['Kae Nguyen'],
-            'Backing Vocals': ['A. G. Montejo', 'Hana', 'Kai (Kaedan Yu)', 'Sophia'],
-            'Violin': ['Kai (Kaedan Yu)', 'Sean', 'Ze'],
-            'Alto Sax': ['Rylen Fong'],
-            'Trumpet': ['Hayden Hoffort'],
-            'Trombone': ['Mellow'],
-            'Piano': ['Carmen'],
-            'Guitar': ['William'],
-            'Bass': ['Alexis'],
-            'Drums': ['Julian Gale']
-        }
-    },
-    {
-        name: "That's Why I Quit Music",
-        by: 'Yorushika',
-        performers: {
-            'Vocals': ['Celina L.'],
-            'Backing Vocals': ['Carmen'],
-            'Piano': ['Johnathan H.'],
-            'Guitar': ['Emily', 'Inès Alibay'],
-            'Bass': ['Emmett Hartley'],
-            'Drums': ['Kahveh']
-        }
-    },
-    {
-        name: 'Itte',
-        by: 'Yorushika',
-        from: '夏草が邪魔をする (The Summer Grass Gets In The Way)',
-        performers: {
-            'Vocals': ['Celina L.'],
-            'Backing Vocals': ['Olivia Yip'],
-            'Piano': ['Raekye'],
-            'Guitar': ['Emily','Inès Alibay'], 
-            'Bass': ['Emmett Hartley'],
-            'Drums': ['Kai Kang Nie']
-        }
-    },
-    {
-        name: 'Delfino Plaza (French Jazz ver.)',
-        by: 'Koji Kondo',
-        from: 'Super Mario Sunshine',
-        arranger: '8-Bit Big Band',
-        group: 'LMC Jazz Group',
-        description: 'Featuring Kai as violin soloist',
-        performers: {
-            'Violin': ['Kai (Kaedan Yu)'],
-            'Flute': ['Cathy Z.'],
-            'Alto Sax': ['Rylen Fong', 'Simba'],
-            'Tenor Sax': ['A. G. Montejo'],
-            'Trumpet': ['Charlene Chiang', 'Hayden Hoffort'],
-            'Trombone': ['Efren Wang'],
-            'Accordion': ['Phillip Hsu'],
-            'Piano': ['Paul Y.'],
-            'Guitar': ['Prashanth Shyamala'],
-            'Bass': ['Emmett Hartley'],
-            'Drums': ['Julian Gale']
-        }
-    },
-    {
-        name: 'Jinsei wa Yume Darake (Ma Vie, Mes Rêves)',
-        by: 'Sheena Ringo',
-        arranger: 'Michael Kim',
-        group: 'LMC Jazz Group',
-        description: 'Featuring Kai as vocal soloist',
-        performers: {
-            'Vocals': ['Kai (Kaedan Yu)'],
-            'Violin': ['Michael Kim', 'Simba'],
-            'Flute': ['Cathy Z.'],
-            'Alto Sax': ['Rylen Fong'],
-            'Tenor Sax': ['A. G. Montejo'],
-            'Trumpet': ['Charlene Chiang', 'Hayden Hoffort'],
-            'Trombone': ['Efren Wang'],
-            'Piano': ['Carmen', 'Heyao Wang'],
-            'Bass': ['Emmett Hartley'],
-            'Drums': ['Julian Gale']
-        }
-    },
-    {
-        name: 'Jump Up, Superstar!',
-        from: 'Super Mario Odyssey',
-        by: 'Naoto Kubo',
-        arranger: 'Brandon Douglas',
-        group: 'LMC Jazz Group',
-        description: 'Featuring Carmen as vocal soloist',
-        performers: {
-            'Vocals': ['Carmen'],
-            'Flute': ['Cathy Z.'],
-            'Alto Sax': ['Rylen Fong', 'Simba'],
-            'Tenor Sax': ['A. G. Montejo', 'Daniel Kim'],
-            'Trumpet': ['Charlene Chiang', 'Hayden Hoffort'],
-            'Trombone': ['Efren Wang'],
-            'Piano': ['Paul Y.'],
-            'Guitar': ['Prashanth Shyamala'],
-            'Bass': ['Emmett Hartley'],
-            'Drums': ['Julian Gale']
-        }
-    },
-    {
-        name: 'Last Stardust',
-        by: 'Aimer',
-        from: 'Fate/Stay Night: Unlimited Blade Works',
-        description: 'If to feel pain is my fate, then I just have one thing to say',
-        performers: {
-            'Vocals': ['Sophia'],
-            'Piano': ['FH'],
-            'Guitar': ['Emily', 'Brian Lin'],
-            'Bass': ['James Inneo'],
-            'Drums': ['J. Mansia']
-        }
-    },
-    {
-        name: 'Love Trial',
-        by: '40mP ft. Hatsune Miku',
-        description: "Oh! Jesus! Don't look at me like that!",
-        performers: {
-            'Vocals': ['Sophia'],
-            'Piano': ['FH'],
-            'Guitar': ['Emily', 'Brian Lin'],
-            'Bass': ['James Inneo'],
-            'Drums': ['J. Mansia']
-        }
-    },
-    {
-        name: 'Fuyu no Hanashi',
-        by: 'centimillimental',
-        from: 'Given',
-        description: 'i like my yaoi DOOMED',
-        performers: {
-            'Vocals': ['Zachary Pang'],
-            'Guitar': ['William'],
-            'Bass': ['Emmett Hartley'],
-            'Drums': ['J. Mansia']
-        }
-    },
-    {
-        name: "Theme of Stone Ocean (Jolyne's Theme)",
-        by: 'Yugo Kanno',
-        arranger: 'Rylen Fong',
-        from: "Jojo's Bizarre Adventure: Stone Ocean",
-        performers: {
-            'Vocals': ['Eric H.', 'Olivia Yip', 'William'],
-            'Violin': ['Sean', 'Ze'],
-            'Clarinet': ['A. G. Montejo'],
-            'Alto Sax': ['Simba'],
-            'Tenor Sax': ['Cathy Z.'],
-            'Trumpet': ['Hayden Hoffort'],
-            'Trombone': ['Efren Wang'],
-            'Piano': ['Leo'],
-            'Guitar': ['Alexis'],
-            'Bass': ['Sophia'],
-            'Drums': ['Kahveh']
-        }
-    },
-    {
-        name: 'I Am Gonna Claw (Out Your Eyes Then Drown You To Death)',
-        by: 'Darren Korb',
-        from: 'Hades II',
-        performers: {
-            'Vocals': ['A. G. Montejo'],
-            'Trombone': ['Mellow'],
-            'Guitar': ['Inès Alibay', 'Kae Nguyen'],
-            'Bass': ['Emmett Hartley'],
-            'Drums': ['Jimin']
-        }
-    },
-    {
-        name: 'Plastic Love',
-        by: 'Mariya Takeuchi',
-        arranger: 'Richard',
-        description: 'City pop!!',
-        performers: {
-            'Vocals': ['Carmen'],
-            'Backing Vocals': ['Crystal Y.', 'Eric H.', 'Fatima Gonsalves'],
-            'Violin': ['Kai (Kaedan Yu)', 'Sean'],
-            'Clarinet': ['A. G. Montejo'],
-            'Alto Sax': ['Simba'],
-            'Tenor Sax': ['Cathy Z.'],
-            'Trumpet': ['Hayden Hoffort'],
-            'Piano': ['Angelina'],
-            'Guitar': ['Andrew Tan', 'Sofia Gondim'],
-            'Bass': ['Inès Alibay'],
-            'Drums': ['Kaden Calvert']
-        }
-    },
-    { intermission: true },
-    {
-        name: 'Wii Sports Resort Main Theme',
-        by: 'Ryo Nagamatsu',
-        arranger: 'Kai (Kaedan Yu)',
-        description:'wii are resorting to violence',
-        performers: {
-            'Violin': ['Sean', 'Ze'],
-            'Flute': ['Cathy Z.', 'Richard'],
-            'Trumpet': ['Hayden Hoffort'],
-            'Alto Sax': ['Simba'],
-            'Trombone': ['Efren Wang', 'Mellow'],
-            'Piano': ['Tommy'],
-            'Guitar': ['Brian Lin', 'William'],
-            'Bass': ['Sophia'],
-            'Aux. Percussion': ['Kaden', 'Kai Kang Nie', 'Zachary'],
-            'Drums': ['Julian Gale']
-        }
-    },
-    {
-        name: 'Battle!!',
-        by: 'Kenji Hiramatsu',
-        arranger: 'Richard',
-        from: 'Xenoblade Chronicles 2: Torna ~ The Golden Country',
-        description: 'groovy',
-        performers: {
-            'Violin': ['Louis Miguel', 'Kai (Kaedan Yu)'],
-            'Flute': ['Richard'],
-            'Clarinet': ['Rylen Fong'],
-            'Tenor Sax': ['A. G. Montejo'],
-            'Piano': ['Johnathan H.', 'Raekye'],
-            'Bass': ['Emmett Hartley'],
-            'Drums': ['Julian Gale']
-        }
-    },
-    {
-        name: 'Mechonis Field',
-        by: 'ACE+',
-        arranger: 'Richard',
-        from: 'Xenoblade Chronicles',
-        description: 'cool song 👍',
-        performers: {
-            'Theremin': ['Colin Boothby'],
-            'Piano': ['Richard']
-        }
-    },
-    {
-        name: 'Rogueport',
-        by: 'Yuka Tsujiyoko & Yoshito Sekigawa',
-        arranger: 'Richard',
-        from: 'Paper Mario: The Thousand-Year Door',
-        description: 'cool song 👍',
-        performers: {
-            'Violin': ['Louis Miguel', 'Sean', 'Simba'],
-            'Flute': ['Richard'],
-            'Clarinet': ['Benjamin L.'],
-            'Alto Sax': ['Brandon Law'],
-            'Tenor Sax': ['A. G. Montejo'],
-            'Trumpet': ['Hayden Hoffort'],
-            'Bagpipes': ['Kai Kang Nie'],
-            'Theremin': ['Colin Boothby'],
-            'Piano': ['Johnathan H.'],
-            'Aux. Percussion': ['Jonathan H.', 'Kai Kang Nie'],
-            'Drums': ['Julian Gale']
-        }
-    },
-    {
-        name: 'Remedy (Metal ver.)',
-        by: 'DYLZAL',
-        arranger: 'Kai (Kaedan Yu)',
-        from: 'Undertale Yellow',
-        performers: {
-            'Violin': ['Kai (Kaedan Yu)'],
-            'Harpsichord': ['A. G. Montejo'],
-            'Guitar': ['William'],
-            'Bass': ['Emmett Hartley'],
-            'Drums': ['Julian Gale']
-        }
-    },
-    {
-        name: 'Kẻ Thù',
-        by: 'Ngọt',
-        group: 'Masters of Spinjitzu (Formerly Super Sentai)',
-        performers: {
-            'Vocals': ['Kae Nguyen'],
-            'Guitar': ['Emmett Hartley', 'Michael Kim'],
-            'Bass': ['Sophia'],
-            'Drums': ['Julian Gale']
-        }
-    },
-    {
-        name: 'Layla',
-        by: 'yotsudome noddy',
-        group: '2roup 2',
-        performers: {
-            'Vocals': ['Alexis'],
-            'Guitar': ['Robin', 'Alexis'],
-            'Bass': ['Tyrone Fang'],
-            'Drums': ['Jimin']
-        }
-    },
-    {
-        name: 'Kokudou Slope',
-        by: 'kinokoteikoku',
-        from: 'ユリーカ (Eureka)',
-        group: '2roup 2',
-        performers: {
-            'Vocals': ['Alexis'],
-            'Guitar': ['Robin', 'Alexis'],
-            'Bass': ['Tyrone Fang'],
-            'Drums': ['Jimin']
-        }
-    },
-    {
-        name: "Last Train at 25 O'Clock",
-        by: 'Lamp',
-        from: 'For Lovers',
-        performers: {
-            'Vocals': ['Kai (Kaedan Yu)'],
-            'Violin': ['Sean'],
-            'Flute': ['Cathy Z.'],
-            'Alto Sax': ['A. G. Montejo'],
-            'Trombone': ['Mellow'],
-            'Piano': ['Johnathan H.'],
-            'Guitar': ['Inès Alibay'],
-            'Bass': ['James Inneo'],
-            'Drums': ['Jimin']
-        }
-    },
-    {
-        name: 'Moudoku ga Osou',
-        by: 'Hifumi ft. Hatsune Miku',
-        performers: {
-            'Vocals': ['Olivia Yip'],
-            'Guitar': ['Robin', 'yams'],
-            'Bass': ['Sophia'],
-            'Drums': ['Han']
-        }
-    },
-    {
-        name: 'Aishite',
-        by: 'Kikuo ft. Hatsune Miku',
-        arranger: 'Sean',
-        performers: {
-            'Vocals': ['Carmen', 'Lucia'],
-            'Violin': ['Louis Miguel', 'J. Mansia', 'Ze'],
-            'Flute': ['Cathy Z.'],
-            'Clarinet': ['Benjamin L.', 'Rylen Fong'],
-            'Alto Sax': ['Simba'],
-            'Trumpet': ['Hayden Hoffort'],
-            'Trombone': ['Mellow'],
-            'Piano': ['Raekye'],
-            'Guitar': ['Emily'],
-            'Bass': ['Emmett Hartley'],
-            'Drums': ['Cailyn']
-        }
-    },
-    {
-        name: 'The Rumbling',
-        by: 'SiM',
-        from: 'Attack on Titan',
-        description: 'rumbling im coming',
-        performers: {
-            'Vocals': ['Kae Nguyen', 'Kai (Kaedan Yu)'],
-            'Backing Vocals': ['Emmett Hartley', 'Julian Gale', 'William'],
-            'Violin': ['Sean', 'Simba'],
-            'Guitar': ['William'],
-            'Bass': ['Emmett Hartley'],
-            'Drums': ['Julian Gale']
-        }
-    },
-    {
-        name: 'Ai Scream!',
-        by: 'Ai Furihata, Aguri Ōnishi, & Wakana Okuma',
-        arranger: 'Sean',
-        from: 'Love Live!',
-        description: '何が好き？LMCよりもあなた！',
-        performers: {
-            'Vocals': ['Eric H.', 'Sophia', 'Zachary Pang'],
-            'Alto Sax': ['A. G. Montejo', 'Simba'],
-            'Trumpet': ['Hayden Hoffort'],
-            'Piano': ['Sean'],
-            'Guitar': ['Brian Lin', 'Inès Alibay'],
-            'Bass': ['Tyrone Fang'],
-            'Drums': ['Julian Gale']
-        }
-    }
-]
+  hours = hours % 12 || 12;
+  const minuteStr = minutes.toString().padStart(2, "0");
 
+  return includePeriod
+    ? `${hours}:${minuteStr} ${period}`
+    : `${hours}:${minuteStr}`;
+}
+
+/**
+ * Convert two dates (new Date()) into a formatted "X to Y" string
+ * The formatted string includes times
+ */
+function parseTimeRange(start, end) {
+  const startPeriod = start.getHours() >= 12 ? "pm" : "am";
+  const endPeriod = end.getHours() >= 12 ? "pm" : "am";
+
+  // Same AM/PM → only show once at end
+  if (startPeriod === endPeriod) {
+    return `${formatTime(start, false)} - ${formatTime(end, true)}`;
+  }
+
+  // Different AM/PM → show both
+  return `${formatTime(start, true)} - ${formatTime(end, true)}`;
+}
+
+/**
+ * Convert "YYYY-MM-DD|HH:MM" or "YYYY-MM-DD" into a datetime object
+ */
+function parseDate(datetime) {
+    const [date, time] = datetime.split('|');
+    const [year, month, day] = date.split('-').map(x => parseInt(x, 10));
+    const [hour, minute] = time?.split(':').map(x => parseInt(x, 10)) ?? [0, 0];
+    return new Date(year, month - 1, day, hour, minute);
+}
+
+function formatDate(date) {
+    const weekday = new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(date);
+    const day = new Intl.DateTimeFormat("en-US", { day: "numeric" }).format(date);
+    const month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(date);
+    const year = new Intl.DateTimeFormat("en-US", { year: "numeric" }).format(date);
+    return `${weekday}, ${day} ${month} ${year}`;
+}
 
 function mergePerformers(arr) {
     arr = arr.filter(x => !!x);
@@ -493,11 +100,11 @@ function mergePerformers(arr) {
     );
     return merged;
 }
-function removePerformers(obj, remove) {
-    const removeSet = new Set(remove);
-    for (const key in obj) {
-        obj[key] = obj[key].filter(x => !removeSet.has(x))
-    }
+
+function getExecTeam() {
+    const yearString = EVENT.start.split('|')[0].split('-')[0];
+    const year = yearString.slice(-2)
+    return MEMBERS.filter(x => x.roles?.some(role => ROLES[role].includes(year)));
 }
 
 
@@ -562,23 +169,61 @@ function construct(json) {
     return element;
 }
 
-async function constructPerformers() {
-    const PERFORMERS = mergePerformers(SONGS.map(x => x.performers));
-    const table = cssGetId('credits-table');
-    const sorted = Object.entries(PERFORMERS).sort((a, b) => a[0].localeCompare(b[0]));
+function constructIntro(title) {
+    const [year, month] = EVENT.start.split("|")[0].split("-");
+    const monthNames = {
+        '01': 'January',
+        '02': 'February',
+        '03': 'March',
+        '04': 'April',
+        '05': 'May',
+        '06': 'June',
+        '07': 'July',
+        '08': 'August',
+        '09': 'September',
+        '10': 'October',
+        '11': 'November',
+        '12': 'December',
+    }
+    cssGetId('intro-subtitle').children[0].innerText = `${year} ${monthNames[month]} Concert`;
 
-    for (const [name, performers] of sorted) {
+    if (EVENT.setlistStylizedTitle) {
+        cssGetId("title").innerHTML = title;
+    } else {
+        cssSetId('intro-title-banner', { display: 'none' });
+        cssSetId('intro-subtitle', { 'margin-top': '0px' });
+    }
+
+    cssGetId('poster').src = EVENT.poster;
+    
+    const start = parseDate(EVENT.start);
+    const end = parseDate(EVENT.end);
+    const where = cssGetId('intro-where');
+    where.children[0].innerText = formatDate(start);
+    where.children[1].innerText = parseTimeRange(start, end);
+
+    const when = cssGetId('intro-when');
+    when.children[0].innerText = EVENT.location;
+    when.children[1].innerText = EVENT.address;
+}
+
+function constructPerformers(performances) {
+    const PERFORMERS = mergePerformers(performances.map((p) => p.performers));
+    const table = cssGetId('credits-table');
+    const sorted = Object.entries(PERFORMERS).sort((a, b) => INSTRUMENTS[a[0]].localeCompare(INSTRUMENTS[b[0]]));
+
+    for (const [instrument, performers] of sorted) {
         const html = {
             element: 'div',
             classes: ['credits-group'],
             children: [
                 {
                     element: 'h3',
-                    innerText: name
+                    innerText: INSTRUMENTS[instrument]
                 },
                 {
                     element: 'span',
-                    children: performers.sort().map(name => ({
+                    children: performers.map(name => MEMBERS[name].name).sort().map(name => ({
                         element: 'p',
                         innerText: name
                     }))
@@ -587,9 +232,12 @@ async function constructPerformers() {
         }
         table.appendChild(construct(html));
     }
+
+    const execs = getExecTeam();
+    cssGetId('credits-execs').lastChild.textContent = ` ${execs.map(x => x.name).join(', ')}`;
 }
 
-async function constructSetlist() {
+function constructSetlist() {
     const setlist = cssGetId('setlist');
 
     const hr = {
@@ -597,12 +245,13 @@ async function constructSetlist() {
         classes: ['setlist-hr']
     };
 
+    const performances = [];
     let numIntermissions = 0;
-    for (let i = 0; i < SONGS.length; i++) {
-        const song = SONGS[i];
+    for (let i = 0; i < EVENT.setlist.length; i++) {
+        const { id, setlistDescription } = EVENT.setlist[i];
         const songNum = i + 1 - numIntermissions;
 
-        if (song.intermission) {
+        if (id === -1) {
             numIntermissions += 1;
             const html = {
                 element: 'article',
@@ -617,27 +266,31 @@ async function constructSetlist() {
             continue;
         }
 
-        const description = song.description ? [{
+        const song = MUSIC[id];
+        const p = song.performances.find(x => x.concerts.includes(EVENT.id));
+        performances.push(p);
+
+        const description = setlistDescription ? [{
             element: 'p',
             classes: ['setlist-desc'],
-            innerHTML: song.description
+            innerHTML: setlistDescription
         }] : [];
 
-        const group = song.group ? [{
+        const group = p.group ? [{
             element: 'p',
-            innerText: song.group
+            innerText: p.group
         }] : [];
 
         const performers = [];
-        const sorted = Object.entries(song.performers).sort((a, b) => a[0].localeCompare(b[0]))
+        const sorted = Object.entries(p.performers).sort((a, b) => INSTRUMENTS[a[0]].localeCompare(INSTRUMENTS[b[0]]))
         for (const [instrument, names] of sorted) {
             for (const name of names) {
                 performers.push({
                     element: 'dt',
-                    innerText: instrument
+                    innerText: INSTRUMENTS[instrument]
                 }, {
                     element: 'dd',
-                    innerText: name
+                    innerText: MEMBERS[name].name
                 })
             }
         }
@@ -675,11 +328,11 @@ async function constructSetlist() {
                                 },
                                 {
                                     element: 'p',
-                                    innerHTML: `<span>by</span> ${song.by}`
+                                    innerHTML: `<span>by</span> ${song.composer}`
                                 },
-                                song.arranger ? {
+                                p.arranger ? {
                                     element: 'p',
-                                    innerHTML: `<span>arranged by</span> ${song.arranger}`
+                                    innerHTML: `<span>arranged by</span> ${p.arrangers}`
                                 } : undefined,
                                 {
                                     element: 'p',
@@ -724,7 +377,132 @@ async function constructSetlist() {
         setlist.appendChild(construct(html));
         setlist.appendChild(construct(hr));
     }
+    return performances;
 }
 
-constructPerformers();
-constructSetlist();
+function getDefaultConcert() {
+    const concert = EVENTS[CURRENT_EVENT.id];
+    if (!concert?.setlistTheme) {
+        return;
+    }
+    return concert;
+}
+function getConcert() {
+    const id = parseInt(new URLSearchParams(window.location.search).get('id'), 10);
+    if (isNaN(id) || id < 0) {
+        return getDefaultConcert();
+    }
+    const event = EVENTS[id];
+    if (!event?.setlistTheme) {
+        return;
+    }
+    return event;
+}
+// Add <span></span> around unimportant words in a title
+function stylizeTitle(title) {
+    const words = title.split(" ");
+    const newTitle = [];
+    for (const word of words) {
+        let className;
+        if (word === '&') {
+            className = 'ampersand';
+        } else if (word[0] === word[0].toLowerCase()) {
+            className = 'lowercase';
+        } else {
+            className = 'default';
+        }
+        newTitle.push(`<span class="title-${className}">${word}</span>`);
+    }
+    return newTitle.join(" ");
+}
+function resizeTitle() {
+    const container = cssGetId('intro-title-banner');
+    const title = cssGetId('title');
+    const img1 = cssGetId('music-note-1');
+    const img2 = cssGetId('music-note-2');
+
+    // Iterate from largest to smallest size. If title becomes >1 line long, move to smaller size
+    const classes = ['', 'size-1', 'size-2', 'size-3'];
+    for (let i = 0; i < classes.length; i++) {
+        const className = classes[i];
+        container.classList = className;
+        if (i === classes.length - 1) {
+            break;
+        }
+        cssSetElement(title, { 'text-wrap': 'wrap' });
+        const { height: h1 } = title.getBoundingClientRect();
+        cssSetElement(title, { 'text-wrap': `nowrap` });
+        const { height: h2 } = title.getBoundingClientRect();
+        if (h1 === h2) {
+            break;
+        }
+    };
+    cssSetElement(title, { 'text-wrap': `balance` });
+
+    // Iterate through spans of title, get "real" bounding box, position music notes accordingly
+    const note1 = cssGetId('music-note-1');
+    const note2 = cssGetId('music-note-2');
+    if (!container.classList.contains('size-3')) {
+        cssSetElement(note1, { right: '' });
+        cssSetElement(note2, { left: '' });
+        return;
+    }
+    let l = 1e100;
+    let r = -1e100;
+    for (const span of title.children) {
+        const { left, right } = span.getBoundingClientRect();
+        l = Math.min(l, left);
+        r = Math.max(r, right);
+    }
+    const { left, right } = title.getBoundingClientRect();
+    cssSetElement(note1, { right: `calc(100% - ${l - left}px)` });
+    cssSetElement(note2, { left: `calc(100% - ${right - r}px)` });
+}
+function setupAnimations() {
+    const map = new Map();
+    const observer = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+            if (entry.isIntersecting) {
+                const left = map.get(entry.target);
+                if (left === true) {
+                    entry.target.classList.add("slide-in-left");
+                } else if (left === false) {
+                    entry.target.classList.add("slide-in-right");
+                } else {
+                    entry.target.classList.add("slide-in-bottom");
+                }
+                map.delete(entry.target);
+                observer.unobserve(entry.target);
+            }
+        }
+    });
+    let left = true;
+    for (const setlistItem of cssGetClass('setlist-item')) {
+        map.set(setlistItem, left);
+        observer.observe(setlistItem);
+        left = !left;
+    }
+    for (const creditsGroup of cssGetClass('credits-group')) {
+        observer.observe(creditsGroup);
+    }
+}
+
+// Get event to make setlist of
+const EVENT = getConcert();
+if (EVENT) {
+    const title = stylizeTitle(EVENT.setlistStylizedTitle);
+    constructIntro(title);
+    cssGetId('screen-main').classList.add(`theme-${EVENT.setlistTheme.toLowerCase().replaceAll(' ', '-')}`)
+    const performances = constructSetlist();
+    constructPerformers(performances);
+
+    setupAnimations();
+    
+    setTimeout(() => {
+        resizeTitle();
+        window.addEventListener('resize', resizeTitle);
+    }, 100);
+} else {
+    cssSetId('screen-main', { display: 'none' });
+    cssSetId('screen-404', { display: 'flex' });
+}

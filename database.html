@@ -295,14 +295,14 @@
                         <td><input type="datetime-local" id="current-event-visible-from" onblur="syncData(this)" /></td>
                     </tr>
                     <tr>
-                        <td>Address</td>
-                        <td contenteditable="plaintext-only" onblur="validateInput(this)" id="current-event-location">252 Bloor Street West (OISE C-162)</td>
+                        <td>Tickets</td>
+                        <td contenteditable="plaintext-only" onblur="validateInput(this)" id="current-event-tickets">$5, pay in-person</td>
                         <td>Visible Until</td>
                         <td><input type="datetime-local" id="current-event-visible-until" onblur="syncData(this)" /></td>
                     </tr>
                     <tr>
-                        <td>Tickets</td>
-                        <td contenteditable="plaintext-only" onblur="validateInput(this)" id="current-event-tickets">$5, pay in-person</td>
+                        <td>Setlist Page</td>
+                        <td contenteditable="plaintext-only" onblur="validateInput(this)" id="current-event-setlist">https://utlmc.github.io/setlist</td>
                         <td>RVSP</td>
                         <td contenteditable="plaintext-only" onblur="validateInput(this)" id="current-event-rvsp">#</td>
                     </tr>
@@ -311,12 +311,12 @@
             <p class="validation-text"></p>
 
             <div id="large-textarea-container">
-                <hgroup id="preconcert-description" class="large-textarea">
-                    <h3>Pre-Concert Description</h3>
+                <hgroup id="pre-event-description" class="large-textarea">
+                    <h3>Pre-Event Description</h3>
                     <div contenteditable="true" onblur="validateMultilineInput(this)">The LMC returns this April for its regularly-scheduled end of winter concert, featuring 3 hours of music, XX songs played by XX of our talented musicians!</div>
                 </hgroup>
-                <hgroup id="postconcert-description" class="large-textarea">
-                    <h3>Post-Concert Description</h3>
+                <hgroup id="post-event-description" class="large-textarea">
+                    <h3>Post-Event Description</h3>
                     <div contenteditable="true" onblur="validateMultilineInput(this)">Thank you to all performers and audience for a successful April concert! The next season of LMC operations will begin in September 2026.</div>
                 </hgroup>
             </div>
@@ -946,6 +946,7 @@
                                 <th>Type</th>
                                 <th>Name</th>
                                 <th>Location</th>
+                                <th>Address</th>
                                 <th>Date</th>
                                 <th>Setlist</th>
                                 <th>Description</th>
@@ -968,6 +969,7 @@
                                 </td>
                                 <td contenteditable="plaintext-only" onblur="validateInput(this)">End of Fall 2025 Concert</td>
                                 <td contenteditable="plaintext-only" onblur="validateInput(this)">OISE G-162</td>
+                                <td contenteditable="plaintext-only" onblur="validateInput(this)">252 Bloor Street West</td>
                                 <td>
                                     <p>From <input type="datetime-local"/></p>
                                     <p>Until <input type="datetime-local"/></p>
@@ -1370,11 +1372,12 @@
                 <img src="assets/icons/logos/youtube.svg" />
                 <input type="text" placeholder="Enter youtube video URL" />
             </div>
+            
             <div class="draggable-list-container">
                 <table id='concert-setlist' class="draggable-list">
                     <tbody>
                         <tr>
-                            <td draggable="true" ondragstart="onDragStart(this)" ondragend="onDragEnd(this)" ondragenter="onDragEnter(this)" ondragleave="onDragLeave(this)" ondragover="onDragOver(event)" ondrop="onDrop(this)">
+                            <td draggable="true" ondragstart="onDragStart(this)" ondragend="onDragEnd(this )" ondragenter="onDragEnter(this)" ondragleave="onDragLeave(this)" ondragover="onDragOver(event)" ondrop="onDrop(this)">
                                 <img src="assets/icons/draggable.svg" />
                             </td>
                             <td>
@@ -1382,6 +1385,7 @@
                                 <span class="setlist-id">1</span>
                             </td>
                             <td>Song 1</td>
+                            <td class="concert-setlist-description" contenteditable="plaintext-only"></td>
                             <td class="concert-setlist-timestamp" contenteditable="plaintext-only" onblur="validateInputTimestamp(this)">??:??</td>
                             <td class="concert-setlist-song-video" contenteditable="plaintext-only"></td>
                         </tr>
@@ -1394,6 +1398,7 @@
                                 <span class="setlist-id">1</span>
                             </td>
                             <td>Song 2</td>
+                            <td class="concert-setlist-description" contenteditable="plaintext-only"></td>
                             <td class="concert-setlist-timestamp" contenteditable="plaintext-only" onblur="validateInputTimestamp(this)">??:??</td>
                             <td class="concert-setlist-song-video" contenteditable="plaintext-only"></td>
                         </tr>
@@ -1406,6 +1411,7 @@
                                 <span class="setlist-id">1</span>
                             </td>
                             <td>Song 3</td>
+                            <td class="concert-setlist-description" contenteditable="plaintext-only"></td>
                             <td class="concert-setlist-timestamp" contenteditable="plaintext-only" onblur="validateInputTimestamp(this)">??:??</td>
                             <td class="concert-setlist-song-video" contenteditable="plaintext-only"></td>
                         </tr>
@@ -1418,6 +1424,7 @@
                                 <span class="setlist-id">1</span>
                             </td>
                             <td>Song 4</td>
+                            <td class="concert-setlist-description" contenteditable="plaintext-only"></td>
                             <td class="concert-setlist-timestamp" contenteditable="plaintext-only" onblur="validateInputTimestamp(this)">??:??</td>
                             <td class="concert-setlist-song-video" contenteditable="plaintext-only"></td>
                         </tr>
@@ -1425,6 +1432,25 @@
                 </table>
             </div>
             <p class="validation-text"></p>
+
+            <details open class="details-hidden" id="setlist-page-settings">
+                <summary onclick="toggleShowSetlistPage(event)">
+                    <input type="checkbox" id="checkbox-show-setlist-page" />
+                    <p>Show setlist page</p>
+                </summary>
+                <div class="summary-body">
+                    <p>Theme</p>
+                    <select id='setlist-theme'>
+                        <option>Light Cold</option>
+                        <option>Light Warm</option>
+                        <option>Dark Cold</option>
+                        <option>Dark Warm</option>
+                    </select>
+                    <p>Stylized Title</p>
+                    <input id='setlist-stylized-title' type="text" placeholder="Insert title..." />
+                </div>
+            </details>
+            
             <ul class="modal-action-buttons">
                 <li onclick="closeModals()">Back</li>
                 <li onclick="syncModalConcertSetlist(this)">Confirm</li>
