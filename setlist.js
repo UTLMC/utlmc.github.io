@@ -1,6 +1,20 @@
 /*********************************************************************
 Helper Functions
 *********************************************************************/
+function debounce(fn, delay) {
+    let timeoutId;
+
+    return function (...args) {
+        const context = this;
+
+        clearTimeout(timeoutId);
+
+        timeoutId = setTimeout(() => {
+            fn.apply(context, args);
+        }, delay);
+    };
+}
+
 function cssGetId(id) {
     const result = document.getElementById(id);
     if (!result)
@@ -102,9 +116,15 @@ function mergePerformers(arr) {
 }
 
 function getExecTeam() {
-    const yearString = EVENT.start.split('|')[0].split('-')[0];
-    const year = yearString.slice(-2)
-    return MEMBERS.filter(x => x.roles?.some(role => ROLES[role].includes(year)));
+    const [year, month] = EVENT.start.split('|')[0].split('-');
+    let schoolYear;
+    if (month >= 9) {
+        schoolYear = year;
+    } else {
+        schoolYear = Number(year) - 1;
+    }
+    const yearString = String(schoolYear).slice(-2);
+    return MEMBERS.filter(x => x.roles?.some(role => ROLES[role].includes(yearString)));
 }
 
 
@@ -145,13 +165,18 @@ function construct(json) {
             element.setAttribute(key, json.attributes[key]);
         }
     }
+    if (json.style) {
+        for (const key in json.style) {
+            element.style.setProperty(key, json.style[key]);
+        }
+    }
     if (json.classes) {
         for (const name of json.classes) {
             element.classList.add(name);
         }
     }
     if (json.id) {
-        element.id = id;
+        element.id = json.id;
     }
     if (json.innerText) {
         element.innerText = json.innerText;
@@ -161,10 +186,12 @@ function construct(json) {
     }
     if (json.children) {
         for (const child of json.children) {
-            if (child) {
-                element.appendChild(construct(child));
-            }
+            if (!child) continue;
+            element.appendChild(construct(child));
         }
+    }
+    if (json.value) {
+        element.value = json.value;
     }
     return element;
 }
@@ -216,19 +243,16 @@ function constructPerformers(performances) {
         const html = {
             element: 'div',
             classes: ['credits-group'],
-            children: [
-                {
-                    element: 'h3',
-                    innerText: INSTRUMENTS[instrument]
-                },
-                {
-                    element: 'span',
-                    children: performers.map(name => MEMBERS[name].name).sort().map(name => ({
-                        element: 'p',
-                        innerText: name
-                    }))
-                }
-            ]
+            children: [{
+                element: 'h3',
+                innerText: INSTRUMENTS[instrument]
+            }, {
+                element: 'span',
+                children: performers.map(name => MEMBERS[name]?.name ?? name).sort().map(name => ({
+                    element: 'p',
+                    innerText: name
+                }))
+            }]
         }
         table.appendChild(construct(html));
     }
@@ -290,89 +314,69 @@ function constructSetlist() {
                     innerText: INSTRUMENTS[instrument]
                 }, {
                     element: 'dd',
-                    innerText: MEMBERS[name].name
+                    innerText: MEMBERS[name]?.name ?? name
                 })
             }
         }
 
-        const findBracket = /\(([^()]*)\)/;
-        const match = song.name.match(findBracket);
-        const name = match ? song.name.replace(findBracket, '') : song.name;
-        const brackets = match ? {
+        const findBracket = /\([^()]*\)/g;
+        const matches = Array.from(song.name.matchAll(findBracket));
+        const name = matches.length > 0 ? song.name.slice(0, matches.at(-1).index) : song.name;
+        const brackets = matches.length > 0 ? {
             element: 'h2',
             classes: ['song-name-bracket'],
-            innerText: `(${match[1]})`
+            innerText: matches.at(-1)[0]
         } : undefined;
 
         const html = {
             element: 'article',
             classes: ['setlist-item'],
-            children: [
-                {
+            children: [{
+                element: 'div',
+                classes: ['setlist-title'],
+                children: [{
+                    element: 'hgroup',
+                    classes: ['setlist-left'],
+                    children: [{
+                        element: 'span',
+                        classes: ['song-name-container'],
+                        children: [{
+                            element: 'h2',
+                            classes: ['song-name'],
+                            innerHTML: name
+                        }, brackets, {
+                            element: 'h3',
+                            innerText: ` // ${songNum < 10 ? `0${songNum}` : songNum}`
+                        }],
+                    }, {
+                        element: 'p',
+                        innerHTML: `<span>by</span> ${song.composer}`
+                    }, p.arranger ? {
+                        element: 'p',
+                        innerHTML: `<span>arranged by</span> ${p.arrangers}`
+                    } : undefined, {
+                        element: 'p',
+                        innerHTML: song.from ? `<span>from</span> ${song.from}` : undefined
+                    }]
+                }, {
                     element: 'div',
-                    classes: ['setlist-title'],
-                    children: [
-                        {
-                            element: 'hgroup',
-                            classes: ['setlist-left'],
-                            children: [
-                                {
-                                    element: 'h2',
-                                    classes: ['song-name'],
-                                    innerHTML: name
-                                },
-                                brackets,
-                                {
-                                    element: 'h3',
-                                    innerText: `// ${songNum < 10 ? `0${songNum}` : songNum}`
-                                },
-                                {
-                                    element: 'p',
-                                    innerHTML: `<span>by</span> ${song.composer}`
-                                },
-                                p.arranger ? {
-                                    element: 'p',
-                                    innerHTML: `<span>arranged by</span> ${p.arrangers}`
-                                } : undefined,
-                                {
-                                    element: 'p',
-                                    innerHTML: song.from ? `<span>from</span> ${song.from}` : undefined
-                                }
-                            ]
-                        },
-                        {
-                            element: 'div',
-                            classes: ['setlist-right'],
-                            children: [
-                                {
-                                    element: 'button',
-                                    attributes: {
-                                        onclick: "toggleSetlistCaption(this)"
-                                    },
-                                    children: [
-                                        {
-                                            element: 'img',
-                                            attributes: {
-                                                src: "assets/icons/users.svg"
-                                            }
-                                        },
-                                        {
-                                            element: 'span',
-                                            innerText: 'Performers'
-                                        },
-                                        {
-                                            element: 'dl',
-                                            children: performers
-                                        }
-                                    ]
-                                },
-                                ...group
-                            ]
-                        }
-                    ]
-                },
-                ...description
-            ]
+                    classes: ['setlist-right'],
+                    children: [{
+                        element: 'button',
+                        attributes: { onclick: "toggleSetlistCaption(this)" },
+                        children: [{
+                            element: 'img',
+                            attributes: { src: "assets/icons/users.svg" }
+                        }, {
+                            element: 'span',
+                            innerText: 'Performers'
+                        }, {
+                            element: 'dl',
+                            children: performers
+                        }]
+                    }, ...group]
+                }]
+            }, ...description ]
         }
         setlist.appendChild(construct(html));
         setlist.appendChild(construct(hr));
@@ -387,6 +391,8 @@ function getDefaultConcert() {
     }
     return concert;
 }
+
+// Get the concert to make the setlist of
 function getConcert() {
     const id = parseInt(new URLSearchParams(window.location.search).get('id'), 10);
     if (isNaN(id) || id < 0) {
@@ -398,15 +404,17 @@ function getConcert() {
     }
     return event;
 }
+
 // Add <span></span> around unimportant words in a title
 function stylizeTitle(title) {
+    if (!title) return title;
     const words = title.split(" ");
     const newTitle = [];
     for (const word of words) {
         let className;
         if (word === '&') {
             className = 'ampersand';
-        } else if (word[0] === word[0].toLowerCase()) {
+        } else if (word[0] === word[0].toLowerCase() && !/\d/.test(word[0])) {
             className = 'lowercase';
         } else {
             className = 'default';
@@ -415,14 +423,40 @@ function stylizeTitle(title) {
     }
     return newTitle.join(" ");
 }
-function resizeTitle() {
+
+// Select the font to load based on theme, and wait for it to fully load
+async function loadFonts() {
+    let link;
+    if (EVENT.setlistTheme === 'Light Cold') {
+        link = 'https://fonts.googleapis.com/css2?family=Space+Grotesk&family=Suranna&family=Saira+Extra+Condensed:wght@100;200;300;400;500;600;700;800;900&display=swap';
+    } else if (EVENT.setlistTheme === 'Dark Warm') {
+        link = 'https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&family=Metrophobic&family=Roboto+Flex:opsz,wdth,GRAD,XOPQ,YOPQ,YTLC@8..144,65,40,125,60,480&display=swap';
+    } else if (EVENT.setlistTheme === 'Light Warm') {
+        link = 'https://fonts.googleapis.com/css2?family=El+Messiri:wght@400..700&family=Instrument+Serif:ital@0;1&family=Lusitana:wght@400;700&display=swap';
+    } else {
+        link = 'https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&family=Sofia+Sans+Condensed:ital,wght@0,400..800;1,400..800&family=Yanone+Kaffeesatz:wght@200..700&display=swap';
+    }
+    const element = construct({ element: 'link', attributes: { rel: 'stylesheet', href: link }});
+    document.head.appendChild(element);
+    await new Promise((resolve, reject) => {
+        element.onload = resolve;
+        element.onerror = reject;
+    });
+    await document.fonts.ready;
+    await new Promise(requestAnimationFrame);
+}
+
+// Handle title text size based on screen width. Blocks until fonts load to prevent non-deterministic results
+async function resizeTitle() {
+    await loadFonts();
+
     const container = cssGetId('intro-title-banner');
     const title = cssGetId('title');
-    const img1 = cssGetId('music-note-1');
-    const img2 = cssGetId('music-note-2');
 
     // Iterate from largest to smallest size. If title becomes >1 line long, move to smaller size
     const classes = ['', 'size-1', 'size-2', 'size-3'];
+    const note1 = cssGetId('music-note-1');
+    const note2 = cssGetId('music-note-2');
     for (let i = 0; i < classes.length; i++) {
         const className = classes[i];
         container.classList = className;
@@ -433,15 +467,16 @@ function resizeTitle() {
         const { height: h1 } = title.getBoundingClientRect();
         cssSetElement(title, { 'text-wrap': `nowrap` });
         const { height: h2 } = title.getBoundingClientRect();
-        if (h1 === h2) {
+        if (h1 === h2 ) {
+            if (note1.getBoundingClientRect().left <= 10 || note2.getBoundingClientRect().right >= window.innerWidth - 10) {
+                continue;
+            }
             break;
         }
     };
     cssSetElement(title, { 'text-wrap': `balance` });
 
     // Iterate through spans of title, get "real" bounding box, position music notes accordingly
-    const note1 = cssGetId('music-note-1');
-    const note2 = cssGetId('music-note-2');
     if (!container.classList.contains('size-3')) {
         cssSetElement(note1, { right: '' });
         cssSetElement(note2, { left: '' });
@@ -458,7 +493,9 @@ function resizeTitle() {
     cssSetElement(note1, { right: `calc(100% - ${l - left}px)` });
     cssSetElement(note2, { left: `calc(100% - ${right - r}px)` });
 }
-function setupAnimations() {
+
+// Observe animated elements. When element enters the screen, add a class w/ the animation and unobserve 
+function setupCSSAnimations() {
     const map = new Map();
     const observer = new IntersectionObserver((entries) => {
         for (const entry of entries) {
@@ -492,16 +529,16 @@ const EVENT = getConcert();
 if (EVENT) {
     const title = stylizeTitle(EVENT.setlistStylizedTitle);
     constructIntro(title);
-    cssGetId('screen-main').classList.add(`theme-${EVENT.setlistTheme.toLowerCase().replaceAll(' ', '-')}`)
+    cssGetFirst('body').classList.add(`theme-${EVENT.setlistTheme.toLowerCase().replaceAll(' ', '-')}`)
     const performances = constructSetlist();
     constructPerformers(performances);
 
-    setupAnimations();
+    setupCSSAnimations();
     
-    setTimeout(() => {
-        resizeTitle();
-        window.addEventListener('resize', resizeTitle);
-    }, 100);
+    resizeTitle().then(() => {
+        cssSetId('screen-hider', { 'animation-name': 'screen-hider' });
+    });
+    window.addEventListener('resize', debounce(resizeTitle, 200));
 } else {
     cssSetId('screen-main', { display: 'none' });
     cssSetId('screen-404', { display: 'flex' });

@@ -39,14 +39,14 @@ const CURRENT_EVENT = {
     id: 2,
     rvsp: '#',
     hideBefore: '2025-01-01|12:24',
-    hideAfter: '2026-08-01|00:00',
-    location: '252 Bloor Street West (OISE C-162)',
+    hideAfter: '2026-09-01|00:00',
+    setlistLink: 'https://utlmc.github.io/setlist',
     tickets: '$5, pay in-person',
-    preConcertDescription: [
+    preEventDescription: [
         'The LMC returns this April for its regularly-scheduled end of winter concert, featuring 3 hours of music, XX songs played by XX of our talented musicians!',
         "We'll be playing songs from j-pop, anime, video games, and more! Find the link to the setlist for the concert here."
     ],
-    postConcertDescription: [`Thank you to all performers and audience for a successful April concert! The next season of LMC operations will begin in September 2026.`],
+    postEventDescription: [`Thank you to all performers and audience for a successful April concert! The next season of LMC operations will begin in September 2026.`],
 };
 
 const ANNOUNCEMENTS = [
@@ -6248,9 +6248,15 @@ const EVENTS = [
         "start": "2024-03-23|00:00",
         "end": "2024-03-23|23:59",
         "setlist": [
-            3,
-            4,
-            5
+            {
+                "id": 3
+            },
+            {
+                "id": 4
+            },
+            {
+                "id": 5
+            }
         ]
     },
     {
@@ -6258,6 +6264,7 @@ const EVENTS = [
         "type": "Concert",
         "name": "UT-SAMA 20th Anniversary Event",
         "location": "UTSU Student Commons",
+        "address": "252 Bloor Street West",
         "description": [
             ""
         ],
@@ -6265,17 +6272,39 @@ const EVENTS = [
         "end": "2024-04-04|23:59",
         "video": "https://youtu.be/ob0COvRRvDI",
         "setlist": [
-            0,
-            3,
-            4,
-            1,
-            5,
-            6,
-            2,
-            7,
-            8,
-            9,
-            10
+            {
+                "id": 0,
+            },
+            {
+                "id": 3,
+            },
+            {
+                "id": 4
+            },
+            {
+                "id": 1
+            },
+            {
+                "id": 5
+            },
+            {
+                "id": 6
+            },
+            {
+                "id": 2
+            },
+            {
+                "id": 7
+            },
+            {
+                "id": 8
+            },
+            {
+                "id": 9
+            },
+            {
+                "id": 10
+            }
         ]
     },
     {
@@ -6283,27 +6312,52 @@ const EVENTS = [
         "type": "Concert",
         "name": "October 2024 Concert",
         "location": "The Cat's Eye",
+        "address": "252 Bloor Street West",
         "description": [
             ""
         ],
         "start": "2024-10-04|19:30",
         "end": "2024-10-04|20:30",
         "video": "https://youtu.be/JtuPSpsSQYk",
-        "poster": 'assets/images/posters/poster 2024-10.webp',
+        "poster": "assets/images/posters/poster 2024-10.webp",
         "setlist": [
-            3,
-            9,
-            4,
-            0,
-            5,
-            6,
-            1,
-            11,
-            8,
-            2,
-            10
+            {
+                "id": 3,
+                "setlistDescription": "Hi"
+            },
+            {
+                "id": 9,
+                "setlistDescription": "BYE"
+            },
+            {
+                "id": 4
+            },
+            {
+                "id": 0
+            },
+            {
+                "id": 5
+            },
+            {
+                "id": 6
+            },
+            {
+                "id": 1
+            },
+            {
+                "id": 11
+            },
+            {
+                "id": 8
+            },
+            {
+                "id": 2
+            }, 
+            {
+                "id": 10
+            }
         ],
-        "link": "https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv"
+        setlistTheme: 'Light Cold',
     },
     {
         "id": 3,
@@ -6317,25 +6371,62 @@ const EVENTS = [
         "end": "2025-01-24|20:30",
         "video": "https://youtu.be/TiStCNPn10s",
         "setlist": [
-            13,
-            21,
-            11,
-            20,
-            14,
-            17,
-            16,
-            19,
-            3,
-            4,
-            22,
-            18,
-            23,
-            24,
-            15,
-            25,
-            26,
-            27
-        ]
+            {
+                "id": 13
+            },
+            {
+                "id": 21
+            },
+            {
+                "id": 11
+            },
+            {
+                "id": 20
+            },
+            {
+                "id": 14
+            },
+            {
+                "id": 17
+            },
+            {
+                "id": 16
+            },
+            {
+                "id": 19
+            },
+            {
+                "id": 3
+            },
+            {
+                "id": 4
+            },
+            {
+                "id": 22
+            },
+            {
+                "id": 18
+            },
+            {
+                "id": 23
+            },
+            {
+                "id": 24
+            },
+            {
+                "id": 15
+            },
+            {
+                "id": 25
+            },
+            {
+                "id": 26
+            },
+            {
+                "id": 27
+            }
+        ],
+        setlistTheme: 'Dark Cold',
     },
     {
         "id": 4,
@@ -6347,7 +6438,7 @@ const EVENTS = [
         ],
         "start": "2025-02-13|00:00",
         "end": "2025-02-13|23:59",
-        "link": "",
+        "link": "https://onedrive.live.com/?redeem=aHR0cHM6Ly8xZHJ2Lm1zL2YvcyFBcXRza3RqZjc2MlJqUFVRT1VpTVB0c2N6eXctSlE&id=91ADEFDFD8926CAB%21211600&cid=91ADEFDFD8926CAB",
         "poster": "https://media.tenor.com/nDYDbjcSDZMAAAAe/gru-gun-point.png"
     },
     {
@@ -6361,7 +6452,6 @@ const EVENTS = [
         "start": "2025-02-27|00:00",
         "end": "2025-02-27|23:59",
         "link": "https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo",
-        "poster": "https://media.tenor.com/nDYDbjcSDZMAAAAe/gru-gun-point.png"
     },
     {
         "id": 6,
@@ -6373,7 +6463,7 @@ const EVENTS = [
         ],
         "start": "2025-03-08|00:00",
         "end": "2025-03-08|23:59",
-        "link": "https://www.youtube.com/embed/0CJ_9BmtAXY?si=CkvUDq2PFXzWXjRj",
+        "link": "https://www.youtube.com/watch?v=0CJ_9BmtAXY"
     },
     {
         "id": 7,
@@ -6387,83 +6477,84 @@ const EVENTS = [
         "end": "2025-04-07|20:30",
         "video": "https://youtu.be/k1CZLnxSWDc",
         "setlist": [
-            [
-                30,
-                136
-            ],
-            [
-                34,
-                536
-            ],
-            [
-                32,
-                818
-            ],
-            [
-                33,
-                1062
-            ],
-            [
-                35,
-                1309
-            ],
-            [
-                36,
-                1544
-            ],
-            [
-                37,
-                1816
-            ],
-            [
-                38,
-                2214
-            ],
-            [
-                39,
-                2508
-            ],
-            [
-                19,
-                2769
-            ],
-            [
-                40,
-                3071
-            ],
-            [
-                41,
-                3330
-            ],
-            [
-                42,
-                3480
-            ],
-            [
-                43,
-                3698
-            ],
-            [
-                44,
-                4020
-            ],
-            [
-                45,
-                4341
-            ],
-            [
-                46,
-                4779
-            ],
-            [
-                31,
-                5154
-            ],
-            [
-                47,
-                5442
-            ]
-        ]
+            {
+                "id": 30,
+                "seconds": 136
+            },
+            {
+                "id": 34,
+                "seconds": 536
+            },
+            {
+                "id": 32,
+                "seconds": 818
+            },
+            {
+                "id": 33,
+                "seconds": 1062
+            },
+            {
+                "id": 35,
+                "seconds": 1309
+            },
+            {
+                "id": 36,
+                "seconds": 1544
+            },
+            {
+                "id": 37,
+                "seconds": 1816
+            },
+            {
+                "id": 38,
+                "seconds": 2214
+            },
+            {
+                "id": 39,
+                "seconds": 2508
+            },
+            {
+                "id": 19,
+                "seconds": 2769
+            },
+            {
+                "id": 40,
+                "seconds": 3071
+            },
+            {
+                "id": 41,
+                "seconds": 3330
+            },
+            {
+                "id": 42,
+                "seconds": 3480
+            },
+            {
+                "id": 43,
+                "seconds": 3698
+            },
+            {
+                "id": 44,
+                "seconds": 4020
+            },
+            {
+                "id": 45,
+                "seconds": 4341
+            },
+            {
+                "id": 46,
+                "seconds": 4779
+            },
+            {
+                "id": 31,
+                "seconds": 5154
+            },
+            {
+                "id": 47,
+                "seconds": 5442
+            }
+        ],
+        setlistTheme: 'Dark Warm',
     },
     {
         "id": 8,
@@ -6474,8 +6565,7 @@ const EVENTS = [
             "???"
         ],
         "start": "2025-11-09|00:00",
-        "end": "2025-11-09|23:59",
-        "link": "https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo",
+        "end": "2025-11-09|23:59"
     },
     {
         "id": 9,
@@ -6488,8 +6578,12 @@ const EVENTS = [
         "start": "2025-11-13|00:00",
         "end": "2025-11-13|23:59",
         "setlist": [
-            50,
-            51
+            {
+                "id": 50
+            },
+            {
+                "id": 51
+            }
         ]
     },
     {
@@ -6504,103 +6598,104 @@ const EVENTS = [
         "end": "2025-11-29|21:00",
         "video": "https://youtu.be/wuObU4_nbtI",
         "setlist": [
-            [
-                51,
-                0
-            ],
-            [
-                52,
-                244
-            ],
-            [
-                53,
-                556
-            ],
-            [
-                54,
-                839
-            ],
-            [
-                55,
-                1096
-            ],
-            [
-                56,
-                1262
-            ],
-            [
-                57,
-                1426
-            ],
-            [
-                58,
-                1658
-            ],
-            [
-                59,
-                1923
-            ],
-            [
-                60,
-                2095
-            ],
-            [
-                61,
-                2327
-            ],
-            [
-                62,
-                2743
-            ],
-            [
-                63,
-                3025
-            ],
-            [
-                64,
-                3249
-            ],
-            [
-                50,
-                3390
-            ],
-            [
-                65,
-                3574
-            ],
-            [
-                66,
-                3863
-            ],
-            [
-                67,
-                4105
-            ],
-            [
-                68,
-                4280
-            ],
-            [
-                69,
-                4434
-            ],
-            [
-                70,
-                4892
-            ],
-            [
-                71,
-                5087
-            ],
-            [
-                72,
-                5392
-            ],
-            [
-                73,
-                5616
-            ]
-        ]
+            {
+                "id": 51,
+                "seconds": 0
+            },
+            {
+                "id": 52,
+                "seconds": 244
+            },
+            {
+                "id": 53,
+                "seconds": 556
+            },
+            {
+                "id": 54,
+                "seconds": 839
+            },
+            {
+                "id": 55,
+                "seconds": 1096
+            },
+            {
+                "id": 56,
+                "seconds": 1262
+            },
+            {
+                "id": 57,
+                "seconds": 1426
+            },
+            {
+                "id": 58,
+                "seconds": 1658
+            },
+            {
+                "id": 59,
+                "seconds": 1923
+            },
+            {
+                "id": 60,
+                "seconds": 2095
+            },
+            {
+                "id": 61,
+                "seconds": 2327
+            },
+            {
+                "id": 62,
+                "seconds": 2743
+            },
+            {
+                "id": 63,
+                "seconds": 3025
+            },
+            {
+                "id": 64,
+                "seconds": 3249
+            },
+            {
+                "id": 50,
+                "seconds": 3390
+            },
+            {
+                "id": 65,
+                "seconds": 3574
+            },
+            {
+                "id": 66,
+                "seconds": 3863
+            },
+            {
+                "id": 67,
+                "seconds": 4105
+            },
+            {
+                "id": 68,
+                "seconds": 4280
+            },
+            {
+                "id": 69,
+                "seconds": 4434
+            },
+            {
+                "id": 70,
+                "seconds": 4892
+            },
+            {
+                "id": 71,
+                "seconds": 5087
+            },
+            {
+                "id": 72,
+                "seconds": 5392
+            },
+            {
+                "id": 73,
+                "seconds": 5616
+            }
+        ],
+        setlistTheme: 'Light Warm',
     },
     {
         "id": 11,
@@ -6636,39 +6731,78 @@ const EVENTS = [
         "start": "2026-03-06|18:00",
         "end": "2026-03-06|21:00",
         "setlist": [
-            [
-                74,
-                "youtu.be/FQG_6O1DpPI"
-            ],
-            [
-                75,
-                "youtu.be/yLPmJX9PT-s"
-            ],
-            [
-                76,
-                "youtu.be/tWwNLzy9S44"
-            ],
-            77,
-            78,
-            79,
-            80,
-            81,
-            52,
-            82,
-            83,
-            84,
-            85,
-            86,
-            87,
-            88,
-            89,
-            90,
-            91,
-            92,
-            93,
-            94
+            {
+                "id": 74,
+                "url": "youtu.be/FQG_6O1DpPI"
+            },
+            {
+                "id": 75,
+                "url": "youtu.be/yLPmJX9PT-s"
+            },
+            {
+                "id": 76,
+                "url": "youtu.be/tWwNLzy9S44"
+            },
+            {
+                "id": 77
+            },
+            {
+                "id": 78
+            },
+            {
+                "id": 79
+            },
+            {
+                "id": 80
+            },
+            {
+                "id": 81
+            },
+            {
+                "id": 52
+            },
+            {
+                "id": 82
+            },
+            {
+                "id": 83
+            },
+            {
+                "id": 84
+            },
+            {
+                "id": 85
+            },
+            {
+                "id": 86
+            },
+            {
+                "id": 87
+            },
+            {
+                "id": 88
+            },
+            {
+                "id": 89
+            },
+            {
+                "id": 90
+            },
+            {
+                "id": 91
+            },
+            {
+                "id": 92
+            },
+            {
+                "id": 93
+            },
+            {
+                "id": 94
+            }
         ],
-        "poster": "assets/images/posters/poster 2026-03.jpg",
+        setlistTheme: 'Light Cold',
+        setlistStylizedTitle: 'Tunes & Treats',
         "link": "https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv"
     },
     {
@@ -6682,37 +6816,99 @@ const EVENTS = [
         "start": "2026-04-05|17:00",
         "end": "2026-04-05|20:00",
         "setlist": [
-            95,
-            96,
-            97,
-            98,
-            99,
-            100,
-            101,
-            102,
-            103,
-            104,
-            105,
-            106,
-            107,
-            108,
-            109,
-            110,
-            111,
-            112,
-            113,
-            114,
-            115,
-            116,
-            117,
-            82,
-            118,
-            119,
-            120,
-            121,
-            122,
-            123
-        ]
+            {
+                "id": 95
+            },
+            {
+                "id": 96
+            },
+            {
+                "id": 97
+            },
+            {
+                "id": 98
+            },
+            {
+                "id": 99
+            },
+            {
+                "id": 100
+            },
+            {
+                "id": 101
+            },
+            {
+                "id": 102
+            },
+            {
+                "id": 103
+            },
+            {
+                "id": 104
+            },
+            {
+                "id": 105
+            },
+            {
+                "id": 106
+            },
+            {
+                "id": 107
+            },
+            {
+                "id": 108
+            },
+            {
+                "id": 109
+            },
+            {
+                "id": 110
+            },
+            {
+                "id": 111
+            },
+            {
+                "id": 112
+            },
+            {
+                "id": 113
+            },
+            {
+                "id": 114
+            },
+            {
+                "id": 115
+            },
+            {
+                "id": 116
+            },
+            {
+                "id": 117
+            },
+            {
+                "id": 82
+            },
+            {
+                "id": 118
+            },
+            {
+                "id": 119
+            },
+            {
+                "id": 120
+            },
+            {
+                "id": 121
+            },
+            {
+                "id": 122
+            },
+            {
+                "id": 123
+            }
+        ],
+        setlistTheme: 'Dark Cold',
+        setlistStylizedTitle: 'Succession',
     }
 ];
 
