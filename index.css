@@ -2638,7 +2638,7 @@ Tags
     gap: calc(6 * var(--px)) calc(5 * var(--px));
 }
 .tag-container span {
-    background-color: rgb(100, 100, 100);
+    background-color: rgb(100, 100, 100);  /* Align with database.css, database.js */
     color: white;
     border-radius: calc(8 * var(--px));
     padding: 0px calc(8 * var(--px));

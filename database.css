@@ -571,7 +571,7 @@ Tags tab
 }
 .tag-previews li {
     font-family: 'DM Sans';
-    background-color: rgb(100, 100, 100);
+    background-color: rgb(100, 100, 100);  /* Align with index.css, database.js */
     color: white;
     padding: 2px 10px;
     border-radius: 15px;

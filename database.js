@@ -77,6 +77,7 @@ function timestampToSeconds(timestamp) {
         throw new Error(timestamp);
     }
 }
+// Convert time in seconds to HH:MM:SS
 function secondsToTimestamp(seconds) {
     if (seconds < 60 * 60) {
         const m = String(Math.floor(seconds / 60));
@@ -88,16 +89,21 @@ function secondsToTimestamp(seconds) {
     const s = String(seconds % 60);
     return `${h}:${m.padStart(2, '0')}:${s.padStart(2, '0')}`;
 }
+// Capitalize the first letter of every word (space-separated) in the string
 function capitalize(str) {
     if (!str) return str;
     return str.split(' ').map(x => x[0].toUpperCase() + x.slice(1)).join(' ');
 }
 function rgbToHex(r, g, b) {
-    return "#" + [r, g, b].map(value => value.toString(16).padStart(2, "0")).join("").toUpperCase();
+    const hex = [r, g, b].map(value => value.toString(16).padStart(2, "0")).join("").toUpperCase();
+    return `#${hex}`;
 }
 function hexToRgb(hex) {
     hex = hex.replace(/^#/, "");
-    return [parseInt(hex.slice(0, 2), 16), parseInt(hex.slice(2, 4), 16), parseInt(hex.slice(4, 6), 16)];
+    const r = parseInt(hex.slice(0, 2), 16);
+    const g = parseInt(hex.slice(2, 4), 16);
+    const b = parseInt(hex.slice(4, 6), 16);
+    return [r, g, b];
 }
 function hsvToRgb(h, s = 1, v = 1) {
     h = (h % 1 + 1) % 1; // ensure wrap-around 0..1
@@ -148,6 +154,7 @@ function rgbToHsv(r, g, b) {
 function isSubstring(parent, child) {
     return parent.toLowerCase().includes(child.toLowerCase());
 }
+// Mutate oldObj to become newObj  
 function reassignObject(oldObj, newObj) {
     for (const key in oldObj) {
         delete oldObj[key];
@@ -159,10 +166,12 @@ function reassignObject(oldObj, newObj) {
         }
     }
 }
+// Mutate oldList to become newList
 function reassignList(oldList, newList) {
     oldList.length = 0;
     oldList.push(...newList);
 }
+// Parse a youtube video, returning a shortform URL if the parse succeeds
 function parseYoutubeVideo(url) {
     const regex = /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
     const match = url.match(regex);
@@ -176,6 +185,21 @@ function parseYoutubeVideo(url) {
 /*********************************************************************
 Data
 *********************************************************************/
+/**
+ * Abstraction layer for interacting with data.
+ * The inner list should never be directly modified 
+ * @template T
+ * @param {T[]} list 
+ * @returns {{
+ *  length: () => number;
+ *  getAll: () => T[];
+ *  get: (id: number) => T;
+ *  set: (id: number, fields: Partial<T>) => void;
+ *  insert: (T) => void;
+ *  delete: (id: number) => void;
+ *  resetData: (newList: T[]) => void;
+ * }}
+ */
 function getDataApi(list) {
     let map = new Map(list.map(x => [x.id, x]));
     return {
@@ -187,7 +211,6 @@ function getDataApi(list) {
         },
         insert: (data) => {
             map.set(data.id, data);
-            list.push(data);
         },
         delete: (id) => {
             map.delete(id);
@@ -197,12 +220,16 @@ function getDataApi(list) {
             map = new Map(list.map(x => [x.id, x]));
         }
     } 
-} 
+}
+
 function getEventsApi() {
     const api = {
         ...getDataApi(EVENTS),
         addToSetlist(eventId, musicId) {
             const event = api.get(eventId);
+            if (!event) {
+                throw new Error(eventId, musicId);
+            }
             if (!event.setlist) {
                 event.setlist = [];
             }
@@ -211,6 +238,9 @@ function getEventsApi() {
         removeFromSetlist(eventId, musicId) {
             // Scales poorly but we'll never have >100 songs per concert so who cares
             const event = api.get(eventId);
+            if (!event?.setlist) {
+                return;
+            }
             event.setlist = event.setlist.filter(x => x.id !== musicId);
         }
     }
@@ -236,17 +266,17 @@ function getMusicApi() {
             Object.assign(map.get(id).performances.get(subId), fields);
         },
         insert: (data) => {
-            if (String(data.performances) === '[object Object]') {
+            // data.performances is a Map if copied or an {} if inserted
+            if (!(data.performances instanceof Map)) {
                 data.performances = new Map(data.performances.map(x => [x.id, x]));
             }
             map.set(data.id, data);
-            MUSIC.push(data);
         },
         insertSubrow: (id, data) => {
             map.get(id).performances.set(data.id, data);
         },
         delete: (id) => {
-            for (const subId in map.get(id).performances) {
+            for (const subId of map.get(id).performances.keys()) {
                 for (const concert of map.get(id).performances.get(subId).concerts) {
                     API.EVENTS.removeFromSetlist(concert, id);
                 }
@@ -273,12 +303,15 @@ function getMusicApi() {
                 return [song.id, song];
             }));
         },
+        // Get a JSON.stringify-able data with no Maps
         getCanonical: () => {
-            return MUSIC.map(song => ({
-                ...song,
-                performances: Array.from(song.performances.values())
-            }));
+            const canonical = [];
+            for (const song of map.values()) {
+                canonical.push({ ...song, performances: Array.from(song.performances.values()) });
+            }
+            return canonical;
         },
+        // Iterate through every performance of every song
         iterateSubrows: function*() {
             for (const [id, song] of map) {
                 for (const [subId, performance] of song.performances) {
@@ -289,6 +322,15 @@ function getMusicApi() {
     }
 }
 
+/**
+ * @param {string[]} list 
+ * @returns {{
+ *  getAll: () => string[];
+ *  index: (name: string) => number;
+ *  add: (name: string) => void;
+ *  resetData: (newList: string[]) => void;
+ * }}
+ */
 function getEnumApi(list) {
     let map = new Map(list.map((x, i) => [x, i]));
     let i = list.length;
@@ -330,6 +372,7 @@ function getCurrentEvent() {
 function setCurrentEvent(kv) {
     Object.assign(CURRENT_EVENT, kv);
 }
+
 function getLinks() {
     return LINKS;
 }
@@ -354,6 +397,10 @@ function getTags() {
 function getTag(name) {
     return TAGS[name ?? cssGetClass('tag-preview-active')[0].innerText];
 }
+/**
+ * Set the active tag's colour given a source of truth and adjust the UI to match.
+ * Optionally modify the TAGS global.
+ */
 function setTag(source, modifyTAGS) {
     function setTagColour(element, rgb) {
         const color = rgb.reduce((a, b) => a + b) / 3 > 128 ? 'black' : 'white';
@@ -379,6 +426,7 @@ function setTag(source, modifyTAGS) {
         })
         TAGS[element.innerText] = [rgb0, rgb1];
     }
+
     const element = cssGetClass('tag-preview-active')[0];
     const left = cssGetId('colour-widget-gradient-left');
     const right = cssGetId('colour-widget-gradient-right');
@@ -406,6 +454,7 @@ function setTag(source, modifyTAGS) {
     }
 }
 
+
 /*********************************************************************
 Toggleables
 *********************************************************************/
@@ -415,6 +464,10 @@ function setActiveClass(element, className) {
     element.classList.add(className);
 }
 
+/**
+ * Sync internal data ordering with the's UI table rows. O(n) time complexity
+ * Run this before destroying tab content or exporting data
+ */
 function reorderTabContent(id) {
     if (id === 'bulletin') {
         TABLE_OPERATIONS['table-announcements'].reorder();
@@ -431,6 +484,10 @@ function reorderTabContent(id) {
     }
 }
 
+/**
+ * Destroy the HTML table in a tab.
+ * Run this after leaving the tab to save memory.
+ */
 function destroyTabContent(id) {
     if (id === 'tags') {
         cssGetId('tag-previews-instruments').replaceChildren();
@@ -460,6 +517,7 @@ function toggleTab(element, forceRefresh) {
     setActiveClass(cssGetId(`tab-${id}`), 'tab-active');
     setActiveClass(cssGetId(`nav-${id}`), 'nav-active');
 
+    // Handle tab deletion/creation
     setTimeout(() => {
         reorderTabContent(active.id.slice(4));
         destroyTabContent(active.id.slice(4));
@@ -527,7 +585,7 @@ function toggleTab(element, forceRefresh) {
     TAG_COLOUR_CACHE = undefined;
 }
 
-// If event is given, turn off. Otherwise, toggle normally
+// If event is given, blanket turn off all modals. Otherwise, close the current modal.
 function closeModals(event) {
     if (event) {
         const modals = cssGetClass('modal');
@@ -595,7 +653,7 @@ function toggleAnnouncementType(element) {
 
 let TAG_COLOUR_CACHE;
 let TAG_IS_GRADIENT_MODE;
-const DEFAULT_TAG_COLOUR = [100, 100, 100];
+const DEFAULT_TAG_COLOUR = [100, 100, 100]; // Align with index.js, database.css
 
 /**
  * Toggle colour picker between solid/gradient mode
@@ -640,12 +698,14 @@ function clickAggregateCheckbox(element) {
         ROW_SELECTION[tableId] = new Set();
     }
     if (element.checked) {
+        // Check all rows in the table
         for (const row of cssGetAll(`#${tableId} > div > table > tbody > tr:not(.subtable-row)`)) {
             ROW_SELECTION[tableId].add(row.id.split('-').at(-1));
             row.querySelector('td:first-child input').checked = true;
         }
         toggleSubrowSelectionEnabled(false, tableId);
     } else {
+        // Uncheck all rows in the table
         ROW_SELECTION[tableId].clear();
         for (const row of cssGetAll(`#${tableId} > div > table > tbody > tr:not(.subtable-row)`)) {
             row.querySelector('td:first-child input').checked = false;
@@ -759,6 +819,9 @@ function isSubrow(tr) {
     return tr?.classList.contains('subtable-row');
 }
 
+/**
+ * Update what toolbar buttons are enabled based on the current selection
+ */
 function updateTableToolbar(isSubrow, tableId) {
     const set = isSubrow ? SUBROW_SELECTION : ROW_SELECTION;
     if (!set[tableId]) {
@@ -776,6 +839,7 @@ function updateTableToolbar(isSubrow, tableId) {
         }
     };
 
+    // Enable/disable button based on selection size
     toggleClassBy(`#${tableId} .table-toolbar-remove`, setSize >= 1);
     toggleClassBy(`#${tableId} .table-toolbar-add`, setSize <= 1);
     toggleClassBy(`#${tableId} .table-toolbar-move-up`, setSize >= 1);
@@ -788,6 +852,10 @@ function updateTableToolbar(isSubrow, tableId) {
         updateAggregatedCheckbox(tableId, setSize);
     }
 }
+
+/**
+ * Update the aggregated checkbox to reflect what rows are checked
+ */
 function updateAggregatedCheckbox(tableId, setSize) {
     let aggregatedCheckbox;
     try {
@@ -807,6 +875,10 @@ function updateAggregatedCheckbox(tableId, setSize) {
     }
 }
 
+/**
+ * Get the currently selected row/subrow and active table 
+ * Helper function for table toolbar operations
+ */
 function getTableToolbarContext(element, asSelectionList) {
     const tableId = element.closest('.table').id;
     const isSubrow = SUBROW_SELECTION[tableId]?.size > 0;
@@ -897,12 +969,18 @@ function imageAnchorDown(element) {
     IMAGE_ANCHOR = element;
     imageAnchorMove();
 }
+/**
+ * Move the image anchor to the current mouse position
+ */
 function imageAnchorMove() {
     if (!IMAGE_ANCHOR) return;
     const crosshair = IMAGE_ANCHOR.nextElementSibling;
     const { top, left } = IMAGE_ANCHOR.getBoundingClientRect();
     moveImageAnchor(IMAGE_ANCHOR, crosshair, MOUSE_X - left, MOUSE_Y - top);
 }
+/**
+ * Move the image anchor (crosshair) for a given image to a specific x/y position (pixels)
+ */
 function moveImageAnchor(img, crosshair, x, y) {
     const { top, left, width, height } = img.getBoundingClientRect();
     const offsetX = clamp(x, 0, width);
@@ -951,7 +1029,7 @@ const hoverHelperText = (() => {
             setHelperText();
         }
     }
-})()
+})();
 
 let MOUSE_X, MOUSE_Y, MOUSE_DOWN;
 function onMouseMove(event) {
@@ -973,8 +1051,11 @@ function onMouseMove(event) {
 }
 function onMouseDown(down) {
     MOUSE_DOWN = down;
+
     if (!down) {
         PICKER_MODE = undefined;
+        
+        // Sync image anchor
         if (IMAGE_ANCHOR !== undefined) {
             syncData(IMAGE_ANCHOR);
         }
@@ -986,7 +1067,7 @@ function onMouseDown(down) {
 /*********************************************************************
 Colour picker widget
 *********************************************************************/
-let PICKER_MODE;
+let PICKER_MODE;  // The colour picker widget currently being used (colour or hue)
 let LAST_VALID_COLOUR = DEFAULT_TAG_COLOUR;
 let COLOUR_PICKER_PRIMARY = [255, 0, 0];
 function pickColourMouseDown(event) {
@@ -1029,11 +1110,11 @@ function getCurrentPickerXY() {
     
     let left = parseFloat(circle.style.left);
     if (isNaN(left)) {
-        left = rect.left;
+        left = 0;
     }
     let top = parseFloat(circle.style.top);
     if (isNaN(top)) {
-        top = rect.top;
+        top = 0;
     }
 
     return [left / rect.width, top / rect.height];
@@ -1067,7 +1148,7 @@ function moveColourPicker(x, y) {
 function syncTagInputsFromSource(source) {
     let r, g, b;
 
-    if (source.hue) {
+    if (source.hue !== undefined) {
         assert(typeof source.hue === 'number' && source.hue >= 0 && source.hue <= 1, source.hue);
         COLOUR_PICKER_PRIMARY = hsvToRgb(source.hue, 1, 1);
         [r, g, b] = xyToRgb(...getCurrentPickerXY());
@@ -1117,7 +1198,7 @@ function syncTagInputsFromSource(source) {
 function updateHueFromPicker() {
     const container = cssGetId('colour-widget-hue');
     const rect = container.getBoundingClientRect();
-    const hue = clamp((event.clientX - rect.left) / rect.width, 0, 1);
+    const hue = clamp((MOUSE_X - rect.left) / rect.width, 0, 1);
     
     syncTagInputsFromSource({ hue });
 }
@@ -1126,8 +1207,8 @@ function updateHueFromPicker() {
 function updateColourFromPicker() {
     const container = cssGetId('colour-widget-picker');
     const rect = container.getBoundingClientRect();
-    const x = clamp((event.clientX - rect.left) / rect.width, 0, 1);
-    const y = clamp((event.clientY - rect.top) / rect.height, 0, 1);
+    const x = clamp((MOUSE_X - rect.left) / rect.width, 0, 1);
+    const y = clamp((MOUSE_Y - rect.top) / rect.height, 0, 1);
 
     syncTagInputsFromSource({ xy: [x, y] });
 }
@@ -1247,13 +1328,14 @@ function onDrop(element) {
     const draggedIndex = rows.indexOf(CURR_DRAGGING);
     const targetIndex = rows.indexOf(tr);
 
+    // Move the row
     if (draggedIndex < targetIndex) {
         tr.after(CURR_DRAGGING);
     } else {
         tr.before(CURR_DRAGGING);
     }
 
-    // Create/delete intermission adder
+    // Create/delete the intermission-adder line
     for (const row of [tr, CURR_DRAGGING, tbody.lastElementChild]) {
         if (row.sectionRowIndex === tbody.children.length - 1) {
             if (row.lastElementChild.classList.contains('draggable-list-inserter')) {
@@ -1419,6 +1501,7 @@ function toggleShowInputSuggestion(suggestions, show) {
     cssSetElement(suggestions, { display: show ? 'flex' : 'none' });
 }
 
+// Extract ID from a string that contains "(#ID)"
 function extractId(text) {
     return Number(text.slice(text.indexOf('(#') + 2, text.indexOf(')')))
 }
@@ -1429,8 +1512,6 @@ function extractSuggestionId(suggestion) {
 
 /**
  * If there is only one possible suggestion or an exact match, retrieve its id and value
- * strictness = 1 -> only find exact matches
- * strictness = 0 -> do not find matches
  */
 function getSuggestionIfExists(inputContainer, input, newValue) {
     const strictness = inputStrictness(input);
@@ -1650,7 +1731,8 @@ function duplicateInstrumentExists(inputContainer, newValue) {
     const instruments = API.INSTRUMENTS.getAll();
     const existingInstruments = new Set(Array.from(datalist.children).map(x => {
         const value = x.children[1].children[0].children[0].children[2].value;
-        return parseInt(value, 10) ? instruments[parseInt(value, 10)] : value;
+        const ind = parseInt(value, 10);
+        return isNaN(ind) ? value : instruments[ind];
     }));
     return existingInstruments.has(newValue);
 } 
@@ -1850,7 +1932,7 @@ Input syncing
 function parseInnerHTML(text) {
     const paragraphs = [];
 
-    let i = text.search('<div>|<br>');
+    let i = text.search(/<div>|<br>/);
     while (i >= 0) {
         if (i === 0) {
             if (text.startsWith('<br>')) {
@@ -1873,7 +1955,7 @@ function parseInnerHTML(text) {
                 text = text.slice(4);
             }
         }
-        i = text.search('<div>|<br>');
+        i = text.search(/<div>|<br>/);
     }
     if (text) paragraphs.push(...text.split("<br>"));
     return paragraphs;
@@ -2137,10 +2219,15 @@ function minify(x) {
             for (let i = x.length - 1; i >= 0; i--) {
                 const v = x[i];
 
-                if (v === undefined || v === null || v === '') {
+                if (v === undefined || v === null) {
                     x.splice(i, 1);
                     continue;
                 }
+                // Keep empty strings in lists
+                // if (v === undefined || v === null || v === '') {
+                //     x.splice(i, 1);
+                //     continue;
+                // }
 
                 if (typeof v === 'object') {
                     _minify(v, depth + 1);
@@ -2231,12 +2318,16 @@ function sanityCheckData() {
             return `No performers for '${music.name}' (#${id}) in subrow #${subId}`;
         if (p.references?.some(x => x.includes('spotify.com')))
             return `Spotify reference link in '${music.name}'. Please use a website with publicly-accessible songs.`
-        Object.values(p.performers).forEach(x => {
+        for (const x of Object.values(p.performers)) {
             const i = parseInt(x, 10);
             if (!isNaN(i)) {
                 notPerformed.delete(i);
             }
-        });
+        };
+        for (const id of p.concerts ?? []) {
+            const event = API.EVENTS.get(id);
+            if (!event) return `Song '${music.name}' (#${id}) is played at an invalid event (#${id})`;
+        }
     }
     if (notPerformed.size > 0) {
         const members = Array.from(notPerformed).map(x => {
@@ -2248,7 +2339,7 @@ function sanityCheckData() {
 
     for (const event of API.EVENTS.getAll()) {
         if (!event.name)
-            return `Event in row #${id} has no name`;
+            return `Event in row #${event.id} has no name`;
         if (!event.location)
             return `Event '${event.name}' (#${event.id}) has no location`;
         if (!event.start)
@@ -2259,12 +2350,16 @@ function sanityCheckData() {
             return `Event '${event.name}' (#${event.id}) has a setlist page, so it needs a poster image`;
         if (event.setlistTheme && !event.address)
             return `Event '${event.name}' (#${event.id}) has a setlist page, so it needs an address`;
-        if (event.type === 'Concert' && event.setlist.length === 0) {
+        if (event.type === 'Concert' && event.setlist?.length === 0) {
             console.warn(`Concert '${event.name}' (#${event.id}) has an empty setlist`);
         }
         if (event.poster) {
             const err = validateAsset(event.poster);
             if (err) return `Event '${event.name}' (#${event.id}): ${err}`;
+        }
+        for (const { id } of event.setlist ?? []) {
+            const music = API.MUSIC.get(id);
+            if (!music) return `Event '${event.name}' (#${event.id}) has a setlist entry for an invalid song (#${id})`;
         }
     }
     
@@ -2277,10 +2372,13 @@ function sanityCheckData() {
     }
 
     for (const upcoming of API.UPCOMING_EVENTS.getAll()) {
-        if (typeof upcoming.eventId !== 'number') {
+        if (typeof upcoming.eventId !== 'number')
             return `Upcoming event in row #${upcoming.id} has no event`;
-        }
+        if (!upcoming.image)
+            return `Upcoming event in row #${upcoming.id} has no image`;
         const err = validateAsset(upcoming.image, true);
+        const event = API.EVENTS.get(upcoming.eventId);
+        if (!event) return `Upcoming event in row #${upcoming.id} refers to an invalid event (#${upcoming.eventId})`;
         if (err) return `Upcoming event '${event.name}' (#${event.id}): ${err}`;
     }
 
@@ -2414,7 +2512,7 @@ function remapForeignKeyIndices() {
     // Remap member/event indices
     for (const song of music) {
         for (const p of song.performances) {
-            p.concerts = p.concerts.map(ind => newEventIndices[ind] ?? ind);  // temporary
+            p.concerts = p.concerts?.map(ind => newEventIndices[ind] ?? ind) ?? [];  // temporary
             p.arrangers = p.arrangers?.map(ind => newMemberIndices[ind] ?? ind);
             p.performers = Object.fromEntries(
                 Object.entries(p.performers).map(([instrument, members]) => [
@@ -2424,13 +2522,23 @@ function remapForeignKeyIndices() {
             );
         }
     };
+    const currentEvent = structuredClone(getCurrentEvent());
+    currentEvent.id = newEventIndices[getCurrentEvent().id]
+
+    const oldUpcomingEvents = API.UPCOMING_EVENTS.getAll();
+    const newUpcomingEvents = oldUpcomingEvents.map(x => ({ ...x, eventId: newEventIndices[x.eventId] }));
+
+    const execPictures = {};
+    for (const [id, link] of Object.entries(getExecPictures())) {
+        execPictures[newMemberIndices[id]] = link;
+    }
 
     // Remap song indices
     for (const event of events) {
         event.setlist = event.setlist?.map(x => ({ ...x, id: newMusicIndices[x.id] }));
     }
 
-    return { members, music, events, instruments: newInstruments, roles: newRoles };
+    return { members, music, events, instruments: newInstruments, roles: newRoles, upcomingEvents: newUpcomingEvents, currentEvent, execPictures };
 }
 
 function exportData() {
@@ -2441,7 +2549,7 @@ function exportData() {
 
     reorderTabContent(cssGetClass('tab-active')[0].id.slice(4));
 
-    const { members, music, events, instruments, roles } = remapForeignKeyIndices();
+    const { members, music, events, instruments, roles, upcomingEvents, currentEvent, execPictures } = remapForeignKeyIndices();
 
     const text = getExportCodeTemplate({
         tags: getTags(),
@@ -2449,12 +2557,12 @@ function exportData() {
         instruments,
         links: getLinks(),
         resources: API.RESOURCES.getAll(),
-        currentEvent: getCurrentEvent(),
+        currentEvent: currentEvent,
         carousel: API.CAROUSEL.getAll(),
         gallery: API.GALLERY.getAll(),
-        execPictures: getExecPictures(),
+        execPictures: execPictures,
         announcements: API.ANNOUNCEMENTS.getAll(),
-        upcomingEvents: API.UPCOMING_EVENTS.getAll(),
+        upcomingEvents: upcomingEvents,
         members,
         music,
         events,
@@ -2480,6 +2588,10 @@ async function importData(element) {
             reassignObject(CURRENT_EVENT, JSON.parse(value));
         } else if (name === 'CAROUSEL') {
             reassignList(CAROUSEL, JSON.parse(value));
+        } else if (name === 'EXEC_PICTURES') {
+            reassignObject(EXEC_PICTURES, JSON.parse(value));
+        } else if (name === 'LINKS') {
+            reassignObject(LINKS, JSON.parse(value));
         } else {
             const data = JSON.parse(value);
             if (data.length >= 1 && String(data[0]) === '[object Object]') {
@@ -3096,7 +3208,7 @@ function construct(json) {
             element.appendChild(construct(child));
         }
     }
-    if (json.value) {
+    if (json.value !== undefined && json.value !== null) {
         element.value = json.value;
     }
     return element;
@@ -3636,7 +3748,7 @@ function constructTableWithSubrows(tableId, api, templateData, templateSubdata, 
             scroller.scrollTop = scrollPosition;
 
             // Show already-checked subrows & refresh checkbox restrictions
-            const rowsToShow = Array.from(SUBROW_SELECTION[tableId] ?? []).map(id => id.slice('-')[0]);
+            const rowsToShow = Array.from(SUBROW_SELECTION[tableId] ?? []).map(id => id.split('-')[0]);
             if (rowsToShow.length > 0) {
                 toggleRowSelectionEnabled(false, tableId);
                 for (const id of new Set(rowsToShow)) {
@@ -3863,9 +3975,9 @@ function constructTableWithSubrows(tableId, api, templateData, templateSubdata, 
                 if (moveTop) {
                     row.after(fragment);
                 } else {
-                    const nextId = Number(rowId) + 1;
-                    if (tree[nextId]) {
-                        cssGetId(`${tableId}-${nextId}`).before(fragment);
+                    const nextRow = table.children[row.sectionRowIndex + tree[rowId].children.length + 1];
+                    if (nextRow) {
+                        nextRow.before(fragment);
                     } else {
                         table.appendChild(fragment);
                     }
@@ -3974,12 +4086,12 @@ function constructUpcomingEvents() {
             'assets/icons/events-filled.svg',
             'Select by name...',
             API.EVENTS.get(x.eventId)?.name ?? '',
-            x.id,
+            x.eventId,
             'event'
         )]
     }, {
         element: 'td',
-        children: createInputsStartEnd(x, 'date', 'from', 'to')
+        children: createInputsStartEnd(x, 'date', 'from', 'until')
     }, {
         element: 'td',
         attributes: INPUT_ATTRIBUTES.asset,
@@ -4013,6 +4125,11 @@ function constructCurrentEvent() {
     cssGetId('current-event-setlist').innerText = setlistLink;
     cssGetId('current-event-tickets').innerText = tickets;
     cssGetId('current-event-rvsp').innerText = rvsp;
+
+    const preEvent = cssGetId('pre-event-description');
+    preEvent.lastElementChild.innerHTML = renderInnerHTML(preEventDescription);
+    const postEvent = cssGetId('post-event-description');
+    postEvent.lastElementChild.innerHTML = renderInnerHTML(postEventDescription);
 }
 
 
@@ -4023,7 +4140,7 @@ function renderInnerHTML(paragraphs) {
     if (paragraphs?.length === 1 && paragraphs[0] === '') {
         return '<br>';
     }
-    return paragraphs?.map(x => `<div>${parseMarkdown(x)}</div>`).join("");
+    return paragraphs?.map(x => `<div>${parseMarkdown(x)}</div>`).join("") ?? '';
 }
 function constructFaq() {
     const template = {
@@ -4113,6 +4230,13 @@ function constructMembers() {
     }
 
     const deleteChecker = (ids) => {
+        const idSet = new Set(ids);
+        for (const id in getExecPictures()) {
+            if (idSet.has(id)) {
+                const member = API.MEMBERS.get(Number(id));
+                return `Cannot delete member '${member.name}' (#${id}) who has an exec pic`;
+            }
+        }
         for (const [, , x, p] of API.MUSIC.iterateSubrows()) {
             const performers = new Set(Object.values(p.performers).flat());
             const arrangers = new Set(p.arrangers);
@@ -4249,11 +4373,12 @@ function constructMusicTable() {
             const arrangerTags = trs[4].lastElementChild.children[0];
             const concerts = Array.from(concertTags.children).slice(0, -1).map(x => extractId(x.children[1].innerText));
             const arrangers = Array.from(arrangerTags.children).slice(0, -1).map(x => extractId(x.children[1].innerText));
-            
+            const type = trs[3].lastElementChild.children[0].value;
+            const songType = type === 'Large Ensemble' ? 'Large' : type === 'Small Ensemble' ? 'Small' : 'External';
             API.MUSIC.setSubrow(id, subIds, {
                 id: subIds,
                 concerts,
-                songType: trs[3].lastElementChild.children[0].value,
+                songType,
                 sheetMusic: trs[2].lastElementChild.innerText,
                 arrangers,
                 link: trs[1].lastElementChild.innerText,
@@ -4383,7 +4508,12 @@ function constructEventTable() {
     }
 
     const deleteChecker = (ids) => {
-        for (const [, , , p] of API.MUSIC.iterateSubrows()) {
+        const currentEvent = getCurrentEvent();
+        if (ids.includes(String(currentEvent.id))) {
+            const event = API.EVENTS.get(currentEvent.id);
+            return `Cannot delete the current event '${event.name}' (#${event.id})`;
+        }
+        for (const [, , x, p] of API.MUSIC.iterateSubrows()) {
             const concerts = new Set(Object.values(p.concerts));
             for (const id of ids.map(Number)) {
                 if (concerts.has(id)) {
@@ -4483,7 +4613,7 @@ function getTagColourStyle(name) {
             const [r, g, b] = rgbs[0];
             return { color, 'background-color': `rgb(${r}, ${g}, ${b})` }
         } else {
-            throw new Error(background);
+            throw new Error(rgbs);
         }
     }
     return {};
