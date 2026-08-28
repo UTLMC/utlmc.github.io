@@ -6264,7 +6264,7 @@ const EVENTS = [
         "type": "Concert",
         "name": "UT-SAMA 20th Anniversary Event",
         "location": "UTSU Student Commons",
-        "address": "252 Bloor Street West",
+        "address": "230 College Street, Toronto",
         "description": [
             ""
         ],
@@ -6312,14 +6312,14 @@ const EVENTS = [
         "type": "Concert",
         "name": "October 2024 Concert",
         "location": "The Cat's Eye",
-        "address": "252 Bloor Street West",
+        "address": "150 Charles Street West, Toronto",
         "description": [
             ""
         ],
         "start": "2024-10-04|19:30",
         "end": "2024-10-04|20:30",
         "video": "https://youtu.be/JtuPSpsSQYk",
-        "poster": "assets/images/posters/poster 2024-10.webp",
+        "poster": "assets/images/posters/concert 2024-10.webp",
         "setlist": [
             {
                 "id": 3,
@@ -6357,19 +6357,21 @@ const EVENTS = [
                 "id": 10
             }
         ],
-        setlistTheme: 'Light Cold',
+        setlistTheme: 'Dark Cold',
     },
     {
         "id": 3,
         "type": "Concert",
         "name": "End of Fall 2024 Concert",
         "location": "The Cat's Eye",
+        "address": "150 Charles Street West, Toronto",
         "description": [
             ""
         ],
         "start": "2025-01-24|19:00",
         "end": "2025-01-24|20:30",
         "video": "https://youtu.be/TiStCNPn10s",
+        "poster": "assets/images/posters/concert 2025-01.webp",
         "setlist": [
             {
                 "id": 13
@@ -6426,7 +6428,7 @@ const EVENTS = [
                 "id": 27
             }
         ],
-        setlistTheme: 'Dark Cold',
+        setlistTheme: 'Dark Warm',
     },
     {
         "id": 4,
@@ -6446,6 +6448,7 @@ const EVENTS = [
         "type": "Workshop",
         "name": "Music Production Workshop 2025",
         "location": "OISE 2279",
+        "address": '252 Bloor Street West, Toronto',
         "description": [
             "???"
         ],
@@ -6458,6 +6461,7 @@ const EVENTS = [
         "type": "Other",
         "name": "Blind Test 2025",
         "location": "OISE C-154",
+        "address": "252 Bloor Street West, Toronto",
         "description": [
             "???"
         ],
@@ -6470,12 +6474,14 @@ const EVENTS = [
         "type": "Concert",
         "name": "End of Winter 2025 Concert",
         "location": "OISE G-162",
+        "address": "252 Bloor Street West, Toronto",
         "description": [
             "???"
         ],
         "start": "2025-04-07|19:00",
         "end": "2025-04-07|20:30",
         "video": "https://youtu.be/k1CZLnxSWDc",
+        "poster": "assets/images/posters/concert 2025-04.webp",
         "setlist": [
             {
                 "id": 30,
@@ -6554,13 +6560,14 @@ const EVENTS = [
                 "seconds": 5442
             }
         ],
-        setlistTheme: 'Dark Warm',
+        setlistTheme: 'Light Cold',
     },
     {
         "id": 8,
         "type": "Workshop",
         "name": "Arranging Workshop 2025",
         "location": "OISE C-154",
+        "address": "252 Bloor Street West, Toronto",
         "description": [
             "???"
         ],
@@ -6591,12 +6598,14 @@ const EVENTS = [
         "type": "Concert",
         "name": "End of Fall 2025 Concert",
         "location": "OISE G-162",
+        "address": "252 Bloor Street West, Toronto",
         "description": [
             "???"
         ],
         "start": "2025-11-29|18:00",
         "end": "2025-11-29|21:00",
         "video": "https://youtu.be/wuObU4_nbtI",
+        "poster": "assets/images/posters/concert 2025-11.webp",
         "setlist": [
             {
                 "id": 51,
@@ -6728,8 +6737,10 @@ const EVENTS = [
         "description": [
             "???"
         ],
+        "address": "252 Bloor Street West, Toronto",
         "start": "2026-03-06|18:00",
         "end": "2026-03-06|21:00",
+        "poster": "assets/images/posters/concert 2026-03.webp",
         "setlist": [
             {
                 "id": 74,
@@ -6810,11 +6821,13 @@ const EVENTS = [
         "type": "Concert",
         "name": "Succession 2026 Concert",
         "location": "OISE G-162",
+        "address": "252 Bloor Street West, Toronto",
         "description": [
             "???"
         ],
         "start": "2026-04-05|17:00",
         "end": "2026-04-05|20:00",
+        "poster": "assets/images/posters/concert 2026-04.webp",
         "setlist": [
             {
                 "id": 95

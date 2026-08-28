@@ -292,7 +292,6 @@ Subtitle banner
     margin-top: 50px;
     margin-bottom: 50px;
     font-variant: small-caps;
-    font-size-adjust: 0.48;
     position: relative;
     color: var(--text-color-bw);
 }
@@ -305,7 +304,7 @@ Subtitle banner
 }
 #intro-subtitle:before, #intro-subtitle:after {
     --height: 10px;
-    --spacing: 140px;
+    --spacing: 150px;
     position: absolute;
     content: '';
     height: calc(100% + var(--height));

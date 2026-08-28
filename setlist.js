@@ -387,7 +387,7 @@ function constructSetlist() {
 function getDefaultConcert() {
     const concert = EVENTS[CURRENT_EVENT.id];
     if (!concert?.setlistTheme) {
-        return;
+        return EVENTS.findLast(x => x.setlistTheme);
     }
     return concert;
 }

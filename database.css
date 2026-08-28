@@ -991,6 +991,8 @@ Datalist tags
     opacity: 0.8;
     background-color: unset !important;
     cursor: pointer;
+}
+.taglist-add:not(.taglist-add-clicked) {
     aspect-ratio: 1;
 }
 .taglist-add:not(.taglist-add-clicked):hover {
@@ -1507,6 +1509,13 @@ Modal setlist
 .draggable-list tr td:nth-child(6):before {
     opacity: 0.3;
     cursor: text;
+}
+.draggable-list tr:not(.concert-setlist-intermission) td:nth-child(3) {
+    text-wrap: balance;
+}
+.draggable-list tr:not(.concert-setlist-intermission) td:nth-child(3),
+.draggable-list tr:not(.concert-setlist-intermission) td:nth-child(4) {
+    min-width: 200px;
 }
 .draggable-list tr:not(.concert-setlist-intermission) td:nth-child(4):empty:before { content: 'Setlist description...'; }
 .draggable-list tr:not(.concert-setlist-intermission) td:nth-child(5):empty:before { content: '??:??'; }
