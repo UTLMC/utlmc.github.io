@@ -1,100 +1,457 @@
 const TAGS = {
-    'Executive': [[47, 7, 67], [65, 41, 90]],
-    'Assistant Executive': [[47, 7, 67], [65, 41, 90]],
-    'Logistics': [[47, 7, 67], [65, 41, 90]],
-    'Arranger': [[47, 7, 67], [65, 41, 90]],
-    'Artist': [[47, 7, 67], [65, 41, 90]],
-    'Website': [[47, 7, 67], [65, 41, 90]],
-    'OG': [[137, 33, 107], [218, 68, 83]],
-
-    'Ukulele': [[255, 150, 150], [255, 100, 100]],
-    'Acoustic Guitar': [[255, 150, 150], [255, 100, 100]],
-    'Electric Guitar': [[255, 150, 150], [255, 100, 100]],
-    'Bass Guitar': [[255, 150, 150], [255, 100, 100]],
-
-    'Voice': [[255, 255, 255]],
-    'Electric Piano': [[255, 255, 255]],
-    'Piano': [[255, 255, 255]],
-    'Drums': [[255, 255, 255]],
-    
-    'Trumpet': [[255, 255, 110], [255, 240, 160]],
-    'Trombone': [[255, 255, 110], [255, 240, 160]],
-    
-    'Violin': [[250, 180, 50], [230, 130, 50]],
-    'Cello': [[250, 180, 50], [230, 130, 50]],
-    'Double Bass': [[250, 180, 50], [230, 130, 50]],
-
-    'Piccolo': [[180, 180, 180]],
-    'Recorder': [[180, 180, 180]],
-    'Flute': [[180, 180, 180]],
-    'Oboe': [[50, 50, 50], [40, 60, 50]],
-    'Clarinet': [[50, 50, 50], [40, 60, 50]],
-    'Bass Clarinet': [[50, 50, 50], [40, 60, 50]],
-    'Alto Saxophone': [[220, 190, 70]],
-    'Tenor Saxophone': [[220, 190, 70]],
-    'Baritone Saxophone': [[220, 190, 70]],
+    "Executive": [
+        [
+            47,
+            7,
+            67
+        ],
+        [
+            65,
+            41,
+            90
+        ]
+    ],
+    "Assistant Executive": [
+        [
+            47,
+            7,
+            67
+        ],
+        [
+            65,
+            41,
+            90
+        ]
+    ],
+    "Logistics": [
+        [
+            47,
+            7,
+            67
+        ],
+        [
+            65,
+            41,
+            90
+        ]
+    ],
+    "Arranger": [
+        [
+            47,
+            7,
+            67
+        ],
+        [
+            65,
+            41,
+            90
+        ]
+    ],
+    "Artist": [
+        [
+            47,
+            7,
+            67
+        ],
+        [
+            65,
+            41,
+            90
+        ]
+    ],
+    "Website": [
+        [
+            47,
+            7,
+            67
+        ],
+        [
+            65,
+            41,
+            90
+        ]
+    ],
+    "OG": [
+        [
+            137,
+            33,
+            107
+        ],
+        [
+            218,
+            68,
+            83
+        ]
+    ],
+    "Ukulele": [
+        [
+            255,
+            150,
+            150
+        ],
+        [
+            255,
+            100,
+            100
+        ]
+    ],
+    "Acoustic Guitar": [
+        [
+            255,
+            150,
+            150
+        ],
+        [
+            255,
+            100,
+            100
+        ]
+    ],
+    "Electric Guitar": [
+        [
+            255,
+            150,
+            150
+        ],
+        [
+            255,
+            100,
+            100
+        ]
+    ],
+    "Bass Guitar": [
+        [
+            255,
+            150,
+            150
+        ],
+        [
+            255,
+            100,
+            100
+        ]
+    ],
+    "Voice": [
+        [
+            255,
+            255,
+            255
+        ]
+    ],
+    "Electric Piano": [
+        [
+            255,
+            255,
+            255
+        ]
+    ],
+    "Piano": [
+        [
+            255,
+            255,
+            255
+        ]
+    ],
+    "Drums": [
+        [
+            255,
+            255,
+            255
+        ]
+    ],
+    "Trumpet": [
+        [
+            255,
+            255,
+            110
+        ],
+        [
+            255,
+            240,
+            160
+        ]
+    ],
+    "Trombone": [
+        [
+            255,
+            255,
+            110
+        ],
+        [
+            255,
+            240,
+            160
+        ]
+    ],
+    "Violin": [
+        [
+            250,
+            180,
+            50
+        ],
+        [
+            230,
+            130,
+            50
+        ]
+    ],
+    "Cello": [
+        [
+            250,
+            180,
+            50
+        ],
+        [
+            230,
+            130,
+            50
+        ]
+    ],
+    "Double Bass": [
+        [
+            250,
+            180,
+            50
+        ],
+        [
+            230,
+            130,
+            50
+        ]
+    ],
+    "Piccolo": [
+        [
+            180,
+            180,
+            180
+        ]
+    ],
+    "Recorder": [
+        [
+            180,
+            180,
+            180
+        ]
+    ],
+    "Flute": [
+        [
+            180,
+            180,
+            180
+        ]
+    ],
+    "Oboe": [
+        [
+            50,
+            50,
+            50
+        ],
+        [
+            40,
+            60,
+            50
+        ]
+    ],
+    "Clarinet": [
+        [
+            50,
+            50,
+            50
+        ],
+        [
+            40,
+            60,
+            50
+        ]
+    ],
+    "Bass Clarinet": [
+        [
+            50,
+            50,
+            50
+        ],
+        [
+            40,
+            60,
+            50
+        ]
+    ],
+    "Alto Saxophone": [
+        [
+            220,
+            190,
+            70
+        ]
+    ],
+    "Tenor Saxophone": [
+        [
+            220,
+            190,
+            70
+        ]
+    ],
+    "Baritone Saxophone": [
+        [
+            220,
+            190,
+            70
+        ]
+    ],
+    "Lead Executive": [
+        [
+            47,
+            7,
+            67
+        ],
+        [
+            65,
+            41,
+            90
+        ]
+    ],
+    "Outreach": [
+        [
+            47,
+            7,
+            67
+        ],
+        [
+            65,
+            41,
+            90
+        ]
+    ],
+    "Backend": [
+        [
+            47,
+            7,
+            67
+        ],
+        [
+            65,
+            41,
+            90
+        ]
+    ]
 };
 
+const ROLES = [
+    "Executive (23)",
+    "Executive (23/24)",
+    "Executive (23/25)",
+    "Executive (25)",
+    "Executive (24)",
+    "Assistant Executive (26)",
+    "Assistant Executive (25)",
+    "Arranger",
+    "Artist",
+    "Backend",
+    "Logistics",
+    "Lead Executive (26)",
+    "Outreach",
+    "Website",
+    "OG"
+];
+
+const INSTRUMENTS = [
+    "Accordion",
+    "Aux Percussion???",
+    "Bagpipes",
+    "Guitar",
+    "Voice",
+    "Piano",
+    "Electric Piano",
+    "Drums",
+    "Acoustic Guitar",
+    "Aux. Percussion???",
+    "Backing Voice",
+    "Bongos",
+    "Ukulele",
+    "Electric Guitar",
+    "Bass Guitar",
+    "Djembe",
+    "Lead Electric Guitar",
+    "Violin",
+    "Cello",
+    "Double Bass",
+    "Piccolo",
+    "Flute",
+    "Lead Voice",
+    "Recorder",
+    "Oboe",
+    "Clarinet",
+    "Bass Clarinet",
+    "Alto Saxophone",
+    "Tenor Saxophone",
+    "Baritone Saxophone",
+    "Harmonica",
+    "Rhythm Electric Guitar",
+    "Shaker",
+    "Theremin",
+    "Triangle",
+    "Trumpet",
+    "Trombone"
+];
+
 const CURRENT_EVENT = {
-    id: 2,
-    rvsp: '#',
-    hideBefore: '2025-01-01|12:24',
-    hideAfter: '2026-09-01|00:00',
-    setlistLink: 'https://utlmc.github.io/setlist',
-    tickets: '$5, pay in-person',
-    preEventDescription: [
-        'The LMC returns this April for its regularly-scheduled end of winter concert, featuring 3 hours of music, XX songs played by XX of our talented musicians!',
+    "id": 2,
+    "rvsp": "#",
+    "hideBefore": "2025-01-01|12:24",
+    "hideAfter": "2026-09-01|00:00",
+    "setlistLink": "https://utlmc.github.io/setlist",
+    "tickets": "$5, pay in-person",
+    "preEventDescription": [
+        "The LMC returns this April for its regularly-scheduled end of winter concert, featuring 3 hours of music, XX songs played by XX of our talented musicians!",
         "We'll be playing songs from j-pop, anime, video games, and more! Find the link to the setlist for the concert here."
     ],
-    postEventDescription: [`Thank you to all performers and audience for a successful April concert! The next season of LMC operations will begin in September 2026.`],
+    "postEventDescription": [
+        "Thank you to all performers and audience for a successful April concert! The next season of LMC operations will begin in September 2026."
+    ]
 };
 
 const ANNOUNCEMENTS = [
     {
-        type: 'alert',
-        text: 'This website is currently under construction — some pages are unfinished and there may be bugs.',
-        from: '2025-01-01',
-        until: '2027-01-01',
+        "type": "alert",
+        "text": "This website is currently under construction — some pages are unfinished and there may be bugs.",
+        "from": "2025-01-01",
+        "until": "2027-01-01"
     },
     {
-        type: 'announcement',
-        text: 'We’re looking for people with experience in drawing, graphic design, audio mixing, or video editing to help us with recording projects! If you have experience, please consider reaching out to XX on XXX!',
-        from: '2025-01-01',
-        until: '2027-01-01',
+        "type": "announcement",
+        "text": "We’re looking for people with experience in drawing, graphic design, audio mixing, or video editing to help us with recording projects! If you have experience, please consider reaching out to XX on XXX!",
+        "from": "2025-01-01",
+        "until": "2027-01-01"
     },
     {
-        type: 'announcement',
-        text: 'The LMC is opening for its 3rd year this 2025-2026 Fall-Winter term! Our first meeting is at XX:XX pm at XXXX on Sept. XX. Come get a better idea of our club. No instruments needed. Click <a href="https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform" target="_blank">this link</a> to become a member!',
-        from: '2025-01-01',
+        "type": "announcement",
+        "text": "The LMC is opening for its 3rd year this 2025-2026 Fall-Winter term! Our first meeting is at XX:XX pm at XXXX on Sept. XX. Come get a better idea of our club. No instruments needed. Click <a href=\"https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform\" target=\"_blank\">this link</a> to become a member!",
+        "from": "2025-01-01"
     }
 ].map((x, i) => ({...x, id: i}));
 
 const UPCOMING_EVENTS = [
-    {   
-        eventId: 0,
-        from: '2025-01-01',
-        until: '2029-01-22',
-        image: 'assets/images/locations/oise.webp'
+    {
+        "eventId": 0,
+        "from": "2025-01-01",
+        "until": "2029-01-22",
+        "image": "assets/images/locations/oise.webp"
     },
     {
-        eventId: 1,
-        from: '2025-01-01',
-        until: '2029-01-22',
-        image: 'assets/images/locations/oise.webp'
+        "eventId": 1,
+        "from": "2025-01-01",
+        "until": "2029-01-22",
+        "image": "assets/images/locations/oise.webp"
     },
     {
-        eventId: 2,
-        from: '2025-01-01',
-        until: '2029-01-22',
-        image: 'assets/images/locations/oise.webp'
-    },
+        "eventId": 2,
+        "from": "2025-01-01",
+        "until": "2029-01-22",
+        "image": "assets/images/locations/oise.webp"
+    }
 ].map((x, i) => ({...x, id: i}));
-
-const ROLES = ["Executive (23)", "Executive (23/24)", "Executive (23/25)", "Executive (25)", "Executive (24)", "Assistant Executive (25)", "Arranger", "Artist", "Logistics", "Website", "OG"];
 
 const MEMBERS = [
     {
-        "id": 0,
         "name": "Stone",
         "joined": "Fall 2023",
         "left": "Fall 2024",
@@ -106,16 +463,14 @@ const MEMBERS = [
             19
         ],
         "roles": [
-            10,
+            14,
             0
         ],
         "links": []
     },
     {
-        "id": 1,
         "name": "alpurposeflour",
         "joined": "Fall 2023",
-        "left": "",
         "instruments": [
             4,
             5,
@@ -124,24 +479,22 @@ const MEMBERS = [
             36
         ],
         "roles": [
+            14,
             10,
-            8,
             1
         ],
         "links": []
     },
     {
-        "id": 2,
         "name": "Sean",
         "joined": "Fall 2023",
-        "left": "",
         "instruments": [
             5,
             17
         ],
         "roles": [
-            10,
-            6,
+            14,
+            7,
             2
         ],
         "links": [
@@ -157,10 +510,8 @@ const MEMBERS = [
         ]
     },
     {
-        "id": 3,
         "name": "Mike",
         "joined": "Winter 2024",
-        "left": "",
         "instruments": [
             4,
             5,
@@ -168,8 +519,8 @@ const MEMBERS = [
             17
         ],
         "roles": [
-            10,
-            6,
+            14,
+            7,
             3
         ],
         "links": [
@@ -184,7 +535,6 @@ const MEMBERS = [
         ]
     },
     {
-        "id": 4,
         "name": "Michelle",
         "joined": "Winter 2024",
         "left": "Fall 2024",
@@ -194,12 +544,11 @@ const MEMBERS = [
             8
         ],
         "roles": [
-            10
+            14
         ],
         "links": []
     },
     {
-        "id": 5,
         "name": "Aedhan",
         "joined": "Winter 2024",
         "left": "Winter 2025",
@@ -207,7 +556,7 @@ const MEMBERS = [
             4
         ],
         "roles": [
-            10,
+            14,
             4
         ],
         "links": [
@@ -219,7 +568,6 @@ const MEMBERS = [
         ]
     },
     {
-        "id": 6,
         "name": "Bryan",
         "joined": "Winter 2024",
         "left": "Winter 2025",
@@ -228,7 +576,7 @@ const MEMBERS = [
             7
         ],
         "roles": [
-            10
+            14
         ],
         "links": [
             [
@@ -239,7 +587,6 @@ const MEMBERS = [
         ]
     },
     {
-        "id": 7,
         "name": "Dimmy",
         "joined": "Winter 2024",
         "left": "Winter 2025",
@@ -247,15 +594,13 @@ const MEMBERS = [
             14
         ],
         "roles": [
-            10
+            14
         ],
         "links": []
     },
     {
-        "id": 8,
         "name": "Inès Alibay",
         "joined": "Winter 2024",
-        "left": "",
         "instruments": [
             4,
             5,
@@ -264,47 +609,41 @@ const MEMBERS = [
             14
         ],
         "roles": [
-            10
+            14
         ],
         "links": []
     },
     {
-        "id": 9,
         "name": "Richard",
         "joined": "Winter 2024",
-        "left": "",
         "instruments": [
             5,
             21
         ],
         "roles": [
-            10,
-            6,
-            9
+            14,
+            7,
+            13
         ],
         "links": []
     },
     {
-        "id": 10,
         "name": "Mellow",
         "joined": "Winter 2024",
-        "left": "",
         "instruments": [
             4,
             35,
             36
         ],
         "roles": [
-            10,
-            7
+            14,
+            8
         ],
         "links": []
     },
     {
-        "id": 11,
         "name": "A. G. Montejo",
         "joined": "Winter 2024",
-        "left": "",
         "instruments": [
             4,
             5,
@@ -315,29 +654,25 @@ const MEMBERS = [
             29
         ],
         "roles": [
-            10,
-            7
+            14,
+            8
         ],
         "links": []
     },
     {
-        "id": 12,
         "name": "Louis Miguel",
         "joined": "Winter 2024",
-        "left": "",
         "instruments": [
             17
         ],
         "roles": [
-            10
+            14
         ],
         "links": []
     },
     {
-        "id": 13,
         "name": "Kai",
         "joined": "Winter 2024",
-        "left": "",
         "instruments": [
             4,
             5,
@@ -345,7 +680,9 @@ const MEMBERS = [
             17
         ],
         "roles": [
-            6
+            7,
+            12,
+            5
         ],
         "links": [
             [
@@ -361,7 +698,6 @@ const MEMBERS = [
         ]
     },
     {
-        "id": 14,
         "name": "Yuki",
         "joined": "Fall 2024",
         "left": "Fall 2024",
@@ -372,7 +708,6 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 15,
         "name": "Katie",
         "joined": "Fall 2024",
         "left": "Winter 2025",
@@ -383,7 +718,6 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 16,
         "name": "Daniel",
         "joined": "Fall 2024",
         "left": "Winter 2025",
@@ -395,7 +729,6 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 17,
         "name": "Amber",
         "joined": "Fall 2024",
         "left": "Winter 2025",
@@ -407,7 +740,6 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 18,
         "name": "Peter",
         "joined": "Fall 2024",
         "left": "Winter 2025",
@@ -418,7 +750,6 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 19,
         "name": "Edison",
         "joined": "Fall 2024",
         "left": "Winter 2025",
@@ -429,10 +760,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 20,
         "name": "Jimin",
         "joined": "Fall 2024",
-        "left": "",
         "instruments": [
             4,
             5,
@@ -443,10 +772,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 21,
         "name": "James Inneo",
         "joined": "Fall 2024",
-        "left": "",
         "instruments": [
             14
         ],
@@ -454,10 +781,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 22,
         "name": "Emily",
         "joined": "Fall 2024",
-        "left": "",
         "instruments": [
             13
         ],
@@ -465,10 +790,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 23,
         "name": "Robin",
         "joined": "Fall 2024",
-        "left": "",
         "instruments": [
             8,
             13
@@ -477,25 +800,23 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 24,
         "name": "Kasey",
         "joined": "Fall 2024",
-        "left": "",
         "instruments": [
             4,
             12,
             35
         ],
         "roles": [
-            7
+            8,
+            12,
+            5
         ],
         "links": []
     },
     {
-        "id": 25,
         "name": "Anon",
         "joined": "Fall 2024",
-        "left": "",
         "instruments": [
             13,
             14,
@@ -505,17 +826,16 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 26,
         "name": "Han",
         "joined": "Fall 2024",
-        "left": "",
         "instruments": [
             8,
             13
         ],
         "roles": [
-            8,
-            5
+            10,
+            6,
+            11
         ],
         "links": [
             [
@@ -525,10 +845,8 @@ const MEMBERS = [
         ]
     },
     {
-        "id": 27,
         "name": "Rylen Fong",
         "joined": "Fall 2024",
-        "left": "",
         "instruments": [
             8,
             12,
@@ -536,7 +854,9 @@ const MEMBERS = [
             27
         ],
         "roles": [
-            6
+            7,
+            9,
+            5
         ],
         "links": [
             [
@@ -547,10 +867,8 @@ const MEMBERS = [
         ]
     },
     {
-        "id": 28,
         "name": "Raekye",
         "joined": "Fall 2024",
-        "left": "",
         "instruments": [
             5
         ],
@@ -558,10 +876,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 29,
         "name": "Angelina Zheng",
         "joined": "Fall 2024",
-        "left": "",
         "instruments": [
             4,
             5
@@ -570,10 +886,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 30,
         "name": "Tommy",
         "joined": "Fall 2024",
-        "left": "",
         "instruments": [
             5
         ],
@@ -581,7 +895,6 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 31,
         "name": "xx.kamikaze.yasuomaster.69.xx",
         "joined": "Fall 2024",
         "left": "Winter 2025",
@@ -593,7 +906,6 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 32,
         "name": "Yuki",
         "joined": "Fall 2024",
         "left": "Fall 2024",
@@ -605,10 +917,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 33,
         "name": "Tyrone Fang",
         "joined": "Fall 2024",
-        "left": "",
         "instruments": [
             4,
             8,
@@ -619,24 +929,20 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 34,
         "name": "Crystal Y.",
         "joined": "Winter 2025",
-        "left": "",
         "instruments": [
             4,
             12
         ],
         "roles": [
-            7
+            8
         ],
         "links": []
     },
     {
-        "id": 35,
         "name": "Hayden Hoffort",
         "joined": "Winter 2025",
-        "left": "",
         "instruments": [
             35
         ],
@@ -644,10 +950,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 36,
         "name": "Johnathan H.",
         "joined": "Winter 2025",
-        "left": "",
         "instruments": [
             5
         ],
@@ -655,23 +959,22 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 37,
         "name": "Kae",
         "joined": "Winter 2025",
-        "left": "",
         "instruments": [
             4,
             13,
             14
         ],
-        "roles": [],
+        "roles": [
+            12,
+            5
+        ],
         "links": []
     },
     {
-        "id": 38,
         "name": "Michelle",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             5
         ],
@@ -679,16 +982,16 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 39,
         "name": "Sophia",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             4,
             14
         ],
         "roles": [
-            5
+            6,
+            11,
+            12
         ],
         "links": [
             [
@@ -698,16 +1001,16 @@ const MEMBERS = [
         ]
     },
     {
-        "id": 40,
         "name": "Eric",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             4,
             5
         ],
         "roles": [
-            5
+            6,
+            11,
+            9
         ],
         "links": [
             [
@@ -717,10 +1020,8 @@ const MEMBERS = [
         ]
     },
     {
-        "id": 41,
         "name": "Zachary Pang",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             4
         ],
@@ -728,10 +1029,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 42,
         "name": "Olivia Yip",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             4,
             8,
@@ -741,10 +1040,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 43,
         "name": "Emma Ethina Islam",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             4
         ],
@@ -752,10 +1049,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 44,
         "name": "Brian Lin",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             4,
             5,
@@ -765,10 +1060,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 45,
         "name": "Fatima Gonsalves",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             4,
             5,
@@ -778,10 +1071,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 46,
         "name": "Carmen",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             4,
             5,
@@ -791,10 +1082,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 47,
         "name": "J. Mansia",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             4,
             5,
@@ -807,10 +1096,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 48,
         "name": "Simba",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             17,
             27
@@ -819,7 +1106,6 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 49,
         "name": "Skylar",
         "joined": "Fall 2025",
         "left": "Fall 2025",
@@ -831,7 +1117,6 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 50,
         "name": "Nicole Liu",
         "joined": "Fall 2025",
         "left": "Fall 2025",
@@ -843,10 +1128,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 51,
         "name": "Benjamin L.",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             25
         ],
@@ -854,10 +1137,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 52,
         "name": "Brandon Law",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             4,
             5,
@@ -868,24 +1149,21 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 53,
         "name": "Efren Wang",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             5,
             36
         ],
         "roles": [
-            8
+            10,
+            5
         ],
         "links": []
     },
     {
-        "id": 54,
         "name": "William",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             4,
             13
@@ -894,10 +1172,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 55,
         "name": "Ericka",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             4,
             8
@@ -906,10 +1182,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 56,
         "name": "Alexander Davydenko",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             13
         ],
@@ -917,10 +1191,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 57,
         "name": "Emre",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             8,
             13
@@ -929,10 +1201,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 58,
         "name": "Sofia Gondim",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             4,
             5,
@@ -944,10 +1214,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 59,
         "name": "Andrew Tan",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             4,
             5,
@@ -958,23 +1226,20 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 60,
         "name": "Emmett Hartley",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             14
         ],
         "roles": [
-            8
+            10,
+            5
         ],
         "links": []
     },
     {
-        "id": 61,
         "name": "Jonathan",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             4,
             5,
@@ -986,10 +1251,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 62,
         "name": "FH",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             5,
             25
@@ -998,10 +1261,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 63,
         "name": "Xianghai (Steven)",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             30,
             4,
@@ -1011,10 +1272,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 64,
         "name": "Julian",
         "joined": "Fall 2025",
-        "left": "",
         "instruments": [
             4,
             5,
@@ -1024,10 +1283,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 65,
         "name": "Joe",
         "joined": "Winter 2026",
-        "left": "",
         "instruments": [
             5
         ],
@@ -1035,10 +1292,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 66,
         "name": "Paul Y.",
         "joined": "Winter 2026",
-        "left": "",
         "instruments": [
             5,
             7,
@@ -1050,10 +1305,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 67,
         "name": "Ze",
         "joined": "Winter 2026",
-        "left": "",
         "instruments": [
             17
         ],
@@ -1061,10 +1314,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 68,
         "name": "Kaveh",
         "joined": "Winter 2026",
-        "left": "",
         "instruments": [
             7
         ],
@@ -1072,10 +1323,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 69,
         "name": "Cathy Z.",
         "joined": "Winter 2026",
-        "left": "",
         "instruments": [
             4,
             20,
@@ -1088,10 +1337,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 70,
         "name": "Cailyn",
         "joined": "Winter 2026",
-        "left": "",
         "instruments": [
             7
         ],
@@ -1099,10 +1346,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 71,
         "name": "Kaden Calvert",
         "joined": "Winter 2026",
-        "left": "",
         "instruments": [
             7
         ],
@@ -1110,10 +1355,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 72,
         "name": "Kai Kang Nie",
         "joined": "Winter 2026",
-        "left": "",
         "instruments": [
             2,
             4
@@ -1122,21 +1365,20 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 73,
         "name": "Celina L.",
         "joined": "Winter 2026",
-        "left": "",
         "instruments": [
             4
         ],
-        "roles": [],
+        "roles": [
+            5,
+            12
+        ],
         "links": []
     },
     {
-        "id": 74,
         "name": "Lucia",
         "joined": "Winter 2026",
-        "left": "",
         "instruments": [
             4,
             5,
@@ -1146,10 +1388,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 75,
         "name": "Leo",
         "joined": "Winter 2026",
-        "left": "",
         "instruments": [
             5,
             14
@@ -1158,10 +1398,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 76,
         "name": "Phillip Hsu",
         "joined": "Winter 2026",
-        "left": "",
         "instruments": [
             0,
             8
@@ -1170,10 +1408,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 77,
         "name": "Hana",
         "joined": "Winter 2026",
-        "left": "",
         "instruments": [
             4
         ],
@@ -1181,10 +1417,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 78,
         "name": "Prashanth Shyamala",
         "joined": "Winter 2026",
-        "left": "",
         "instruments": [
             13
         ],
@@ -1192,10 +1426,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 79,
         "name": "Charlene Chiang",
         "joined": "Winter 2026",
-        "left": "",
         "instruments": [
             5,
             14,
@@ -1207,10 +1439,8 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 80,
         "name": "Colin Boothby",
         "joined": "Winter 2026",
-        "left": "",
         "instruments": [
             33
         ],
@@ -1218,23 +1448,18 @@ const MEMBERS = [
         "links": []
     },
     {
-        "id": 81,
         "name": "yams",
         "joined": "Winter 2026",
-        "left": "",
         "instruments": [
             13
         ],
         "roles": [],
         "links": []
     }
-];
-
-const INSTRUMENTS = ['Accordion', 'Aux Percussion???', 'Bagpipes', 'Guitar', 'Voice', 'Piano', 'Electric Piano', 'Drums', 'Acoustic Guitar', 'Aux. Percussion???', 'Backing Voice', 'Djembe', 'Ukulele', 'Electric Guitar', 'Bass Guitar', 'Bongos', 'Lead Electric Guitar', 'Violin', 'Cello', 'Double Bass', 'Piccolo', 'Flute', 'Lead Voice', 'Recorder', 'Oboe', 'Clarinet', 'Bass Clarinet', 'Alto Saxophone', 'Tenor Saxophone', 'Baritone Saxophone', 'Harmonica', 'Rhythm Electric Guitar', 'Shaker', 'Theremin', 'Triangle', 'Trumpet', 'Trombone'];
+].map((x, i) => ({...x, id: i}));
 
 const MUSIC = [
     {
-        "id": 0,
         "name": "Zankyosanka",
         "composer": "Aimer",
         "from": "Demon Slayer",
@@ -1290,7 +1515,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 1,
         "name": "Renai Circulation",
         "composer": "Kana Hanazawa",
         "from": "Bakemonogatari",
@@ -1346,7 +1570,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 2,
         "name": "Daddy! Daddy! Do!",
         "composer": "Masayuki Suzuki ft. Airi Suzuki",
         "from": "Kaguya-sama: Love is War",
@@ -1402,7 +1625,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 3,
         "name": "Fly Me to the Moon",
         "composer": "Bart Howard",
         "from": "Neon Genesis Evangelion",
@@ -1442,19 +1664,17 @@ const MUSIC = [
         ]
     },
     {
-        "id": 4,
         "name": "Moonlight Stage",
         "composer": "GYARI",
         "mediaOrigin": "Vocaloid",
         "references": [
-            "https://www.youtube.com/watch?v=TTk6C8ADgcU"
+            "<div>https://www.youtube.com/watch?v=TTk6C8ADgcU</div>"
         ],
         "performances": [
             {
                 "concerts": [
                     0,
                     1,
-                    "RCAG Studio Night 2024????",
                     2,
                     3
                 ],
@@ -1474,12 +1694,12 @@ const MUSIC = [
                 },
                 "id": 0,
                 "songType": "Small",
-                "link": "https://www.youtube.com/watch?v=_f_jcX2gmpQ"
+                "link": "https://www.youtube.com/watch?v=_f_jcX2gmpQ",
+                "arrangers": []
             }
         ]
     },
     {
-        "id": 5,
         "name": "Déja Vu",
         "composer": "Dave Rogers",
         "from": "Initial D",
@@ -1522,7 +1742,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 6,
         "name": "Anytime Anywhere",
         "composer": "Milet",
         "from": "Frieren: Beyond Journey's End",
@@ -1557,7 +1776,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 7,
         "name": "Marigold",
         "composer": "M2U",
         "from": "Deemo",
@@ -1582,7 +1800,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 8,
         "name": "Salt, Pepper, Birds, and the Thought Police",
         "composer": "Mili",
         "from": "Library Of Ruina",
@@ -1616,7 +1833,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 9,
         "name": "Droit dans le soleil",
         "composer": "Détroit",
         "references": [
@@ -1649,7 +1865,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 10,
         "name": "Komm, süsser Tod",
         "composer": "Shirō Sagisu",
         "from": "Neon Genesis Evangelion",
@@ -1684,7 +1899,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 11,
         "name": "My City's on Fire",
         "composer": "Laszlo Vincze",
         "from": "Chicken Police",
@@ -1716,7 +1930,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 12,
         "name": "Heartache",
         "composer": "Toby Fox",
         "from": "Undertale",
@@ -1748,7 +1961,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 13,
         "name": "Death by Glamour",
         "composer": "Toby Fox",
         "from": "Undertale",
@@ -1806,7 +2018,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 14,
         "name": "Bloody Stream",
         "composer": "CODA",
         "from": "JoJo's Bizarre Adventure",
@@ -1864,7 +2075,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 15,
         "name": "Zettai Zetsumei",
         "composer": "Cö shu Nie",
         "from": "The Promised Neverland",
@@ -1925,7 +2135,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 16,
         "name": "Wild Side",
         "composer": "ALI",
         "from": "Beastars",
@@ -1969,7 +2178,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 17,
         "name": "But Not for Me",
         "composer": "Chet Baker",
         "references": [
@@ -2000,7 +2208,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 18,
         "name": "Wind",
         "composer": "Akeboshi",
         "from": "Naruto",
@@ -2063,7 +2270,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 19,
         "name": "Ringo Biyori",
         "composer": "Rocky Chack",
         "from": "Spice and Wolf",
@@ -2109,7 +2315,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 20,
         "name": "Let You Down",
         "composer": "Dawid Podsiadło",
         "from": "Cyberpunk Edgerunners",
@@ -2145,7 +2350,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 21,
         "name": "Midnight Rendez-Vous",
         "composer": "CASIOPEA",
         "references": [
@@ -2173,7 +2377,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 22,
         "name": "From the Start",
         "composer": "Laufey",
         "references": [
@@ -2207,7 +2410,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 23,
         "name": "Unravel",
         "composer": "TK from Ling Tosite Sigure",
         "from": "Tokyo Ghoul",
@@ -2237,7 +2439,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 24,
         "name": "world.execute(me); (Key Ingredient ver.)",
         "composer": "Mili",
         "references": [
@@ -2265,7 +2466,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 25,
         "name": "God Knows",
         "composer": "ENOZ",
         "from": "The Melancholy of Haruhi Suzumiya",
@@ -2302,7 +2502,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 26,
         "name": "Re:Re:",
         "composer": "Asian Kung-Fu Generation",
         "from": "Erased",
@@ -2340,7 +2539,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 27,
         "name": "Rockn' Roll, Morning Light Falls on You",
         "composer": "Asian Kung-Fu Generation",
         "from": "Bocchi the Rock",
@@ -2378,7 +2576,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 28,
         "name": "Falling Down",
         "composer": "Oasis",
         "from": "Higashi no Eden",
@@ -2416,7 +2613,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 29,
         "name": "Preview of Me",
         "composer": "Tatsuya Kitani",
         "from": "Go! Go! Loser Ranger",
@@ -2443,7 +2639,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 30,
         "name": "Loonboon",
         "composer": "Laura Shigihara",
         "from": "Plants vs. Zombies",
@@ -2508,7 +2703,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 31,
         "name": "Rubato",
         "composer": "Yorushika",
         "mediaOrigin": "Anime",
@@ -2556,7 +2750,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 32,
         "name": "Hive Knight",
         "composer": "Christopher Larkin",
         "from": "Hollow Knight",
@@ -2606,7 +2799,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 33,
         "name": "It's Going Down Now",
         "composer": "Atsushi Kitajoh",
         "from": "Persona 3",
@@ -2656,7 +2848,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 34,
         "name": "Agniratha, Mechonis Capital",
         "composer": "ACE+",
         "from": "Xenoblade Chronicles",
@@ -2696,7 +2887,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 35,
         "name": "Lullaby of Birdland",
         "composer": "Yoko Kanno",
         "from": "Sakamichi no Apollon",
@@ -2736,7 +2926,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 36,
         "name": "Beaches of Maceio",
         "composer": "Kaizyu (Original Piece)",
         "references": [
@@ -2770,7 +2959,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 37,
         "name": "My Way",
         "composer": "Jacques Revaux, Gilles Thibaut, & Claude François",
         "references": [
@@ -2800,7 +2988,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 38,
         "name": "Ano Bando",
         "composer": "Kessoku Band",
         "from": "Bocchi the Rock",
@@ -2836,7 +3023,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 39,
         "name": "Black Sheep",
         "composer": "Metric",
         "from": "Scott Pilgrim vs. the World",
@@ -2872,7 +3058,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 40,
         "name": "La Sentinelle",
         "composer": "Luke",
         "references": [
@@ -2903,7 +3088,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 41,
         "name": "Doom Crossing: Eternal Horizons",
         "composer": "The Chalkeaters",
         "mediaOrigin": "Video Game",
@@ -2937,7 +3121,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 42,
         "name": "JoJo Sono Chi no Kioku ~end of THE WORLD~",
         "composer": "JO☆STARS",
         "from": "JoJo's Bizarre Adventure",
@@ -2979,7 +3162,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 43,
         "name": "NO, Thank You!",
         "composer": "Ho-kago Tea Time",
         "from": "K-On!",
@@ -3019,7 +3201,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 44,
         "name": "Bremen",
         "composer": "Yorushika",
         "references": [
@@ -3057,7 +3238,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 45,
         "name": "Kimi no Shiranai Monogatari",
         "composer": "Supercell",
         "from": "Bakemonogatari",
@@ -3097,7 +3277,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 46,
         "name": "Louder",
         "composer": "Roselia",
         "from": "BanG Dream!",
@@ -3137,7 +3316,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 47,
         "name": "Lost in Paradise",
         "composer": "ALI feat. AKLO",
         "from": "Jujustu Kaisen",
@@ -3197,7 +3375,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 48,
         "name": "Anarchy Rainbow",
         "composer": "Deep Cut",
         "from": "Splatoon 3",
@@ -3215,10 +3392,10 @@ const MUSIC = [
                     "5": [
                         9
                     ],
-                    "11": [
+                    "14": [
                         1
                     ],
-                    "14": [
+                    "15": [
                         1
                     ],
                     "17": [
@@ -3241,7 +3418,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 49,
         "name": "Naimononedari",
         "composer": "KANA-BOON",
         "references": [
@@ -3263,7 +3439,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 50,
         "name": "Dreamer",
         "composer": "Laufey",
         "references": [
@@ -3302,7 +3477,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 51,
         "name": "A Cruel Angel's Thesis",
         "composer": "Hidetoshi Satō",
         "from": "Neon Genesis Evangelion",
@@ -3392,7 +3566,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 52,
         "name": "AM4:50",
         "composer": "downt",
         "references": [
@@ -3428,7 +3601,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 53,
         "name": "artsick",
         "composer": "tricot",
         "references": [
@@ -3463,7 +3635,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 54,
         "name": "Can't Be Right",
         "composer": "Zutomayo",
         "from": "The Promised Neverland",
@@ -3499,7 +3670,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 55,
         "name": "Tank!",
         "composer": "Yoko Kanno",
         "from": "Cowboy Bebop",
@@ -3516,11 +3686,11 @@ const MUSIC = [
                     "7": [
                         64
                     ],
+                    "11": [
+                        3
+                    ],
                     "14": [
                         33
-                    ],
-                    "15": [
-                        3
                     ],
                     "27": [
                         52
@@ -3546,7 +3716,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 56,
         "name": "Baka Mitai",
         "composer": "Mitsuharu Fukuyama",
         "from": "Yakuza",
@@ -3599,7 +3768,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 57,
         "name": "Roki",
         "composer": "Mikito-P",
         "references": [
@@ -3634,7 +3802,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 58,
         "name": "Tenshi ni Fureta yo!",
         "composer": "Ho-kago Tea Time",
         "from": "K-On!",
@@ -3673,7 +3840,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 59,
         "name": "Beginning",
         "composer": "Tenmon",
         "from": "Link Click",
@@ -3710,7 +3876,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 60,
         "name": "Just the Two of Us",
         "composer": "Bill Withers, William Salter, & Ralph MacDonald",
         "references": [
@@ -3751,7 +3916,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 61,
         "name": "Blush",
         "composer": "Zutomayo",
         "from": "Drifting Home",
@@ -3787,7 +3951,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 62,
         "name": "Fireworks",
         "composer": "Daoko",
         "from": "Fireworks",
@@ -3845,7 +4008,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 63,
         "name": "Hello",
         "composer": "Furui Riho",
         "from": "City the Animation",
@@ -3899,7 +4061,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 64,
         "name": "Love Like You",
         "composer": "Aivi & Surasshu ft. Rebecca Sugar",
         "from": "Steven Universe",
@@ -3934,7 +4095,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 65,
         "name": "Autumn Leaves",
         "composer": "Joseph Kosma",
         "references": [
@@ -3972,7 +4132,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 66,
         "name": "Suzume",
         "composer": "Radwimps & Kazuma Jinnouchi ft. Toaka",
         "from": "Suzume",
@@ -4008,7 +4167,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 67,
         "name": "Pokemon Wielder Volo",
         "composer": "Go Ichinose, Hitomi Sato & Hiromitsu Maeba",
         "from": "Pokemon Legends: Arceus",
@@ -4048,7 +4206,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 68,
         "name": "Parfum d'étoiles",
         "composer": "Ichiko Aoba",
         "references": [
@@ -4082,7 +4239,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 69,
         "name": "Sanctuary Suite",
         "composer": "Toby Fox",
         "from": "Deltarune",
@@ -4129,7 +4285,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 70,
         "name": "Sayonara, Mata Itsuka!",
         "composer": "Kenshi Yonezu",
         "from": "The Tiger and Her Wings",
@@ -4172,7 +4327,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 71,
         "name": "Snow Halation",
         "composer": "μ's",
         "from": "Love Live! School Idol Project",
@@ -4201,7 +4355,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 72,
         "name": "Taidada",
         "composer": "Zutomayo",
         "from": "Dandadan",
@@ -4261,7 +4414,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 73,
         "name": "Hikaru Nara",
         "composer": "Goose House",
         "from": "Your Lie in April",
@@ -4334,7 +4486,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 74,
         "name": "Misty",
         "composer": "Erroll Garner",
         "references": [
@@ -4369,7 +4520,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 75,
         "name": "Mr. Eclectic",
         "composer": "Laufey",
         "references": [
@@ -4401,7 +4551,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 76,
         "name": "Isn't She Lovely",
         "composer": "Stevie Wonder",
         "references": [
@@ -4439,7 +4588,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 77,
         "name": "Hit the Road Jack",
         "composer": "Ray Charles",
         "references": [
@@ -4476,7 +4624,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 78,
         "name": "September",
         "composer": "Earth, Wind & Fire",
         "references": [
@@ -4507,7 +4654,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 79,
         "name": "Somewhere Only We Know",
         "composer": "Keane",
         "references": [
@@ -4538,7 +4684,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 80,
         "name": "What It Sounds Like",
         "composer": "HUNTR/X",
         "from": "KPop Demon Hunters",
@@ -4564,7 +4709,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 81,
         "name": "Landslide (Tiny Habits ver.)",
         "composer": "Fleetwood Mac",
         "references": [
@@ -4592,7 +4736,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 82,
         "name": "Layla",
         "composer": "Yostudomenoddy",
         "references": [
@@ -4625,7 +4768,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 83,
         "name": "Iron Lotus",
         "composer": "Mili",
         "from": "Library of Ruina",
@@ -4652,7 +4794,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 84,
         "name": "Gone Angels",
         "composer": "Mili",
         "from": "Library of Ruina",
@@ -4679,7 +4820,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 85,
         "name": "Concerto 1",
         "composer": "Peter Wang (Original Piece)",
         "references": [
@@ -4701,7 +4841,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 86,
         "name": "Relationship",
         "composer": "Kent Watari",
         "from": "Link Click",
@@ -4737,7 +4876,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 87,
         "name": "Isabella's Lullaby",
         "composer": "Takahiro Obata",
         "from": "The Promised Neverland",
@@ -4773,7 +4911,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 88,
         "name": "ODDS&ENDS",
         "composer": "ryo (supercell) ft. Hatsune Miku",
         "mediaOrigin": "Vocaloid",
@@ -4809,7 +4946,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 89,
         "name": "Moonsetter",
         "composer": "Toby Fox",
         "from": "Homestuck",
@@ -4841,7 +4977,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 90,
         "name": "Yuri on Ice",
         "composer": "Taro Umebayashi",
         "from": "Yuri!!! on ICE",
@@ -4880,7 +5015,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 91,
         "name": "Don't Say \"Lazy\"",
         "composer": "Ho-kago Tea Time",
         "from": "K-On!",
@@ -4904,7 +5038,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 92,
         "name": "Bartender",
         "composer": "Ngọt",
         "references": [
@@ -4939,7 +5072,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 93,
         "name": "Mất Tích",
         "composer": "Ngọt",
         "references": [
@@ -4974,7 +5106,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 94,
         "name": "Mơ Làm Ma",
         "composer": "Ngọt ft. Thỏ Traum",
         "references": [
@@ -5006,7 +5137,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 95,
         "name": "Fukashigi no Carte",
         "composer": "Kubo Yurika, Minase Inori, Seto Asami, Tanezaki Atsumi, Touyama Nao, & Uchida Maaya",
         "from": "Rascal Does Not Dream of Bunny Girl Senpai",
@@ -5061,7 +5191,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 96,
         "name": "Sugar Song to Bitter Step",
         "composer": "Unison Square Garden",
         "from": "Kekkai Sensen",
@@ -5094,7 +5223,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 97,
         "name": "In the Pool",
         "composer": "Kensuke Ushio",
         "from": "Chainsaw Man Movie: Reze Arc",
@@ -5118,7 +5246,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 98,
         "name": "Dawn in the Adan",
         "composer": "Ichiko Aoba",
         "references": [
@@ -5147,7 +5274,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 99,
         "name": "Scarz",
         "composer": "Novulent",
         "references": [
@@ -5179,7 +5305,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 100,
         "name": "Shinzō wo Sasageyo!",
         "composer": "Linked Horizon",
         "from": "Attack on Titan",
@@ -5231,7 +5356,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 101,
         "name": "That's Why I Quit Music",
         "composer": "Yorushika",
         "references": [
@@ -5265,7 +5389,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 102,
         "name": "Itte",
         "composer": "Yorushika",
         "references": [
@@ -5299,7 +5422,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 103,
         "name": "Delfino Plaza (French Jazz ver.)",
         "composer": "Koji Kondo",
         "from": "Super Mario Sunshine",
@@ -5357,7 +5479,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 104,
         "name": "Jinsei wa Yume Darake (Ma Vie, Mes Rêves)",
         "composer": "Sheena Ringo",
         "references": [
@@ -5410,7 +5531,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 105,
         "name": "Jump Up, Superstar!",
         "composer": "Naoto Kubo",
         "from": "Super Mario Odyssey",
@@ -5465,7 +5585,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 106,
         "name": "Last Stardust",
         "composer": "Aimer",
         "from": "Fate/Stay Night: Unlimited Blade Works",
@@ -5501,7 +5620,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 107,
         "name": "Love Trial",
         "composer": "40mP ft. Hatsune Miku",
         "mediaOrigin": "Vocaloid",
@@ -5536,7 +5654,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 108,
         "name": "Fuyu no Hanashi",
         "composer": "centimillimental",
         "from": "Given",
@@ -5569,7 +5686,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 109,
         "name": "Theme of Stone Ocean (Jolyne's Theme)",
         "composer": "Yugo Kanno",
         "from": "Jojo's Bizarre Adventure",
@@ -5626,7 +5742,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 110,
         "name": "I Am Gonna Claw (Out Your Eyes Then Drown You To Death)",
         "composer": "Darren Korb",
         "from": "Hades II",
@@ -5662,7 +5777,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 111,
         "name": "Plastic Love",
         "composer": "Mariya Takeuchi",
         "references": [
@@ -5721,7 +5835,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 112,
         "name": "Wii Sports Resort Main Theme",
         "composer": "Ryo Nagamatsu",
         "from": "Wii Sports Resort",
@@ -5775,7 +5888,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 113,
         "name": "Battle!!",
         "composer": "Kenji Hiramatsu",
         "from": "Xenoblade Chronicles 2: Torna ~ The Golden Country",
@@ -5820,7 +5932,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 114,
         "name": "Mechonis Field",
         "composer": "ACE+",
         "from": "Xenoblade Chronicles",
@@ -5850,7 +5961,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 115,
         "name": "Rogueport",
         "composer": "Yuka Tsujiyoko & Yoshito Sekigawa",
         "from": "Paper Mario: The Thousand-Year Door",
@@ -5873,7 +5983,7 @@ const MUSIC = [
                     "7": [
                         ""
                     ],
-                    "15": [
+                    "11": [
                         ""
                     ],
                     "17": [
@@ -5913,7 +6023,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 116,
         "name": "Remedy (Metal ver.)",
         "composer": "DYLZAL",
         "from": "Undertale Yellow",
@@ -5952,7 +6061,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 117,
         "name": "Kẻ Thù",
         "composer": "Ngọt",
         "references": [
@@ -5984,7 +6092,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 118,
         "name": "Kokudou Slope",
         "composer": "Kinoko Teikoku",
         "references": [
@@ -6016,7 +6123,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 119,
         "name": "Last Train at 25 O'Clock",
         "composer": "Lamp",
         "references": [
@@ -6062,7 +6168,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 120,
         "name": "Moudoku ga Osou",
         "composer": "Hifumi ft. Hatsune Miku",
         "mediaOrigin": "Vocaloid",
@@ -6094,7 +6199,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 121,
         "name": "Aishite Aishite Aishite",
         "composer": "Kikuo ft. Hatsune Miku",
         "mediaOrigin": "Vocaloid",
@@ -6157,7 +6261,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 122,
         "name": "The Rumbling",
         "composer": "SiM",
         "from": "Attack on Titan",
@@ -6193,7 +6296,6 @@ const MUSIC = [
         ]
     },
     {
-        "id": 123,
         "name": "Ai Scream!",
         "composer": "Ai Furihata, Aguri Ōnishi, & Wakana Okuma",
         "from": "Love Live!",
@@ -6234,14 +6336,13 @@ const MUSIC = [
             }
         ]
     }
-];
+].map((x, i) => ({...x, id: i}));
 
 const EVENTS = [
     {
-        "id": 0,
         "type": "External",
         "name": "Genshiken Festival 2024",
-        "location": "",
+        "location": "University of Guelph",
         "description": [
             "A one-day anime convention organized by students from a variety of Ontario University Anime Clubs"
         ],
@@ -6260,7 +6361,6 @@ const EVENTS = [
         ]
     },
     {
-        "id": 1,
         "type": "Concert",
         "name": "UT-SAMA 20th Anniversary Event",
         "location": "UTSU Student Commons",
@@ -6273,10 +6373,10 @@ const EVENTS = [
         "video": "https://youtu.be/ob0COvRRvDI",
         "setlist": [
             {
-                "id": 0,
+                "id": 0
             },
             {
-                "id": 3,
+                "id": 3
             },
             {
                 "id": 4
@@ -6308,7 +6408,6 @@ const EVENTS = [
         ]
     },
     {
-        "id": 2,
         "type": "Concert",
         "name": "October 2024 Concert",
         "location": "The Cat's Eye",
@@ -6352,15 +6451,14 @@ const EVENTS = [
             },
             {
                 "id": 2
-            }, 
+            },
             {
                 "id": 10
             }
         ],
-        setlistTheme: 'Dark Cold',
+        "setlistTheme": "Dark Cold"
     },
     {
-        "id": 3,
         "type": "Concert",
         "name": "End of Fall 2024 Concert",
         "location": "The Cat's Eye",
@@ -6428,36 +6526,32 @@ const EVENTS = [
                 "id": 27
             }
         ],
-        setlistTheme: 'Dark Warm',
+        "setlistTheme": "Dark Warm"
     },
     {
-        "id": 4,
         "type": "Workshop",
         "name": "Chord Theory Workshop 2025",
-        "location": "",
+        "location": "N/A",
         "description": [
             "???"
         ],
         "start": "2025-02-13|00:00",
         "end": "2025-02-13|23:59",
-        "link": "https://onedrive.live.com/?redeem=aHR0cHM6Ly8xZHJ2Lm1zL2YvcyFBcXRza3RqZjc2MlJqUFVRT1VpTVB0c2N6eXctSlE&id=91ADEFDFD8926CAB%21211600&cid=91ADEFDFD8926CAB",
-        "poster": "https://media.tenor.com/nDYDbjcSDZMAAAAe/gru-gun-point.png"
+        "link": "https://onedrive.live.com/?redeem=aHR0cHM6Ly8xZHJ2Lm1zL2YvcyFBcXRza3RqZjc2MlJqUFVRT1VpTVB0c2N6eXctSlE&id=91ADEFDFD8926CAB%21211600&cid=91ADEFDFD8926CAB"
     },
     {
-        "id": 5,
         "type": "Workshop",
         "name": "Music Production Workshop 2025",
         "location": "OISE 2279",
-        "address": '252 Bloor Street West, Toronto',
+        "address": "252 Bloor Street West, Toronto",
         "description": [
             "???"
         ],
         "start": "2025-02-27|00:00",
         "end": "2025-02-27|23:59",
-        "link": "https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo",
+        "link": "https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo"
     },
     {
-        "id": 6,
         "type": "Other",
         "name": "Blind Test 2025",
         "location": "OISE C-154",
@@ -6470,7 +6564,6 @@ const EVENTS = [
         "link": "https://www.youtube.com/watch?v=0CJ_9BmtAXY"
     },
     {
-        "id": 7,
         "type": "Concert",
         "name": "End of Winter 2025 Concert",
         "location": "OISE G-162",
@@ -6560,10 +6653,9 @@ const EVENTS = [
                 "seconds": 5442
             }
         ],
-        setlistTheme: 'Light Cold',
+        "setlistTheme": "Light Cold"
     },
     {
-        "id": 8,
         "type": "Workshop",
         "name": "Arranging Workshop 2025",
         "location": "OISE C-154",
@@ -6575,10 +6667,9 @@ const EVENTS = [
         "end": "2025-11-09|23:59"
     },
     {
-        "id": 9,
         "type": "External",
         "name": "RCAG Studio Night 2025",
-        "location": "",
+        "location": "N/A",
         "description": [
             "???"
         ],
@@ -6594,7 +6685,6 @@ const EVENTS = [
         ]
     },
     {
-        "id": 10,
         "type": "Concert",
         "name": "End of Fall 2025 Concert",
         "location": "OISE G-162",
@@ -6704,10 +6794,9 @@ const EVENTS = [
                 "seconds": 5616
             }
         ],
-        setlistTheme: 'Light Warm',
+        "setlistTheme": "Light Warm"
     },
     {
-        "id": 11,
         "type": "External",
         "name": "Hemoglobal Connect Benefit Concert 2026",
         "location": "Trinity-St. Paul's United Church",
@@ -6718,7 +6807,6 @@ const EVENTS = [
         "end": "2026-01-23|20:00"
     },
     {
-        "id": 12,
         "type": "Workshop",
         "name": "Sound Equipment Workshop 2026",
         "location": "OISE 5240",
@@ -6730,7 +6818,6 @@ const EVENTS = [
         "link": "https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv"
     },
     {
-        "id": 13,
         "type": "Concert",
         "name": "Tunes & Treats 2026 Concert",
         "location": "OISE C-154",
@@ -6812,12 +6899,11 @@ const EVENTS = [
                 "id": 94
             }
         ],
-        setlistTheme: 'Light Cold',
-        setlistStylizedTitle: 'Tunes & Treats',
+        "setlistTheme": "Light Cold",
+        "setlistStylizedTitle": "Tunes & Treats",
         "link": "https://drive.google.com/drive/u/1/folders/17TCYimDsYM7geN6iW4BXvJzsWnKGCPMv"
     },
     {
-        "id": 14,
         "type": "Concert",
         "name": "Succession 2026 Concert",
         "location": "OISE G-162",
@@ -6920,236 +7006,268 @@ const EVENTS = [
                 "id": 123
             }
         ],
-        setlistTheme: 'Dark Cold',
-        setlistStylizedTitle: 'Succession',
+        "setlistTheme": "Dark Cold",
+        "setlistStylizedTitle": "Succession"
     }
-];
+].map((x, i) => ({...x, id: i}));
 
 const FAQ = [
     {
-        q: 'Is LMC only for University of Toronto students?',
-        a: [
-            'No. While most LMC members are UofT St. George students, individuals of any background are free to join as long as they can physically play with us. Members unable to commute to campus are encouraged to participate online through online events and projects, which we upload to our YouTube channel.'
+        "q": "Is LMC only for University of Toronto students?",
+        "a": [
+            "No. While most LMC members are UofT St. George students, individuals of any background are free to join as long as they can physically play with us. Members unable to commute to campus are encouraged to participate online through online events and projects, which we upload to our YouTube channel."
         ]
     },
     {
-        q: 'Does it cost money to join LMC? Do I need to join UT-SAMA to join LMC?',
-        a: [
-            'It is free to join and attend LMC rehearsals and smaller events like workshops; however, performing at an LMC-organized concert requires purchasing a UT-SAMA membership. This fee helps us cover venue costs and rent equipment like microphones, cables, and mixers.',
-            'You can find more information on UT-SAMA membership costs and perks [here](https://docs.google.com/document/d/1iVwZj_iTLKUyEsz1Sg3CfRNYWkqG4CtydlkU-SGI_Zs/edit?tab=t.0). LMC operates independently from UT-SAMA so you do not have to interact with the main club even as a UT-SAMA member.'
+        "q": "Does it cost money to join LMC? Do I need to join UT-SAMA to join LMC?",
+        "a": [
+            "It is free to join and attend LMC rehearsals and smaller events like workshops; however, performing at an LMC-organized concert requires purchasing a UT-SAMA membership. This fee helps us cover venue costs and rent equipment like microphones, cables, and mixers.",
+            "You can find more information on UT-SAMA membership costs and perks [here](https://docs.google.com/document/d/1iVwZj_iTLKUyEsz1Sg3CfRNYWkqG4CtydlkU-SGI_Zs/edit?tab=t.0). LMC operates independently from UT-SAMA so you do not have to interact with the main club even as a UT-SAMA member."
         ]
     },
     {
-        q: 'When and where is LMC active? When can I join?',
-        a: [
-            `LMC operates during UofT's fall and winter semesters (September to April) at the St. George campus. The best way to get a feel for the club is at the University [club fair](https://www.utsu.ca/orientation/) every August or during our first meeting of the term (typically in early September/January), where instructions for signup will be shown.`,
-            `Joining at other times is allowed but it comes with less time and opportunities to form/join ensembles and rehearse for concerts. Signups for some songs may also close.`,
+        "q": "When and where is LMC active? When can I join?",
+        "a": [
+            "LMC operates during UofT's fall and winter semesters (September to April) at the St. George campus. The best way to get a feel for the club is at the University [club fair](https://www.utsu.ca/orientation/) every August or during our first meeting of the term (typically in early September/January), where instructions for signup will be shown.",
+            "Joining at other times is allowed but it comes with less time and opportunities to form/join ensembles and rehearse for concerts. Signups for some songs may also close."
         ]
     },
     {
-        q: 'Are there auditions? Do I need to be skilled with an instrument?',
-        a: [
-            'No. People of any skill level are welcome in LMC as long as they are motivated to play music with others. However, LMC will not teach you to how to play your instrument, so you are expected to learn your own parts.',
-            'LMC-coordinated music ("large ensembles") is open to everyone but signups close quickly to allow rehearsals to begin promptly. Skill requirements vary per song: it is highly encouraged to talk to large ensemble leads about part difficulty if you’re interested. Smaller ensembles headed by individual members may accept new members at their own discretion.'
+        "q": "Are there auditions? Do I need to be skilled with an instrument?",
+        "a": [
+            "No. People of any skill level are welcome in LMC as long as they are motivated to play music with others. However, LMC will not teach you to how to play your instrument, so you are expected to learn your own parts.",
+            "LMC-coordinated music (\"large ensembles\") is open to everyone but signups close quickly to allow rehearsals to begin promptly. Skill requirements vary per song: it is highly encouraged to talk to large ensemble leads about part difficulty if you’re interested. Smaller ensembles headed by individual members may accept new members at their own discretion."
         ]
     },
     {
-        q: 'Does LMC provide instruments or musical equipment?',
-        a: [
-            'By default, LMC rehearses in practice spaces with at least one piano. The only equipment that the club actually owns is one microphone; most equipment is generously lent to us by several members for the academic year. We try to have at least one drum kit, amps, and cables available, but please ask the current LMC execs about club inventory.',
-            'LMC does not own music stands or spare instruments.',
-            'If you would like to keep some equipment in a secure space on campus, please also reach out to one of the LMC Execs.'
+        "q": "Does LMC provide instruments or musical equipment?",
+        "a": [
+            "By default, LMC rehearses in practice spaces with at least one piano. The only equipment that the club actually owns is one microphone; most equipment is generously lent to us by several members for the academic year. We try to have at least one drum kit, amps, and cables available, but please ask the current LMC execs about club inventory.",
+            "LMC does not own music stands or spare instruments.",
+            "If you would like to keep some equipment in a secure space on campus, please also reach out to one of the LMC Execs."
         ]
     },
     {
-        q: 'How much time would I be expected to commit to LMC?',
-        a: [
+        "q": "How much time would I be expected to commit to LMC?",
+        "a": [
             "Your expected time commitment depends on your skill level as well as the number of songs you choose to participate in. Different groups will form their own rehearsal schedules and expectations.",
             "If you participate in large ensemble rehearsals, you'll be expected to attend all rehearsals (~1 hour every 2 weeks per song, plus potential dress rehearsals) or at least be able to perfectly play your part. On the other hand, online recording projects are easiest on time commitment since there are no deadlines."
         ]
     },
     {
-        q: 'What are the logistics of live rehearsals and recording projects?',
-        a: [
-            'Large ensemble songs are suggested and voted by LMC members, then decided and arranged at the beginning of the fall/winter semester. People are assigned to songs based on preference and attend weekly rehearsals. Concerts for large ensembles are held at the end of the academic term before exams start.',
-            'Interest for small ensemble songs, either for live performances or for recording, is found in the Discord server at #light-music-club-forum. Members may also reach out to each other via DMs or in-person. An ensemble head is assigned to coordinates with the execs to schedule rehearsals, plan concert appearances, create arrangements, find video editors, etc.',
+        "q": "What are the logistics of live rehearsals and recording projects?",
+        "a": [
+            "Large ensemble songs are suggested and voted by LMC members, then decided and arranged at the beginning of the fall/winter semester. People are assigned to songs based on preference and attend weekly rehearsals. Concerts for large ensembles are held at the end of the academic term before exams start.",
+            "Interest for small ensemble songs, either for live performances or for recording, is found in the Discord server at #light-music-club-forum. Members may also reach out to each other via DMs or in-person. An ensemble head is assigned to coordinates with the execs to schedule rehearsals, plan concert appearances, create arrangements, find video editors, etc."
         ]
     },
     {
-        q: 'What sorts of club activities does LMC organize?',
-        a: [
-            'LMC has historically organized workshops, such as for teaching music theory and music production, as well as karaokes, sight-reading challenges, and dinners. We are always open to suggestions for future event ideas!',
+        "q": "What sorts of club activities does LMC organize?",
+        "a": [
+            "LMC has historically organized workshops, such as for teaching music theory and music production, as well as karaokes, sight-reading challenges, and dinners. We are always open to suggestions for future event ideas!"
         ]
     },
     {
-        q: 'I compose/arrange music. Can LMC play my piece?',
-        a: [
+        "q": "I compose/arrange music. Can LMC play my piece?",
+        "a": [
             "LMC is always looking for people who can arrange music! We are happy to help arrangers find willing performers for their music, but in return we ask that they help with arranging large ensemble pieces if needed.",
-            "Composed music has been played at LMC before and is welcome. However, you should consider how thematically similar your music is to typical LMC genres, as it would be performed in a LMC concert.",
+            "Composed music has been played at LMC before and is welcome. However, you should consider how thematically similar your music is to typical LMC genres, as it would be performed in a LMC concert."
         ]
     },
     {
-        q: "I don't play an instrument (or don't want to), but I can do XXX. Can I still join?",
-        a: [
+        "q": "I don't play an instrument (or don't want to), but I can do XXX. Can I still join?",
+        "a": [
             "LMC has an acute supply of arrangers, illustrators, audio mixers/engineers, video editors, web developers, and photographers. If you have any of these skillsets, we’d be very happy to work with you! If you think you could contribute to LMC in any other way, please let the LMC execs know.",
             "On the music side, LMC has historically suffered from lack of tenor/bass instruments like violas, cellos, bassoons, and trombones. Any players are highly-encouraged to join us."
         ]
-    },
+    }
 ].map((x, i) => ({...x, id: i}));
 
-const CAROUSEL = [
+const RESOURCES = [
     {
-        url: 'assets/images/carousel/carousel 2025-04.webp',
-        caption: 'End of Winter Concert <b>2025/04</b>',
-        anchor: [0.52, 0.6],
+        "type": "LMC",
+        "name": "Sheet Music Archive",
+        "description": "All past large ensemble LMC music",
+        "link": "https://drive.google.com/drive/u/3/folders/1wguvdNtcvz-foduMNA7m-U_HUemQTCIo"
     },
     {
-        url: 'assets/images/carousel/carousel 2026-04.webp',
-        caption: 'Tunes & Treats <b>2026/04</b>',
-        anchor: [0.52, 0.5],
+        "type": "LMC",
+        "name": "Materials",
+        "description": "Workshops, slides, etc.",
+        "link": "https://drive.google.com/drive/u/3/folders/1wguvdNtcvz-foduMNA7m-U_HUemQTCIo"
     },
     {
-        url: 'assets/images/carousel/carousel 2025-01.webp',
-        caption: 'End of Fall Concert <b>2025/01</b>',
-        anchor: [0.6, 0.7],
+        "type": "General",
+        "name": "Tuner",
+        "description": "Intonation",
+        "link": "https://tuner.ninja/"
     },
+    {
+        "type": "General",
+        "name": "Metronome",
+        "description": "Timing",
+        "link": "https://www.musicca.com/metronome"
+    },
+    {
+        "type": "General",
+        "name": "muted.io",
+        "description": "Miscellaneous tools and diagrams. Chords, intervals, fretboards, tuners, etc.",
+        "link": "https://muted.io/"
+    },
+    {
+        "type": "General",
+        "name": "Musescore",
+        "description": "Online sheet music repository.",
+        "link": "https://musescore.com/"
+    },
+    {
+        "type": "Arranging",
+        "name": "Vienna Symphonic Library",
+        "description": "Orchestra instrument wiki",
+        "link": "https://www.vsl.co.at/academy"
+    },
+    {
+        "type": "Arranging",
+        "name": "Orchestration Online",
+        "description": "Orchestration video lessons",
+        "link": "https://www.youtube.com/@OrchestrationOnline/videos"
+    },
+    {
+        "type": "Arranging",
+        "name": "Instrument Studies for Eyes and Ears",
+        "description": "Orchestra instrument audio guide",
+        "link": "https://isfee.music.indiana.edu/"
+    },
+    {
+        "type": "Arranging",
+        "name": "Young Person’s Guide to the Orchestra",
+        "description": "Orchestral piece featuring all instruments",
+        "link": "https://www.youtube.com/watch?v=rbUbx9cJPX0"
+    },
+    {
+        "type": "Arranging",
+        "name": "Drum-Writing Guide #1",
+        "description": "By 8-bit Music Theory",
+        "link": "https://www.youtube.com/watch?v=FoMmVlAvjmM"
+    },
+    {
+        "type": "Arranging",
+        "name": "Drum-Writing Guide #2",
+        "description": "By 12tone",
+        "link": "https://www.youtube.com/watch?v=MdOV8I4n6v8"
+    },
+    {
+        "type": "Music Theory",
+        "name": "Adam Neely",
+        "description": "Video essays, music theory",
+        "link": "https://www.youtube.com/@AdamNeely/videos"
+    },
+    {
+        "type": "Music Theory",
+        "name": "Cadence Hira",
+        "description": "Music theory concepts explained through video game music",
+        "link": "https://www.youtube.com/@CadenceHira/videos"
+    },
+    {
+        "type": "Music Theory",
+        "name": "8-bit Music Theory",
+        "description": "Analyses of video game music",
+        "link": "https://www.youtube.com/@8bitMusicTheory/videos"
+    },
+    {
+        "type": "Music Theory",
+        "name": "12tone",
+        "description": "Music theory",
+        "link": "https://www.youtube.com/@12tone/videos"
+    },
+    {
+        "type": "Music Theory",
+        "name": "David Bruce",
+        "description": "Classical music and music theory",
+        "link": "https://www.youtube.com/@DBruce/videos"
+    },
+    {
+        "type": "Music Theory",
+        "name": "Japanese Pop Music Cliches",
+        "description": "Music theory of J-pop music",
+        "link": "https://www.youtube.com/watch?v=-IyBwwMkw90"
+    },
+    {
+        "type": "Music Production",
+        "name": "Jazen Sounds",
+        "description": "Tutorials on sound design & creating electronic music instruments",
+        "link": "https://www.youtube.com/@jazensounds453/videos"
+    },
+    {
+        "type": "Music Production",
+        "name": "Synthet",
+        "description": "Short videos on music production in digital audio workstations",
+        "link": "https://www.youtube.com/@synthet7/videos"
+    }
 ].map((x, i) => ({...x, id: i}));
 
 const LINKS = {
-    formUTSAMA: 'https://docs.google.com/forms/d/e/1FAIpQLSfWb-du-EgTdqi19aOW4tSGwe0i6YVbJp_AzfeVhxrHfowsPw/viewform',
-    formNewMember: 'https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform',
-    linkPlaylist: '#',
-    embedSheetMusic: 'https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo',
-    embedSchedule: 'https://calendar.google.com/calendar/embed?src=utsama.lightmusicclub%40gmail.com&ctz=America%2FToronto',
-    embedLargeEnsembleLocation: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1443.0128620829312!2d-79.39986402188697!3d43.66843482050036!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x882b35e3e82fb861%3A0xef695b0943f77b70!2sOISE%20Library!5e0!3m2!1sen!2sca!4v1756700291348!5m2!1sen!2sca',
-    descriptionLargeEnsemble: [
-        'Large ensemble rehearsals take place at the Ontario Institute for Studies in Education (OISE) at 252 Bloor Street West, in room C-154 underground.',
-        'The building is directly connected to the subway via the Bedford Road exit at St. George station, which leads to floor C. There is also vehicle parking and bicycle parking. See the <a href="https://www.oise.utoronto.ca/about/cao/OISEBuildingAccess" target="_blank">OISE website</a> for details and <a href="https://www.classfind.com/toronto/room/OIC154" target="_blank">this website</a> for visual directions.',
-        'LMC observes UofT time, with rehearsals starting 10 minutes after scheduled. The first 10 minutes should be used for setting up your instrument and warming up.'
+    "formUTSAMA": "https://docs.google.com/forms/d/e/1FAIpQLSfWb-du-EgTdqi19aOW4tSGwe0i6YVbJp_AzfeVhxrHfowsPw/viewform",
+    "formNewMember": "https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform",
+    "linkPlaylist": "#",
+    "embedSheetMusic": "https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo",
+    "embedSchedule": "https://calendar.google.com/calendar/embed?src=utsama.lightmusicclub%40gmail.com&ctz=America%2FToronto",
+    "embedLargeEnsembleLocation": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1443.0128620829312!2d-79.39986402188697!3d43.66843482050036!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x882b35e3e82fb861%3A0xef695b0943f77b70!2sOISE%20Library!5e0!3m2!1sen!2sca!4v1756700291348!5m2!1sen!2sca",
+    "descriptionLargeEnsemble": [
+        "Large ensemble rehearsals take place at the Ontario Institute for Studies in Education (OISE) at 252 Bloor Street West, in room C-154 underground.",
+        "The building is directly connected to the subway via the Bedford Road exit at St. George station, which leads to floor C. There is also vehicle parking and bicycle parking. See the <a href=\"https://www.oise.utoronto.ca/about/cao/OISEBuildingAccess\" target=\"_blank\">OISE website</a> for details and <a href=\"https://www.classfind.com/toronto/room/OIC154\" target=\"_blank\">this website</a> for visual directions.",
+        "LMC observes UofT time, with rehearsals starting 10 minutes after scheduled. The first 10 minutes should be used for setting up your instrument and warming up."
     ]
 };
 
-const RESOURCES = [{
-    type: 'LMC',
-    name: 'Sheet Music Archive',
-    description: 'All past large ensemble LMC music',
-    link: 'https://drive.google.com/drive/u/3/folders/1wguvdNtcvz-foduMNA7m-U_HUemQTCIo'
-}, {
-    type: 'LMC',
-    name: 'Materials',
-    description: 'Workshops, slides, etc.',
-    link: 'https://drive.google.com/drive/u/3/folders/1wguvdNtcvz-foduMNA7m-U_HUemQTCIo'
-}, {
-    type: 'General',
-    name: 'Tuner',
-    description: 'Intonation',
-    link: 'https://tuner.ninja/',
-}, {
-    type: 'General',
-    name: 'Metronome',
-    description: 'Timing',
-    link: 'https://www.musicca.com/metronome'
-}, {
-    type: 'General',
-    name: 'muted.io',
-    description: 'Miscellaneous tools and diagrams. Chords, intervals, fretboards, tuners, etc.',
-    link: 'https://muted.io/'
-}, {
-    type: 'General',
-    name: 'Musescore',
-    description: 'Online sheet music repository.',
-    link: 'https://musescore.com/'
-}, {
-    type: 'Arranging',
-    name: 'Vienna Symphonic Library',
-    description: 'Orchestra instrument wiki',
-    link: 'https://www.vsl.co.at/academy'
-}, {
-    type: 'Arranging',
-    name: 'Orchestration Online',
-    description: 'Orchestration video lessons',
-    link: 'https://www.youtube.com/@OrchestrationOnline/videos'
-}, {
-    type: 'Arranging',
-    name: 'Instrument Studies for Eyes and Ears',
-    description: 'Orchestra instrument audio guide',
-    link: 'https://isfee.music.indiana.edu/'
-}, {
-    type: 'Arranging',
-    name: 'Young Person’s Guide to the Orchestra',
-    description: 'Orchestral piece featuring all instruments',
-    link: 'https://www.youtube.com/watch?v=rbUbx9cJPX0'
-}, {
-    type: 'Arranging',
-    name: 'Drum-Writing Guide #1',
-    description: 'By 8-bit Music Theory',
-    link: 'https://www.youtube.com/watch?v=FoMmVlAvjmM'
-}, {
-    type: 'Arranging',
-    name: 'Drum-Writing Guide #2',
-    description: 'By 12tone',
-    link: 'https://www.youtube.com/watch?v=MdOV8I4n6v8'
-}, {
-    type: 'Music Theory',
-    name: 'Adam Neely',
-    description: 'Video essays, music theory',
-    link: 'https://www.youtube.com/@AdamNeely/videos'
-}, {
-    type: 'Music Theory',
-    name: 'Cadence Hira',
-    description: 'Music theory concepts explained through video game music',
-    link: 'https://www.youtube.com/@CadenceHira/videos'
-}, {
-    type: 'Music Theory',
-    name: '8-bit Music Theory',
-    description: 'Analyses of video game music',
-    link: 'https://www.youtube.com/@8bitMusicTheory/videos'
-}, {
-    type: 'Music Theory',
-    name: '12tone',
-    description: 'Music theory',
-    link: 'https://www.youtube.com/@12tone/videos'
-}, {
-    type: 'Music Theory',
-    name: 'David Bruce',
-    description: 'Classical music and music theory',
-    link: 'https://www.youtube.com/@DBruce/videos'
-}, {
-    type: 'Music Theory',
-    name: 'Japanese Pop Music Cliches',
-    description: 'Music theory of J-pop music',
-    link: 'https://www.youtube.com/watch?v=-IyBwwMkw90'
-}, {
-    type: 'Music Production',
-    name: 'Jazen Sounds',
-    description: 'Tutorials on sound design & creating electronic music instruments',
-    link: 'https://www.youtube.com/@jazensounds453/videos'
-}, {
-    type: 'Music Production',
-    name: 'Synthet',
-    description: 'Short videos on music production in digital audio workstations',
-    link: 'https://www.youtube.com/@synthet7/videos'
-}].map((x, i) => ({...x, id: i}));
+const CAROUSEL = [
+    {
+        "url": "assets/images/carousel/carousel 2025-04.webp",
+        "caption": "End of Winter Concert <b>2025/04</b>",
+        "anchor": [
+            0.52,
+            0.6
+        ]
+    },
+    {
+        "url": "assets/images/carousel/carousel 2026-04.webp",
+        "caption": "Tunes & Treats <b>2026/04</b>",
+        "anchor": [
+            0.52,
+            0.5
+        ]
+    },
+    {
+        "url": "assets/images/carousel/carousel 2025-01.webp",
+        "caption": "End of Fall Concert <b>2025/01</b>",
+        "anchor": [
+            0.6,
+            0.7
+        ]
+    }
+].map((x, i) => ({...x, id: i}));
 
-const EXEC_PICTURES = {
-    1: 'adsdsadasda',
-    2: 'asdasd',
-    3: 'asda'
-};
+const EXEC_PICTURES = {};
 
-const GALLERY = [{
-    link: 'assets/images/carousel/carousel 2025-01.webp',
-    caption: 'Test 1'
-}, {
-    link: 'assets/images/carousel/carousel 2025-04.webp',
-    caption: 'Test 2'
-}, {
-    link: 'assets/images/carousel/carousel 2026-04.webp',
-    caption: 'Test 3'
-}, {
-    link: 'assets/images/carousel/carousel 2025-01.webp',
-    caption: 'Test 4'
-}, {
-    link: 'assets/images/carousel/carousel 2025-04.webp',
-    caption: 'Test 5'
-}].map((x, i) => ({...x, id: i}));
+const GALLERY = [
+    {
+        "link": "assets/images/carousel/carousel 2025-01.webp",
+        "caption": "Test 1"
+    },
+    {
+        "link": "assets/images/carousel/carousel 2025-04.webp",
+        "caption": "Test 2"
+    },
+    {
+        "link": "assets/images/carousel/carousel 2026-04.webp",
+        "caption": "Test 3"
+    },
+    {
+        "link": "assets/images/carousel/carousel 2025-01.webp",
+        "caption": "Test 4"
+    },
+    {
+        "link": "assets/images/carousel/carousel 2025-04.webp",
+        "caption": "Test 5"
+    }
+].map((x, i) => ({...x, id: i}));
