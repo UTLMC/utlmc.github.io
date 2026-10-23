@@ -2358,6 +2358,7 @@ function sanityCheckData() {
             if (err) return `Event '${event.name}' (#${event.id}): ${err}`;
         }
         for (const { id } of event.setlist ?? []) {
+            if (id === -1) continue;
             const music = API.MUSIC.get(id);
             if (!music) return `Event '${event.name}' (#${event.id}) has a setlist entry for an invalid song (#${id})`;
         }
@@ -4137,9 +4138,6 @@ function constructCurrentEvent() {
 Data injection - FAQ table
 *********************************************************************/
 function renderInnerHTML(paragraphs) {
-    if (paragraphs?.length === 1 && paragraphs[0] === '') {
-        return '<br>';
-    }
     return paragraphs?.map(x => `<div>${parseMarkdown(x)}</div>`).join("") ?? '';
 }
 function constructFaq() {
@@ -4323,6 +4321,17 @@ function constructMusicTable() {
         ]);
     }
 
+    function renderReferences(x) {
+        const list = x.references?.filter(x => !!x);
+        if (list?.length > 1) {
+            return list?.reduce((a, b) => (`${a}<br>${b}`));
+        } else if (list?.length === 1) {
+            return list[0];
+        } else {
+            return '';
+        }
+    }
+
     const dataParser = (x) => {
         const performances = Array.from(x.performances.values());
         const performanceTimes = performances
@@ -4349,7 +4358,7 @@ function constructMusicTable() {
         }, {
             element: 'td',
             attributes: INPUT_ATTRIBUTES.links,
-            innerHTML: renderInnerHTML(x.references)
+            innerHTML: renderReferences(x.references)
         }];
 
         const subrows = performances.map(dataParserSubrow);
@@ -5106,6 +5115,12 @@ function syncModalMemberTags() {
     // Instruments
     const [instruments, newInstruments] = parseTaglist(cssGetId('datalist-member-instruments'));
     for (const x of newInstruments) {
+        const error = sanityCheckInstrument(x);
+        if (error) {
+            validation.innerText = error;
+            cssSetElement(validation, { display: 'block' });
+            return;
+        }
         const i = API.INSTRUMENTS.add(x);
         instruments.push(i);
     };
@@ -5151,6 +5166,26 @@ function syncModalMemberLinks() {
 
     closeModals();
 }
+function sanityCheckInstrument(instrument) {
+    const instrumentLower = instrument.toLowerCase();
+    if (['guitar', 'percussion'].includes(instrumentLower)) {
+        return `'${instrument}' is a vague term. Be more specific about the type.`;
+    }
+    if (instrumentLower === 'bass') {
+        return `'Bass' is a vague term. Specify 'Bass Guitar' or 'Voice'`;
+    }
+    if (['keys', 'keyboard'].includes(instrumentLower)) {
+        return `Specify the existing 'Piano' tag`;
+    }
+    if (['soprano', 'mezzo', 'alto', 'tenor', 'baritone', 'vocals', 'vocal'].includes(instrumentLower)) {
+        return `Specify the existing 'Voice' tag for singers (found: '${instrument}')`;
+    }
+    for (const keyword of ['lead', '1st', 'first', '2nd', 'second', 'solo', 'soloist', 'harmony', 'backup', 'backing', 'rhythm', 'aux']) {
+        if (instrumentLower.includes(keyword) && instrumentLower.includes(' ')) {
+            return `The instrument should contain only its name, not the player's role in the song (found: '${keyword}' in '${instrument}')`;
+        }
+    }
+}
 function syncModalPerformancePerformers() {
     // Extract instruments & names
     const p = {};
@@ -5167,6 +5202,12 @@ function syncModalPerformancePerformers() {
             instrument = div.children[2].value;
             if (!instrument) {
                 validation.innerText = 'There is a row with no instrument.';
+                cssSetElement(validation, { display: 'block' });
+                return;
+            }
+            const error = sanityCheckInstrument(instrument);
+            if (error)  {
+                validation.innerText = error;
                 cssSetElement(validation, { display: 'block' });
                 return;
             }

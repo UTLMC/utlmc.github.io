@@ -1207,7 +1207,7 @@ function injectHomeOutreach(execTeam) {
     const outreachOptions = new Set(['discord', 'instagram']);
     const homeOutreach = cssGetId('home-outreach');
     execTeam
-        .filter(x => x.roles.some(role => ROLES[role].startsWith('Executive')))
+        .filter(x => x.roles.some(role => ROLES[role].includes('Executive')) && x.links.some(([site]) => outreachOptions.has(site)))
         .sort((a, b) => a.name.localeCompare(b.name))
         .forEach(x => {
             homeOutreach.appendChild(construct({
@@ -1217,7 +1217,7 @@ function injectHomeOutreach(execTeam) {
             homeOutreach.appendChild(construct({
                 element: 'ul',
                 classes: ['list-social-media'],
-                children: x.links.filter(([site]) => outreachOptions.has(site)).map(([site, username, url]) => ({
+                children: x.links.map(([site, username, url]) => ({
                     element: 'li',
                     classes: [`li-${site}`],
                     innerText: url ? undefined : username,
@@ -1686,6 +1686,17 @@ function filterOutEventRow(event) {
     return false;
 }
 
+function updateEventsBodyHeight(container, body, gap, padding) {
+    if (window.innerWidth < 900)
+        return cssSetElement(container, { height: `` });
+    
+    const children = Array.from(body.children).filter(x => !x.style.display.includes('none'));
+    const heights = children.map(x => x.scrollHeight);
+    const height = heights.reduce((a, b) => a + b + gap) + padding * 2;
+    console.log(height, window.innerHeight)
+    cssSetElement(container, { height: `${Math.max(height, window.innerHeight)}px` });
+}
+
 /**
  * CSS cannot force the event sidebar height to match the event body height
  * So we match the height with JS
@@ -1698,15 +1709,7 @@ function initEventSidebarHeightAdjuster() {
     const gap = parseInt(bodyStyle.gap, 10);
     const padding = parseInt(bodyStyle.padding, 10);
 
-    const observer = new ResizeObserver(() => {
-        if (window.innerWidth < 900)
-            return cssSetElement(container, { height: `` });
-        
-        const children = Array.from(body.children).filter(x => !x.style.display.includes('none'));
-        const heights = children.map(x => x.scrollHeight);
-        const height = heights.reduce((a, b) => a + b + gap) + padding * 2;
-        cssSetElement(container, { height: `${Math.max(height, window.innerHeight)}px` });
-    });
+    const observer = new ResizeObserver(() => updateEventsBodyHeight(container, body, gap, padding));
     observer.observe(cssGetId('event-body'));
     observer.observe(cssGetId('event-description-container'));
 }
@@ -1798,7 +1801,7 @@ function constructSetlistTabSongItem(performanceInfo, song, i) {
     }, {
         element: 'p',
         innerHTML: `<span>by</span> ${song.composer}`
-    }, performanceInfo.arrangers ? {
+    }, performanceInfo.arrangers?.length > 0 ? {
         element: 'p',
         innerHTML: `<span>arranged by</span> ${performanceInfo.arrangers.map(x => MEMBERS[x]?.name ?? x).join(', ')}`
     } : undefined, song.from ? {
