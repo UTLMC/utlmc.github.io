@@ -819,9 +819,7 @@ const MEMBERS = [
             32
         ],
         "roles": [
-            8,
-            14,
-            5
+            8
         ],
         "links": []
     },
@@ -859,10 +857,9 @@ const MEMBERS = [
         "name": "Rylen Fong",
         "joined": "Fall 2024",
         "instruments": [
-            7,
-            11,
             22,
-            24
+            24,
+            3
         ],
         "roles": [
             7,
@@ -8154,8 +8151,8 @@ const RESOURCES = [
 ].map((x, i) => ({...x, id: i}));
 
 const LINKS = {
-    "formUTSAMA": "https://docs.google.com/forms/d/e/1FAIpQLSfWb-du-EgTdqi19aOW4tSGwe0i6YVbJp_AzfeVhxrHfowsPw/viewform",
-    "formNewMember": "https://docs.google.com/forms/d/e/1FAIpQLSfNEoh9rA4vCyZd9dz-yV35tpFnqDVq3yWQvJjz0NlGMqZ9-Q/viewform",
+    "formUTSAMA": "https://docs.google.com/forms/d/e/1FAIpQLScWTZ3ov8OIDTLWzrIzG9XrcmkNqoVQbrvORwUsvGoEs8KXpw/viewform",
+    "formNewMember": "https://forms.gle/LuE5cfQzmEUtDWtw7",
     "linkPlaylist": "#",
     "embedSheetMusic": "https://drive.google.com/embeddedfolderview?id=1wguvdNtcvz-foduMNA7m-U_HUemQTCIo",
     "embedSchedule": "https://calendar.google.com/calendar/embed?src=utsama.lightmusicclub%40gmail.com&ctz=America%2FToronto",
@@ -8197,7 +8194,6 @@ const CAROUSEL = [
 const EXEC_PICTURES = {
     "11": "assets/images/profile-picture/Gabe.webp",
     "13": "assets/images/profile-picture/Kai.webp",
-    "24": "assets/images/profile-picture/Kasey.webp",
     "26": "assets/images/profile-picture/Han.webp",
     "27": "assets/images/profile-picture/Rylen.webp",
     "37": "assets/images/profile-picture/Kae.webp",
