@@ -1586,8 +1586,8 @@ function filterOutMusicRow(version, x) {
                 return parseInt(idCount[1].slice(1, -1), 10);
             return 1;
         }).reduce((a, b) => a + b);
-        if (instrumentCount < TABLE_MUSIC.filters.gteNumInstruments) return true;
-        if (instrumentCount > TABLE_MUSIC.filters.lteNumInstruments) return true;
+        if (TABLE_MUSIC.filters.gteNumInstruments !== null && instrumentCount < TABLE_MUSIC.filters.gteNumInstruments) return true;
+        if (TABLE_MUSIC.filters.lteNumInstruments !== null && instrumentCount > TABLE_MUSIC.filters.lteNumInstruments) return true;
     }    
     return false;
 }
