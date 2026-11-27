@@ -4322,7 +4322,7 @@ function constructMusicTable() {
     }
 
     function renderReferences(x) {
-        const list = x.references?.filter(x => !!x);
+        const list = x?.references?.filter(x => !!x);
         if (list?.length > 1) {
             return list?.reduce((a, b) => (`${a}<br>${b}`));
         } else if (list?.length === 1) {

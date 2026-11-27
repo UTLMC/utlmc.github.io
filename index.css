@@ -2208,6 +2208,8 @@ Exec team
 .exec-team-card img {
     width: min(calc(190 * var(--px)), 30vw);
     height: min(calc(190 * var(--px)), 30vw);
+    aspect-ratio: 1;
+    object-fit: contain;
     background-image: url('assets/images/asanoha.webp');
 }
 .exec-team-card h4 {
@@ -2361,13 +2363,13 @@ Members table
 }
 .toolbar-filter-dropdown label {
     text-wrap: nowrap;
-    font-size: calc(18 * var(--px));
+    font-size: calc(16 * var(--px));
 }
 .toolbar-filter-dropdown input {
     font-family: 'Atkinson Hyperlegible';
     border: none;
     background-color: rgba(28, 20, 58, 0.8);
-    padding: calc(5 * var(--px)) calc(10 * var(--px));
+    padding: calc(2.5 * var(--px)) calc(10 * var(--px));
     color: rgb(206, 210, 255);
     font-size: calc(16 * var(--px));
 }
@@ -3167,7 +3169,7 @@ Concert widget
     background-color: rgba(0, 0, 0, 0.8);
     filter: drop-shadow(0 0 calc(5 * var(--px)) rgba(0, 0, 0, 0.5));
     border-radius: calc(5 * var(--px));
-    top: calc(25 * var(--px));
+    top: calc(15 * var(--px));
     left: 0;
     grid-template-columns: 1fr 1fr;
     gap: calc(5 * var(--px)) calc(20 * var(--px));

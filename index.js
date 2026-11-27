@@ -264,6 +264,7 @@ function toggleEventsSidebar(element) {
     section.classList.toggle('section-events-no-sidebar');
 
     cssGetFirst('#nav-events-sidebar .toolbar').classList.toggle('nav-events-sidebar-closed');
+    setTimeout(() => { updateEventSidebarHeightAdjuster() });
 }
 function genericToggleTab(element, object) {
     const navActiveClass = `nav-${object}-active`;
@@ -306,6 +307,7 @@ function toggleConcertTab(element) {
         tag.src = "https://www.youtube.com/iframe_api";
         document.head.appendChild(tag);
     }
+    setTimeout(() => { updateEventSidebarHeightAdjuster() });
 }
 function toggleLinkTab(element) {
     genericToggleTab(element, 'link');
@@ -1257,6 +1259,8 @@ const TABLE_MUSIC = {
         arranger: '',
         from: '',
         performed: '',
+        gteNumInstruments: null,
+        lteNumInstruments: null,
         includeInstruments: '',
         excludeInstruments: ''
     }
@@ -1527,6 +1531,10 @@ const changeFilterMusic = debounce(() => {
     TABLE_MUSIC.filters.performed = cssGetId('music-filter-performed').value;
     TABLE_MUSIC.filters.includeInstruments = cssGetId('music-filter-include-instruments').value;
     TABLE_MUSIC.filters.excludeInstruments = cssGetId('music-filter-exclude-instruments').value;
+    
+    const lte = cssGetId('music-filter-lte-num-instruments').value;
+    TABLE_MUSIC.filters.lteNumInstruments = lte === '' ? null : (Number(lte) || null);
+    TABLE_MUSIC.filters.gteNumInstruments = Number(cssGetId('music-filter-gte-num-instruments').value) || null;
     updateMusicTable();
 }, 300);
 
@@ -1570,6 +1578,17 @@ function filterOutMusicRow(version, x) {
             if (filter.some(y => instruments.has(y))) return true;
         }
     }
+
+    if (TABLE_MUSIC.filters.gteNumInstruments !== null || TABLE_MUSIC.filters.lteNumInstruments !== null) {
+        const instrumentCount = version.instrumentation.map(i => {
+            const idCount = i.split(' ');
+            if (idCount.length > 1)
+                return parseInt(idCount[1].slice(1, -1), 10);
+            return 1;
+        }).reduce((a, b) => a + b);
+        if (instrumentCount < TABLE_MUSIC.filters.gteNumInstruments) return true;
+        if (instrumentCount > TABLE_MUSIC.filters.lteNumInstruments) return true;
+    }    
     return false;
 }
 const updateMusicTable = (() => {
@@ -1693,15 +1712,16 @@ function updateEventsBodyHeight(container, body, gap, padding) {
     const children = Array.from(body.children).filter(x => !x.style.display.includes('none'));
     const heights = children.map(x => x.scrollHeight);
     const height = heights.reduce((a, b) => a + b + gap) + padding * 2;
-    console.log(height, window.innerHeight)
     cssSetElement(container, { height: `${Math.max(height, window.innerHeight)}px` });
 }
+
+let EVENT_SIDEBAR_HEIGHT_OBSERVER;
 
 /**
  * CSS cannot force the event sidebar height to match the event body height
  * So we match the height with JS
  */
-function initEventSidebarHeightAdjuster() {
+function updateEventSidebarHeightAdjuster() {
     const container = cssGetId('nav-events-sidebar');
     const body = cssGetId('event-body');
 
@@ -1709,9 +1729,13 @@ function initEventSidebarHeightAdjuster() {
     const gap = parseInt(bodyStyle.gap, 10);
     const padding = parseInt(bodyStyle.padding, 10);
 
-    const observer = new ResizeObserver(() => updateEventsBodyHeight(container, body, gap, padding));
-    observer.observe(cssGetId('event-body'));
-    observer.observe(cssGetId('event-description-container'));
+    if (!EVENT_SIDEBAR_HEIGHT_OBSERVER) {
+        EVENT_SIDEBAR_HEIGHT_OBSERVER = new ResizeObserver(() => updateEventsBodyHeight(container, body, gap, padding));
+        EVENT_SIDEBAR_HEIGHT_OBSERVER.observe(cssGetId('event-body'));
+        EVENT_SIDEBAR_HEIGHT_OBSERVER.observe(cssGetId('event-description-container'));
+    } else {
+        updateEventsBodyHeight(container, body, gap, padding);
+    }
 }
 
 function createEventRow(event) {
@@ -1730,7 +1754,7 @@ function createEventRow(event) {
 }
 
 const updateEventsSidebar = (() => {
-    initEventSidebarHeightAdjuster();
+    updateEventSidebarHeightAdjuster();
 
     // Hide events if they're a current event that's not visible yet
     const now = new Date();
